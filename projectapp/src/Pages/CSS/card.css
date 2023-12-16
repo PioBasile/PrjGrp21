@@ -1,0 +1,19 @@
+.card {
+    border: 1px solid #444; /* Bordure plus sombre */
+    padding: 10px;
+    margin: 10px;
+    text-align: center;
+    width: 200px;
+    background-color: #333; /* Fond plus sombre */
+    color: #fff; /* Texte en blanc */
+  }
+  
+  button {
+    margin-top: 10px;
+    background-color: #555; /* Fond du bouton */
+    color: #fff; /* Texte du bouton en blanc */
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  

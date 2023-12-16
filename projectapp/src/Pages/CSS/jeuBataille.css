@@ -1,0 +1,103 @@
+.game-container {
+    background-color: #0f9d58; /* Couleur verte pour la table de jeu */
+    height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.save-button, .leave-button {
+    padding: 10px 20px;
+    position: absolute;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.save-button {
+    top: 10px;
+    left: 10px;
+}
+
+.leave-button {
+    bottom: 10px;
+    right: 10px;
+}
+
+.player-cards {
+    position: absolute;
+    bottom: 10px;
+    display: flex;
+}
+
+.card {
+    width: 80px; /* Largeur agrandie */
+    height: 120px; /* Hauteur agrandie */
+    background-color: rgba(41, 28, 28, 0.541);
+    margin: 5px;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.player-cards .card:hover {
+    transform: translateY(-20px); /* Déplace la carte vers le haut lors du survol */
+}
+
+.opponent {
+    width: 80px; 
+    height: 120px; 
+    background-image: url('back-side-of-playing-card\ \(1\).png');
+    background-size: cover;
+    border-radius: 8px;
+    margin: 10px;
+}
+
+/* Positionnement spécifique des joueurs adverses */
+.top-opponent {
+    position: absolute;
+    top: 10px;
+}
+
+.top-opponent:nth-child(1) { left: 30%; }
+.top-opponent:nth-child(2) { left: 50%; }
+.top-opponent:nth-child(3) { left: 70%; }
+
+.left-opponent {
+    position: absolute;
+    left: 10px;
+    transform: rotate(90deg);
+    top: 25%; /* Ajustement vertical */
+}
+
+.left-opponent:nth-child(4) { top: 10%; }
+.left-opponent:nth-child(5) { top: 40%; }
+.left-opponent:nth-child(6) { top: 70%; }
+
+.right-opponent {
+    position: absolute;
+    right: 10px;
+    transform: rotate(90deg);
+    top: 25%; /* Ajustement vertical */
+}
+
+.right-opponent:nth-child(7) { top: 10%; }
+.right-opponent:nth-child(8) { top: 40%; }
+.right-opponent:nth-child(9) { top: 70%; }
+
+.selected-cards {
+    position: absolute;
+    bottom: 50%; /* Ajustez selon votre disposition */
+    left: 50%;
+    transform: translate(-50%, 50%);
+    display: block;
+    margin-bottom: 10px;
+    width: 80px; /* Largeur agrandie */
+    height: 120px; /* Hauteur agrandie */
+    background-color: rgba(41, 28, 28, 0.541);
+    margin: 5px;
+    border-radius: 8px;
+}

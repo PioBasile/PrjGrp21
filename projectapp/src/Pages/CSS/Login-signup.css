@@ -1,0 +1,72 @@
+.login-signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #1a1a1a; /* Couleur de fond noir */
+  background-image: url('1000_F_289787097_FiBWYvsulGSr0bDq27taBFcrh9K9cAHi.jpg');
+  background-size: cover; /* Agrandit l'image pour couvrir complètement l'espace disponible */
+  color: #fff; /* Couleur du texte blanc */
+}
+
+
+.login-container {
+    background-color: #2a2a2a;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    width: 400px;
+}
+
+.input-button {
+    padding: 15px;
+    margin: 15px 0;
+    border: 2px solid #555;
+    border-radius: 6px;
+    width: calc(100% - 30px);
+    background-color: #333;
+    color: #ddd;
+    font-size: 16px;
+}
+
+.button {
+    padding: 20px 30px; /* Agrandit le padding pour un bouton plus grand */
+    font-size: 20px; /* Augmente la taille de la police pour une meilleure lisibilité */
+    background-color: #0066cc;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    border-radius: 5px; /* Ajoutez un border-radius pour des coins arrondis */
+}
+
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.popup-content {
+    margin: auto;
+    background: rgb(255, 255, 255);
+    width: 50%;
+    padding: 5px;
+  }
+  .popup-arrow {
+    color: rgb(255, 255, 255);
+  }
+  [role='tooltip'].popup-content {
+    width: 200px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 0px 3px;
+  }
+  
+  .popup-overlay {
+    background: rgba(0, 0, 0, 0.5);
+  }
+  [data-popup='tooltip'].popup-overlay {
+    background: transparent;
+}

@@ -1,0 +1,34 @@
+.start-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1a1a1a; /* Couleur par défaut, gérée dynamiquement */
+    transition: background-color 1s ease;
+    z-index: 1;
+}
+
+.start-container-fade-out {
+    background-color: #fff;
+}
+
+.start-button {
+    padding: 20px 40px;
+    font-size: 24px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #0066cc;
+    color: white;
+    transition: transform 0.3s ease, opacity 1s ease;
+    z-index: 2;
+    opacity: 1; /* Opacité par défaut, gérée dynamiquement */
+}
+
+.start-button-fade-out {
+    opacity: 0;
+}

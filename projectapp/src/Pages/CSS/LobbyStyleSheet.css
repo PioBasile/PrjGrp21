@@ -1,0 +1,16 @@
+.app-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  
+  .left-panel {
+    width: 45%;
+  }
+  
+  .right-panel {
+    width: 45%;
+  }
+  
+  /* Add your additional styling here if needed */
+  

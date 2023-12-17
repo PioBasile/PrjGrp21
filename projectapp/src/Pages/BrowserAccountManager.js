@@ -39,15 +39,13 @@ function BrowserAccountManager() {
   const [serverName, setServerName] = useState('');
   const [nbPlayerMax, setNbPlayerMax] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
-  const [password, setPassword] = useState(false);
+  const [password, setPassword] = useState('');
   const [gameType, setGameType] = useState('');
   const [nbGame, setNbGame] = useState('0');
   const [nbWin, setNbWin] = useState('0');
-  const [cartePref, setCartePref] = useState('0');
   const [roundWin, setRoundWin] = useState('0');
   const [elo, setElo] = useState('0');
   const [action, setAction] = useState("Create Server");
-  const [name, setName] = useState('');
 
   const handleClose = () => setShowPopup(false);
   const handleShow = () => setShowPopup(true);
@@ -194,7 +192,7 @@ function BrowserAccountManager() {
           </div>
           <div class='input'>
             <label htmlFor="nbPlayerMax"></label>
-            <input type="number" id="nbPlayerMax" value={nbPlayerMax} onChange={(e) => setNbPlayerMax(e.target.value)} />
+            <input type="number" placeholder= "nbPlayer" id="nbPlayerMax" value={nbPlayerMax} onChange={(e) => setNbPlayerMax(e.target.value)} />
           </div>
           <div class="checkbox-container">
             <label htmlFor="isPrivate" class='text-white'>
@@ -206,8 +204,8 @@ function BrowserAccountManager() {
 
           {isPrivate && (
             <div class="input">
-              <label htmlFor="password">Mot de passe</label>
-              <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <label htmlFor="password"></label>
+              <input type="password" id="password"  placeholder='password' value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
           )}
           <div class='select-container'>

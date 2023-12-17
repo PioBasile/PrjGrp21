@@ -23,7 +23,7 @@ import { useEffect, useState, useRef } from "react";
 import ServerList from "./ServerList";
 import { useNavigate } from 'react-router-dom';
 // import 'bootstrap/dist/css/bootstrap.min.css';
-import './CSS/BrowserManager.css';
+import './CSS/BrowerManager.css';
 // import { Button, Modal, Form } from 'react-bootstrap';
 
 
@@ -31,6 +31,7 @@ const socket = io.connect("http://localhost:3001")
 function BrowserAccountManager() {
 
   socket.emit('leave', sessionStorage.getItem("serverConnected"));
+  socket.emit('askStat', sessionStorage.getItem("name"));
   sessionStorage.setItem('serverConnected', -1);
 
   const [mesLobby, setMesLobby] = useState([]);
@@ -84,6 +85,15 @@ function BrowserAccountManager() {
       if (mounted) {
         setMesLobby(lobbyListId);
       }
+    });
+
+    socket.on("stats", (res) => {
+
+      setNbGame(res.nbGames);
+      setNbWin(res.nbWin);
+      setRoundWin(res.roundWin);
+      setElo(res.elo);
+
     });
 
     return () => { mounted = false };

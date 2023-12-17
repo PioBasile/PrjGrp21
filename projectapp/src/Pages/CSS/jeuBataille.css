@@ -30,6 +30,7 @@
 }
 
 .player-cards {
+    color: aliceblue;
     position: absolute;
     bottom: 10px;
     display: flex;
@@ -38,6 +39,7 @@
 }
 
 .card {
+    color: aliceblue;
     width: 80px; /* Largeur agrandie */
     height: 120px; /* Hauteur agrandie */
     background-color: rgba(41, 28, 28, 0.948);

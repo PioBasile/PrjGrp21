@@ -147,7 +147,7 @@ const JeuBataille= () => {
                 {/* Joueurs en haut */}
                 {opponents.slice(0, 3).map((opponent, index) => (
                     <div key={index} className="opponent top-opponent">
-                        {opponent.name} <br />
+                        <strong>{opponent.name}</strong> <br />
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
                     </div>
@@ -156,7 +156,7 @@ const JeuBataille= () => {
                 {/* Joueurs à gauche */}
                 {opponents.slice(3, 6).map((opponent, index) => (
                     <div key={index} className="opponent left-opponent">
-                        {opponent.name} <br />
+                        <strong>{opponent.name}</strong> <br />
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
                     </div>
@@ -165,7 +165,7 @@ const JeuBataille= () => {
                 {/* Joueurs à droite */}
                 {opponents.slice(6, 9).map((opponent, index) => (
                     <div key={index} className="opponent right-opponent">
-                        {opponent.name} <br />
+                        <strong>{opponent.name}</strong> <br />
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
                     </div>

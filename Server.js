@@ -46,6 +46,19 @@ let db = new sqlite3.Database('./users.db',sqlite3.OPEN_READWRITE, (err) => {
 
 
   console.log('la connection est ouverte.');
+
+  get_user_info("Pio").then((res) => {
+
+    changeDataBase('nbGames',res.nbGames + 1,"Pio");
+    console.log(res.nbGames);
+
+  })
+
+  get_user_info('Pio').then((res) => {
+    console.log(res.nbGames);
+  });
+
+  
   
 
 });
@@ -188,21 +201,7 @@ io.on('connection', (socket) => {
 
 
     // GESTION LOBBY //
-
-    socket.on("changeDataBase", (data) => {
-      console.log("gere");
-      changeDataBase(data.dataToChange, data.newData, data.nom)
-      get_user_info(data.nom)
-        .then(user => {
-          console.log(user);
-            socket.emit("userInfo", user );
-        })
-        .catch(error => {
-          console.error("error", error);
-        })
-      })
   
-
     socket.on('newServer', (serverName, nbPlayerMax, isPrivate, password, gameType, owner) => {
 
         Nlobby = new Lobby(serverName, parseInt(nbPlayerMax), isPrivate, password, gameType, lobbyIndex, owner);
@@ -292,6 +291,16 @@ io.on('connection', (socket) => {
 
     });
 
+    socket.on('askStat', (name) => {
+
+      get_user_info(name).then((res) => {
+
+        socket.emit('stats', res);
+
+      });
+
+    });
+
 
 
 
@@ -318,6 +327,14 @@ io.on('connection', (socket) => {
       lobby.playerList.forEach((player) => {
 
         plist.push(new Players(player.username,player.cookie))
+
+        get_user_info(player.username).then((res) => {
+
+          console.log(res);
+          console.log(player.username);
+          changeDataBase('nbGames',res.nbGames + 1,player.username);
+      
+        });
 
       });
 
@@ -370,6 +387,30 @@ io.on('connection', (socket) => {
     
         if(count >= game.playerList.length - 1 || game.currentTurn == game.maxTurn){
           io.to(GameId).emit('FIN',game.scoreboard, game.playerList);
+
+          let max = -1;
+          let winner = [];
+          game.playerList.forEach((player) => {
+
+            if(max < game.scoreboard[player.name]){
+              max = game.scoreboard[player.name];
+              winner = [playerName];
+            } else if (max == game.scoreboard[player.name]){
+              winner.push(player.name);
+            }
+
+          });
+
+          winner.forEach((player) => {
+
+            get_user_info(player).then((res) => {
+
+              console.log(res);
+              changeDataBase('nbWin',res.nbWin + 1,player);
+          
+            });
+
+          });
         } else {
           if(game.Rdraw != null){
             game.Rdraw.forEach((player) => {
@@ -421,6 +462,30 @@ io.on('connection', (socket) => {
     
         if(count >= game.playerList.length - 1 || game.currentTurn == game.maxTurn){
           io.to(GameId).emit('FIN',game.scoreboard, game.playerList);
+          let max = -1;
+          let winner = [];
+          game.playerList.forEach((player) => {
+
+            if(max < game.scoreboard[player.name]){
+              max = game.scoreboard[player.name];
+              winner = [playerName];
+            } else if (max == game.scoreboard[player.name]){
+              winner.push(player.name);
+            }
+
+          });
+
+          winner.forEach((player) => {
+
+            get_user_info(player).then((res) => {
+
+              console.log(res);
+              changeDataBase('nbWin',res.nbWin + 1,player);
+          
+            });
+
+          });
+
         } else {
           if(game.Rdraw != null){
             game.Rdraw.forEach((player) => {
@@ -449,6 +514,11 @@ io.on('connection', (socket) => {
 
 
     });
+
+    socket.on("sendMessage", (data) => {
+      console.log(`${data.name}: ${data.msg}`);
+      io.to(data.room).emit("getMessage", `${data.name}: ${data.msg}`);
+    })
 
 });
 
@@ -697,6 +767,11 @@ class Game{
       this.Rwinner = currentW;
       this.Rdraw = null;
       this.scoreboard[currentW.name]+=1;
+      get_user_info(currentW.name).then((res) => {
+
+        changeDataBase('roundWin',res.roundWin + 1,currentW.name);
+    
+      });
 
     } else {
 
@@ -747,6 +822,11 @@ class Game{
                 this.Rwinner = currentW;
                 this.Rdraw = null;
                 this.scoreboard[currentW.name]+=1;
+                get_user_info(currentW.name).then((res) => {
+
+                  changeDataBase('roundWin',res.roundWin + 1,currentW.name);
+              
+                });
         
               } else {
         

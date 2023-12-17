@@ -16,6 +16,9 @@ const JeuBataille= () => {
     const [scoreboard, setScore] = useState({});
     const [isDraw, setDraw] = useState(false);
     const [inDraw, setInDraw] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [message, setMessage] = useState('');
+    const [messages, setMessages] = useState([]);
     const navigate = useNavigate();
 
     function leaveGame(){
@@ -50,6 +53,30 @@ const JeuBataille= () => {
         }
         
     };
+
+    const sendMessage = () => {
+        console.log("message send", message);
+        console.log(sessionStorage.getItem("serverConnected"));
+        socket.emit('sendMessage', { name: sessionStorage.getItem("name"), msg: message, room: sessionStorage.getItem("serverConnected") });
+        setMessage('');
+    };
+
+    const openChat = () => {
+        setIsChatOpen(true);
+    };
+
+    const closeChat = () => {
+        setIsChatOpen(false);
+    };
+
+    useEffect(() => {
+
+        socket.on('getMessage', (msg) => {
+            console.log("msg : ", msg);
+            setMessages((prevMessages) => [...prevMessages, msg]);
+        });
+
+    },[]);
 
     useEffect(() => {
         if (!initialDeckEmitted) {
@@ -140,7 +167,21 @@ const JeuBataille= () => {
     //return
     return (
         <div className="game-container">
-            <button className="save-button">Save</button>
+            <button className="save-button" onClick={openChat}>Chat</button>
+            {isChatOpen && (
+                <div className="modal-container">
+                    {messages.map((msg, index) => (
+                        <p key={index}>{msg}</p>
+                    ))}
+                    <input
+                        type="text"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                    />
+                    <button onClick={sendMessage}>Send</button>
+                    <button onClick={closeChat}>Close Chat</button>
+                </div>
+            )}
 
             {/*Opponent player*/}
             <div className="opponent-players">

@@ -19,12 +19,12 @@
 */
 
 import io from 'socket.io-client';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import ServerList from "./ServerList";
 import { useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './CSS/PopUpStyle.css';
-import { Button, Modal, Form } from 'react-bootstrap';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+import './CSS/BrowserManager.css';
+// import { Button, Modal, Form } from 'react-bootstrap';
 
 
 const socket = io.connect("http://localhost:3001")
@@ -47,6 +47,7 @@ function BrowserAccountManager() {
   const [roundWin, setRoundWin] = useState('0');
   const [elo, setElo] = useState('0');
   const [action, setAction] = useState("Create Server");
+  const [name, setName] = useState('');
 
   const handleClose = () => setShowPopup(false);
   const handleShow = () => setShowPopup(true);
@@ -98,7 +99,7 @@ function BrowserAccountManager() {
 
   const handleSave = () => {
     // Logique pour sauvegarder les données du formulaire
-
+    setAction("Server List")
     if (gameType === "") { return 0; }
     if (nbPlayerMax === "") { return 0; }
     socket.emit("newServer", serverName, nbPlayerMax, isPrivate, password, gameType, sessionStorage.getItem('name'));
@@ -106,111 +107,62 @@ function BrowserAccountManager() {
   };
 
 
-  const CreateServer = () => {
-    return (
-
-      <div class="inputs">
-        <div class='input'>
-          <label for="serverName">Nom du serveur</label>
-          <input
-            type="text"
-            id="serverName"
-            value={serverName}
-            onChange={(e) => {
-              setServerName(e.target.value);
-            }}
-          />
-        </div>
-        <div class='input'>
-          <label for="nbPlayerMax">Nombre maximal de joueurs</label>
-          <input type="number" id="nbPlayerMax" value={nbPlayerMax} onChange={(e) => setNbPlayerMax(e.target.value)} />
-        </div>
-        <div class="checkbox-container">
-          <label for="isPrivate" className='text-white'>
-            Serveur privé ? { }
-
-            <input type="checkbox" id="isPrivate" checked={isPrivate} onChange={(e) => setIsPrivate(e.target.checked)} />
-          </label>
-        </div>
-
-
-        {isPrivate && (
-          <div class="input">
-            <label for="password">Mot de passe</label>
-            <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          </div>
-        )}
-        <div className='select-container'>
-          <label for="gameType"></label>
-          <select class="select-dropdown" id="gameType" value={gameType} onChange={(e) => setGameType(e.target.value)}>
-            <option value="">Type de jeu</option>
-            <option value="batail_ouverte">Bataille Ouverte</option>
-          </select>
-          <div class="select-arrow"></div>
-        </div>
-        <div class="submit server" onClick={handleSave}>Créer</div>
-
-
-      </div>
-    )
-  }
-
 
   const Profil = () => {
-    const [animation, setAnimation] = useState('card');
     return (
-      <div className="profil-container">
-        <div className="profil-title">
+
+      <div class="profil-container">
+        <div class="profil-title">
           <h5>Statistiques du Joueur</h5>
         </div>
-        <div className="profil-body">
+        <div class="profil-body">
 
-          <div class="card" id="myCard">
-            <div class="card-inner">
-              <div>userName</div>
-              <div class="card-front"></div>
-              <div class="card-back">
-                <div class="card-back-text">{sessionStorage.getItem("name")}</div>
+          <div class="carte" id="myCard">
+            <div class="carte-inner">
+              <div><strong>username</strong></div>
+              <div class="carte-front"></div>
+              <div class="carte-back">
+                <div class="carte-back-text">{sessionStorage.getItem("name")}</div>
               </div>
             </div>
           </div>
 
-          <div class="card" id="myCard">
-            <div class="card-inner">
-              <div>game play</div>
-              <div class="card-front"></div>
-              <div class="card-back">
-                <div class="card-back-text">{nbGame}</div>
+          <div class="carte" id="myCard">
+            <div class="carte-inner">
+              <div><strong>game played</strong></div>
+              <div class="carte-front"></div>
+              <div class="carte-back">
+                <div class="carte-back-text">{nbGame}</div>
               </div>
             </div>
           </div>
 
-          <div class="card" id="myCard">
-            <div class="card-inner">
-              <div>games win</div>
-              <div class="card-front"></div>
-              <div class="card-back">
-                <div class="card-back-text">{nbWin}</div>
+          <div class="carte" id="myCard">
+            <div class="carte-inner">
+              <div><strong>game win</strong></div>
+              <div class="carte-front"></div>
+              <div class="carte-back">
+                <div class="carte-back-text">{nbWin}</div>
               </div>
             </div>
           </div>
 
-          <div class="card" id="myCard">
-            <div class="card-inner">
-              <div>ELO</div>
-              <div class="card-front"></div>
-              <div class="card-back">
-                <div class="card-back-text">{elo}</div>
+          <div class="carte" id="myCard">
+            <div class="carte-inner">
+              <div><strong>ELO</strong></div>
+              <div class="carte-front"></div>
+              <div class="carte-back">
+                <div class="carte-back-text">{elo}</div>
               </div>
             </div>
           </div>
 
-          <div class="card" id="myCard">
-            <div class="card-inner">
-              <div>round WIN</div>
-              <div class="card-front"></div>
-              <div class="card-back">
-                <div class="card-back-text">{roundWin}</div>
+          <div class="carte" id="myCard">
+            <div class="carte-inner">
+              <div><strong>round win</strong></div>
+              <div class="carte-front"></div>
+              <div class="carte-back">
+                <div class="carte-back-text">{roundWin}</div>
               </div>
             </div>
           </div>
@@ -220,21 +172,64 @@ function BrowserAccountManager() {
   }
 
   return (
-    <div className='vide'>
-      <div className='container'>
-        <div className='header'>
-          <div className='text'>{action}</div>
-          <div className="underline"></div>
+    <div class='vide'>
+      <div class='container'>
+        <div class='header'>
+          <div class='text'>{action}</div>
+          <div class="underline"></div>
         </div>
 
-        {action == "Create Server" ? <div><CreateServer /></div> : <div></div>}
-        {action == "Server List" ? <ServerList servers={mesLobby} handleClick={handleClick} /> : <div></div>}
+        {action == "Create Server" ? <div class="inputs">
+          <div class='input'>
+            <label htmlFor="serverName"> </label>
+            <input
+              placeholder='server name'
+              type="text"
+              id="serverName"
+              value={serverName}
+              onChange={(e) => {
+                setServerName(e.target.value);
+              }}
+            />
+          </div>
+          <div class='input'>
+            <label htmlFor="nbPlayerMax"></label>
+            <input type="number" id="nbPlayerMax" value={nbPlayerMax} onChange={(e) => setNbPlayerMax(e.target.value)} />
+          </div>
+          <div class="checkbox-container">
+            <label htmlFor="isPrivate" class='text-white'>
+              Serveur privé ? { }
+
+              <input type="checkbox" id="isPrivate" checked={isPrivate} onChange={(e) => setIsPrivate(e.target.checked)} />
+            </label>
+          </div>
+
+          {isPrivate && (
+            <div class="input">
+              <label htmlFor="password">Mot de passe</label>
+              <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            </div>
+          )}
+          <div class='select-container'>
+            <label htmlFor="gameType"></label>
+            <select class="select-dropdown" id="gameType" value={gameType} onChange={(e) => setGameType(e.target.value)}>
+              <option value="">Type de jeu</option>
+              <option value="batail_ouverte">Bataille Ouverte</option>
+            </select>
+            <div class="select-arrow"></div>
+          </div>
+          <div class="submit server" onClick={handleSave}>Créer</div>
+
+
+        </div>
+          : <div></div>}
+        {action == "Server List" ? <ServerList servers={mesLobby} handleClick={handleClick} handlePassword={handlePassword} /> : <div></div>}
         {action == "Profil" ? <Profil /> : <div></div>}
 
-        <div className='submit-container'>
-          <div className={action === "Create Server" ? 'submit gray' : 'submit'} onClick={() => { setAction("Create Server") }}>Create Server</div>
-          <div className={action === "Server List" ? 'submit gray' : 'submit'} onClick={() => { setAction("Server List") }}>Server List</div>
-          <div className={action === "Profil" ? 'submit gray' : 'submit'} onClick={() => { setAction("Profil") }}>Profil</div>
+        <div class='submit-container'>
+          <div class={action === "Create Server" ? 'submit gray' : 'submit'} onClick={() => { setAction("Create Server") }}>Create Server</div>
+          <div class={action === "Server List" ? 'submit gray' : 'submit'} onClick={() => { setAction("Server List") }}>Server List</div>
+          <div class={action === "Profil" ? 'submit gray' : 'submit'} onClick={() => { setAction("Profil") }}>Profil</div>
         </div>
       </div>
     </div>

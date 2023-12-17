@@ -147,21 +147,27 @@ const JeuBataille= () => {
                 {/* Joueurs en haut */}
                 {opponents.slice(0, 3).map((opponent, index) => (
                     <div key={index} className="opponent top-opponent">
-                        {opponent.name} - Cartes: {opponent.deck.length} - Score : {scoreboard[opponent.name]}
+                        {opponent.name} <br />
+                        Cartes: {opponent.deck.length} <br />
+                        Score : {scoreboard[opponent.name]}
                     </div>
                 ))}
 
                 {/* Joueurs à gauche */}
                 {opponents.slice(3, 6).map((opponent, index) => (
                     <div key={index} className="opponent left-opponent">
-                        {opponent.name} - Cartes: {opponent.deck.length} - Score : {scoreboard[opponent.name]}
+                        {opponent.name} <br />
+                        Cartes: {opponent.deck.length} <br />
+                        Score : {scoreboard[opponent.name]}
                     </div>
                 ))}
 
                 {/* Joueurs à droite */}
                 {opponents.slice(6, 9).map((opponent, index) => (
                     <div key={index} className="opponent right-opponent">
-                        {opponent.name} - Cartes: {opponent.deck.length} - Score : {scoreboard[opponent.name]}
+                        {opponent.name} <br />
+                        Cartes: {opponent.deck.length} <br />
+                        Score : {scoreboard[opponent.name]}
                     </div>
                 ))}
 
@@ -173,7 +179,8 @@ const JeuBataille= () => {
                 {playerCards.map((card, index) => (
                     <div key={index} className={"card"} onClick={() => selectCardClick(card)} >
                         {/*Affiche le symbole et la valeur de la carte sous forme de texte*/}
-                        {card.symbole} - {card.number}
+                        {card.symbole} <br />
+                        {card.number}
                     </div>
                 ))}
             </div>
@@ -181,7 +188,12 @@ const JeuBataille= () => {
             <div className="selected-cards">
                 {selectedCards.symbole} {selectedCards.number}
             </div>
-
+                
+            <div className="bottom-left-info">
+                Mon Score : {scoreboard[sessionStorage.getItem("name")]} <br />
+                Nombre de carte : {playerCards.length} 
+                
+            </div>
 
             <button className="leave-button" onClick={() => leaveGame()}>Leave Game</button>
         </div>      
@@ -189,7 +201,3 @@ const JeuBataille= () => {
 };
 
 export default JeuBataille;
-
-
-
-    

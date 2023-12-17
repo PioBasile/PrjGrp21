@@ -26,6 +26,18 @@ const io = new Server(server, {
 const sqlite3 = require('sqlite3').verbose();
 
 
+function changeDataBase(dataToChange, newData, nom) {
+  const sqlUpdate = `UPDATE Users SET ${dataToChange} = ? WHERE nom = ?`
+  db.run( 
+    sqlUpdate, [newData, nom], ( function(err) {
+    if (err) {
+      console.error(err.message);
+    } else {
+      console.log(`Mise à jour réussie pour ${nom}`);
+    }
+  })
+  )
+}
 
 let db = new sqlite3.Database('./users.db',sqlite3.OPEN_READWRITE, (err) => {
   if (err) {
@@ -176,6 +188,20 @@ io.on('connection', (socket) => {
 
 
     // GESTION LOBBY //
+
+    socket.on("changeDataBase", (data) => {
+      console.log("gere");
+      changeDataBase(data.dataToChange, data.newData, data.nom)
+      get_user_info(data.nom)
+        .then(user => {
+          console.log(user);
+            socket.emit("userInfo", user );
+        })
+        .catch(error => {
+          console.error("error", error);
+        })
+      })
+  
 
     socket.on('newServer', (serverName, nbPlayerMax, isPrivate, password, gameType, owner) => {
 

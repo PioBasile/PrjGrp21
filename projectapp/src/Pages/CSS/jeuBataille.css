@@ -1,5 +1,6 @@
 .game-container {
-    background-color: #0f9d58; /* Couleur verte pour la table de jeu */
+    background-image: url(JeuBataille.png); 
+    background-size: cover;
     height: 100vh;
     position: relative;
     display: flex;
@@ -32,15 +33,20 @@
     position: absolute;
     bottom: 10px;
     display: flex;
+    justify-content: center; /* Centre le contenu horizontalement */
+    align-items: center; /* Centre le contenu verticalement */
 }
 
 .card {
     width: 80px; /* Largeur agrandie */
     height: 120px; /* Hauteur agrandie */
-    background-color: rgba(41, 28, 28, 0.541);
+    background-color: rgba(41, 28, 28, 0.948);
     margin: 5px;
     border-radius: 8px;
     transition: transform 0.3s ease;
+    display: flex;
+    justify-content: center; /* Centre le texte horizontalement */
+    align-items: center; /* Centre le texte verticalement */
 }
 
 .player-cards .card:hover {
@@ -48,13 +54,19 @@
 }
 
 .opponent {
+    color: aliceblue;
     width: 80px; 
     height: 120px; 
-    background-image: url('back-side-of-playing-card\ \(1\).png');
+    background-image: url('37d253f05b4587d6ef34ab16d942fcb9.jpg');
     background-size: cover;
     border-radius: 8px;
     margin: 10px;
+    display: flex; /* Utilisation de flexbox */
+    flex-direction: column; /* Pour centrer le contenu verticalement */
+    justify-content: center; /* Centrer horizontalement */
+    align-items: center; /* Centrer verticalement */
 }
+
 
 /* Positionnement spécifique des joueurs adverses */
 .top-opponent {
@@ -88,16 +100,51 @@
 .right-opponent:nth-child(8) { top: 40%; }
 .right-opponent:nth-child(9) { top: 70%; }
 
+
 .selected-cards {
     position: absolute;
-    bottom: 50%; /* Ajustez selon votre disposition */
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, 50%);
-    display: block;
-    margin-bottom: 10px;
-    width: 80px; /* Largeur agrandie */
-    height: 120px; /* Hauteur agrandie */
+    transform: translate(-50%, -50%);
+    width: 250px; /* Largeur agrandie */
+    height: 250px; /* Hauteur agrandie */
     background-color: rgba(41, 28, 28, 0.541);
-    margin: 5px;
-    border-radius: 8px;
+    border-radius: 15px;
+    color: white; /* Couleur du texte en blanc */
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center; /* Centre le texte horizontalement */
+    display: block;
+    justify-content: center;
+    align-items: center; /* Centre le texte verticalement */
 }
+
+
+
+
+.player-info {
+    color: aliceblue;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.player-name {
+    color: aliceblue;
+    font-weight: bold;
+}
+
+.player-score,
+.player-card-count {
+    color: aliceblue;
+    font-size: 14px;
+}
+
+/* Styles pour les informations en bas à gauche */
+.bottom-left-info {
+    color: aliceblue;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    text-align: left;
+}
+

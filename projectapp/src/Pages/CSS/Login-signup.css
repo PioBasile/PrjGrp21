@@ -4,8 +4,7 @@
   align-items: center;
   height: 100vh;
   background-color: #1a1a1a; /* Couleur de fond noir */
-  background-image: url('1000_F_289787097_FiBWYvsulGSr0bDq27taBFcrh9K9cAHi.jpg');
-  background-size: cover; /* Agrandit l'image pour couvrir complètement l'espace disponible */
+  background-image: url('login-signup.png');
   color: #fff; /* Couleur du texte blanc */
 }
 

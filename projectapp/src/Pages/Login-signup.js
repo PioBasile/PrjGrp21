@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
-//import Popup from 'reactjs-popup';
+import React, { useState,useEffect,useContext  } from 'react';
 import './CSS/Login-signup.css';
 import { useNavigate } from 'react-router-dom';
-import {useEffect} from "react";
-import io from 'socket.io-client';
-const socket = io.connect("http://localhost:3001")
+import socket from '../socketG.js'
+
 
 const LoginSignup = () => {
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
-    
 
     useEffect(() => {
 
         sessionStorage.clear();
+
+      }, [])
+
+    useEffect(() => {
+
         
         socket.on("succes", (cookie,user) => {
             
@@ -27,14 +30,16 @@ const LoginSignup = () => {
         socket.on('failure',() => {
             console.log("FAIL");
         });
-        // eslint-disable-next-line
-      }, [username])
 
-    function login(){
+
+        // eslint-disable-next-line
+      }, [socket])
+
+    const login = () => {
         socket.emit('login', username, password);
     }
 
-    function register(){
+    const register = () => {
         socket.emit('register', username, password);
     }
 
@@ -68,7 +73,7 @@ const LoginSignup = () => {
                         className="button"
                         onMouseOver={e => e.target.style.backgroundColor = '#0056b3'}
                         onMouseOut={e => e.target.style.backgroundColor = '#0066cc'}
-                        onClick={()=>{login()}} // huh ?
+                        onClick={login}
                     >
                         Login
                     </button>
@@ -78,7 +83,7 @@ const LoginSignup = () => {
                         className="button"
                         onMouseOver={e => e.target.style.backgroundColor = '#0056b3'}
                         onMouseOut={e => e.target.style.backgroundColor = '#0066cc'}
-                        onClick={()=>{register()}}
+                        onClick={register}
                     >
                         Signup
                     </button>

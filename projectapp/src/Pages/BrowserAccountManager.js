@@ -19,16 +19,16 @@
 */
 
 import io from 'socket.io-client';
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState,useContext  } from "react";
 import ServerList from "./ServerList";
 import { useNavigate } from 'react-router-dom';
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import './CSS/BrowerManager.css';
-// import { Button, Modal, Form } from 'react-bootstrap';
+//import { socketContext } from '../socketContext.js';
+import socket from '../socketG.js'
 
+const BrowserAccountManager = () => {
 
-const socket = io.connect("http://localhost:3001")
-function BrowserAccountManager() {
+  //const socket = useContext(socketContext);
 
   socket.emit('leave', sessionStorage.getItem("serverConnected"));
   socket.emit('askStat', sessionStorage.getItem("name"));
@@ -66,14 +66,19 @@ function BrowserAccountManager() {
     setPassword(passwordd);
   }
 
+  useEffect(() => {
+
+    socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
+    socket.emit("getServ");
+
+  }, [])
+
 
   useEffect(() => {
     let mounted = true;
     console.log("La page React est chargée !");
-    socket.emit("getServ");
 
     if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
-    socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
 
     socket.on("deco", (name) => {
       if (mounted) {
@@ -96,11 +101,9 @@ function BrowserAccountManager() {
 
     });
 
-    return () => { mounted = false };
-
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [useNavigate]);
+  }, [socket]);
 
 
 

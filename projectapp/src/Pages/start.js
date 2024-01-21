@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './CSS/start.css';
 
 const Start = () => {
+    console.log("test");
     const [isButtonFaded, setIsButtonFaded] = useState(false);
     const navigate = useNavigate();
 

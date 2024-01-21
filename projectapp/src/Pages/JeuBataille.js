@@ -1,10 +1,9 @@
 import React, { useState,useEffect } from 'react';
-import io from 'socket.io-client';
 import { Navigate, useNavigate } from 'react-router-dom';
 import './CSS/jeuBataille.css';
+import socket from '../socketG';
 
 
-const socket = io.connect("http://localhost:3001")
 const JeuBataille= () => {
 
 

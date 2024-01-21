@@ -3,10 +3,9 @@ import './CSS/LobbyStyleSheet.css'
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import { Button, ListGroup, Form } from 'react-bootstrap'; 
 import { useNavigate } from 'react-router-dom';
-import io from 'socket.io-client';
+import socket from '../socketG';
 
 
-const socket = io.connect("http://localhost:3001")
 const Lobby = () => {
   
   socket.emit('join', sessionStorage.getItem('serverConnected'));

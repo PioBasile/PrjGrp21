@@ -8,9 +8,27 @@ const { platform } = require('os');
 const roomName = "room"
 
 // CUSTOM LIB
-import * as ddb from "./JS_CustomLib/D_db.js";
-import * as dclass from "./JS_CustomLib/D_class.js"
-import * as dutils from "./JS_CustomLib/D_utils.js"
+const {
+  makecookie,
+  Lobby,
+  Player_IN_Lobby,
+  Bataille_Card,
+  Player,
+  Bataille_Card,
+  Bataille,
+  STATUS,
+  findRemovePlayer,
+  findCard,
+  shuffle,
+  generateCartes,
+  findPlayer,
+  findGame,
+  findLobby,
+  findWaitingPlayer
+
+} = require("./JS_CustomLib/D_utils.js");
+const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
+
 
 
 app.use(cors());
@@ -40,7 +58,12 @@ server.listen(3001, () =>{
 
 io.on('connection', (socket) => {
 
-    console.log("connection");
+    console.log("Connection par : " + socket.id);
+    
+    
+    socket.on('disconnect', () => {
+      console.log('Disconnected:', socket.id);
+  });
 
 
     // -------------------------------------------------------- CONNECTION -------------------------------------
@@ -91,7 +114,7 @@ io.on('connection', (socket) => {
   
     socket.on('newServer', (serverName, nbPlayerMax, isPrivate, password, gameType, owner) => {
 
-        Nlobby = new Lobby(serverName, parseInt(nbPlayerMax), isPrivate, password, gameType, lobbyIndex, owner);
+        let Nlobby = new Lobby(serverName, parseInt(nbPlayerMax), isPrivate, password, gameType, lobbyIndex, owner);
         lobbyList.push(Nlobby);
         lobbyIndex++;
         io.emit('newServer', lobbyList);
@@ -100,8 +123,8 @@ io.on('connection', (socket) => {
 
     socket.on('joinLobby',(name,lobbyID,cookie) => {
 
-      clobby = findLobby(lobbyID);
-      cplayer = new WaitingPlayer(name,cookie);
+      clobby = findLobby(lobbyID,lobbyList);
+      cplayer = new Player_IN_Lobby(name,cookie);
       clobby.playerList.push(cplayer);
       io.emit('newServer', lobbyList);
 
@@ -109,7 +132,7 @@ io.on('connection', (socket) => {
 
     socket.on('whoIsHere', (lobbyID) => {
 
-      clobby = findLobby(lobbyID);
+      clobby = findLobby(lobbyID,lobbyList);
       io.emit('update', clobby.playerList);
 
     });
@@ -134,7 +157,7 @@ io.on('connection', (socket) => {
 
     socket.on('WhereAmI',(lobbyID)=> {
 
-      let clobby = findLobby(lobbyID);
+      let clobby = findLobby(lobbyID,lobbyList);
       socket.emit('here', clobby);
       io.to(lobbyID).emit('here', clobby);
 
@@ -142,7 +165,7 @@ io.on('connection', (socket) => {
 
     socket.on('ready', (lobbyID,name)=> {
 
-      let clobby = findLobby(lobbyID);
+      let clobby = findLobby(lobbyID,lobbyList);
       let cplayer = findWaitingPlayer(name,clobby.playerList);
 
       cplayer.isReady = !cplayer.isReady;
@@ -155,7 +178,7 @@ io.on('connection', (socket) => {
 
     socket.on('deco_lobby', (lobbyID, name) => {
 
-      let clobby = findLobby(lobbyID);
+      let clobby = findLobby(lobbyID,lobbyList);
       let cplayer = findWaitingPlayer(name,clobby.playerList);
 
       clobby.playerList.splice(clobby.playerList.indexOf(cplayer),1)
@@ -167,7 +190,7 @@ io.on('connection', (socket) => {
 
     socket.on('updateParam', (lobbyID, maxPlayers, timeBetweenTurn, roundsMax) => {
 
-      let clobby = findLobby(lobbyID);
+      let clobby = findLobby(lobbyID,lobbyList);
 
       clobby.nbPlayerMax = parseInt(maxPlayers);
       clobby.tbt = parseInt(timeBetweenTurn);
@@ -207,13 +230,13 @@ io.on('connection', (socket) => {
 
     socket.on('StartGame', (lobbyID) => {
 
-      lobby = findLobby(lobbyID);
+      lobby = findLobby(lobbyID,lobbyList);
       owner = lobby.owner;
       let plist = [];
 
       lobby.playerList.forEach((player) => {
 
-        plist.push(new Players(player.username,player.cookie))
+        plist.push(new Player(player.username,player.cookie))
 
         get_user_info(player.username).then((res) => {
 
@@ -225,7 +248,7 @@ io.on('connection', (socket) => {
 
       });
 
-      let nGame = new Game(lobbyID,lobby.nbPlayerMax,lobby.maxTurn,owner,plist);
+      let nGame = new Bataille(lobbyID,lobby.nbPlayerMax,lobby.maxTurn,owner,plist);
       availableGames.push(nGame);
 
       io.to(lobbyID).emit('start');
@@ -408,128 +431,4 @@ io.on('connection', (socket) => {
     })
 
 });
-
-
-
-
-//FONCTION
-
-
-function makecookie(length) {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const charactersLength = characters.length;
-  let counter = 0;
-  while (counter < length) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    counter += 1;
-  }
-  return result;
-}
-
-
-function findGame(id){
-
-    let game = 0;
-    availableGames.forEach((elem) => {
-      if(elem.identifiant_partie == id){game=elem}
-    });
-    return game;
-
-}
-
-function findLobby(id){
-
-  let lobby = 0;
-  lobbyList.forEach((elem) => {
-    if(elem.id == id){lobby=elem}
-  });
-  return lobby;
-
-}
-
-function findWaitingPlayer(username, plist){
-
-  let player = 0;
-  plist.forEach((elem) => {
-    if(elem.username == username){player=elem}
-  });
-  return player;
-
-}
-
-
-function findPlayer(username, plist){
-
-  let player = 0;
-  plist.forEach((elem) => {
-    if(elem.name == username){player=elem}
-  });
-  return player;
-
-}
-
-function generateCartes() {
-  const symbols = ['Coeur', 'Carreau', 'Trefle', 'Pique'];
-  const numbers = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'V', 'Reine', 'Roi', 'As'];
-  const powers = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-
-  const deck = [];
-  for (const symbol of symbols) {
-    for (let i = 0; i < numbers.length; i++) {
-      const card = new Card(symbol, numbers[i], powers[i]);
-      deck.push(card);
-    }
-  }
-
-  return deck;
-}
-
-function shuffle(array) {
-  let currentIndex = array.length,  randomIndex;
-
-  while (currentIndex > 0) {
-
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex], array[currentIndex]];
-  }
-
-  return array;
-}
-
-function findCard(card, deck){
-  let count = 0;
-  let found = false;
-  deck.forEach((elem) => {
-
-      if(elem.symbole == card.symbole && elem.power == card.power){
-        found = !found;
-      }
-      if(!found){
-        count++;
-      }
-
-    });
-  return count;
-}
-
-function findRemovePlayer(player, plist){
-  let count = 0;
-  let found = false;
-  plist.forEach((elem) => {
-
-      if(elem.name == player.name){
-        found = !found;
-      }
-      if(!found){
-        count++;
-      }
-
-    });
-  return count;
-}
-
 

@@ -7,26 +7,13 @@ let db = new sqlite3.Database('./users.db',sqlite3.OPEN_READWRITE, (err) => {
   
   
     console.log('la connection est ouverte.');
-  
-    get_user_info("Pio").then((res) => {
-  
-      changeDataBase('nbGames',res.nbGames + 1,"Pio");
-      console.log(res.nbGames);
-  
-    })
-  
-    get_user_info('Pio').then((res) => {
-      console.log(res.nbGames);
-    });
-  
-    
     
   
 });
 
 
 
-export function register(login, password) {
+const register = (login, password) => {
 
 
     return new Promise((resolve, reject) => {
@@ -49,9 +36,9 @@ export function register(login, password) {
     return 1;
   }
   
-export function login(login,passwordd) {
+const login = (login,passwordd) => {
   
-  
+
     return new Promise((resolve, reject) => {
   
       db.all('SELECT * FROM users WHERE nom="' + login + '";', function(err, table){
@@ -69,7 +56,7 @@ export function login(login,passwordd) {
   };
   
   
-export function  get_user_info(nom) {
+const get_user_info = (nom) => {
   
     let res;
     return new Promise((resolve,reject) => {
@@ -84,7 +71,7 @@ export function  get_user_info(nom) {
 }
 
 
-export function changeDataBase(dataToChange, newData, nom) {
+const changeDataBase = (dataToChange, newData, nom) => {
    const sqlUpdate = `UPDATE Users SET ${dataToChange} = ? WHERE nom = ?`
    db.run( 
      sqlUpdate, [newData, nom], ( function(err) {
@@ -97,8 +84,8 @@ export function changeDataBase(dataToChange, newData, nom) {
    )
 }
   
-  
-export function close() {
+
+function close() {
     
   
     db.close((err) => {
@@ -112,3 +99,4 @@ export function close() {
   }
 
 
+module.exports = { login, changeDataBase, get_user_info, register };

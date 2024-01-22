@@ -1,1 +1,8 @@
 projectapp/node_modules/
+node_modules/
+
+package-lock.json
+projectapp/package-lock.json
+package.json
+projectapp/package.json
+

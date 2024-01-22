@@ -13,7 +13,7 @@ const makecookie = (length) => {
   }
   
   
-const findGame = (id) => {
+const findGame = (id,availableGames) => {
   
       let game = 0;
       availableGames.forEach((elem) => {
@@ -194,7 +194,7 @@ class Bataille{
 
       }
       
-      console.log(currentW);
+      
 
     });
 
@@ -215,7 +215,7 @@ class Bataille{
       this.Rdraw = drawP;
 
     }
-    console.log(this.scoreboard);
+    
     return 0;
 
   }
@@ -271,7 +271,7 @@ class Bataille{
         
               }
 
-            console.log(this.scoreboard);
+        
   }
 
 

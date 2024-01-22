@@ -14,7 +14,6 @@ const {
   Player_IN_Lobby,
   Bataille_Card,
   Player,
-  Bataille_Card,
   Bataille,
   STATUS,
   findRemovePlayer,
@@ -45,8 +44,8 @@ const io = new Server(server, {
 // VARIABLES 
 
 let validCookies = {};
-let availableGames = [];
-
+let BatailGames = [];
+let TaureauGames = []
 let lobbyList = [];
 let lobbyIndex = 0;
 
@@ -215,13 +214,13 @@ io.on('connection', (socket) => {
 
 
 
-    // JEU 
+    // JEU BATAILLE
 
       // PHASE 1 : Distribution des cartes a tout les joueurs //
 
     socket.on('WhatIsMyDeck', (username,gameID) => {
 
-      game = findGame(gameID);
+      game = findGame(gameID,BatailGames);
       player = findPlayer(username,game.playerList);
 
       socket.emit('Deck',player.deck);
@@ -240,8 +239,6 @@ io.on('connection', (socket) => {
 
         get_user_info(player.username).then((res) => {
 
-          console.log(res);
-          console.log(player.username);
           changeDataBase('nbGames',res.nbGames + 1,player.username);
       
         });
@@ -249,7 +246,7 @@ io.on('connection', (socket) => {
       });
 
       let nGame = new Bataille(lobbyID,lobby.nbPlayerMax,lobby.maxTurn,owner,plist);
-      availableGames.push(nGame);
+      BatailGames.push(nGame);
 
       io.to(lobbyID).emit('start');
       nGame.status = STATUS.WAITING_FOR_PLAYER_CARD;
@@ -259,7 +256,7 @@ io.on('connection', (socket) => {
 
     socket.on('askGameInfo', (GameID) => {
 
-      game = findGame(GameID);
+      game = findGame(GameID,BatailGames);
       socket.emit('getInfo', game);
 
     });
@@ -267,7 +264,7 @@ io.on('connection', (socket) => {
       // Phase de choix, permet au joueurs de choisir leurs cartes et une fois tout les cartes chosis donne le résultat du round //
     socket.on('PhaseDeChoix', (GameId, playerName, card) => {
 
-      let game = findGame(GameId);
+      let game = findGame(GameId,BatailGames);
       let player = findPlayer(playerName,game.playerList);
 
       player.selected = card;
@@ -315,7 +312,7 @@ io.on('connection', (socket) => {
 
             get_user_info(player).then((res) => {
 
-              console.log(res);
+            
               changeDataBase('nbWin',res.nbWin + 1,player);
           
             });
@@ -342,7 +339,7 @@ io.on('connection', (socket) => {
       // POUR RESOUDRE LES EGALITE
     socket.on('ResoudreEgalite', (GameId, playerName, card) => {
 
-      let game = findGame(GameId);
+      let game = findGame(GameId,BatailGames);
       let player = findPlayer(playerName,game.playerList);
 
       player.selected = card;
@@ -389,7 +386,6 @@ io.on('connection', (socket) => {
 
             get_user_info(player).then((res) => {
 
-              console.log(res);
               changeDataBase('nbWin',res.nbWin + 1,player);
           
             });
@@ -416,7 +412,7 @@ io.on('connection', (socket) => {
 
     socket.on('leaveGame', (playerName, GameId) => {
 
-      let game = findGame(GameId);
+      let game = findGame(GameId,BatailGames);
       let player = findPlayer(playerName,game.playerList);
 
       game.removePlayer(player);
@@ -426,7 +422,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on("sendMessage", (data) => {
-      console.log(`${data.name}: ${data.msg}`);
       io.to(data.room).emit("getMessage", `${data.name}: ${data.msg}`);
     })
 

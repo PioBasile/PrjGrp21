@@ -101,6 +101,10 @@ const BrowserAccountManager = () => {
 
     });
 
+    return () => {
+      mounted = false;
+    }
+
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
@@ -183,15 +187,15 @@ const BrowserAccountManager = () => {
   }
 
   return (
-    <div class='vide'>
-      <div class='container'>
-        <div class='header'>
-          <div class='text'>{action}</div>
-          <div class="underline"></div>
+    <div className='vide'>
+      <div className='container'>
+        <div className='header'>
+          <div className='text'>{action}</div>
+          <div className="underline"></div>
         </div>
 
-        {action == "Create Server" ? <div class="inputs">
-          <div class='input'>
+        {action == "Create Server" ? <div className="inputs">
+          <div className='input'>
             <label htmlFor="serverName"> </label>
             <input
               placeholder='server name'
@@ -203,12 +207,12 @@ const BrowserAccountManager = () => {
               }}
             />
           </div>
-          <div class='input'>
+          <div className='input'>
             <label htmlFor="nbPlayerMax"></label>
             <input type="number" placeholder= "nbPlayer" id="nbPlayerMax" value={nbPlayerMax} onChange={(e) => setNbPlayerMax(e.target.value)} />
           </div>
-          <div class="checkbox-container">
-            <label htmlFor="isPrivate" class='text-white'>
+          <div className="checkbox-container">
+            <label htmlFor="isPrivate" className='text-white'>
               Serveur privé ? { }
 
               <input type="checkbox" id="isPrivate" checked={isPrivate} onChange={(e) => setIsPrivate(e.target.checked)} />
@@ -216,20 +220,20 @@ const BrowserAccountManager = () => {
           </div>
 
           {isPrivate && (
-            <div class="input">
+            <div className="input">
               <label htmlFor="password"></label>
               <input type="password" id="password"  placeholder='password' value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
           )}
-          <div class='select-container'>
+          <div className='select-container'>
             <label htmlFor="gameType"></label>
-            <select class="select-dropdown" id="gameType" value={gameType} onChange={(e) => setGameType(e.target.value)}>
+            <select className="select-dropdown" id="gameType" value={gameType} onChange={(e) => setGameType(e.target.value)}>
               <option value="">Type de jeu</option>
               <option value="batail_ouverte">Bataille Ouverte</option>
             </select>
-            <div class="select-arrow"></div>
+            <div className="select-arrow"></div>
           </div>
-          <div class="submit server" onClick={handleSave}>Créer</div>
+          <div className="submit server" onClick={handleSave}>Créer</div>
 
 
         </div>
@@ -237,10 +241,10 @@ const BrowserAccountManager = () => {
         {action == "Server List" ? <ServerList servers={mesLobby} handleClick={handleClick} handlePassword={handlePassword} /> : <div></div>}
         {action == "Profil" ? <Profil /> : <div></div>}
 
-        <div class='submit-container'>
-          <div class={action === "Create Server" ? 'submit gray' : 'submit'} onClick={() => { setAction("Create Server") }}>Create Server</div>
-          <div class={action === "Server List" ? 'submit gray' : 'submit'} onClick={() => { setAction("Server List") }}>Server List</div>
-          <div class={action === "Profil" ? 'submit gray' : 'submit'} onClick={() => { setAction("Profil") }}>Profil</div>
+        <div className='submit-container'>
+          <div className={action === "Create Server" ? 'submit gray' : 'submit'} onClick={() => { setAction("Create Server") }}>Create Server</div>
+          <div className={action === "Server List" ? 'submit gray' : 'submit'} onClick={() => { setAction("Server List") }}>Server List</div>
+          <div className={action === "Profil" ? 'submit gray' : 'submit'} onClick={() => { setAction("Profil") }}>Profil</div>
         </div>
       </div>
     </div>

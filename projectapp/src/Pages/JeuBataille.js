@@ -73,8 +73,13 @@ const JeuBataille= () => {
         // GESTION stabilité de la connection
         socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
         socket.emit("getServ");
+
+        socket.on('getMessage', (msg) => {
+            console.log("msg : ", msg);
+            setMessages((prevMessages) => [...prevMessages, msg]);
+        });
     
-      }, [])
+      }, [setMessage])
 
     useEffect(() => {
 
@@ -106,11 +111,6 @@ const JeuBataille= () => {
             setScore(game.scoreboard);
             setOpponents(plist);
 
-        });
-
-        socket.on('getMessage', (msg) => {
-            console.log("msg : ", msg);
-            setMessages((prevMessages) => [...prevMessages, msg]);
         });
 
         socket.on('FIN', (fscore,pList) => {

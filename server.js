@@ -23,7 +23,9 @@ const {
   findPlayer,
   findGame,
   findLobby,
-  findWaitingPlayer
+  findWaitingPlayer,
+  generate6Cartes,
+  Carte6
 
 } = require("./JS_CustomLib/D_utils.js");
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");

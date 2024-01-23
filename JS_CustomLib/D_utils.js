@@ -356,6 +356,122 @@ class Lobby{
 
 }
 
+// 6 QUI PREND 
+
+
+class Carte6{
+
+  constructor(numero, nb_boeuf){
+
+    this.number = numero;
+    this.nb_boeuf = nb_boeuf;
+
+  }
+
+}
+
+function generate6Cartes(){
+
+  let boeuf;
+  let cartes = [];
+
+  for(let i = 1;i<104;i++){
+
+    boeuf = 1;
+    if(i%11 == 0){
+
+      boeuf += 4 ;
+
+    }
+
+    if(i%10 == 0){
+
+      boeuf += 2
+
+    }
+
+    if(i%5 == 0 && i%10 != 0){
+
+      boeuf += 1
+
+    }
+
+    cartes.push(new Carte6(i,boeuf));
+
+  }
+
+  return cartes;
+
+}
+
+
+
+class SixQuiPrend{
+
+  constructor(id_partie, owner, player_list, chrono){
+
+    this.id_partie = id_partie;
+    this.owner = owner;
+    this.player_list = player_list;
+
+    let cartes_a_distribuer = shuffle(generate6Cartes());
+
+    // perdu a 66
+    
+    this.mChrono = chrono;
+    this.Chrono = chrono;
+
+    let k = 0;
+    this.player_list.forEach((elem) => {
+
+      for(let j = k;j<k+10;j++){
+        elem.deck.push(cartes_a_distribuer[j]);
+      }
+      k+=10;
+
+    });
+
+    this.row1 = [cartes_a_distribuer[k]];
+    this.row2 = [cartes_a_distribuer[k+1]];
+    this.row3 = [cartes_a_distribuer[k+2]];
+    this.row4 = [cartes_a_distribuer[k+3]];
+
+  }
+
+  gagnant(){
+    let al = false;
+
+    this.player_list.forEach((elem) => {
+
+      if(elem.score >= 66){
+
+        al = true;
+
+      }
+
+    });
+
+    return al;
+
+  }
+
+
+
+}
+
+class Player6{
+
+  constructor(name){
+
+    this.name = name;
+    this.deck = [];
+    this.played = false;
+    this.score = 0;
+
+  }
+
+}
+
 
 module.exports = {
   makecookie,
@@ -372,6 +488,8 @@ module.exports = {
   findPlayer,
   findGame,
   findLobby,
-  findWaitingPlayer
+  findWaitingPlayer,
+  generate6Cartes,
+  Carte6
 
 }

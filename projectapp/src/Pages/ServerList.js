@@ -1,13 +1,8 @@
 import React from 'react';
-import { ButtonGroup, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import './CSS/card.css';
 
 const ServerList = ({servers, handleClick, handlePassword}) => {
-  const joinServer = (id) => {
-    console.log(`Joining server ${id}`);
-    // Ajoutez votre logique de redirection ou d'action de rejoindre le serveur ici
-  };
+  
 
   return (
 <div className="server-container">
@@ -16,8 +11,8 @@ const ServerList = ({servers, handleClick, handlePassword}) => {
         <div className="text-card">
           <p>{server.serverName}{"(" + server.playerList.length + "/" + server.nbPlayerMax + ")"}</p>
           </div>
-          {// eslint-disable-next-line
-           (server.playerList.length) != server.nbPlayerMax && server.isPrivate && (
+          {
+           (server.playerList.length) !== server.nbPlayerMax && server.isPrivate && (
             <div className='input password'>
             <input
               type="password"
@@ -26,10 +21,10 @@ const ServerList = ({servers, handleClick, handlePassword}) => {
             />
             </div>
           )}
-          <button class="submit small"onClick={() => handleClick(server.id,server)} disabled={// eslint-disable-next-line
-          (server.playerList.length) == server.nbPlayerMax}>
-            {// eslint-disable-next-line
-            server.playerList.length == server.nbPlayerMax ? 'FULL' : 'Rejoindre'}
+          <button className="submit small"onClick={() => handleClick(server.id,server)} disabled={
+          (server.playerList.length) === server.nbPlayerMax}>
+            {
+            server.playerList.length === server.nbPlayerMax ? 'FULL' : 'Rejoindre'}
           </button>
         </div>
       ))}

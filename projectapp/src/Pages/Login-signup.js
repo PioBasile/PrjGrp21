@@ -1,4 +1,4 @@
-import React, { useState,useEffect,useContext  } from 'react';
+import React, { useState,useEffect  } from 'react';
 import './CSS/Login-signup.css';
 import { useNavigate } from 'react-router-dom';
 import socket from '../socketG.js'
@@ -31,8 +31,7 @@ const LoginSignup = () => {
         });
 
 
-        // eslint-disable-next-line
-      }, [socket])
+      }, [navigate])
 
     const login = () => {
         socket.emit('login', username, password);

@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './CSS/jeuBataille.css';
 import socket from '../socketG';
 
@@ -35,7 +35,7 @@ const JeuBataille= () => {
         }
 
         if(oldSelect != null){
-            if(oldSelect != card){
+            if(oldSelect !== card){
                 playerCards.push(oldSelect);
                 setOldSelect(playerCards.splice(playerCards.indexOf(card),1)[0]);
             }
@@ -70,14 +70,14 @@ const JeuBataille= () => {
 
     useEffect(() => {
 
-        socket.on('getMessage', (msg) => {
-            console.log("msg : ", msg);
-            setMessages((prevMessages) => [...prevMessages, msg]);
-        });
-
-    },[]);
+        // GESTION stabilité de la connection
+        socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
+        socket.emit("getServ");
+    
+      }, [])
 
     useEffect(() => {
+
         if (!initialDeckEmitted) {
           socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
           socket.emit('join', sessionStorage.getItem('serverConnected'));
@@ -98,7 +98,7 @@ const JeuBataille= () => {
             }
             game.playerList.forEach((player) => {
 
-                if(player.name != sessionStorage.getItem("name")){
+                if(player.name !== sessionStorage.getItem("name")){
                     plist.push(player);
                 }
 
@@ -108,13 +108,18 @@ const JeuBataille= () => {
 
         });
 
+        socket.on('getMessage', (msg) => {
+            console.log("msg : ", msg);
+            setMessages((prevMessages) => [...prevMessages, msg]);
+        });
+
         socket.on('FIN', (fscore,pList) => {
             let winner = [];
             let score = 0;
             pList.forEach(element => {
                 if(fscore[element.name] > score){
                     winner = [element.name];
-                } else if(fscore[element.name] == score){
+                } else if(fscore[element.name] === score){
                     winner.push(element.name);
                 }
             });
@@ -133,7 +138,7 @@ const JeuBataille= () => {
             socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
             let ami = false;
             drawPlayers.forEach((player ) => {
-                if(player.name == sessionStorage.getItem("name")){
+                if(player.name === sessionStorage.getItem("name")){
                     ami = true;
                 }
             });
@@ -160,7 +165,7 @@ const JeuBataille= () => {
           socket.off("Winner");
           socket.off("Draw");
         };
-      }, [initialDeckEmitted]);
+      }, [initialDeckEmitted,navigate]);
 
 
     //return

@@ -1,41 +1,17 @@
 
-/*   INSTALLATION
-
-├── bootstrap@5.3.2
-├── cors@2.8.5
-├── cra-template@1.2.0
-├── d3-polygon@3.0.1
-├── d3@7.8.5
-├── error@10.4.0
-├── express-session@1.17.3
-├── express@4.18.2
-├── loglevel@1.8.1
-├── node@21.2.0
-├── nodemon@3.0.2
-├── react-dom@18.2.0
-├── react-scripts@5.0.1
-├── react@18.2.0
-└── socket.io@4.7.2
-*/
-
-import io from 'socket.io-client';
-import { useEffect, useState,useContext  } from "react";
+import { useEffect, useState  } from "react";
 import ServerList from "./ServerList";
 import { useNavigate } from 'react-router-dom';
 import './CSS/BrowerManager.css';
-//import { socketContext } from '../socketContext.js';
 import socket from '../socketG.js'
 
 const BrowserAccountManager = () => {
 
-  //const socket = useContext(socketContext);
 
-  socket.emit('leave', sessionStorage.getItem("serverConnected"));
-  socket.emit('askStat', sessionStorage.getItem("name"));
-  sessionStorage.setItem('serverConnected', -1);
 
   const [mesLobby, setMesLobby] = useState([]);
   const navigate = useNavigate();
+  // eslint-disable-next-line
   const [showPopup, setShowPopup] = useState(false);
   const [serverName, setServerName] = useState('');
   const [nbPlayerMax, setNbPlayerMax] = useState('');
@@ -49,10 +25,10 @@ const BrowserAccountManager = () => {
   const [action, setAction] = useState("Create Server");
 
   const handleClose = () => setShowPopup(false);
-  const handleShow = () => setShowPopup(true);
+
 
   const handleClick = (Id, server) => {
-    if (server.isPrivate && password != server.password) {
+    if (server.isPrivate && password !== server.password) {
       return;
     }
     console.log("new page asked");
@@ -67,7 +43,10 @@ const BrowserAccountManager = () => {
   }
 
   useEffect(() => {
+    
+    socket.emit('askStat', sessionStorage.getItem("name"));
 
+    // GESTION stabilité de la connection
     socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
     socket.emit("getServ");
 
@@ -76,7 +55,8 @@ const BrowserAccountManager = () => {
 
   useEffect(() => {
     let mounted = true;
-    console.log("La page React est chargée !");
+    
+    // GESTION stabilité de la connection
 
     if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
 
@@ -85,6 +65,8 @@ const BrowserAccountManager = () => {
         navigate("/login-signup");
       }
     });
+
+    // -----------------
 
     socket.on("newServer", (lobbyListId) => {
       if (mounted) {
@@ -103,11 +85,12 @@ const BrowserAccountManager = () => {
 
     return () => {
       mounted = false;
+      socket.off("deco");
+      socket.off("newServer");
+      socket.off("stats");
     }
 
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+  }, [navigate]);
 
 
 
@@ -118,7 +101,7 @@ const BrowserAccountManager = () => {
     if (gameType === "") { return 0; }
     if (nbPlayerMax === "") { return 0; }
     socket.emit("newServer", serverName, nbPlayerMax, isPrivate, password, gameType, sessionStorage.getItem('name'));
-    handleClose(); // Fermer la popup après sauvegarde
+    handleClose(); 
   };
 
 
@@ -126,58 +109,58 @@ const BrowserAccountManager = () => {
   const Profil = () => {
     return (
 
-      <div class="profil-container">
-        <div class="profil-title">
+      <div className="profil-container">
+        <div className="profil-title">
           <h5>Statistiques du Joueur</h5>
         </div>
-        <div class="profil-body">
+        <div className="profil-body">
 
-          <div class="carte" id="myCard">
-            <div class="carte-inner">
+          <div className="carte" id="myCard">
+            <div className="carte-inner">
               <div><strong>username</strong></div>
-              <div class="carte-front"></div>
-              <div class="carte-back">
-                <div class="carte-back-text">{sessionStorage.getItem("name")}</div>
+              <div className="carte-front"></div>
+              <div className="carte-back">
+                <div className="carte-back-text">{sessionStorage.getItem("name")}</div>
               </div>
             </div>
           </div>
 
-          <div class="carte" id="myCard">
-            <div class="carte-inner">
+          <div className="carte" id="myCard">
+            <div className="carte-inner">
               <div><strong>game played</strong></div>
-              <div class="carte-front"></div>
-              <div class="carte-back">
-                <div class="carte-back-text">{nbGame}</div>
+              <div className="carte-front"></div>
+              <div className="carte-back">
+                <div className="carte-back-text">{nbGame}</div>
               </div>
             </div>
           </div>
 
-          <div class="carte" id="myCard">
-            <div class="carte-inner">
+          <div className="carte" id="myCard">
+            <div className="carte-inner">
               <div><strong>game win</strong></div>
-              <div class="carte-front"></div>
-              <div class="carte-back">
-                <div class="carte-back-text">{nbWin}</div>
+              <div className="carte-front"></div>
+              <div className="carte-back">
+                <div className="carte-back-text">{nbWin}</div>
               </div>
             </div>
           </div>
 
-          <div class="carte" id="myCard">
-            <div class="carte-inner">
+          <div className="carte" id="myCard">
+            <div className="carte-inner">
               <div><strong>ELO</strong></div>
-              <div class="carte-front"></div>
-              <div class="carte-back">
-                <div class="carte-back-text">{elo}</div>
+              <div className="carte-front"></div>
+              <div className="carte-back">
+                <div className="carte-back-text">{elo}</div>
               </div>
             </div>
           </div>
 
-          <div class="carte" id="myCard">
-            <div class="carte-inner">
+          <div className="carte" id="myCard">
+            <div className="carte-inner">
               <div><strong>round win</strong></div>
-              <div class="carte-front"></div>
-              <div class="carte-back">
-                <div class="carte-back-text">{roundWin}</div>
+              <div className="carte-front"></div>
+              <div className="carte-back">
+                <div className="carte-back-text">{roundWin}</div>
               </div>
             </div>
           </div>
@@ -194,7 +177,7 @@ const BrowserAccountManager = () => {
           <div className="underline"></div>
         </div>
 
-        {action == "Create Server" ? <div className="inputs">
+        {action === "Create Server" ? <div className="inputs">
           <div className='input'>
             <label htmlFor="serverName"> </label>
             <input
@@ -238,8 +221,8 @@ const BrowserAccountManager = () => {
 
         </div>
           : <div></div>}
-        {action == "Server List" ? <ServerList servers={mesLobby} handleClick={handleClick} handlePassword={handlePassword} /> : <div></div>}
-        {action == "Profil" ? <Profil /> : <div></div>}
+        {action === "Server List" ? <ServerList servers={mesLobby} handleClick={handleClick} handlePassword={handlePassword} /> : <div></div>}
+        {action === "Profil" ? <Profil /> : <div></div>}
 
         <div className='submit-container'>
           <div className={action === "Create Server" ? 'submit gray' : 'submit'} onClick={() => { setAction("Create Server") }}>Create Server</div>

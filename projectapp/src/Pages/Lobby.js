@@ -59,17 +59,43 @@ const Lobby = () => {
         if(player.isReady){count++;}
       });
 
-      if(count == clobby.nbPlayerMax && clobby.owner == sessionStorage.getItem('name')){
+      if(count === clobby.nbPlayerMax && clobby.owner === sessionStorage.getItem('name')){
         socket.emit("StartGame", sessionStorage.getItem('serverConnected'));
       };
 
   }
 
+  useEffect(() => {
+
+    if(sessionStorage.getItem('serverConnected')==="-1"){
+      navigate("/ServerBrowser");
+    }
+
+    // GESTION stabilité de la connection
+    socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
+    socket.emit("getServ");
+
+  }, [navigate])
+
 
   useEffect(() => {
 
     let mounted = true;
-    if(sessionStorage.getItem('loaded') == "true"){return;}else{
+
+    // GESTION stabilité de la connection
+
+    if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
+
+    socket.on("deco", (name) => {
+      if (mounted) {
+        navigate("/login-signup");
+      }
+    });
+
+    // -----------------
+
+
+    if(sessionStorage.getItem('loaded') === "true"){return;}else{
       socket.emit('WhereAmI',sessionStorage.getItem('serverConnected'));sessionStorage.setItem('loaded',true)
     }
     socket.on('here',(lobby) => {
@@ -85,7 +111,7 @@ const Lobby = () => {
 
     socket.on("lobbyParams", (maxPlayers, timeBetweenTurn, roundsMax) => {
 
-      if(clobby.owner == sessionStorage.getItem('name')){
+      if(clobby.owner === sessionStorage.getItem('name')){
         return
       } else {
         if(mounted){
@@ -101,7 +127,7 @@ const Lobby = () => {
 
     socket.on('disconected', (name) => {
 
-      if(sessionStorage.getItem("name") == name){
+      if(sessionStorage.getItem("name") === name){
         navigate('/ServerBrowser');
 
       }
@@ -117,7 +143,7 @@ const Lobby = () => {
     
     return () => {mounted = false};
 
-  }, []);
+  }, [clobby.owner,navigate]);
 
 
   return (
@@ -129,7 +155,7 @@ const Lobby = () => {
             <ListGroup.Item key={index} className="d-flex justify-content-between align-items-center">
               {index+1 + " "}
               {player.username + " | " + (player.isReady? "Pret" : "Pas pret")}
-              <Button variant="danger" size="sm" disabled={player.username == sessionStorage.getItem('name') || clobby.owner != sessionStorage.getItem('name')} onClick={() => handleKickPlayer(index)}>
+              <Button variant="danger" size="sm" disabled={player.username === sessionStorage.getItem('name') || clobby.owner !== sessionStorage.getItem('name')} onClick={() => handleKickPlayer(index)}>
                 Kick
               </Button>
             </ListGroup.Item>
@@ -139,7 +165,7 @@ const Lobby = () => {
           <Button variant="success" size="lg" onClick={handleReadyClick}>
             Ready
           </Button>
-          <Button variant="success" size="lg" onClick={handleStart} disabled={clobby.owner != sessionStorage.getItem('name')}>
+          <Button variant="success" size="lg" onClick={handleStart} disabled={clobby.owner !== sessionStorage.getItem('name')}>
             Start
           </Button>
           <Button variant="secondary" size="lg" onClick={handleDisconnectClick}>
@@ -155,7 +181,7 @@ const Lobby = () => {
             <Form.Control
               type="number"
               value={maxPlayers}
-              disabled={clobby.owner != sessionStorage.getItem('name')}
+              disabled={clobby.owner !== sessionStorage.getItem('name')}
               onChange={(e) => setPlayer(e.target.value)}
               className="rounded-pill"
             />
@@ -165,7 +191,7 @@ const Lobby = () => {
             <Form.Control
               type="number"
               value={timeBetweenTurn}
-              disabled={clobby.owner != sessionStorage.getItem('name')}
+              disabled={clobby.owner !== sessionStorage.getItem('name')}
               onChange={(e) => setTimeTurn(e.target.value)}
               className="rounded-pill"
             />
@@ -175,7 +201,7 @@ const Lobby = () => {
             <Form.Control
               type="number"
               value={roundsMax}
-              disabled={clobby.owner != sessionStorage.getItem('name')}
+              disabled={clobby.owner !== sessionStorage.getItem('name')}
               onChange={(e) => setRound(e.target.value)}
               className="rounded-pill"
             />

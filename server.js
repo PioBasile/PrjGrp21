@@ -446,11 +446,7 @@ io.on('connection', (socket) => {
     socket.on('6update', (username,gameID) => {
 
       game = findGame(gameID,TaureauGames);
-      console.log(game);
       player = findPlayer(username,game.player_list);
-
-      socket.emit('Deck',player.deck);
-      socket.emit('Row',[game.row1,game.row2,game.row3,game.row4]);
 
       let oppon6 = []
       let pl;
@@ -461,9 +457,93 @@ io.on('connection', (socket) => {
 
       });
 
+      socket.emit('Deck',player.deck);
+      socket.emit('Row',[game.row1,game.row2,game.row3,game.row4]);
       socket.emit('6oppo',oppon6);
+      socket.emit("cartesDroite",game.selected_cards);
+
+    });
+
+
+    socket.on('send6cardphase1', (card,playername,gameID) => {
+
+
+      game = findGame(gameID,TaureauGames);
+      player = findPlayer(playername,game.player_list);
+
+      let oppon6 = []
+      let pl;
+      game.player_list.forEach((player) => {
+
+        pl = {nom : player.name, deck : player.deck.length, score : player.score};
+        oppon6.push(pl);
+
+      });
+
+
+      let count = 0;
+      let found = false;
+      player.deck.forEach((elem) => {
+  
+        if(elem.number == card.number){
+          found = !found;
+        }
+        if(!found){
+          count++;
+        }
+  
+      });
+
+      if(player.selected != null){
+
+        player.deck.push(player.selected);
+        game.selected_cards.splice( game.selected_cards.indexOf(player.selected), 1);
+
+      }
+
+      player.selected = card;
+      player.deck.splice(count, 1);
+      game.selected_cards.push(card);
+
+      console.log(player.deck);
+      console.log(game.selected_cards);
+
+      
+
+      if(game.tousJouer()){
+
+        game.clearP();
+        game.status = STATUS.PHASE_2;
+        io.to(gameID).emit('phase2',(false));
+
+      }
+
+      socket.emit('Deck',player.deck);
+      io.to(gameID).emit('Row',[game.row1,game.row2,game.row3,game.row4]);
+      io.to(gameID).emit('6oppo',oppon6);
+      io.to(gameID).emit("cartesDroite",game.selected_cards);
+
+
+    });
+
+
+    socket.on('send6cardphase2', (card,playername,gameID) => {
+
+      game = findGame(gameID,TaureauGames);
+      player = findPlayer(playername,game.player_list);
+
+      let oppon6 = []
+      let pl;
+      game.player_list.forEach((player) => {
+
+        pl = {nom : player.name, deck : player.deck.length, score : player.score};
+        oppon6.push(pl);
+
+      });
+
 
     });
 
 });
+
 

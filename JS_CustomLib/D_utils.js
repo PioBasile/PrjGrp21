@@ -122,7 +122,8 @@ const findRemovePlayer = (player, plist) => {
 
 const STATUS = {
   START: 's',
-  WAITING_FOR_PLAYER_CARD: 'w',
+  WAITING_FOR_PLAYER_CARD: 'phase1',
+  PHASE_2: 'phase2',
   DRAW: 'd'
 };
 
@@ -298,6 +299,9 @@ class Bataille{
     this.deck = [];
     this.selected = null;
     this.cookie = cookie;
+
+
+    // pour le 6 qui prend 
     this.score = 0;
 
   }
@@ -414,6 +418,7 @@ class SixQuiPrend{
     this.identifiant_partie = id_partie;
     this.owner = owner;
     this.player_list = player_list;
+    this.selected_cards = [];
 
     let cartes_a_distribuer = shuffle(generate6Cartes());
 
@@ -453,6 +458,36 @@ class SixQuiPrend{
     });
 
     return al;
+
+  }
+
+  tousJouer(){
+
+    let no = true;
+
+    this.player_list.forEach((player) => {
+
+      if(player.selected == null){
+
+        no = false;
+
+      }
+
+    });
+
+    return no;
+
+  }
+
+  clearP(){
+
+    this.player_list.forEach((player) => {
+
+     player.selected = null;
+
+
+    });
+
 
   }
 

@@ -31,17 +31,8 @@ const SixQuiPrend = () => {
   //eslint-disable-next-line
   const [score, setScore] = useState(0);
   const [myTurn, setMyTurn] = useState(true);
-  const [opponents, setOpponents] = useState([
-    { name: 'Joueur 1', deck: [1, 2, 3] },
-    { name: 'Joueur 2', deck: [5, 6, 7] },
-    { name: 'Joueur 3', deck: [1, 2, 5] },
-    { name: 'Joueur 4', deck: [1, 2, 5] },
-    { name: 'Joueur 5', deck: [1, 2, 5] },
-    { name: 'Joueur 6', deck: [1, 2, 5] },
-    { name: 'Joueur 7', deck: [1, 2, 5] },
-    { name: 'Joueur 8', deck: [1, 2, 5] },
-    { name: 'Joueur 9', deck: [1, 2, 5] },
-  ]);
+  const [opponents, setOpponents] = useState([]);
+  const [visibleCard, setVisibleCard] = useState("");
 
   const supprimerElement = (index, list) => {
     const nouvelleList = [...list];
@@ -50,32 +41,42 @@ const SixQuiPrend = () => {
   };
 
 
-  const selectCardClick = (card) => {
+  const selectCardClick = (payload) => {
 
-    socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
+    if(!myTurn){return 0};
 
-    
-    if (!isCardSelected && myTurn) {
-      setSelectedCard(card);
-      setCardInWaiting([...cardInWaiting, selectedCard]);
-      console.log(cardInWaiting);
-      setIsCarteSelected(true);
-      supprimerElement(playerCards.indexOf(card.card), playerCards)
-    }
+    let card = payload.card
+    socket.emit('send6cardphase1', card, sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
+    setVisibleCard(card);
+  
   };
 
-  const Carte = (card, index) => {
+  const Carte = (payload) => {
     return (
-        <div key={index} className="card" onClick={() => selectCardClick(card)}>
-           <img alt='' src= {cartes[card.card.number-1]}></img>
+        <div key={payload.number} className="card" onClick={() => selectCardClick(payload)}>
+           <img alt='' src= {cartes[payload.card.number-1]}></img>
         </div>
     );
 };
 
-  const WaitingCards = () => {
+  const WaitingCards = (props) => {
+
+    let card = props.card;
+    let source;
+
+    if(card.number === visibleCard.number){
+
+      source = cartes[card.number-1];
+
+    }else {
+
+      source = backCard;
+
+    }
+
     return (
       <div className="card" >
-        <img alt='' src={backCard}></img>
+        <img alt='' src={source}></img>
       </div>)
   }
 
@@ -171,12 +172,11 @@ const SixQuiPrend = () => {
   const Rectangle = () => {
     return (
       <div className='rectangle' onClick={() => addCard()}>
-        {box1Container.map((card, index) => (
+        {box1Container.map((card) => (
         card != null && (
           <Carte
-            key={index}
+            key={card.number}
             card={card}
-            index={index}
           ></Carte>)
         ))}
       </div>
@@ -185,36 +185,33 @@ const SixQuiPrend = () => {
 
   const Rectangle1 = () => {
     return <div className='rectangle' onClick={() => addCard2()}>
-      {box2Container.map((card, index) => (
+      {box2Container.map((card) => (
         card != null && (
           <Carte
-            key={index}
+            key={card.number}
             card={card}
-            index={index}
           ></Carte>)
       ))}
     </div>
   }
   const Rectangle2 = () => {
     return <div className='rectangle' onClick={() => addCard3()}>
-      {box3Container.map((card, index) => (
+      {box3Container.map((card) => (
         card != null && (
           <Carte
-            key={index}
+            key={card.number}
             card={card}
-            index={index}
           ></Carte>)
       ))}
     </div>
   }
   const Rectangle3 = () => {
     return <div className='rectangle' onClick={() => addCard4()}>
-      {box4Container.map((card, index) => (
+      {box4Container.map((card) => (
         card != null && (
           <Carte
-            key={index}
+            key={card.number}
             card={card}
-            index={index}
           ></Carte>)
       ))}
     </div>
@@ -237,11 +234,13 @@ const SixQuiPrend = () => {
 
   useEffect(() => {
 
+
     socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
 
     // GESTION stabilité de la connection
     socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
     socket.emit("getServ");
+    socket.emit('join',sessionStorage.getItem('serverConnected'));
 
     //socket.on('getMessage', (msg) => {
     //    console.log("msg : ", msg);
@@ -258,12 +257,12 @@ const SixQuiPrend = () => {
     });
 
     socket.on('Row',(rowL) => {
-      
-      console.log(rowL);
+
       setBox1Container(rowL[0]);
       setBox2Container(rowL[1]);
       setBox3Container(rowL[2]);
       setBox4Container(rowL[3]);
+      //setCardInWaiting(rowL[3]);
 
     });
 
@@ -282,6 +281,24 @@ const SixQuiPrend = () => {
       });
 
     });
+
+
+    socket.on('cartesDroite', (cards) => {
+
+      setCardInWaiting(cards);
+
+    });
+
+
+    socket.on('phase2', () => {
+
+      setMyTurn(false);
+
+    });
+
+
+
+
 
 
     // TAB 
@@ -305,7 +322,7 @@ const SixQuiPrend = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [isVisible]);
 
 
 
@@ -326,8 +343,10 @@ const SixQuiPrend = () => {
 
 
       <div className="waitingCards">
-        {cardInWaiting.map((card, index) => (
+        {cardInWaiting.map((card) => (
           <WaitingCards
+          key={card.number}
+          card={card}
 >
           </WaitingCards>
         ))}
@@ -344,11 +363,10 @@ const SixQuiPrend = () => {
       {/* Joueur cards en bas */}
       <div className='card-holder' >
         <div className={myTurn ? "player-cards":"notYourTurn-cards"} >
-          {playerCards.map((card, index) => (
+          {playerCards.map((card) => (
             <Carte
-              key={index}
+              key={card.number}
               card={card}
-              index={index}
             ></Carte>
           ))}
         </div>

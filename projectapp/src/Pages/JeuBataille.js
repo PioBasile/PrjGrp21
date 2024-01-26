@@ -84,7 +84,7 @@ const JeuBataille= () => {
     useEffect(() => {
 
         if (!initialDeckEmitted) {
-          socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+          socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
           socket.emit('join', sessionStorage.getItem('serverConnected'));
           socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
           setInitialDeckEmitted(true);

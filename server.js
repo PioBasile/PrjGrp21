@@ -25,7 +25,8 @@ const {
   findLobby,
   findWaitingPlayer,
   generate6Cartes,
-  Carte6
+  Carte6,
+  SixQuiPrend
 
 } = require("./JS_CustomLib/D_utils.js");
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
@@ -47,7 +48,7 @@ const io = new Server(server, {
 
 let validCookies = {};
 let BatailGames = [];
-let TaureauGames = []
+let TaureauGames = [];
 let lobbyList = [];
 let lobbyIndex = 0;
 
@@ -213,22 +214,6 @@ io.on('connection', (socket) => {
     });
 
 
-
-
-
-    // JEU BATAILLE
-
-      // PHASE 1 : Distribution des cartes a tout les joueurs //
-
-    socket.on('WhatIsMyDeck', (username,gameID) => {
-
-      game = findGame(gameID,BatailGames);
-      player = findPlayer(username,game.playerList);
-
-      socket.emit('Deck',player.deck);
-
-    });
-
     socket.on('StartGame', (lobbyID) => {
 
       lobby = findLobby(lobbyID,lobbyList);
@@ -247,12 +232,37 @@ io.on('connection', (socket) => {
 
       });
 
-      let nGame = new Bataille(lobbyID,lobby.nbPlayerMax,lobby.maxTurn,owner,plist);
-      BatailGames.push(nGame);
+      let nGame;
 
-      io.to(lobbyID).emit('start');
+      if(lobby.gameType === "sqp"){
+
+        nGame = new SixQuiPrend(lobbyID, owner, plist, 10)
+        TaureauGames.push(nGame);
+
+      } else {
+
+        nGame = new Bataille(lobbyID,lobby.nbPlayerMax,lobby.maxTurn,owner,plist);
+        BatailGames.push(nGame);
+
+      }
+
+      io.to(lobbyID).emit('start',lobby.gameType);
       nGame.status = STATUS.WAITING_FOR_PLAYER_CARD;
 
+
+    });
+
+
+    // JEU BATAILLE
+
+      // PHASE 1 : Distribution des cartes a tout les joueurs //
+
+    socket.on('WhatIsMyDeck', (username,gameID) => {
+
+      game = findGame(gameID,BatailGames);
+      player = findPlayer(username,game.playerList);
+
+      socket.emit('Deck',player.deck);
 
     });
 
@@ -426,6 +436,34 @@ io.on('connection', (socket) => {
     socket.on("sendMessage", (data) => {
       io.to(data.room).emit("getMessage", `${data.name}: ${data.msg}`);
     })
+
+
+
+
+    // SIX QUI PREND 
+    
+    
+    socket.on('6update', (username,gameID) => {
+
+      game = findGame(gameID,TaureauGames);
+      console.log(game);
+      player = findPlayer(username,game.player_list);
+
+      socket.emit('Deck',player.deck);
+      socket.emit('Row',[game.row1,game.row2,game.row3,game.row4]);
+
+      let oppon6 = []
+      let pl;
+      game.player_list.forEach((player) => {
+
+        pl = {nom : player.name, deck : player.deck.length, score : player.score};
+        oppon6.push(pl);
+
+      });
+
+      socket.emit('6oppo',oppon6);
+
+    });
 
 });
 

@@ -134,9 +134,10 @@ const Lobby = () => {
 
     });
 
-    socket.on("start" , () => {
+    socket.on("start" , (place) => {
 
-      navigate("/jeu");
+      
+      navigate(`/${place}`);
 
     });
 

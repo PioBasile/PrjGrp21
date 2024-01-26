@@ -6,6 +6,7 @@ import BrowserAccountManager from './Pages/BrowserAccountManager.js';
 import Lobby from './Pages/Lobby.js'
 import JeuBataille from "./Pages/JeuBataille.js";
 import VictoryScreen from "./Pages/VicroryScreen.js";
+import SixQuiPrend from "./Pages/jeuSQP.js"
 
 import socket from './socketG';
 
@@ -68,10 +69,11 @@ function App() {
         <Router>
             <Routes>
                 <Route path="/start" element={<Start/>} />
+                <Route path="/sqp" element={<SixQuiPrend/>} />
                 <Route path="/login-signup" element={<LoginSignup/>} />
                 <Route path='/ServerBrowser' element={<BrowserAccountManager/>} />
                 <Route path='/Lobby' element={<Lobby/>}/>
-                <Route path="/jeu" element={<JeuBataille/>} />
+                <Route path="/batail_ouverte" element={<JeuBataille/>} />
                 <Route path="/winner" element={<VictoryScreen/>} />
                 <Route path="/" element={<Navigate to="/start" replace />} />
             </Routes>

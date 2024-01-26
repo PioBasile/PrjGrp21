@@ -298,6 +298,7 @@ class Bataille{
     this.deck = [];
     this.selected = null;
     this.cookie = cookie;
+    this.score = 0;
 
   }
 
@@ -410,7 +411,7 @@ class SixQuiPrend{
 
   constructor(id_partie, owner, player_list, chrono){
 
-    this.id_partie = id_partie;
+    this.identifiant_partie = id_partie;
     this.owner = owner;
     this.player_list = player_list;
 
@@ -490,6 +491,7 @@ module.exports = {
   findLobby,
   findWaitingPlayer,
   generate6Cartes,
-  Carte6
+  Carte6,
+  SixQuiPrend
 
 }

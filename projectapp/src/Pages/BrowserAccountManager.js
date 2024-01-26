@@ -14,7 +14,7 @@ const BrowserAccountManager = () => {
   // eslint-disable-next-line
   const [showPopup, setShowPopup] = useState(false);
   const [serverName, setServerName] = useState('');
-  const [nbPlayerMax, setNbPlayerMax] = useState('');
+  const [nbPlayerMax, setNbPlayerMax] = useState(2);
   const [isPrivate, setIsPrivate] = useState(false);
   const [password, setPassword] = useState('');
   const [gameType, setGameType] = useState('');
@@ -97,10 +97,10 @@ const BrowserAccountManager = () => {
 
   const handleSave = () => {
     // Logique pour sauvegarder les données du formulaire
-    setAction("Server List")
     if (gameType === "") { return 0; }
-    if (nbPlayerMax === "") { return 0; }
+    if (nbPlayerMax === "" || nbPlayerMax < 1) { return 0; }
     socket.emit("newServer", serverName, nbPlayerMax, isPrivate, password, gameType, sessionStorage.getItem('name'));
+    setAction("Server List");
     handleClose(); 
   };
 
@@ -213,6 +213,7 @@ const BrowserAccountManager = () => {
             <select className="select-dropdown" id="gameType" value={gameType} onChange={(e) => setGameType(e.target.value)}>
               <option value="">Type de jeu</option>
               <option value="batail_ouverte">Bataille Ouverte</option>
+              <option value="sqp">Six qui prend</option>
             </select>
             <div className="select-arrow"></div>
           </div>

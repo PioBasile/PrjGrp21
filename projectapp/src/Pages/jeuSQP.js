@@ -13,7 +13,6 @@ const SixQuiPrend = () => {
     const cheminImage = require(`./CSS/cartes6/${i}.svg`);
     cartes.push(cheminImage);
   }
-  const [selectedCard, setSelectedCard] = useState(null);
   //eslint-disable-next-line
   //eslint-disable-next-line
   const navigate = useNavigate();
@@ -27,33 +26,36 @@ const SixQuiPrend = () => {
   const [box4Container, setBox4Container] = useState([{ number: 4 }]);
   const [cardInWaiting, setCardInWaiting] = useState([]);
   const [playerCards, setPlayerCards] = useState([]);
-  const [isCardSelected, setIsCarteSelected] = useState(false);
   //eslint-disable-next-line
   const [score, setScore] = useState(0);
-  const [myTurn, setMyTurn] = useState(true);
   const [opponents, setOpponents] = useState([]);
   const [visibleCard, setVisibleCard] = useState("");
 
-  const supprimerElement = (index, list) => {
-    const nouvelleList = [...list];
-    nouvelleList.splice(index, 1);
-    setPlayerCards(nouvelleList);
-  };
+
+  const [myTurn, setMyTurn] = useState(true);
+  const [myTurnP2, setMyTurnP2] = useState(false);
 
 
   const selectCardClick = (payload) => {
 
     if(!myTurn){return 0};
-
     let card = payload.card
+    console.log('test');
+
+    
+
     socket.emit('send6cardphase1', card, sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
     setVisibleCard(card);
+    sessionStorage.setItem('visibleCard',JSON.stringify(card));
   
   };
 
   const Carte = (payload) => {
+
+    const isClickable = !(box1Container.includes(payload.card) || box2Container.includes(payload.card) || box3Container.includes(payload.card) || box4Container.includes(payload.card));
+
     return (
-        <div key={payload.number} className="card" onClick={() => selectCardClick(payload)}>
+        <div key={payload.number} className="card" onClick={isClickable ? () => selectCardClick(payload) : null}>
            <img alt='' src= {cartes[payload.card.number-1]}></img>
         </div>
     );
@@ -64,7 +66,7 @@ const SixQuiPrend = () => {
     let card = props.card;
     let source;
 
-    if(card.number === visibleCard.number){
+    if(card.number === visibleCard.number || sessionStorage.getItem('visibleCard') === JSON.stringify(card) || !myTurn){
 
       source = cartes[card.number-1];
 
@@ -82,91 +84,41 @@ const SixQuiPrend = () => {
 
 
   const addCard = () => {
-    if (box1Container.length < 5 && myTurn) {
-      if (selectedCard != null) {
-        if(selectedCard.card.number > box1Container[box1Container.length -1].number ) {
-          setBox1Container([...box1Container, selectedCard.card])
-        }
-        else {
-          setBox1Container([selectedCard.card]);
-        }
-      }
-    }
-    else {
-      if (selectedCard != null && myTurn) {
-        setBox1Container([selectedCard.card]);
-      }
-    }
-    // setMyTurn(false);
-    cardInWaiting.pop();
-    setIsCarteSelected(false);
+
+    if(!myTurnP2){return 0}
+
+
+    socket.emit('send6cardphase2',1,sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
+    
+    console.log("1");
   }
 
 
   const addCard2 = () => {
-    if (box2Container.length < 5) {
-      if (selectedCard != null && myTurn ) {
-        if (selectedCard.card.number > box2Container[box2Container.length-1].number ) {
-          setBox2Container([...box2Container, selectedCard.card])
-        }
-        else {
-          setBox2Container([selectedCard.card]);
-        }
-      }
-    }
-    else {
-      if (selectedCard != null && myTurn) {
-        setBox2Container([selectedCard.card]);
-      }
-    }
-    setMyTurn(false);
-    setIsCarteSelected(false);
-    cardInWaiting.pop();
+
+    if(!myTurnP2){return 0}
+
+    socket.emit('send6cardphase2',2,sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
+
+    console.log("2");
   }
 
   const addCard3 = () => {
-    if (box3Container.length < 5) {
-      if (selectedCard != null && myTurn) {
-        if (selectedCard.card.number > box3Container[box3Container.length-1].number ) {
-          setBox3Container([...box3Container, selectedCard.card])
-        }
-        else {
-          setBox3Container([selectedCard.card]);
-        }
-      }
-    }
-    else {
-      if (selectedCard != null && myTurn) {
 
-        setBox3Container([selectedCard.card]);
-      }
+    if(!myTurnP2){return 0}
 
-    }
-    setMyTurn(false);
-    setIsCarteSelected(false);
-    cardInWaiting.pop();
+    socket.emit('send6cardphase2',3,sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
+
+    console.log("3");
   }
 
   const addCard4 = () => {
-    if (box4Container.length < 5) {
-      if (selectedCard != null && myTurn) {
-        if (selectedCard.card.number > box4Container[box4Container.length-1].number) {
-          setBox4Container([...box4Container, selectedCard.card])
-        }
-        else {
-          setBox4Container([selectedCard.card]);
-        }
-      }
-    }
-    else {
-      if (selectedCard != null && myTurn) {
-        setBox4Container([selectedCard.card]);
-      }
+    
+    if(!myTurnP2){return 0}
 
-    }
-    setMyTurn(false);
-    cardInWaiting.pop();
-    setIsCarteSelected(false);
+    socket.emit('send6cardphase2',4,sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
+    
+    console.log("4");
   }
 
   const Rectangle = () => {
@@ -234,13 +186,13 @@ const SixQuiPrend = () => {
 
   useEffect(() => {
 
-
+    socket.emit('join',sessionStorage.getItem('serverConnected'));
     socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
 
     // GESTION stabilité de la connection
     socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
     socket.emit("getServ");
-    socket.emit('join',sessionStorage.getItem('serverConnected'));
+    
 
     //socket.on('getMessage', (msg) => {
     //    console.log("msg : ", msg);
@@ -262,7 +214,6 @@ const SixQuiPrend = () => {
       setBox2Container(rowL[1]);
       setBox3Container(rowL[2]);
       setBox4Container(rowL[3]);
-      //setCardInWaiting(rowL[3]);
 
     });
 
@@ -295,6 +246,40 @@ const SixQuiPrend = () => {
       setMyTurn(false);
 
     });
+
+    socket.on('phase1', () => {
+
+      setMyTurn(true);
+      setMyTurnP2(false);
+      socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+
+    });
+
+
+    socket.on("nextPlayer",(payload) => {
+
+      if(payload.name === sessionStorage.getItem('name')){
+
+        setMyTurnP2(true);
+
+      } else {
+
+        setMyTurnP2(false);
+      }
+        
+    });
+
+
+
+    socket.on('FIN', (winner) => {
+      
+      console.log(JSON.parse(JSON.stringify(winner)).name);
+      sessionStorage.setItem('winners',JSON.parse(JSON.stringify(winner)).name);
+      navigate("/winner");
+
+      
+
+  });
 
 
 

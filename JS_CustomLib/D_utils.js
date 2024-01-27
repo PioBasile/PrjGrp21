@@ -124,7 +124,8 @@ const STATUS = {
   START: 's',
   WAITING_FOR_PLAYER_CARD: 'phase1',
   PHASE_2: 'phase2',
-  DRAW: 'd'
+  DRAW: 'd',
+  ENDED: "end"
 };
 
 class Bataille{
@@ -420,27 +421,15 @@ class SixQuiPrend{
     this.player_list = player_list;
     this.selected_cards = [];
 
-    let cartes_a_distribuer = shuffle(generate6Cartes());
-
-    // perdu a 66
-    
     this.mChrono = chrono;
     this.Chrono = chrono;
 
-    let k = 0;
-    this.player_list.forEach((elem) => {
+    this.croupier();
 
-      for(let j = k;j<k+10;j++){
-        elem.deck.push(cartes_a_distribuer[j]);
-      }
-      k+=10;
+    this.order = [];
+    this.currentP = null;
 
-    });
-
-    this.row1 = [cartes_a_distribuer[k]];
-    this.row2 = [cartes_a_distribuer[k+1]];
-    this.row3 = [cartes_a_distribuer[k+2]];
-    this.row4 = [cartes_a_distribuer[k+3]];
+    this.winner = null;
 
   }
 
@@ -449,7 +438,7 @@ class SixQuiPrend{
 
     this.player_list.forEach((elem) => {
 
-      if(elem.score >= 66){
+      if(elem.score >= 20){
 
         al = true;
 
@@ -458,6 +447,24 @@ class SixQuiPrend{
     });
 
     return al;
+
+  }
+
+  Pgagant(){
+
+    let less = this.player_list[0];
+
+    this.player_list.forEach((elem) => {
+
+      if(elem.score < less.score){
+
+        less = elem;
+
+      }
+
+    });
+
+    return less;
 
   }
 
@@ -479,6 +486,24 @@ class SixQuiPrend{
 
   }
 
+  tousPasJouer(){
+
+    let no = true;
+
+    this.player_list.forEach((player) => {
+
+      if(player.selected != null){
+
+        no = false;
+
+      }
+
+    });
+
+    return no;
+
+  }
+
   clearP(){
 
     this.player_list.forEach((player) => {
@@ -489,9 +514,215 @@ class SixQuiPrend{
     });
 
 
+  } 
+
+
+  GiveOrder(){
+
+    const playersCopy = [...this.player_list];
+
+    for (let i = 1; i < playersCopy.length; i++) {
+      let j = i - 1;
+      const temp = playersCopy[i];
+      while (j >= 0 && playersCopy[j].selected.number > temp.selected.number) {
+          playersCopy[j + 1] = playersCopy[j];
+          j--;
+      }
+      playersCopy[j + 1] = temp;
+  }
+    
+    this.order = playersCopy;
+    return playersCopy;
+
   }
 
 
+  nextP(){
+
+    if(this.order.length == 0){
+      return 0;
+    }
+
+    this.currentP = this.order.shift();
+
+    return this.currentP;
+
+  }
+
+  play(row){
+
+
+    let player = this.currentP;
+    let card = player.selected;
+
+    let crow;
+
+    switch(row){
+
+      case 1:
+        crow = this.row1;
+        break;
+      case 2:
+        crow = this.row2;
+        break;
+      case 3:
+        crow = this.row3;
+        break;
+      case 4:
+        crow = this.row4;
+        break;
+
+    }
+
+
+    if(this.row1[this.row1.length-1].number > card.number && this.row2[this.row2.length-1].number > card.number && this.row3[this.row3.length-1].number > card.number && this.row4[this.row4.length-1].number > card.number){
+
+      let sum = 0;
+      crow.forEach(card => {
+
+        sum+=card.nb_boeuf;
+
+      });
+
+      player.score+=sum;
+
+      if(this.gagnant()){
+
+        this.winner = this.Pgagant();
+        this.status = STATUS.ENDED;
+        return true;
+
+      }
+
+      this.affectRow(row,[card]);
+
+      return true;
+
+    }
+
+    if(this.findValidRow(card.number) == row){
+
+      crow.push(card);
+      if(crow.length >= 6){
+
+        let sum = 0;
+        crow.forEach(card => {
+
+          sum+=card.nb_boeuf;
+
+        });
+
+        player.score+=sum;
+
+        if(this.gagnant()){
+
+          this.winner = this.Pgagant();
+          this.status = STATUS.ENDED;
+          return true;
+  
+        }
+        this.status = STATUS.WAITING_FOR_PLAYER_CARD;
+        this.affectRow(row,[card]);
+        this.croupier();
+
+      }
+
+      return true;
+
+    }
+
+    return false;
+
+
+
+
+
+  }
+
+  affectRow(row, value){
+
+    switch(row){
+
+      case 1:
+        this.row1 = value;
+        break;
+      case 2:
+        this.row2 = value;
+        break;
+      case 3:
+        this.row3 = value;
+        break;
+      case 4:
+        this.row4 = value;
+        break;
+
+    }
+
+  }
+
+
+  findValidRow(num){
+
+    const r1 = this.row1[this.row1.length-1].number - num;
+    const r2 = this.row2[this.row2.length-1].number - num;
+    const r3 = this.row3[this.row3.length-1].number - num;
+    const r4 = this.row4[this.row4.length-1].number - num;
+
+    let minIndex;
+    let minValue = 105;
+
+    if(r1 < 0 && Math.abs(r1) < minValue){
+  
+      minValue = Math.abs(r1);
+      minIndex = 1;
+    }
+    if(r2 < 0 && Math.abs(r2) < minValue){
+
+      minValue = Math.abs(r2);
+      minIndex = 2;
+    }
+    if(r3 < 0 && Math.abs(r3) < minValue){
+
+      minValue = Math.abs(r3);
+      minIndex = 3;
+    }
+    if(r4 < 0 && Math.abs(r4) < minValue){
+ 
+      minValue = Math.abs(r4);
+      minIndex = 4;
+    }
+
+    return minIndex;
+
+  }
+
+
+
+  croupier(){
+
+    let cartes_a_distribuer = shuffle(generate6Cartes());
+
+    // perdu a 66
+  
+
+    let k = 0;
+    this.player_list.forEach((elem) => {
+
+      elem.deck = [];
+
+      for(let j = k;j<k+10;j++){
+        elem.deck.push(cartes_a_distribuer[j]);
+      }
+      k+=10;
+
+    });
+
+    this.row1 = [cartes_a_distribuer[k]];
+    this.row2 = [cartes_a_distribuer[k+1]];
+    this.row3 = [cartes_a_distribuer[k+2]];
+    this.row4 = [cartes_a_distribuer[k+3]];
+
+  }
 
 }
 

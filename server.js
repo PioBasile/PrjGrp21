@@ -462,6 +462,15 @@ io.on('connection', (socket) => {
       socket.emit('6oppo',oppon6);
       socket.emit("cartesDroite",game.selected_cards);
 
+      if(game.status == STATUS.PHASE_2){
+
+        socket.emit('phase2',(false));
+        socket.emit('nextPlayer',game.currentP);
+
+
+      }
+
+
     });
 
 
@@ -471,14 +480,6 @@ io.on('connection', (socket) => {
       game = findGame(gameID,TaureauGames);
       player = findPlayer(playername,game.player_list);
 
-      let oppon6 = []
-      let pl;
-      game.player_list.forEach((player) => {
-
-        pl = {nom : player.name, deck : player.deck.length, score : player.score};
-        oppon6.push(pl);
-
-      });
 
 
       let count = 0;
@@ -505,18 +506,24 @@ io.on('connection', (socket) => {
       player.deck.splice(count, 1);
       game.selected_cards.push(card);
 
-      console.log(player.deck);
-      console.log(game.selected_cards);
-
-      
 
       if(game.tousJouer()){
 
-        game.clearP();
         game.status = STATUS.PHASE_2;
         io.to(gameID).emit('phase2',(false));
+        game.GiveOrder();
+        io.to(gameID).emit("nextPlayer", game.nextP());
 
       }
+
+      let oppon6 = []
+      let pl;
+      game.player_list.forEach((player) => {
+
+        pl = {nom : player.name, deck : player.deck.length, score : player.score};
+        oppon6.push(pl);
+
+      });
 
       socket.emit('Deck',player.deck);
       io.to(gameID).emit('Row',[game.row1,game.row2,game.row3,game.row4]);
@@ -527,10 +534,42 @@ io.on('connection', (socket) => {
     });
 
 
-    socket.on('send6cardphase2', (card,playername,gameID) => {
+    socket.on('send6cardphase2', (row,playername,gameID) => {
 
       game = findGame(gameID,TaureauGames);
       player = findPlayer(playername,game.player_list);
+
+
+      if(game.play(parseInt(row))){
+
+        if(game.status == STATUS.ENDED){
+
+          io.to(gameID).emit('FIN', game.winner);
+          return;
+        }
+
+        player.selected = null;
+
+        if(game.tousPasJouer() || game.status == STATUS.WAITING_FOR_PLAYER_CARD){
+
+          game.selected_cards = [];
+          game.status = STATUS.WAITING_FOR_PLAYER_CARD;
+          game.clearP();
+          io.to(gameID).emit('phase1');
+
+        }
+
+        io.to(gameID).emit("nextPlayer", game.nextP());
+
+
+      } else {
+
+        socket.emit('missPlacement');
+
+      }
+
+
+
 
       let oppon6 = []
       let pl;
@@ -540,6 +579,11 @@ io.on('connection', (socket) => {
         oppon6.push(pl);
 
       });
+
+      socket.emit('Deck',player.deck);
+      io.to(gameID).emit('Row',[game.row1,game.row2,game.row3,game.row4]);
+      io.to(gameID).emit('6oppo',oppon6);
+      io.to(gameID).emit("cartesDroite",game.selected_cards);
 
 
     });

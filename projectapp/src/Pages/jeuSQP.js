@@ -33,6 +33,8 @@ const SixQuiPrend = () => {
 
 
   const [myTurn, setMyTurn] = useState(true);
+
+  const [allPlayerSelected, setAllPlayerSelected] = useState(false);
   const [myTurnP2, setMyTurnP2] = useState(false);
 
 
@@ -244,11 +246,14 @@ const SixQuiPrend = () => {
     socket.on('phase2', () => {
 
       setMyTurn(false);
+      setAllPlayerSelected(true);
 
     });
 
-    socket.on('phase1', () => {
+    
 
+    socket.on('phase1', () => {
+      setAllPlayerSelected(false);
       setMyTurn(true);
       setMyTurnP2(false);
       socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
@@ -278,6 +283,12 @@ const SixQuiPrend = () => {
       navigate("/winner");
 
       
+
+  });
+
+  socket.on('missPlacement',() => {
+
+    alert('Placement Invalide !');
 
   });
 
@@ -346,8 +357,8 @@ const SixQuiPrend = () => {
       </div>
 
       {/* Joueur cards en bas */}
-      <div className='card-holder' >
-        <div className={myTurn ? "player-cards":"notYourTurn-cards"} >
+      <div className={(myTurnP2 || !allPlayerSelected ) ?'card-holder': 'card-holderNYT'} >
+      <div className={myTurn ? "player-cards":"notYourTurn-cards"} >
           {playerCards.map((card) => (
             <Carte
               key={card.number}

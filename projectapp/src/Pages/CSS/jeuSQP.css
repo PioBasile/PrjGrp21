@@ -48,6 +48,7 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ombre portée pour un effet en relief */
     bottom : 10px;
     padding-top:2vh;
+    box-shadow: rgb(60, 255, 0) 0px 0px 100px;
 }
 
 .table-row {
@@ -76,7 +77,6 @@
     width: 85px; /* Largeur de la carte */
     height: 125px; /* Hauteur de la carte */
     margin: 5px;
-
     transition: transform 0.3s ease;
     display: flex;
     justify-content: center; /* Centre le texte horizontalement */
@@ -84,14 +84,35 @@
     box-shadow: 10px 5px 5px rgb(30, 29, 29);
 }
 
+.card-holderNYT{
+    position:relative;
+    bottom: 20vh;
+    display: flex; /* Utilisez flexbox pour centrer le contenu */
+    justify-content: center; /* Centre horizontalement les cartes à l'intérieur */
+    align-items: center; /* Centre verticalement les cartes à l'intérieur */
+    width: 900px; /* Largeur du conteneur, ajustez selon vos besoins */
+    height: 150px; /* Hauteur du conteneur, ajustez selon vos besoins */
+    background-image: url('9999520.jpg');
+    margin: 0 auto; /* Centre le card-holder dans la page */
+    padding: 20px; /* Espace autour des cartes */
+    border: 1px solid #ccc; /* Bordure du card-holder */
+    border-radius: 10px; /* Arrondit les coins */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ombre portée pour un effet en relief */
+    bottom : 10px;
+    padding-top:2vh;
+    box-shadow: rgb(255, 0, 0, 1) 0px 0px 100px;
+
+
+}
+
 .notYourTurn-cards {
     position: relative;
-    bottom: 70px; /* Positionne le conteneur à la moitié de l'écran */
-    transform: translateY(50%); /* Décale le conteneur vers le haut de sa propre hauteur */
-    width: 100%; /* Assure que le conteneur s'étend sur toute la largeur */
+    bottom: 70px;
+    transform: translateY(50%);
+    width: 100%;
     display: flex;
-    justify-content: center; /* Centre le contenu horizontalement */
-    align-items: center; /* Centre le contenu verticalement */
+    justify-content: center;
+    align-items: center;
 }
 
 .scoreboard {

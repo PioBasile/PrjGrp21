@@ -621,9 +621,9 @@ class SixQuiPrend{
           return true;
   
         }
-        this.status = STATUS.WAITING_FOR_PLAYER_CARD;
+        // VARIANTE : this.status = STATUS.WAITING_FOR_PLAYER_CARD;
         this.affectRow(row,[card]);
-        this.croupier();
+        // VARIANTE : this.croupier();
 
       }
 

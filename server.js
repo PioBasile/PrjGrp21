@@ -448,6 +448,17 @@ io.on('connection', (socket) => {
       game = findGame(gameID,TaureauGames);
       player = findPlayer(username,game.player_list);
 
+      let redo = false;
+      game.player_list.forEach((player) => {
+
+        if(player.deck.length == 0){
+          redo = true;
+        }
+
+      });
+
+      if(redo){game.croupier()};
+
       let oppon6 = []
       let pl;
       game.player_list.forEach((player) => {

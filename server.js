@@ -468,6 +468,8 @@ io.on('connection', (socket) => {
 
       });
 
+
+      socket.emit('startTimer');
       socket.emit('Deck',player.deck);
       socket.emit('Row',[game.row1,game.row2,game.row3,game.row4]);
       socket.emit('6oppo',oppon6);

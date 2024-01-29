@@ -7,6 +7,7 @@ import backCard from './CSS/sqpBack.jpg'
 
 
 
+
 const SixQuiPrend = () => {
   const cartes = [];
 
@@ -192,9 +193,10 @@ const SixQuiPrend = () => {
 
   useEffect(() => {
 
-
+    let deckmem;
     socket.on("Deck", (deck) => {
       setPlayerCards(deck);
+      deckmem = deck;
     });
 
     socket.on('Row', (rowL) => {
@@ -269,6 +271,22 @@ const SixQuiPrend = () => {
 
     });
 
+    socket.on('timerDown', () => {
+   
+      setSeconds(prevSeconds => {
+          if (prevSeconds === 0 || !myTurn) {
+            if(myTurn){
+             socket.emit('send6cardphase1', deckmem[Math.floor(Math.random() * deckmem.length)], sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
+            }
+              return 30; 
+          } else {
+              return prevSeconds - 1;
+          }
+
+      });
+  });
+    
+
 
     // TAB 
     const handleKeyDown = (e) => {
@@ -290,8 +308,9 @@ const SixQuiPrend = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      socket.off('timerDown');
     };
-  }, [isVisible,navigate]);
+  }, [isVisible,navigate,myTurn]);
 
 
 
@@ -299,7 +318,9 @@ const SixQuiPrend = () => {
   return (
     <div className="six-container">
 
-
+        <div>
+            <p>Seconds: {seconds}</p>
+        </div>
       
 
       <div className="adverse-players">

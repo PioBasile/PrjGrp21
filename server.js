@@ -60,11 +60,16 @@ server.listen(3001, () =>{
 
 io.on('connection', (socket) => {
 
+  const interval = setInterval(() => {
+    socket.emit('timerDown');
+}, 1000);
+
     console.log("Connection par : " + socket.id);
     
     
     socket.on('disconnect', () => {
       console.log('Disconnected:', socket.id);
+      clearInterval(interval);
   });
 
 
@@ -602,5 +607,4 @@ io.on('connection', (socket) => {
     });
 
 });
-
 

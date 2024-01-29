@@ -17,7 +17,7 @@ const SixQuiPrend = () => {
   //eslint-disable-next-line
   //eslint-disable-next-line
   const navigate = useNavigate();
-  const [seconds, setSeconds] = useState(10);
+  const [seconds, setSeconds] = useState(30);
   //eslint-disable-next-line
   const [isActive, setIsActive] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -180,7 +180,7 @@ const SixQuiPrend = () => {
   // Fonction pour réinitialiser le timer
   const resetTimer = () => {
       setIsActive(false);
-      setSeconds(10);
+      setSeconds(30);
   };
 
   //TIMER 

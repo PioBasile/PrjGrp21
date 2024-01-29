@@ -322,8 +322,8 @@ const SixQuiPrend = () => {
   return (
     <div className="six-container">
 
-        <div>
-            <p>Seconds: {seconds}</p>
+        <div className='timer'>
+            <p>{seconds}</p>
         </div>
       
 

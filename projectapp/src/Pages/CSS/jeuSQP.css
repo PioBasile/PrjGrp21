@@ -222,3 +222,17 @@ button {
     /* ou */
     object-fit: contain; /* ou "contain", selon le comportement souhaité */
   }
+
+.timer {
+    position: absolute;
+    top: 20px; /* Ajustez selon vos besoins */
+    left: 20px; /* Ajustez selon vos besoins */
+    width: 100px; /* Ajustez selon vos besoins */
+    height: 100px; /* Ajustez selon vos besoins */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ddd; /* Couleur de fond du timer */
+    border: 1px solid #ccc; /* Bordure du timer */
+}

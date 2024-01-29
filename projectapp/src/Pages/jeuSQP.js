@@ -173,44 +173,10 @@ const SixQuiPrend = () => {
   }
 
 
-  const startTimer = () => {
-      setIsActive(true);
-  };
 
-  // Fonction pour réinitialiser le timer
-  const resetTimer = () => {
-      setIsActive(false);
-      setSeconds(30);
-  };
 
-  //TIMER 
-  useEffect(() => {
-
-    socket.on("startTimer", () => {
-      resetTimer();
-      startTimer();
-    })
-
-    let interval = null;
-    if (isActive && seconds > 0) {
-      interval = setInterval(() => {
-        setSeconds((seconds) => seconds - 1);
-        
-      }, 1000);
-    } else if (!isActive && seconds !== 0 && seconds < 60) {
-      clearInterval(interval);
-    }
-
-    else if(seconds  < 1 && selectCardClick){
-      let random = Math.floor(Math.random() * playerCards.length-1);
-      let card = playerCards[random];
-      resetTimer();
-      
-      socket.emit("send6cardphase1", card, sessionStorage.getItem("name") ,sessionStorage.getItem('serverConnected')) 
-    }
-
-    return () => clearInterval(interval);
-  });
+  
+ 
 
   useEffect(() => {
 
@@ -265,7 +231,6 @@ const SixQuiPrend = () => {
 
 
     socket.on('phase2', () => {
-      resetTimer();
       setMyTurn(false);
       setAllPlayerSelected(true);
 
@@ -335,20 +300,13 @@ const SixQuiPrend = () => {
     <div className="six-container">
 
 
-      <div className="app">
-        <div className="time">
-          {seconds}s
-        </div>
-        <div className="row">
-        </div>
-      </div>
+      
 
       <div className="adverse-players">
         {opponents.map((opponent, index) => (
           <div key={index} className="opponent-six">
             <strong>{opponent.nom}</strong> <br />
             Cards: {opponent.deck} <br />
-            Score: {opponent.score}
           </div>
         ))}
       </div>
@@ -387,9 +345,13 @@ const SixQuiPrend = () => {
       <div className={`scoreboard ${isVisible ? 'visible' : ''}`}>
         <div className="scoreboard-tab">Scoreboard</div>
         <div className="scoreboard-content">
-          {/* Contenu du scoreboard ici */}
-          My Score:  {score}<br />
-          Number of Cards: {playerCards.length}
+        {opponents.map((opponent, index) => (
+            <div key={index}>
+              <strong>{opponent.nom}</strong>'s
+              score: {opponent.score} <br />
+            </div>
+          ))}
+
         </div>
       </div>
     </div>

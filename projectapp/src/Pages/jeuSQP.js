@@ -28,6 +28,7 @@ const SixQuiPrend = () => {
   const [box4Container, setBox4Container] = useState([{ number: 4 }]);
   const [cardInWaiting, setCardInWaiting] = useState([]);
   const [playerCards, setPlayerCards] = useState([]);
+  const [selected, setselected] = useState(false);
   //eslint-disable-next-line
   const [score, setScore] = useState(0);
   const [opponents, setOpponents] = useState([]);
@@ -50,6 +51,7 @@ const SixQuiPrend = () => {
 
     socket.emit('send6cardphase1', card, sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
     setVisibleCard(card);
+    setselected(true);
     sessionStorage.setItem('visibleCard', JSON.stringify(card));
 
   };
@@ -244,6 +246,7 @@ const SixQuiPrend = () => {
       setAllPlayerSelected(false);
       setMyTurn(true);
       setMyTurnP2(false);
+      setselected(false);
       socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
 
     });
@@ -275,8 +278,9 @@ const SixQuiPrend = () => {
    
       setSeconds(prevSeconds => {
           if (prevSeconds === 0 || !myTurn) {
-            if(myTurn){
-             socket.emit('send6cardphase1', deckmem[Math.floor(Math.random() * deckmem.length)], sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
+            if(myTurn && !selected){
+              setselected(true);
+              socket.emit('send6cardphase1', deckmem[Math.floor(Math.random() * deckmem.length)], sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
             }
               return 30; 
           } else {
@@ -310,7 +314,7 @@ const SixQuiPrend = () => {
       window.removeEventListener("keyup", handleKeyUp);
       socket.off('timerDown');
     };
-  }, [isVisible,navigate,myTurn]);
+  }, [isVisible,navigate,myTurn,selected]);
 
 
 

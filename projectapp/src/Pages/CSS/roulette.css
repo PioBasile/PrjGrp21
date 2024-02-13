@@ -1,0 +1,308 @@
+body.roulette {
+    background-image: url("wooden-background.jpg");
+    background-size: cover;
+}
+
+.rouletteGameContainer {
+    padding-bottom: 3vh;
+    position: relative;
+    display: flex;
+
+    text-align: center;
+    justify-content: center;
+}
+
+.bigPlateauContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; 
+    padding-top: 5vh;
+}
+
+
+.plateauContainer {
+    bottom: 10%;
+    top: 0ch;
+    /* right: 10vh; */
+    position: relative;
+    display: grid;
+    grid-template-columns: 10ch 10ch 10ch 10ch 10ch;
+    color: white;
+    padding-bottom: 5vh;
+}
+
+
+.numberContainer {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.oneTo36Number {
+    flex: 1;
+    max-width: 10vh;
+    max-height: 6.5vh;
+    color: #fff;
+    border: 3px solid #ccc;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    cursor: pointer;
+    background-color: rgb(193, 76, 76);
+}
+
+.numberZero {
+    max-width: 50vh;
+    max-height: 10vh;
+    background-color: #31b358;
+    border: 3px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    cursor: pointer;
+    /* width: 6.26ch; */
+    /* transform: translateX(2.1ch); */
+}
+
+.douzaine {
+    flex: 1;
+    border: 3px solid #ccc;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+}
+
+
+.exterior {
+    flex: 1;
+    display: flex;
+    border: 3px solid #ccc;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+
+.red {
+    background-color: rgb(193, 76, 76);
+}
+
+.black {
+    background-color: rgb(19, 17, 17);
+}
+
+
+.coin {
+    width: 100%;
+    height: 100%;
+}
+
+.popupContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: black;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contenu-popup {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 500px;
+    height: 300px;
+    background-image: url("9999520.jpg");
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    border-color: black;
+}
+
+
+.inputMoney {
+    background-color: rgb(30, 120, 209);
+    border-radius: 10px;
+    height: 70px;
+    width: 240px;
+    text-align: center;
+    font-size: 26px;
+}
+
+.textMoney {
+    color: black;
+    font-size: 40px;
+}
+
+.moneyContainer {
+    padding-top: 10px;
+    right: 0;
+    font-size: 300%;
+    width: 200px;
+    height: 100px;
+    background-color: beige;
+    position: absolute;
+    text-align: center;
+    border-radius: 19px;
+}
+
+.rouletteContainer {
+    padding-top: 10vh;
+    /* padding-left: 10vh; */
+    /* padding-right: 20vh; */
+    position: relative;
+    right: 17ch;
+    bottom: 3vh;
+    max-height: 17vh;
+}
+
+.spinning {
+    top: 20vh;
+    height: 70vh;
+    width: 70vh;
+    border-radius: 100%;
+    animation: rotate 6s 1;
+}
+
+.notSpinning {
+    top: 20vh;
+    height: 70vh;
+    width: 70vh;
+    border-radius: 100%;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+}
+
+
+.result {
+    width: 100ch;
+    height: 200vh;
+}
+
+.popup {
+    position: fixed;
+    top: 10px;
+    left: 35%;
+    transform: translate(-50%, -50%);
+    background-color: #31b358;
+    color: hwb(0 0% 100%);
+    padding: 20px;
+    text-align: center;
+    width: 20%;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.5s ease-out forwards;
+    display: none;
+    font: bold;
+    font-size: 40px;
+}
+
+.popup.visible {
+    display: block;
+}
+
+.popup.visible.red {
+    background-color: rgb(193, 76, 76);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+.btn-close {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    background-color: #fff;
+    color: #000;
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    outline: none;
+}
+
+.chat-container {
+    position: fixed;
+    bottom: 5ch;
+    right: 1ch;
+    padding: 10px;
+    opacity: 0.33;
+    transition: opacity 0.5s ease;
+}
+
+.message-container {
+
+    position: relative;
+    max-width: 300px;
+    /* Ajustez la largeur selon vos besoins */
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom: 1px solid #ccc;
+    overflow-y: scroll;
+    max-height: 300px;
+    /* Ajustez la hauteur selon vos besoins */
+    min-height: 80px;
+}
+
+.serverText {
+    background-color: yellow;
+    opacity: 0.6;
+}
+
+
+.inputMessage {
+    width: 80%;
+    padding: 5px;
+    margin: 5px 0;
+}
+
+.messageButton {
+    border-radius: 30%;
+    border: 2px solid #000;
+    font-size: 2vh;
+    text-align: left;
+    background-color: #536658;
+}
+
+
+
+.vertical-line {
+    position: relative;
+    width: 0;
+    height: 0;
+    left: 32.7vh;
+    top: 10ch;
+    border-left: 20px solid transparent;
+    /* Ajustez la taille du triangle en modifiant la valeur de border-left */
+    border-right: 20px solid transparent;
+    /* Ajustez la taille du triangle en modifiant la valeur de border-right */
+    border-top: 100px solid #000;
+    /* Couleur du triangle (noir dans cet exemple) et hauteur */
+    margin-left: 10px;
+    /* Marge Ã  gauche du triangle (ajustez selon vos besoins) */
+    z-index: 1;
+}

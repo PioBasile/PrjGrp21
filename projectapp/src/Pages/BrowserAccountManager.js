@@ -79,7 +79,7 @@ const BrowserAccountManager = () => {
       setNbGame(res.nbGames);
       setNbWin(res.nbWin);
       setRoundWin(res.roundWin);
-      setElo(res.elo);
+      setElo(res.argent);
 
     });
 
@@ -116,8 +116,8 @@ const BrowserAccountManager = () => {
         <div className="profil-body">
 
           <div className="carte" id="myCard">
+            <div><strong>username</strong></div>
             <div className="carte-inner">
-              <div><strong>username</strong></div>
               <div className="carte-front"></div>
               <div className="carte-back">
                 <div className="carte-back-text">{sessionStorage.getItem("name")}</div>
@@ -126,8 +126,8 @@ const BrowserAccountManager = () => {
           </div>
 
           <div className="carte" id="myCard">
+            <div><strong>game played</strong></div>
             <div className="carte-inner">
-              <div><strong>game played</strong></div>
               <div className="carte-front"></div>
               <div className="carte-back">
                 <div className="carte-back-text">{nbGame}</div>
@@ -136,8 +136,8 @@ const BrowserAccountManager = () => {
           </div>
 
           <div className="carte" id="myCard">
+            <div><strong>game win</strong></div>
             <div className="carte-inner">
-              <div><strong>game win</strong></div>
               <div className="carte-front"></div>
               <div className="carte-back">
                 <div className="carte-back-text">{nbWin}</div>
@@ -146,18 +146,18 @@ const BrowserAccountManager = () => {
           </div>
 
           <div className="carte" id="myCard">
+            <div><strong>Argent</strong></div>
             <div className="carte-inner">
-              <div><strong>ELO</strong></div>
               <div className="carte-front"></div>
               <div className="carte-back">
-                <div className="carte-back-text">{elo}</div>
+                <div className="carte-back-text">{elo + "$"}</div>
               </div>
             </div>
           </div>
 
           <div className="carte" id="myCard">
+            <div><strong>round win</strong></div>
             <div className="carte-inner">
-              <div><strong>round win</strong></div>
               <div className="carte-front"></div>
               <div className="carte-back">
                 <div className="carte-back-text">{roundWin}</div>

@@ -30,7 +30,7 @@ const {
 
 } = require("./JS_CustomLib/D_utils.js");
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
-
+const { Roulette} = require("./JS_CustomLib/D_Casino.js");
 
 
 app.use(cors());
@@ -51,6 +51,9 @@ let BatailGames = [];
 let TaureauGames = [];
 let lobbyList = [];
 let lobbyIndex = 0;
+let RouletteInstance = new Roulette();
+let isPaused = false;
+
 
 //
 
@@ -58,18 +61,109 @@ server.listen(3001, () =>{
     console.log("SERVER IS RUNNING");
 })
 
+
+
+const updateWins = async () => {
+  for (const win of RouletteInstance.wins) {
+      try {
+          const res = await get_user_info(win["name"]);
+          console.log(res.argent);
+          console.log(win);
+          await changeDataBase("argent", res.argent + win["won"], win["name"]);
+      } catch (error) {
+          console.error("Erreur lors de la mise à jour des gains :", error);
+      }
+  }
+}
+
+const interval = setInterval(() => {
+
+  if(isPaused){
+    return
+  }
+
+  RouletteInstance.timer = RouletteInstance.timer - 1;
+
+  if(RouletteInstance.timer == 0){
+
+    RouletteInstance.rolls();
+    console.log("ROLL : " + RouletteInstance.roll);
+    io.emit('spinwheel',RouletteInstance.roll);
+    RouletteInstance.resolveBets();
+
+    updateWins();
+
+    io.emit("listWins",RouletteInstance.wins);
+
+    RouletteInstance.wins = [];
+    RouletteInstance.bets = [];
+
+    isPaused = true;
+    setTimeout(() => {
+      isPaused = false;
+    }, 9000);
+
+    RouletteInstance.timer = 30;
+
+  }
+
+
+  io.emit('timerDown');
+  io.emit('rouletteTimer',RouletteInstance.timer);
+}, 1000);
+
+
 io.on('connection', (socket) => {
 
-  const interval = setInterval(() => {
-    socket.emit('timerDown');
-}, 1000);
+  // --------------------------------------Casino-------------------------------------------------------
+
+  socket.on("bet", (nom,betAmmount,betPos) => {
+
+    if(betAmmount <= 0 ){
+      return
+    }
+
+    if(RouletteInstance.timer > 5){
+
+      RouletteInstance.bets.push({nom:nom, betAmmount:betAmmount, betPos:betPos});
+      get_user_info(nom).then((res) => {
+
+        changeDataBase("argent", res.argent - betAmmount, nom);
+        socket.emit("VoilaTesSousMonSauce", res.argent - betAmmount);
+
+      });
+      
+
+    }
+    else{
+
+      socket.emit("tropsTard");
+
+    }
+
+    console.log(RouletteInstance.bets);
+    io.emit("bets",RouletteInstance.bets);
+    
+
+  });
+
+  socket.on("ArgentViteBatard",(name)=> {
+
+    get_user_info(name).then((res) => {
+
+      socket.emit("VoilaTesSousMonSauce", res.argent);
+
+    });
+
+  });
+
+  // ----------------------------------------------------------------------------------------------------------
 
     console.log("Connection par : " + socket.id);
     
     
     socket.on('disconnect', () => {
       console.log('Disconnected:', socket.id);
-      clearInterval(interval);
   });
 
 

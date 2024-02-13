@@ -17,7 +17,7 @@ const register = (login, password) => {
 
 
     return new Promise((resolve, reject) => {
-      db.all('SELECT nom FROM users;', function(err, table) {
+      db.all('SELECT nom FROM players;', function(err, table) {
         let pris = false;
         table.forEach(element => {
           if(element.nom==login){pris=true;}
@@ -26,7 +26,7 @@ const register = (login, password) => {
         if(pris){
           resolve(0);
         } else {
-           db.run("INSERT INTO users(nom,password,carte_pref) VALUES(?,?,'Aucunes')", [login,password]);
+           db.run("INSERT INTO players(nom,password) VALUES(?,?)", [login,password]);
            resolve(1);
         }
       });
@@ -41,7 +41,7 @@ const login = (login,passwordd) => {
 
     return new Promise((resolve, reject) => {
   
-      db.all('SELECT * FROM users WHERE nom="' + login + '";', function(err, table){
+      db.all('SELECT * FROM players WHERE nom="' + login + '";', function(err, table){
         
         if(err || table == undefined || table.toString() == ""){resolve(0);return;}
   
@@ -61,7 +61,7 @@ const get_user_info = (nom) => {
     let res;
     return new Promise((resolve,reject) => {
   
-      db.get('SELECT * FROM users WHERE nom="' + nom + '";', function(err, table) {
+      db.get('SELECT * FROM players WHERE nom="' + nom + '";', function(err, table) {
           resolve(table);
           });
   
@@ -72,7 +72,7 @@ const get_user_info = (nom) => {
 
 
 const changeDataBase = (dataToChange, newData, nom) => {
-   const sqlUpdate = `UPDATE Users SET ${dataToChange} = ? WHERE nom = ?`
+   const sqlUpdate = `UPDATE players SET ${dataToChange} = ? WHERE nom = ?`
    db.run( 
      sqlUpdate, [newData, nom], ( function(err) {
      if (err) {
@@ -97,6 +97,9 @@ function close() {
     });
   
   }
+
+
+changeDataBase("argent",10000,"player1");
 
 
 module.exports = { login, changeDataBase, get_user_info, register };

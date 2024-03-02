@@ -1,20 +1,47 @@
 .login-signup-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
   height: 100vh;
   background-color: #1a1a1a; /* Couleur de fond noir */
-  background-image: url('login-signup.png');
-  color: #fff; /* Couleur du texte blanc */
 }
 
-
+/* Section pour le login et signup */
 .login-container {
+    flex: 1; /* Prend un tiers de l'espace */
     background-color: #2a2a2a;
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centre le contenu verticalement */
+    align-items: center; /* Centre le contenu horizontalement */
+    max-width: 33.33%; /* Limite la largeur à un tiers du conteneur parent */
+}
+
+/* Section pour l'image et le texte descriptif */
+.description-container {
+    flex: 2; /* Prend deux tiers de l'espace */
+    background-image: url('9999520.jpg'); /* Remplacez par le chemin de votre image */
+    background-size: cover; /* Couvre la zone disponible sans perdre les proportions */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centre le contenu verticalement */
+    padding: 40px;
+    color: white; /* Couleur du texte */
+    padding: 20px;
+}
+
+.project-info h3, .project-info h5 {
+  margin-bottom: 10px; /* Ajustez l'espacement entre les éléments */
+  text-align: left; /* Alignez le texte à gauche si nécessaire */
+}
+
+.ls-separator-line {
+  height: 2px; /* Épaisseur de la ligne */
+  background-color: rgb(205, 209, 192); /* Couleur de la ligne */
+  width: 20%; /* Largeur de la ligne, ajustez selon vos besoins */
+  margin: 10px 0 20px; /* Espacement au-dessus et en dessous de la ligne, centrage horizontal */
+  
 }
 
 .input-button {
@@ -29,19 +56,56 @@
 }
 
 .button {
-    padding: 20px 30px; /* Agrandit le padding pour un bouton plus grand */
-    font-size: 20px; /* Augmente la taille de la police pour une meilleure lisibilité */
-    background-color: #0066cc;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    border: none;
-    border-radius: 5px; /* Ajoutez un border-radius pour des coins arrondis */
+  padding: 20px 30px; /* Agrandit le padding pour un bouton plus grand */
+  font-size: 20px; /* Augmente la taille de la police pour une meilleure lisibilité */
+  background-color: #0066cc;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border: none;
+  border-radius: 5px; /* Ajoutez un border-radius pour des coins arrondis */
+  margin: 0 10px; /* Ajoute une marge horizontale entre les boutons */
 }
 
+.lo-si{
+  color: antiquewhite;
+}
 
 .button:hover {
     background-color: #0056b3;
+}
+
+
+.ls-transition h3 {
+  display: flex; /* Utilise Flexbox pour aligner les éléments horizontalement */
+  align-items: center; /* Centre les éléments verticalement */
+  white-space: nowrap; /* Empêche le texte de passer à la ligne suivante */
+}
+
+.text-container {
+  display: inline-flex; /* ou 'inline-block' selon les besoins */
+  position: relative;
+  align-items: center;
+  /* Assurez-vous qu'aucune largeur excessive n'est définie ici */
+}
+
+.fade-text {
+  transition: opacity 2s ease;
+  opacity: 1;
+  position: absolute;
+  left: 0;
+  vertical-align: middle; /* Assure l'alignement vertical si nécessaire */
+}
+
+.fade-text.faded-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.number-21 {
+  display: inline-block; /* Permet à la div de se comporter comme un élément inline pour le positionnement */
+  margin-left: 120px; /* Espacement à gauche de "21" par rapport au texte précédent */
+  vertical-align: middle; /* Alignement vertical si nécessaire */
 }
 
 .button-container {

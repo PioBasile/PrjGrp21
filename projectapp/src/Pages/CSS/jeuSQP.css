@@ -1,19 +1,14 @@
 .six-container {
-    background-image: url(wooden-background.jpg);
+    background-color: #b0814f;
     height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    background-size: cover;
+    width: 200vh;
 }
 
 .adverse-players {
     display: flex;
-    justify-content: center; /* Centre horizontalement */
-    align-items: center; /* Centre verticalement */
+    justify-content: space-evenly;
     margin-bottom: 20px;
-    width: 100%; /* Assure que le flex-container s'étend sur toute la largeur disponible */
 }
-
 
 .opponent-six {
     border-radius: 8px;
@@ -22,11 +17,10 @@
     background-color: rgb(164, 141, 141);
     position: absolute;
     top: 10px;
-    flex-direction: column; /* Pour centrer le contenu verticalement */
-    justify-content: center; /* Centrer horizontalement */
-    align-items: center; /* Centrer verticalement */ 
+    justify-content: center;
+    display: block;
+    align-items: center;
 }
-
 
 .opponent-six:nth-child(1) { left: 10%; }
 .opponent-six:nth-child(2) { left: 20%; }
@@ -52,7 +46,7 @@
     border: 1px solid #ccc; /* Bordure du card-holder */
     border-radius: 10px; /* Arrondit les coins */
     box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ombre portée pour un effet en relief */
-    bottom : 25px;
+    bottom : 10px;
     padding-top:2vh;
     box-shadow: rgb(60, 255, 0) 0px 0px 100px;
 }
@@ -104,9 +98,11 @@
     border: 1px solid #ccc; /* Bordure du card-holder */
     border-radius: 10px; /* Arrondit les coins */
     box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ombre portée pour un effet en relief */
+    bottom : 10px;
     padding-top:2vh;
-    bottom : 25px;
     box-shadow: rgb(255, 0, 0, 1) 0px 0px 100px;
+
+
 }
 
 .notYourTurn-cards {
@@ -124,6 +120,7 @@
     top: 0;
     right: 0;
     width: 200px;
+    /* Votre style pour le tableau de scores */
 }
 
 .rectangle-container {
@@ -187,7 +184,7 @@ button {
     color: white;
     padding: 10px;
     cursor: pointer;
-    width: 50px; 
+    width: 50px; /* Largeur de l'onglet */
 }
 
 .scoreboard-content {
@@ -196,7 +193,7 @@ button {
 }
 
 .scoreboard.visible {
-    right: 0; 
+    right: 0; /* Ramène le scoreboard dans la vue */
 }
 
 .waitingCards {
@@ -223,7 +220,7 @@ button {
     object-fit: contain; /* ou "contain", selon le comportement souhaité */
   }
 
-.timer {
+  .timer {
     position: absolute;
     top: 20px; /* Ajustez selon vos besoins */
     left: 20px; /* Ajustez selon vos besoins */
@@ -236,3 +233,5 @@ button {
     background-color: #ddd; /* Couleur de fond du timer */
     border: 1px solid #ccc; /* Bordure du timer */
 }
+
+

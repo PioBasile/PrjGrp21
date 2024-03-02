@@ -8,6 +8,8 @@ const LoginSignup = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isHovered, setIsHovered] = useState(false);
+    
 
     const navigate = useNavigate();
 
@@ -44,8 +46,27 @@ const LoginSignup = () => {
 
     return (
         <div className="login-signup-container">
+            <div className="description-container">
+                <h1>Projet Programmation</h1>
+                <div className="project-info">
+                    <div className='ls-transition'>
+                        <h3 onMouseOver={() => setIsHovered(true)} onMouseOut={() => setIsHovered(false)}>
+                            Réalisé par&nbsp;  
+                            <div className="text-container">
+                                <div className={`fade-text ${isHovered ? 'faded-out' : ''}`}> Groupe </div> 
+                                <div className={`fade-text ${isHovered ? '' : 'faded-out'}`}> Trisomie </div> 
+                            </div>
+                            <div className="number-21">21</div>
+                        </h3>
+                    </div>
+                    <div className='ls-separator-line'></div>
+                    <h5>REY Dorian</h5>
+                    <h5>MAUGER Florian</h5>
+                    <h5>BASILE Francesco-Pio</h5>
+                </div>
+            </div>
             <div className="login-container">
-                <h1>Login or Signup</h1>
+                <div className='lo-si'> <h1>Login or Signup</h1></div>
                 <input
                     type="text"
                     placeholder="Username"
@@ -72,7 +93,7 @@ const LoginSignup = () => {
                         onMouseOver={e => e.target.style.backgroundColor = '#0056b3'}
                         onMouseOut={e => e.target.style.backgroundColor = '#0066cc'}
                         onClick={login}
-                    >
+                    >   
                         Login
                     </button>
                     

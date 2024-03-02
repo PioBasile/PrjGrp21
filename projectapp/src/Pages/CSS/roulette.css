@@ -209,6 +209,7 @@ body.roulette {
     display: none;
     font: bold;
     font-size: 40px;
+    z-index: 1;
 }
 
 .popup.visible {
@@ -289,7 +290,6 @@ body.roulette {
 }
 
 
-
 .vertical-line {
     position: relative;
     width: 0;
@@ -304,5 +304,6 @@ body.roulette {
     /* Couleur du triangle (noir dans cet exemple) et hauteur */
     margin-left: 10px;
     /* Marge Ã  gauche du triangle (ajustez selon vos besoins) */
+    /* Marge à gauche du triangle (ajustez selon vos besoins) */
     z-index: 1;
 }

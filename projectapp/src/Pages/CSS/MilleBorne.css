@@ -1,0 +1,277 @@
+.MB-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(26, 42, 53);
+}
+
+.MB-adversaire-container-upper-bandeau {
+    padding-top: 2vh;
+    padding-left: 2vw;
+    padding-right: 2vw;
+    width: 100%;
+    height: 40vh;
+    display: flex;
+    justify-content: space-between;
+    /* background-color: rgb(33, 55, 70); */
+}
+
+.MB-exit-button{
+    position: absolute;
+    color: #e3e3e3;
+    font-size: 3vh;
+}
+
+.MB-info-button {
+    position: absolute;
+    color: #e3e3e3;
+    font-size: 3vh;
+    right: 0;
+    padding-right: 2vh;
+
+}
+
+.MB-adversaire-container{
+    width: 15vw;
+    display: flex;
+    flex-direction: column;
+    height: 34vh;
+    background: #e3e3e3; 
+    border-radius: 5px;
+    background-color: rgb(53, 67, 73);
+}
+
+.MB-advers-card-container{
+    padding-top: 1vh;
+    padding-bottom: 0.5vh;
+    display: flex;
+    justify-content: center;
+}
+
+.MB-adversaire-card{
+    display: flex;
+    flex-direction: column;
+    width: 98%;
+    height: 100%;
+    transform: translate(0.3vh, 0.3vh);
+    padding-top: 1vh;
+    background-color: rgb(26, 42, 53);
+    padding-left: 1vw;
+    border-radius: 5px;
+    padding-bottom: 0.5vh;
+}
+
+
+.MB-adversaire {
+    padding-top: 0.8vh;
+    border-radius: 15px;
+    width: 90%;
+    height: 8vh;
+    background: #f95959; 
+}
+.MB-player-name{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    font-size: 4vh;
+    font-weight: bold;
+    color: aliceblue;
+}
+
+.info-container {
+    padding-top: 0.3vh;
+    font-size: 1.7vh;
+    color:aliceblue;
+}
+
+.MB-p1 {    
+    transform: translateY(30vh);
+}
+
+.MB-p3 {
+    transform: translateY(30vh);
+}
+
+.green {
+    background-color: green;
+}
+
+.yellow {
+    background-color: rgb(157, 157, 39);
+}
+
+.gris {
+    background-color: rgb(76, 73, 73);
+    box-shadow: none;
+}
+
+.pink {
+    background-color: pink;
+}
+
+.gris:hover {
+ box-shadow: none;   
+}
+
+.card {
+    width: 7vh;
+    height: 10vh;
+    border: none;
+    background-color: transparent;
+
+}
+
+.glow {
+    box-shadow: 0 0 20px rgb(255, 255, 255);
+}
+
+.la-ou-on-pose-les-cartes-tmtc {
+    position: relative;
+    justify-content: space-between;
+    display: flex;
+    height: 30vh;
+}
+
+.middleCard-container{
+    justify-content: center;
+    position: relative;
+    display: flex;
+    width: 100%;
+    
+}
+
+
+.carte-milieu {
+    border: solid rgb(46, 138, 66) 5px;
+    margin-right: 2vw;
+}
+.pioche-container {
+    padding-top: 2.5vh;
+    position: relative;
+    display: flex;
+    height: 30vh;
+}
+
+.pioche {
+    background-color: rgb(238, 255, 255);
+    width: 17vh;
+    height: 25vh;
+    border-radius: 8px;
+    border : solid 5px green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5vh;
+    font-weight: 700;
+    /* box-shadow: 15px 0 rgb(2, 63, 2)
+     */
+     box-shadow: 15px 15px 0 #035d03;
+
+}
+
+/* 
+.trio{
+
+} */
+
+.MB-card-holder-container {
+    position: absolute;
+    display: flex;
+    bottom: 0;
+    width: 100%;
+    height: 29vh;
+    background-color: rgb(57, 107, 130);
+}
+
+.me-container {
+    top: 3vh;
+    position: relative;
+    left: 0.5%;
+    width: 20%;
+    height: 85%;
+    border-radius: 5px;
+    background-color: rgb(26, 42, 53);
+    padding-left: 1vh;
+    padding-right: 1vh;
+    padding-top: 0.5vw;
+    margin-bottom: 4vh;
+
+}
+.state-container {
+    display: flex;
+    width: 100%;
+}
+
+.my-card {
+    padding-top: 8%;
+    margin-right: 1vh;
+    width: 80%;
+    height: 10vh;
+    border-radius: 15px;
+}
+
+.MB-card-holder {
+    display: flex;
+    padding-top: 8vh;
+    margin-left: 5vw;
+    width: 90%;
+    height: 80%;
+
+}
+
+.myTurn {
+    box-shadow: rgb(60, 255, 0) 0px 0px 60px;
+}
+
+.player {
+    width: 7vw;
+    box-shadow: 0 0 40px rgb(46, 44, 44);
+}
+
+.player:hover{
+    transform: translateY(-20%);
+}
+
+.MB-message-container {
+    max-height: 27vh;
+
+}
+
+.MB-popup-container{
+position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: black;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.MB-popup {
+    position: absolute;
+    display: flex;
+    width: 40vw;
+    height: 23vh;
+    background-color: rgb(99, 132, 160);
+    justify-content: space-between;
+    padding-left: 1vh;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-right: 1vh;
+    border-radius: 10px;
+}
+
+.adversaire-card-selection {
+    justify-content: center;
+    text-align: center;
+    width: 29%;
+    border-radius: 25px;
+    padding-top: 10%;
+}
+
+.adversaire-card-selection:hover{
+    box-shadow: 0 0 20px rgb(255, 255, 255);
+}

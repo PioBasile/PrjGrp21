@@ -345,8 +345,7 @@ const Roulette = () => {
         </body>
     )
 
-
-
+    
 }
 
 export default Roulette;

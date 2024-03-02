@@ -1,0 +1,150 @@
+.item-shop-title {
+    text-align: center; /* Centre le titre horizontalement */
+    margin-top: 20px; /* Espacement au-dessus du titre */
+    margin-bottom: 40px; /* Espacement en dessous du titre, avant la grille d'items */
+    font-size: 24px; /* Taille de police appropriée */
+    color: #ffffff; /* Couleur de police discrète */
+    font-weight: normal; /* Poids de la police (ajustez selon vos préférences) */
+    font-family: 'Arial', sans-serif; /* Police de caractères (ajustez selon vos préférences) */
+}
+
+.separator-line {
+    height: 2px ; /* Épaisseur de la ligne */
+    background-color: black; /* Couleur de la ligne */
+    width: 80%; /* Largeur de la ligne, ajustez selon vos besoins */
+    margin: 5px auto; /* Espacement au-dessus et en dessous de la ligne, centrage horizontal */
+}
+
+.item-shop-container {
+    background-image: url("wooden-background.jpg");
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column; /* Change to column to allow for bottom-right nav buttons */
+    justify-content: center;
+    align-items: center;
+    position: relative; /* Needed for absolute positioning of nav buttons */
+}
+
+.item-shop {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:100px; /* Espacement entre les items */
+    padding: 20px; /* Space around the grid */
+    width: fit-content; /* Ensure the grid itself does not stretch too wide */
+}
+
+.item-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Espacement entre l'item et son info */
+    margin-bottom: 1px; /* Espacement entre les items */
+}
+
+.is-item {
+    border-radius: 10px; /* Arrondi les images */
+    overflow: hidden; /* Assure que les images arrondies ne dépassent pas */
+    width: 15vh; /* Ajustez en fonction des besoins spécifiques de vos images */
+    height: 20ch; /* Ajustez en fonction des besoins spécifiques de vos images */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ajoute une ombre pour du relief */
+    display: flex;
+    justify-content: center; /* Centre l'image horizontalement */
+    align-items: center; /* Centre l'image verticalement */
+}
+
+.is-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Assure que l'image couvre l'espace sans être déformée */
+    background-color: black;
+}
+
+.is-item-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background-color: rgb(21, 34, 47); /* Couleur dorée pour le conteneur */
+    color: #ffffff; /* Couleur de texte générale, ajustez selon vos préférences */
+    border: 1px solid #0b272f; /* Bordure dans un ton doré plus sombre pour du contraste */
+    border-radius: 10px; /* Augmentez le rayon pour des bords plus arrondis */
+    padding: 15px; /* Ajustement pour un peu plus d'espace interne */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre pour un effet de profondeur */
+    width: 20vh; /* Réduction de la largeur pour un conteneur plus compact */
+    margin-top: 10px; /* Espacement au-dessus du conteneur */
+    margin-bottom: 10px
+}
+
+.name-price-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.is-buy-button {
+    padding: 8px 16px; /* Ajustement de la taille du bouton */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px; /* Bords légèrement arrondis pour le bouton */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: auto; /* Ajustez en fonction de la taille du texte du bouton */
+    font-size: 16px; /* Taille de police pour le bouton */
+}
+
+.is-buy-button:hover {
+    background-color: #0056b3;
+}
+
+.is-gif-name {
+    font-weight: bold;
+    font-weight: bold; /* Nom de l'item en gras */
+    margin-bottom: 5px; /* Espacement entre le nom et le prix */
+}
+
+.is-gif-price {
+    color: #f30303; /* Couleur pour le prix, peut-être la couleur principale de votre thème */
+}
+
+.is-navigation {
+    position: absolute;
+    right: 20px;
+    bottom: 20px; /* Position at the bottom-right */
+}
+
+.nav-button {
+    padding: 20px 30px; /* Augmentez le padding pour agrandir les boutons */
+    margin-left: 10px; /* Espace entre les boutons */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    font-size: 18px; /* Augmentez la taille de police pour rendre le texte plus grand */
+    display: inline-block; /* Assurez-vous que les boutons se comportent correctement avec padding et font-size */
+    text-align: center; /* Centre le texte dans le bouton */
+}
+
+.is-page {
+    margin-top: 20px;
+    color: #00fbff; /* Choisissez une couleur qui s'harmonise avec votre design */
+    font-size: 18px; /* Ajustez la taille de la police selon vos besoins */
+    text-align: center; /* Centre l'affichage du numéro de page */
+}
+
+.is-moneyContainer {
+    padding-top: 10px;
+    left: 0; /* Ajusté pour aligner à gauche */
+    top: 0; /* Ajusté pour aligner en haut */
+    font-size: 300%;
+    width: 200px;
+    height: 100px;
+    background-color: beige;
+    position: absolute;
+    text-align: center;
+    border-radius: 19px;
+}

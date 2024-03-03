@@ -1,0 +1,189 @@
+.BM-container {
+    position: relative;
+    display: flex;
+    background-color: rgb(18, 55, 75);
+    width: 100vw;
+    height: 100vh;
+}
+
+.BM-profil {
+    left: 0;
+    height: 100vh;
+    width: 11vw;
+    z-index: 1;
+    background-color: rgb(27, 36, 45);
+    transition: width 0.5s ease;
+    border-right: solid white 3px;
+}
+
+.BM-profil:hover{
+    width: 67%;
+}
+
+.hide {
+    opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.BM-profil:hover .hide{
+    opacity: 1;
+}
+
+.profil {
+    width: 100px;
+    height: 100px;
+    
+    background-image: url("./userIcon.png");
+    background-repeat: no-repeat;
+}
+
+.BM-serverList-container {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    width: 33%;
+    background-color: rgb(27, 36, 45);
+    z-index: 1;
+    padding-left: 6.5vh;
+    padding-top: 9vw;
+    border-left: solid rgb(255, 255, 255) 2px;
+}
+
+.BM-server {
+    scroll-behavior: auto;
+    margin-bottom: 35px;
+    margin-top: 35px;
+    background-color:rgb(92, 125, 154);
+    transition: background-color 1s ease;
+    width: 350px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3vh;
+    color:rgb(255, 255, 255);
+    border: solid gray 3px;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+
+.MB-h2 {
+    top: 3vh;
+    padding-top: 1vh;
+    left: 30%;
+    padding-bottom: 1vh;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    position: absolute;
+    color: aliceblue;
+    border: solid gray;
+    border-radius: 10px;
+}
+
+.MB-profil {
+    position: relative;
+    left: 0;
+    margin-left: 10%;
+    margin-right: 10%;
+    text-align: center;
+    overflow: visible;
+}
+
+.BM-info-profil {
+    position: relative;
+    top: 10vh;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: auto;
+    width: 80%;
+    height: 10%;
+    background-color: rgb(255, 255, 255);
+    color:rgb(42, 40, 40);
+    font-size: 2vh;
+    border-radius: 25px;
+    margin-bottom: 30px;
+    margin-top: 5vh;
+    padding-left: 1vh;
+    border: solid gray 3px;
+}
+
+
+
+.BM-input-container {
+    top: 20vh;
+    padding-top: 1vh;
+    left: 25%;
+    padding-bottom: 1vh;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    position: absolute;
+    color: aliceblue;
+    border-radius: 10px;
+}
+
+.BM-input {
+    display: flex;
+    align-items: center;
+    margin: auto;
+    width: 450px;
+    height: 80px;
+    background-color: rgb(255, 255, 255);
+    color:gray;
+    font-size: 2vh;
+    border-radius: 25px;
+    margin-bottom: 30px;
+    padding-left: 1vh;
+    border: solid gray 3px;
+}
+
+.gameNameMargin {
+    margin-top: 100px;
+}
+
+.BM-creerButton-container {
+    top: 80vh;
+    padding-top: 1vh;
+    left: 32%;
+    padding-bottom: 1vh;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    position: absolute;
+    color: aliceblue;
+    border-radius: 10px;
+}
+
+.BM-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 15vw;
+    height: 8vh;
+    border: none;
+    background-color: green;
+    border-radius: 35px;
+    font-size: 4vh;
+}
+
+.BM-button:hover{
+    background-color: rgb(16, 89, 16);
+}
+
+
+.element-container {
+    position: relative;
+    display: inline-block;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .element-container.visible {
+    transform: scale(1.1);
+}
+
+.BM-server:hover{
+    background-color: green;
+}
+  
+
+  

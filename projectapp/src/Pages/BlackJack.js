@@ -115,7 +115,7 @@ const BlackJack = () => {
     }
 
     function getCardImage(card) {
-        const cardImagesFolder = "./CSS/PNG-cards-1.3/";  
+        const cardImagesFolder = "./CSS/PNG-cards-1.3/";
         const translateSymbol = cardTranslate(card.symbole);
         return `${cardImagesFolder}${card.number}_of_${translateSymbol}.png`;
     }
@@ -140,7 +140,7 @@ const BlackJack = () => {
                 <div className='dealerCard'>
                     {[...Array(5)].map((key, index) => (
                         <div className='card'>
-                            <img src={as_diamonds}></img>
+                            <img src={as_diamonds} className="card"></img>
                         </div>
                     ))}
                 </div>
@@ -157,7 +157,7 @@ const BlackJack = () => {
                             {/* remplacer le .map par la liste des cartes du joueurs */}
                             {[...Array(7)].map((key, index) => (
                                 <div className={`card card${index + 1}`}>
-                                    <img src={as_diamonds} ></img>
+                                    <img src={as_diamonds} className={"card"}></img>
                                 </div>
 
 
@@ -170,7 +170,7 @@ const BlackJack = () => {
                             {[...Array(7)].map((key, index) => (
                                 <div>
                                     <div className={`card card${index + 1}`}>
-                                        <img src={as_diamonds} ></img>
+                                        <img src={as_diamonds} className={"card"}></img>
                                     </div>
 
                                 </div>

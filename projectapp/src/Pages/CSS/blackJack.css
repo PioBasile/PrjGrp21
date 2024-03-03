@@ -287,8 +287,10 @@
 
 
 .chat-container {
+    position: absolute;
     border-radius: 100px;
     bottom: 0;
+    border-radius: 15px;
 }
 
 .message-container {

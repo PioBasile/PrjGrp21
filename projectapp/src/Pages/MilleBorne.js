@@ -19,7 +19,7 @@ const MilleBorne = () => {
     const navigate = useNavigate();
 
     const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState(["CHAT", "CHAT" ,"CHAT" ,"CHAT"]);
     const [serverMessage, setServerMessage] = useState([]);
 
     const [isPopUp, setIsPopUp] = useState(false);
@@ -225,10 +225,10 @@ const MilleBorne = () => {
                         </div>
                         <div className='MB-advers-card-container'>
                             <div className='card'>
-                                <img alt='' src={allCard[getCard(player.state)]} className="glow" />
+                                <img alt='' src={allCard[getCard(player.state)]} className="glow card" />
                             </div>
                             <div className='card'>
-                                <img alt='' src={isLimited ? allCard[getCard("limit")] : allCard[getCard("unlimited")]} ></img>
+                                <img alt='' src={isLimited ? allCard[getCard("limit")] : allCard[getCard("unlimited")] }  className="glow card"></img>
                             </div>
                         </div>
                     </div>
@@ -254,10 +254,10 @@ const MilleBorne = () => {
                             <div className='MB-player-name'> {sessionStorage.getItem("name")}</div>
                         </div>
                         <div className='card own'>
-                            <img alt='' src={allCard[getCard(state)]} ></img>
+                            <img alt='' src={allCard[getCard(state)]}  className='card own'></img>
                         </div>
                         <div className='card own'>
-                            <img alt='' src={isLimited ? allCard[getCard("limit")] : allCard[getCard("unlimited")]} ></img>
+                            <img alt='' src={isLimited ? allCard[getCard("limit")] : allCard[getCard("unlimited")]}  className='card own'></img>
                         </div>
                     </div>
 
@@ -271,8 +271,8 @@ const MilleBorne = () => {
 
                 <div className='MB-card-holder'>
                     {deck.map((carte) => (
-                        <div className='card player' onClick={() => myTurn ? playCard(carte) : null}>
-                            <img alt='' src={allCard[getCard(carte)]} className=""></img>
+                        <div className="card  player" onClick={() => myTurn ? playCard(carte) : null}>
+                            <img alt='' src={allCard[getCard(carte)]} className="player-card"></img>
                         </div>)
                     )}
                 </div>
@@ -292,7 +292,6 @@ const MilleBorne = () => {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             placeholder="Type message..."
-                        // onFocus={changeOpacity}
                         />
                     </div>
 

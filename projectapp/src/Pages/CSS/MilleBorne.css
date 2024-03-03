@@ -13,7 +13,6 @@
     height: 40vh;
     display: flex;
     justify-content: space-between;
-    /* background-color: rgb(33, 55, 70); */
 }
 
 .MB-exit-button{
@@ -28,7 +27,6 @@
     font-size: 3vh;
     right: 0;
     padding-right: 2vh;
-
 }
 
 .MB-adversaire-container{
@@ -118,11 +116,14 @@
     height: 10vh;
     border: none;
     background-color: transparent;
-
 }
 
 .glow {
     box-shadow: 0 0 20px rgb(255, 255, 255);
+}
+
+.player-card {
+    height: 20vh;
 }
 
 .la-ou-on-pose-les-cartes-tmtc {
@@ -163,16 +164,9 @@
     align-items: center;
     font-size: 5vh;
     font-weight: 700;
-    /* box-shadow: 15px 0 rgb(2, 63, 2)
-     */
      box-shadow: 15px 15px 0 #035d03;
 
 }
-
-/* 
-.trio{
-
-} */
 
 .MB-card-holder-container {
     position: absolute;
@@ -211,10 +205,11 @@
 }
 
 .MB-card-holder {
+    justify-content: space-between;
     display: flex;
     padding-top: 8vh;
     margin-left: 5vw;
-    width: 90%;
+    width: 50%;
     height: 80%;
 
 }
@@ -233,8 +228,7 @@
 }
 
 .MB-message-container {
-    max-height: 27vh;
-
+    max-height: 100vh;
 }
 
 .MB-popup-container{

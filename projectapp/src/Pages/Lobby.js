@@ -49,7 +49,7 @@ const Lobby = () => {
 
   const handleDisconnectClick = () => {
     socket.emit('deco_lobby', sessionStorage.getItem("serverConnected"), sessionStorage.getItem('name'));
-    navigate('/ServerBrowser');
+    navigate('/BrowserManager');
   };
 
   const handleStart = () => {
@@ -68,7 +68,7 @@ const Lobby = () => {
   useEffect(() => {
 
     if(sessionStorage.getItem('serverConnected')==="-1"){
-      navigate("/ServerBrowser");
+      navigate("/BrowserManager");
     }
 
     // GESTION stabilité de la connection
@@ -128,7 +128,7 @@ const Lobby = () => {
     socket.on('disconected', (name) => {
 
       if(sessionStorage.getItem("name") === name){
-        navigate('/ServerBrowser');
+        navigate('/BrowserManager');
 
       }
 

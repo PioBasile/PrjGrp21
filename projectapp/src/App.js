@@ -10,6 +10,7 @@ import SixQuiPrend from "./Pages/jeuSQP.js"
 import Roulette from "./Pages/Roulette.js"
 import MilleBorne from "./Pages/MilleBorne";
 import socket from './socketG';
+import NewBrowserManager from './Pages/NewBrowserManager'
 import { NavbarText } from "react-bootstrap";
 
 function App() {
@@ -74,12 +75,12 @@ function App() {
                 <Route path="/roulette" element={<Roulette/>} />
                 <Route path="/sqp" element={<SixQuiPrend/>} />
                 <Route path="/login-signup" element={<LoginSignup/>} />
-                <Route path='/ServerBrowser' element={<BrowserAccountManager/>} />
                 <Route path='/Lobby' element={<Lobby/>}/>
                 <Route path="/batail_ouverte" element={<JeuBataille/>} />
                 <Route path="/winner" element={<VictoryScreen/>} />
                 <Route path="/" element={<Navigate to="/start" replace />} />
                 <Route path="/mb" element={<MilleBorne></MilleBorne>}/>
+                <Route path="/BrowserManager" element={<NewBrowserManager></NewBrowserManager>}/>
             </Routes>
         </Router>
     );

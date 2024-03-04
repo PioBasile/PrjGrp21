@@ -328,6 +328,8 @@ io.on('connection', (socket) => {
       owner = lobby.owner;
       let plist = [];
 
+      console.log(lobby.gameType );
+
       lobby.playerList.forEach((player) => {
 
         plist.push(new Player(player.username,player.cookie))
@@ -350,7 +352,6 @@ io.on('connection', (socket) => {
       } 
 
 
-      //CHANGE SOME STUFF HERE TO
   
       else if (lobby.gameType === "mb") {
   
@@ -577,6 +578,7 @@ io.on('connection', (socket) => {
     
     socket.on('6update', (username,gameID) => {
 
+      console.log("sqp pas normal ici");
       game = findGame(gameID,TaureauGames);
       player = findPlayer(username,game.player_list);
 

@@ -48,6 +48,7 @@ const findWaitingPlayer = (username, plist) => {
 const findPlayer = (username, plist) => {
 
   let player = 0;
+  console.log(plist);
   plist.forEach((elem) => {
     if (elem.name == username) { player = elem }
   });

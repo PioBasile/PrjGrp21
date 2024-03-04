@@ -21,9 +21,7 @@ const MilleBorne = () => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState(["CHAT", "CHAT" ,"CHAT" ,"CHAT"]);
     const [serverMessage, setServerMessage] = useState([]);
-
     const [isPopUp, setIsPopUp] = useState(false);
-
     const [playerList, setPlayerList] = useState([]);
     const [deck, setDeck] = useState([]);
     const [myTurn, setMyTurn] = useState(false);
@@ -32,48 +30,63 @@ const MilleBorne = () => {
     const [state, setState] = useState("roll");
     const [isLimited, setIsLimited] = useState(false)
     const [color, setColor] = useState("");
-
     const [middleCard, setMiddleCard] = useState("roll");
     const [currentCard, setCurrentCard] = useState("");
-
     const [nbCards, setNbCards] = useState(0);
-
     const [test, setTest] = useState("");
-
-
     const [isVisible, setIsVisible] = useState(false);
-
     const getCard = (card) => {
         return cartes.indexOf(card);
     }
-
     const sendMessage = () => {
         alert("message")
     }
 
     useEffect(() => {
+
+        let mounted = true;
+        let failed = false;
+
+        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected")  == null) {
+             navigate("/login-signup"); 
+             failed = true;
+            }
+        if(mounted && !failed){
+
         socket.emit('join', sessionStorage.getItem('serverConnected'));
         socket.emit("MB-whatMyInfo", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
         socket.emit("MB-whatMyOpponent", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
         socket.emit("MB-nbCard", sessionStorage.getItem("serverConnected"));
         socket.emit("whatTheOrder", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
         socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
-        socket.emit("getServ");
+        }
+
+        return () => {
+            mounted = false;
+          }
     }, [])
 
 
     useEffect(() => {
+
+        let mounted = true;
+        let failed = false;
+
+        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected")  == null) {
+             navigate("/login-signup"); 
+             failed = true;
+            }
+        if(mounted && !failed){
+
         socket.on("getUpdate", () => {
             socket.emit("MB-whatMyOpponent", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
             socket.emit("MB-whatMyState", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
             socket.emit("MB-nbCard", sessionStorage.getItem("serverConnected"));
             socket.emit("whatMyTurn", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-        })
-
+        });
         socket.on("MB-opponent", (oppoList) => {
             setPlayerList(oppoList);
-        })
-
+        });
         socket.on('MB-playerInfo', (data) => {
             setDeck(data.deck);
             setMyPoints(data.nbPoints);
@@ -81,38 +94,26 @@ const MilleBorne = () => {
             setState(data.state);
             setIsLimited(data.isLimited)
             setColor(data.color);
-        })
-
+        });
         socket.on("chooseVictim", () => {
             setIsPopUp(true);
-        })
-
+        });
         socket.on("updateMiddleCard", (data) => {
             setMiddleCard(data.card);
-        })
-
-        socket.on("newState", (playerState) => {
-
-            setState(playerState);
-
-        })
-
+        });
         socket.on("MB-getNbCards", (deckLength) => {
             setNbCards(deckLength);
-        })
-
+        });
         socket.on("myTurn", (bool) => {
             setMyTurn(bool);
-        })
-
+        });
         socket.on("newState", (newState) => {
             console.log(newState, state)
             setState(newState);
             setTest(newState)
             console.log(test);
             console.log(newState, state)
-        })
-
+        });
         socket.on('MB_FIN', (winner) => {
 
             sessionStorage.setItem('winners', winner);
@@ -120,12 +121,26 @@ const MilleBorne = () => {
 
 
         });
-
         socket.on("attacked", (playerAttacked) => {
             if (playerAttacked === sessionStorage.getItem("name")) {
                 setIsVisible(true);
             }
-        })
+        });
+
+        }
+        return () => {
+            mounted = false;
+            socket.off('getUpdate');
+            socket.off('MB-opponent');
+            socket.off('MB-playerInfo');
+            socket.off('chooseVictim');
+            socket.off('updateMiddleCard');
+            socket.off('newState');
+            socket.off('MB-getNbCards');
+            socket.off('myTurn');
+            socket.off('MB_FIN');
+            socket.off('attacked');
+        }
     }, []);
 
 
@@ -178,6 +193,7 @@ const MilleBorne = () => {
     document.addEventListener('DOMContentLoaded', function () {
 
         let chatContainer = document.getElementById("chatContainer");
+        if(chatContainer == null){return 0;}
 
         function getElementId(event) {
             var clickedElementId = event.target.id;

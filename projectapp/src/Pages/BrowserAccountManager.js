@@ -214,6 +214,7 @@ const BrowserAccountManager = () => {
               <option value="">Type de jeu</option>
               <option value="batail_ouverte">Bataille Ouverte</option>
               <option value="sqp">Six qui prend</option>
+              <option value="mb">Mille Borne</option>
             </select>
             <div className="select-arrow"></div>
           </div>

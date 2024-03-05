@@ -111,19 +111,18 @@
  box-shadow: none;   
 }
 
-.card {
-    width: 7vh;
-    height: 10vh;
-    border: none;
-    background-color: transparent;
-}
-
 .glow {
     box-shadow: 0 0 20px rgb(255, 255, 255);
 }
 
 .player-card {
     height: 20vh;
+    margin-right: 0.5vw;
+    transition: transform 0.3s ease;
+}
+
+.player-card:hover {
+    transform: translateY(-10%);
 }
 
 .la-ou-on-pose-les-cartes-tmtc {

@@ -1,5 +1,5 @@
 
-import { useEffect, useState  } from "react";
+import { useEffect, useState } from "react";
 import ServerList from "./ServerList";
 import { useNavigate } from 'react-router-dom';
 import './CSS/BrowerManager.css';
@@ -43,7 +43,7 @@ const BrowserAccountManager = () => {
   }
 
   useEffect(() => {
-    
+
     socket.emit('askStat', sessionStorage.getItem("name"));
 
     // GESTION stabilité de la connection
@@ -55,7 +55,7 @@ const BrowserAccountManager = () => {
 
   useEffect(() => {
     let mounted = true;
-    
+
     // GESTION stabilité de la connection
 
     if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
@@ -101,7 +101,7 @@ const BrowserAccountManager = () => {
     if (nbPlayerMax === "" || nbPlayerMax < 1) { return 0; }
     socket.emit("newServer", serverName, nbPlayerMax, isPrivate, password, gameType, sessionStorage.getItem('name'));
     setAction("Server List");
-    handleClose(); 
+    handleClose();
   };
 
 
@@ -180,19 +180,11 @@ const BrowserAccountManager = () => {
         {action === "Create Server" ? <div className="inputs">
           <div className='input'>
             <label htmlFor="serverName"> </label>
-            <input
-              placeholder='server name'
-              type="text"
-              id="serverName"
-              value={serverName}
-              onChange={(e) => {
-                setServerName(e.target.value);
-              }}
-            />
+            <input placeholder='server name' type="text" id="serverName" value={serverName}onChange={(e) => {setServerName(e.target.value);}}/>
           </div>
           <div className='input'>
             <label htmlFor="nbPlayerMax"></label>
-            <input type="number" placeholder= "nbPlayer" id="nbPlayerMax" value={nbPlayerMax} onChange={(e) => setNbPlayerMax(e.target.value)} />
+            <input type="number" placeholder="nbPlayer" id="nbPlayerMax" value={nbPlayerMax} onChange={(e) => setNbPlayerMax(e.target.value)} />
           </div>
           <div className="checkbox-container">
             <label htmlFor="isPrivate" className='text-white'>
@@ -205,7 +197,7 @@ const BrowserAccountManager = () => {
           {isPrivate && (
             <div className="input">
               <label htmlFor="password"></label>
-              <input type="password" id="password"  placeholder='password' value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input type="password" id="password" placeholder='password' value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
           )}
           <div className='select-container'>

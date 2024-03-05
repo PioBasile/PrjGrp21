@@ -3,3 +3,6 @@ npm install sqlite3
 npm install socket.io 
 cd projectapp 
 npm install react-scripts -f
+cd ..
+chmod +x linuxQuickStart
+./linuxQuickStart

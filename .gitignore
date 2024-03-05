@@ -8,3 +8,7 @@ projectapp/package.json
 
 projectapp/build
 user.db
+WindowsInstall.bat
+windowsQuickStart.bat
+linuxQuickStart
+linuxInstall

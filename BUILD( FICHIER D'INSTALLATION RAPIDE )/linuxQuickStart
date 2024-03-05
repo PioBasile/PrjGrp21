@@ -1,0 +1,5 @@
+cd ..
+code .
+gnome-terminal -- node server.js
+cd projectapp
+gnome-terminal -- npm run start

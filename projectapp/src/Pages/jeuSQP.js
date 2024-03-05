@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import socket from '../socketG';
 import './CSS/jeuSQP.css'
-import backCard from './CSS/sqpBack.jpg'
+import backCard from './CSS/pics/sqpBack.jpg'
 
 
 
@@ -12,7 +12,7 @@ const SixQuiPrend = () => {
   const cartes = [];
 
   for (let i = 1; i <= 104; i++) {
-    const cheminImage = require(`./CSS/cartes6/${i}.svg`);
+    const cheminImage = require(`./CSS/svgs/cartes6/${i}.svg`);
     cartes.push(cheminImage);
   }
   //eslint-disable-next-line

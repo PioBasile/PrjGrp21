@@ -5,8 +5,8 @@ import './CSS/blackJack.css'
 
 
 const BlackJack = () => {
-    const exitButton = require("./CSS/exit.png");
-    const user = require("./CSS/user.svg")
+    const exitButton = require("./CSS/pics/exit.png");
+    const user = require("./CSS/svgs/user.svg")
     const betBool = useState(true);
     const piocheBool = useState(false);
     const resterBool = useState(true);
@@ -18,8 +18,8 @@ const BlackJack = () => {
 
     const decksSelected = useState([]);
 
-    const as_hearts = require("./CSS/PNG-cards-1.3/ace_of_hearts.png");
-    const as_diamonds = require("./CSS/PNG-cards-1.3/ace_of_diamonds.png");
+    const as_hearts = require("./CSS/pics/PNG-cards-1.3/ace_of_hearts.png");
+    const as_diamonds = require("./CSS/pics/PNG-cards-1.3/ace_of_diamonds.png");
 
     const handlePioche = () => {
 

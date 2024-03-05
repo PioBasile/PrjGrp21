@@ -12,7 +12,7 @@ const MilleBorne = () => {
     const cartes = ["crash", "empty", "flat", "limit", "stop", "repair", "gas", "spare", "unlimited", "roll", 'tanker', 'sealant', 'emergency', 'ace', 25, 50, 75, 100, 200, 'back'];
 
     for (let carte of cartes) {
-        const cheminImage = require(`./CSS/MilleBornes-card-SVG/MB-${carte}.svg`);
+        const cheminImage = require(`./CSS/svgs/MilleBornes-card-SVG/MB-${carte}.svg`);
         allCard.push(cheminImage);
     }
 

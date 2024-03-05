@@ -2,7 +2,7 @@
     position: relative;
     display: flex;
     background-size: cover;
-    background-image: url("9999520.jpg");
+    background-image: url("pics/9999520.jpg");
     width: 100vw;
     height: 100vh;
 }
@@ -12,7 +12,7 @@
     height: 100vh;
     width: 3%;
     z-index: 1;
-    background-image: url("9999520.jpg");
+    background-image: url("pics/9999520.jpg");
     background-size: cover;
     transition: width 0.5s ease;
     /* border-right: solid white 3px; */

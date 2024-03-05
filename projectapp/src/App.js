@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes,Navigate } from "react-router-dom";
-import Start from "../src/Pages/start";
+import Start from "./Pages/Start.js";
 import LoginSignup from "../src/Pages/Login-signup";
 import BrowserAccountManager from './Pages/BrowserAccountManager.js';
 import Lobby from './Pages/Lobby.js'
@@ -12,7 +12,7 @@ import MilleBorne from "./Pages/MilleBorne";
 import socket from './socketG';
 import NewBrowserManager from './Pages/NewBrowserManager'
 import BlackJack from "./Pages/BlackJack";
-import { NavbarText } from "react-bootstrap";
+import ItemShop from "./Pages/ItemShop.js";
 
 function App() {
 
@@ -77,12 +77,13 @@ function App() {
                 <Route path="/sqp" element={<SixQuiPrend/>} />
                 <Route path="/login-signup" element={<LoginSignup/>} />
                 <Route path='/Lobby' element={<Lobby/>}/>
-                <Route path="/batail_ouverte" element={<JeuBataille/>} />
+                <Route path="/bataile_ouverte" element={<JeuBataille/>} />
                 <Route path="/winner" element={<VictoryScreen/>} />
                 <Route path="/" element={<Navigate to="/start" replace />} />
                 <Route path="/mb" element={<MilleBorne></MilleBorne>}/>
                 <Route path="/BrowserManager" element={<NewBrowserManager></NewBrowserManager>}/>
                 <Route path="/blackJack" element={<BlackJack></BlackJack>}/>
+                <Route path="/itemshop" element={<ItemShop></ItemShop>}/>
             </Routes>
         </Router>
     );

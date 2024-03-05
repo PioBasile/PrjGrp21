@@ -1,5 +1,5 @@
 body {
-    background-image: url('login-signup.png');
+    background-image: url('pics/login-signup.png');
     background-size: cover;
   }
   .vide {
@@ -206,7 +206,7 @@ body {
     margin-top: 195px;
     border-radius: 15px;
     margin: auto;
-    background-image: url('background.png');
+    background-image: url('pics/background.png');
     background-size: cover;
     width: 850px;
     height: 450px;
@@ -280,7 +280,7 @@ body {
     height: 210px;
     width: 130px;
     border-radius: 15px;
-    background-image: url('37d253f05b4587d6ef34ab16d942fcb9.jpg');
+    background-image: url('pics/37d253f05b4587d6ef34ab16d942fcb9.jpg');
     background-size: cover;
     perspective: 1000px;
   }

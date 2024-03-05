@@ -2,7 +2,7 @@ import React, { useState, /*useEffect */} from 'react';
 import './CSS/ItemShop.css';
 
 const ItemShop = () => {
-    const gif= require("./CSS/cartes6/1.svg");
+    const gif= require("./CSS/svgs/cartes6/1.svg");
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(6); 
     const [money, setMoney] = useState(1000);

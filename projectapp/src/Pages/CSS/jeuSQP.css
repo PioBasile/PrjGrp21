@@ -1,5 +1,6 @@
 .six-container {
-    background-color: #b0814f;
+    background-image: url('pics/wooden-background.jpg');
+    background-size: auto;
     height: 100vh;
     width: 200vh;
 }
@@ -40,7 +41,7 @@
     align-items: center; /* Centre verticalement les cartes à l'intérieur */
     width: 900px; /* Largeur du conteneur, ajustez selon vos besoins */
     height: 150px; /* Hauteur du conteneur, ajustez selon vos besoins */
-    background-image: url('9999520.jpg');
+    background-image: url('pics/9999520.jpg');
     margin: 0 auto; /* Centre le card-holder dans la page */
     padding: 20px; /* Espace autour des cartes */
     border: 1px solid #ccc; /* Bordure du card-holder */
@@ -92,7 +93,7 @@
     align-items: center; /* Centre verticalement les cartes à l'intérieur */
     width: 900px; /* Largeur du conteneur, ajustez selon vos besoins */
     height: 150px; /* Hauteur du conteneur, ajustez selon vos besoins */
-    background-image: url('9999520.jpg');
+    background-image: url('pics/9999520.jpg');
     margin: 0 auto; /* Centre le card-holder dans la page */
     padding: 20px; /* Espace autour des cartes */
     border: 1px solid #ccc; /* Bordure du card-holder */
@@ -210,7 +211,7 @@ button {
     right: 25ch;
     top: 30vh;
     flex-wrap: wrap; /* Permet aux éléments de passer à la ligne */
-    background-image: url('9999520.jpg');
+    background-image: url('pics/9999520.jpg');
   }
   
   img {

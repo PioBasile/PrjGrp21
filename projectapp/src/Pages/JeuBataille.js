@@ -9,7 +9,6 @@ const JeuBataille= () => {
 
     const [playerCards, setPlayerCards] = useState([]);
     const [selectedCards, setSelectedCards] = useState([]);
-    const [initialDeckEmitted, setInitialDeckEmitted] = useState(false);
     const [oldSelect, setOldSelect] = useState(null);
     const [opponents, setOpponents] = useState([]);
     const [scoreboard, setScore] = useState({});
@@ -70,29 +69,53 @@ const JeuBataille= () => {
 
     useEffect(() => {
 
+        let mounted = true;
+        let failed = false;
+
+        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected")  == null) {
+             navigate("/login-signup"); 
+             failed = true;
+            }
+        if(mounted && !failed){
+
         // GESTION stabilité de la connection
         socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
-        socket.emit("getServ");
 
         socket.on('getMessage', (msg) => {
             console.log("msg : ", msg);
             setMessages((prevMessages) => [...prevMessages, msg]);
         });
+
+        socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+        socket.emit('join', sessionStorage.getItem('serverConnected'));
+        socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
+
+        }
+        return () => {
+            mounted = false;
+            socket.off("getMessage");
+          }
     
       }, [setMessage])
 
     useEffect(() => {
 
-        if (!initialDeckEmitted) {
-          socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
-          socket.emit('join', sessionStorage.getItem('serverConnected'));
-          socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
-          setInitialDeckEmitted(true);
-        }
+        let mounted = true;
+        if(mounted){
+        // GESTION stabilité de la connection
+                socket.on("deco", (name) => {
+
+                    navigate("/login-signup");
+                
+                });
+
+        // -----------------
     
         socket.on("Deck", (deck) => {
           setPlayerCards(deck);
         });
+
+        
 
 
         socket.on("getInfo", (game) => {
@@ -159,13 +182,17 @@ const JeuBataille= () => {
             setSelectedCards([]);
         });
 
-        return () => {
+        }
+
+        return () => {  
+          mounted = false;
           socket.off("Deck");
           socket.off("getInfo");
           socket.off("Winner");
           socket.off("Draw");
+          socket.off("FIN");
         };
-      }, [initialDeckEmitted,navigate]);
+      }, [navigate]);
 
 
     //return

@@ -11,6 +11,7 @@ import Roulette from "./Pages/Roulette.js"
 import MilleBorne from "./Pages/MilleBorne";
 import socket from './socketG';
 import NewBrowserManager from './Pages/NewBrowserManager'
+import BlackJack from "./Pages/BlackJack";
 import { NavbarText } from "react-bootstrap";
 
 function App() {
@@ -81,6 +82,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/start" replace />} />
                 <Route path="/mb" element={<MilleBorne></MilleBorne>}/>
                 <Route path="/BrowserManager" element={<NewBrowserManager></NewBrowserManager>}/>
+                <Route path="/blackJack" element={<BlackJack></BlackJack>}/>
             </Routes>
         </Router>
     );

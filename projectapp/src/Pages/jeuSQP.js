@@ -183,24 +183,42 @@ const SixQuiPrend = () => {
 
   useEffect(() => {
 
+    let mounted = true;
+    let failed = false;
+
+    if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected")  == null) {
+          navigate("/login-signup"); 
+          failed = true;
+        }
+    if(mounted && !failed){
+
     socket.emit('join', sessionStorage.getItem('serverConnected'));
     socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
-
-    // GESTION stabilité de la connection
     socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
-    socket.emit("getServ");
+    }
 
+    return () => {
+      mounted = false;
+    }
   }, [])
 
 
   useEffect(() => {
+
+    let mounted = true;
+        let failed = false;
+
+        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected")  == null) {
+             navigate("/login-signup"); 
+             failed = true;
+            }
+        if(mounted && !failed){
 
     let deckmem;
     socket.on("Deck", (deck) => {
       setPlayerCards(deck);
       deckmem = deck;
     });
-
     socket.on('Row', (rowL) => {
 
       setBox1Container(rowL[0]);
@@ -209,7 +227,6 @@ const SixQuiPrend = () => {
       setBox4Container(rowL[3]);
 
     });
-
     socket.on('6oppo', (oppo) => {
 
       setOpponents(oppo);
@@ -225,23 +242,16 @@ const SixQuiPrend = () => {
       });
 
     });
-
-
     socket.on('cartesDroite', (cards) => {
 
       setCardInWaiting(cards);
 
     });
-
-
     socket.on('phase2', () => {
       setMyTurn(false);
       setAllPlayerSelected(true);
 
     });
-
-
-
     socket.on('phase1', () => {
       setAllPlayerSelected(false);
       setMyTurn(true);
@@ -250,8 +260,6 @@ const SixQuiPrend = () => {
       socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
 
     });
-
-
     socket.on("nextPlayer", (payload) => {
 
       if (payload.name === sessionStorage.getItem('name')) {
@@ -264,8 +272,6 @@ const SixQuiPrend = () => {
       }
 
     });
-
-
     socket.on('FIN', (winner) => {
 
       console.log(JSON.parse(JSON.stringify(winner)).name);
@@ -273,8 +279,9 @@ const SixQuiPrend = () => {
       navigate("/winner");
 
     });
-
     socket.on('timerDown', () => {
+
+
    
       setSeconds(prevSeconds => {
           if (prevSeconds === 0 || !myTurn) {
@@ -289,34 +296,38 @@ const SixQuiPrend = () => {
 
       });
   });
-    
-
-
-    // TAB 
-    const handleKeyDown = (e) => {
-      if (e.key === "Tab") {
-        e.preventDefault(); // Empêche le comportement par défaut de la touche Tab
-        setIsVisible(true);
-      }
-    };
-
-    const handleKeyUp = (e) => {
-      if (e.key === "Tab") {
-        setIsVisible(false);
-      }
-    };
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
-
+}
     return () => {
+      mounted = false;
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
       socket.off('timerDown');
+      socket.off('Deck');
+      socket.off('Row');
+      socket.off('6oppo');
+      socket.off('cartesDroite');
+      socket.off('phase2');
+      socket.off('phase1');
+      socket.off('FIN');
+      socket.off('nextPlayer');
     };
   }, [isVisible,navigate,myTurn,selected]);
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Tab") {
+      e.preventDefault(); // Empêche le comportement par défaut de la touche Tab
+      setIsVisible(true);
+    }
+  };
 
+  const handleKeyUp = (e) => {
+    if (e.key === "Tab") {
+      setIsVisible(false);
+    }
+  };
 
 
   return (

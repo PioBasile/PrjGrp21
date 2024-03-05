@@ -3,12 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import socket from '../socketG';
 import './CSS/NewBrowserManager.css'
 
-
-
-
-
-
-
 const NewBrowserManager = () => {
 
     const [mesLobby, setMesLobby] = useState([]);
@@ -20,6 +14,8 @@ const NewBrowserManager = () => {
     const [nbPlayerMax, setNbPlayerMax] = useState(2);
     const [isPrivate, setIsPrivate] = useState(false);
     const [password, setPassword] = useState('');
+    const [gamePassword, setGamePassword] = useState("");
+
     const [gameType, setGameType] = useState('');
     const [nbGame, setNbGame] = useState('0');
     const [nbWin, setNbWin] = useState('0');
@@ -43,6 +39,7 @@ const NewBrowserManager = () => {
     };
 
     const handleClick = (Id, server) => {
+        console.log(password, server.password);
         if (server.isPrivate && password !== server.password) {
             return;
         }
@@ -58,7 +55,7 @@ const NewBrowserManager = () => {
     }
 
     useEffect(() => {
-        
+
 
         socket.emit('askStat', sessionStorage.getItem("name"));
 
@@ -111,8 +108,8 @@ const NewBrowserManager = () => {
 
     const isServerPrivate = () => {
         console.log(password);
-        if (password === "") return true
-        else return false
+        if (password === "") return false
+        else return true
     }
 
 
@@ -125,15 +122,15 @@ const NewBrowserManager = () => {
         setGameType("");
         setNbPlayerMax(2);
         setServerName("");
-        setPassword("");  
+        setPassword("");
     };
 
     const canJoin = (lobby) => {
-        if(isPrivate){
-            if(lobby.password === password){
+        if (isPrivate) {
+            if (lobby.password === password) {
                 return true
             }
-            else if(lobby.playerList === lobby.nbPlayerMax) {
+            else if (lobby.playerList === lobby.nbPlayerMax) {
                 return false
             }
             else {
@@ -147,7 +144,7 @@ const NewBrowserManager = () => {
 
 
     const whatToLoad = (lobby) => {
-        if(lobby.playerList.length === lobby.nbPlayerMax){
+        if (lobby.playerList.length === lobby.nbPlayerMax) {
             return "FULL"
         }
 
@@ -187,8 +184,8 @@ const NewBrowserManager = () => {
 
                 <div className='BM-input-container'>
 
-                    <input type="text" id="BM-serverName"className="BM-input" placeholder='Nom Partie...' value={serverName} onChange={(e) => { setServerName(e.target.value); }} ></input>
-                    <input type="password" id="BM-password"className="BM-input" placeholder='Mot de passe...' value={password} onChange={(e) => setPassword(e.target.value)}></input>
+                    <input type="text" id="BM-serverName" className="BM-input" placeholder='Nom Partie...' value={serverName} onChange={(e) => { setServerName(e.target.value); }} ></input>
+                    <input type="password" id="BM-password" className="BM-input" placeholder='Mot de passe...' value={password} onChange={(e) => setPassword(e.target.value)}></input>
                     <input type="number" className="BM-input gameNameMargin" placeholder='Nombre de joueurs' value={nbPlayerMax} onChange={(e) => setNbPlayerMax(e.target.value)}></input>
 
                     <div className='select-container'>
@@ -217,14 +214,16 @@ const NewBrowserManager = () => {
                 <h2 className='MB-h2'> SERVER LISTE</h2>x
                 {mesLobby.map((lobby, _) => (
                     <ElementAvecBouton>
-                        <div className='BM-server' onClick={() => canJoin(lobby) ? handleClick(lobby.id, lobby) : null}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)} 
-                        {lobby.isPrivate && <input type="password" className="BM-input-server" placeholder='Mot de passe...' value={password} onChange={(e) => setPassword(e.target.value)}></input>}
+                        <div className='BM-server' onClick={() => handleClick(lobby.id, lobby)}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)}
+                            {lobby.isPrivate && <input id={`gamePassWord` + lobby.id} type="password" className="BM-input-server" placeholder='Mot de passe...' value={gamePassword} onChange={(e) => {
+                                setGamePassword(e.target.value);
+                            }}></input>}
                         </div>
                     </ElementAvecBouton>
                 ))};
             </div>
 
-            
+
         </div>
     )
 }

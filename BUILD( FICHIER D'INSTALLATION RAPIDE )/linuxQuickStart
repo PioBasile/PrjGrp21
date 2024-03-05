@@ -1,5 +1,7 @@
+echo $(pwd)
 cd ..
+echo $(pwd)
 code .
 gnome-terminal -- node server.js
 cd projectapp
-gnome-terminal -- npm run start
+npm run start

@@ -7,8 +7,4 @@ package.json
 projectapp/package.json
 
 projectapp/build
-*.db
-WindowsInstall.bat
-windowsQuickStart.bat
-linuxQuickStart
-linuxInstall
+users.db

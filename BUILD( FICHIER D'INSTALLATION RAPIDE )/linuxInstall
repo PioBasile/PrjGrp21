@@ -1,8 +1,10 @@
+cd ..
 npm install express 
 npm install sqlite3 
 npm install socket.io 
 cd projectapp 
 npm install react-scripts -f
 cd ..
+cd ".\BUILD( FICHIER D'INSTALLATION RAPIDE )"
 chmod +x linuxQuickStart
 ./linuxQuickStart

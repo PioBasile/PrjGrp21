@@ -26,36 +26,48 @@ const BlackJack = () => {
         alert("piocher");
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-
-        let chatContainer = document.getElementById("chatContainer");
-
-        function getElementId(event) {
-            var clickedElementId = event.target.id;
-            if (clickedElementId === "inputChat") {
-                chatContainer.style.opacity = 1;
-            } else {
-                chatContainer.style.opacity = 0.33;
-            }
-            return clickedElementId;
-        }
-
-        function sendMessageOnEnter(event) {
-            if (event.key === "Enter") {
-                sendMessage();
-            }
-        }
-
-        document.addEventListener('click', getElementId);
-
-        document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
-
-    });
-
-
     const sendMessage = () => {
-        alert("fizjgo")
+        socket.emit('BJ-sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
+        setMessage('');
     }
+
+    function YourComponent() {
+        useEffect(() => {
+            let chatContainer = document.getElementById("chatContainer");
+                if(chatContainer == null){return 0;}
+        
+                function getElementId(event) {
+                    var clickedElementId = event.target.id;
+                    if (clickedElementId === "inputChat") {
+                        chatContainer.style.opacity = 1;
+                    } else {
+                        chatContainer.style.opacity = 0.33;
+                    }
+                    return clickedElementId;
+                }
+        
+                function sendMessageOnEnter(event) {
+                    if (event.key === "Enter") {
+                        sendMessage();
+                    }
+                }
+        
+                document.addEventListener('click', getElementId);
+        
+                document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
+    
+            return () => {
+                document.removeEventListener('click', getElementId);
+                document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+
+            };
+        }, [message]); 
+    
+        return (
+            <div></div>
+        );
+    }
+
 
     const handleDoubler = () => {
         alert("doubler");
@@ -120,10 +132,17 @@ const BlackJack = () => {
         return `${cardImagesFolder}${card.number}_of_${translateSymbol}.png`;
     }
 
-
+    useEffect(() => {
+/*
+        socket.on("BJ-getMessage", (msgList) => {
+            setMessages(msgList);
+        })
+*/
+    })
 
     return (
         <div className='black-jack-container'>
+            <YourComponent></YourComponent>
             <div className='upper-bandeau'>
                 <div className='leave-game-bj'>
                     <img src={exitButton} className='leave-game-bj'></img>

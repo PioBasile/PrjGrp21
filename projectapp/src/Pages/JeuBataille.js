@@ -1,10 +1,10 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CSS/jeuBataille.css';
 import socket from '../socketG';
 
 
-const JeuBataille= () => {
+const JeuBataille = () => {
 
 
     const [playerCards, setPlayerCards] = useState([]);
@@ -19,8 +19,8 @@ const JeuBataille= () => {
     const [messages, setMessages] = useState([]);
     const navigate = useNavigate();
 
-    function leaveGame(){
-        socket.emit('leaveGame', sessionStorage.getItem('name'),sessionStorage.getItem('serverConnected'));
+    function leaveGame() {
+        socket.emit('leaveGame', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
         socket.emit('leave', sessionStorage.getItem('serverConnected'));
         navigate('/');
     };
@@ -29,27 +29,27 @@ const JeuBataille= () => {
 
         socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
 
-        if(!inDraw && isDraw){
+        if (!inDraw && isDraw) {
             return 0;
         }
 
-        if(oldSelect != null){
-            if(oldSelect !== card){
+        if (oldSelect != null) {
+            if (oldSelect !== card) {
                 playerCards.push(oldSelect);
-                setOldSelect(playerCards.splice(playerCards.indexOf(card),1)[0]);
+                setOldSelect(playerCards.splice(playerCards.indexOf(card), 1)[0]);
             }
-            
+
         } else {
-            setOldSelect(playerCards.splice(playerCards.indexOf(card),1)[0]);
+            setOldSelect(playerCards.splice(playerCards.indexOf(card), 1)[0]);
         }
         console.log(card);
         setSelectedCards(card);
-        if(!inDraw){
+        if (!inDraw) {
             socket.emit('PhaseDeChoix', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
         } else {
             socket.emit('ResoudreEgalite', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
         }
-        
+
     };
 
     const sendMessage = () => {
@@ -72,147 +72,146 @@ const JeuBataille= () => {
         let mounted = true;
         let failed = false;
 
-        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected")  == null) {
-             navigate("/login-signup"); 
-             failed = true;
-            }
-        if(mounted && !failed){
+        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
+            navigate("/login-signup");
+            failed = true;
+        }
+        if (mounted && !failed) {
 
-        // GESTION stabilité de la connection
-        socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
+            // GESTION stabilité de la connection
+            socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
 
-        socket.on('getMessage', (msg) => {
-            console.log("msg : ", msg);
-            setMessages((prevMessages) => [...prevMessages, msg]);
-        });
+            socket.on('getMessage', (msg) => {
+                console.log("msg : ", msg);
+                setMessages((prevMessages) => [...prevMessages, msg]);
+            });
 
-        socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
-        socket.emit('join', sessionStorage.getItem('serverConnected'));
-        socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
+            socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+            socket.emit('join', sessionStorage.getItem('serverConnected'));
+            socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
 
         }
         return () => {
             mounted = false;
             socket.off("getMessage");
-          }
-    
-      }, [setMessage])
+        }
+
+    }, [setMessage])
 
     useEffect(() => {
 
         let mounted = true;
-        if(mounted){
-        // GESTION stabilité de la connection
-                socket.on("deco", (name) => {
+        if (mounted) {
+            // GESTION stabilité de la connection
+            socket.on("deco", (name) => {
 
-                    navigate("/login-signup");
-                
+                navigate("/login-signup");
+
+            });
+
+            // -----------------
+
+            socket.on("Deck", (deck) => {
+                setPlayerCards(deck);
+            });
+
+
+            socket.on("getInfo", (game) => {
+                let plist = [];
+                if (game.playerList.length <= 1) {
+                    sessionStorage.setItem('winners', sessionStorage.getItem('name'));
+                    navigate("/winner");
+                }
+                game.playerList.forEach((player) => {
+
+                    if (player.name !== sessionStorage.getItem("name")) {
+                        plist.push(player);
+                    }
+
+                });
+                setScore(game.scoreboard);
+                setOpponents(plist);
+
+            });
+
+            socket.on('FIN', (fscore, pList) => {
+                let winner = [];
+                let score = 0;
+                pList.forEach(element => {
+                    if (fscore[element.name] > score) {
+                        winner = [element.name];
+                    } else if (fscore[element.name] === score) {
+                        winner.push(element.name);
+                    }
                 });
 
-        // -----------------
-    
-        socket.on("Deck", (deck) => {
-          setPlayerCards(deck);
-        });
-
-        
+                sessionStorage.setItem('winners', winner);
+                navigate("/winner");
 
 
-        socket.on("getInfo", (game) => {
-            let plist = [];
-            if(game.playerList.length <= 1){
-                sessionStorage.setItem('winners',sessionStorage.getItem('name'));
-                navigate("/winner");    
-            }
-            game.playerList.forEach((player) => {
-
-                if(player.name !== sessionStorage.getItem("name")){
-                    plist.push(player);
-                }
 
             });
-            setScore(game.scoreboard);
-            setOpponents(plist);
 
-        });
-
-        socket.on('FIN', (fscore,pList) => {
-            let winner = [];
-            let score = 0;
-            pList.forEach(element => {
-                if(fscore[element.name] > score){
-                    winner = [element.name];
-                } else if(fscore[element.name] === score){
-                    winner.push(element.name);
+            socket.on('Draw', (drawPlayers, cardIndex) => {
+                setDraw(true);
+                console.log(drawPlayers);
+                socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+                socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
+                let ami = false;
+                drawPlayers.forEach((player) => {
+                    if (player.name === sessionStorage.getItem("name")) {
+                        ami = true;
+                    }
+                });
+                if (ami) {
+                    setInDraw(true);
+                } else {
+                    setInDraw(false);
                 }
+                setSelectedCards([])
+
             });
-
-            sessionStorage.setItem('winners',winner);
-            navigate("/winner");
-
-            
-
-        });
-
-        socket.on('Draw', (drawPlayers,cardIndex) => {
-            setDraw(true);
-            console.log(drawPlayers);
-            socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
-            socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
-            let ami = false;
-            drawPlayers.forEach((player ) => {
-                if(player.name === sessionStorage.getItem("name")){
-                    ami = true;
-                }
-            });
-            if(ami){
-                setInDraw(true);
-            } else {
+            socket.on('Winner', (winner) => {
+                console.log(winner);
+                setDraw(false);
                 setInDraw(false);
-            }
-            setSelectedCards([])
-
-        });
-        socket.on('Winner', (winner) => {
-            console.log(winner);
-            setDraw(false);
-            setInDraw(false);
-            socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
-            socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
-            setSelectedCards([]);
-        });
+                socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+                socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
+                setSelectedCards([]);
+            });
 
         }
 
-        return () => {  
-          mounted = false;
-          socket.off("Deck");
-          socket.off("getInfo");
-          socket.off("Winner");
-          socket.off("Draw");
-          socket.off("FIN");
+        return () => {
+            mounted = false;
+            socket.off("Deck");
+            socket.off("getInfo");
+            socket.off("Winner");
+            socket.off("Draw");
+            socket.off("FIN");
         };
-      }, [navigate]);
+    }, [navigate]);
 
 
     //return
     return (
         <div className="game-container">
             <button className="save-button" onClick={openChat}>Chat</button>
-            {isChatOpen && (
-                <div className="modal-container">
+            <div className="chat-container" id='chatContainer'>
+                <div className='message-container MB-message-container' >
                     {messages.map((msg, index) => (
-                        <p key={index}>{msg}</p>
-                    ))}
+                        <p key={index}>{msg}</p>)
+                    )}
                     <input
+                        id="inputChat"
+                        className='inputMessage'
                         type="text"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Type message..."
                     />
-                    <button onClick={sendMessage}>Send</button>
-                    <button onClick={closeChat}>Close Chat</button>
                 </div>
-            )}
+            </div>
 
             {/*Opponent player*/}
             <div className="opponent-players">
@@ -260,15 +259,15 @@ const JeuBataille= () => {
             <div className="selected-cards">
                 {selectedCards.symbole} {selectedCards.number}
             </div>
-                
+
             <div className="bottom-left-info">
                 Mon Score : {scoreboard[sessionStorage.getItem("name")]} <br />
-                Nombre de carte : {playerCards.length} 
-                
+                Nombre de carte : {playerCards.length}
+
             </div>
 
             <button className="leave-button" onClick={() => leaveGame()}>Leave Game</button>
-        </div>      
+        </div>
     );
 };
 

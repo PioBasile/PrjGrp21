@@ -200,7 +200,7 @@ const SixQuiPrend = () => {
     return () => {
       mounted = false;
     }
-  }, [])
+  }, [navigate])
 
 
   useEffect(() => {

@@ -85,7 +85,7 @@ const updateWins = async () => {
   }
 }
 
-const interval = setInterval(() => {
+setInterval(() => {
 
   if (isPaused) {
     return
@@ -115,11 +115,10 @@ const interval = setInterval(() => {
     RouletteInstance.timer = 30;
 
   }
-
-
-  io.emit('timerDown');
   io.emit('rouletteTimer', RouletteInstance.timer);
 }, 1000);
+
+setInterval(() => {io.emit('timerDown');}, 1000);
 
 
 io.on('connection', (socket) => {

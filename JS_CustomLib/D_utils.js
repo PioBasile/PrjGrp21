@@ -48,7 +48,6 @@ const findWaitingPlayer = (username, plist) => {
 const findPlayer = (username, plist) => {
 
   let player = 0;
-  console.log(plist);
   plist.forEach((elem) => {
     if (elem.name == username) { player = elem }
   });
@@ -804,8 +803,8 @@ class MilleBorne {
     this.deck = this.construireJeu();
     this.state = GameState.EN_COURS;
     this.distribuer();
+    this.chatContent = [];
   }
-
 
   construireJeu() {
     let deckCards = []
@@ -996,7 +995,6 @@ class MilleBorne {
       let newCard = this.deck[randomId]
       this.deck.splice(randomId, 1);
       player.deck.push(newCard);
-      console.log("new card = ", newCard);
     }
     else {
       this.deck = shuffle(this.cardPlayed);
@@ -1069,6 +1067,13 @@ class MilleBorne {
   removePlayer(player){
     let playerI = findRemovePlayer(player, this.playerList);
     this.playerList.splice(playerI,1);
+  }
+
+  addMessage(msg){
+    if(msg != ""){
+      this.chatContent.push(msg);
+    }
+    console.log(this.chatContent);
   }
 
 }

@@ -152,13 +152,16 @@ const NewBrowserManager = () => {
             return `${lobby.playerList.length} / ${lobby.nbPlayerMax}`
         }
     }
+
+
     return (
         <div className='BM-container'>
             <div className='BM-profil'>
 
                 <h2 className='MB-h2 MB-profil-H2'> PROFIL </h2>
                 <div className='BM-info-profil hide'>
-                    <div className='info-text'>PLAYERNAME: {sessionStorage.getItem("name")}</div>
+                    <p className='info-text'>PLAYERNAME</p>
+                    <div className='info-text'> {sessionStorage.getItem("name")}</div>
                 </div>
                 <div className='BM-info-profil hide'>
                     Parties Jouées : {nbGame}
@@ -192,9 +195,10 @@ const NewBrowserManager = () => {
                         <label htmlFor="gameType"></label>
                         <select className="select-dropdown" id="gameType" value={gameType} onChange={(e) => setGameType(e.target.value)}>
                             <option value="">Type de jeu</option>
-                            <option value="batail_ouverte">Bataille Ouverte</option>
+                            <option value="batailleOuverte">Bataille Ouverte</option>
                             <option value="sqp">Six qui prend</option>
                             <option value="mb">Mille Bornes</option>
+                            <option value="rd">Random</option>
                         </select>
                         <div className="select-arrow"></div>
                     </div>

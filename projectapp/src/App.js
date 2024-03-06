@@ -77,7 +77,7 @@ function App() {
                 <Route path="/sqp" element={<SixQuiPrend/>} />
                 <Route path="/login-signup" element={<LoginSignup/>} />
                 <Route path='/Lobby' element={<Lobby/>}/>
-                <Route path="/batail_ouverte" element={<JeuBataille/>} />
+                <Route path="/batailleOuverte" element={<JeuBataille/>} />
                 <Route path="/winner" element={<VictoryScreen/>} />
                 <Route path="/" element={<Navigate to="/start" replace />} />
                 <Route path="/mb" element={<MilleBorne></MilleBorne>}/>

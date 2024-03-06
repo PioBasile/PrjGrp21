@@ -116,9 +116,10 @@
 }
 
 .player-card {
-    height: 20vh;
     margin-right: 0.5vw;
     transition: transform 0.3s ease;
+    box-shadow: 0 0 20px rgb(46, 44, 44);
+    z-index: 1;
 }
 
 .player-card:hover {

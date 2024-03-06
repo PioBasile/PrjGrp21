@@ -298,6 +298,8 @@
     border-radius: 20px;   
 }
 
+
+
 .inputMessage {
     position: sticky;
     width: 100%;
@@ -305,4 +307,8 @@
     z-index: 1;
     bottom: 0;
     border-radius: 20px;
+}
+
+#chatContainer {
+    transition: opacity 0.5s, transform 0.5s;
 }

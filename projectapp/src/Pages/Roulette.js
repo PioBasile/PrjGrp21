@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Roulette = () => {
     const navigate = useNavigate();
-    const [timer,setTimer] = useState(-1);
+    const [timer, setTimer] = useState(-1);
     const coin = require('./CSS/coin.webp')
     const [isSpinning, setIsSpinning] = useState(false);
     const [afficherPopup, setAfficherPopup] = useState(false);
@@ -27,45 +27,45 @@ const Roulette = () => {
     const [currentValeur, setCurrentValeur] = useState(null);
     const roulette = require("./CSS/roulette.jpg");
     const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState(["CHAT ROOM"]);
+    const [messages, setMessages] = useState([]);
     // eslint-disable-next-line
     const [serverMessage, setServerMessage] = useState([]);
 
 
-    
+
     const fermerPopup = () => {
         setAfficherPopup(false);
     };
 
-    
+
 
     const handleBet = (valeur) => {
 
-        if(valeur === "first twelve"){
+        if (valeur === "first twelve") {
             valeur = 37
         }
-        if(valeur === "sec twelve"){
+        if (valeur === "sec twelve") {
             valeur = 38
         }
-        if(valeur === "thd twelve"){
+        if (valeur === "thd twelve") {
             valeur = 39
         }
-        if(valeur === "EVEN"){
+        if (valeur === "EVEN") {
             valeur = 40
         }
-        if(valeur === "ODD"){
+        if (valeur === "ODD") {
             valeur = 41
         }
-        if(valeur === "RED"){
+        if (valeur === "RED") {
             valeur = 42
         }
-        if(valeur === "BLACK"){
+        if (valeur === "BLACK") {
             valeur = 43
         }
-        if(valeur === "1to18"){
+        if (valeur === "1to18") {
             valeur = 44
         }
-        if(valeur === "19to36"){
+        if (valeur === "19to36") {
             valeur = 45
         }
         setCurrentValeur(valeur);
@@ -77,10 +77,10 @@ const Roulette = () => {
 
     const handleSubmit = () => {
 
- 
-        if (montant > 0) { 
-            console.log(sessionStorage.getItem('name'),montant ,currentValeur);
-            socket.emit("bet", sessionStorage.getItem('name'),montant ,currentValeur);
+
+        if (montant > 0) {
+            console.log(sessionStorage.getItem('name'), montant, currentValeur);
+            socket.emit("bet", sessionStorage.getItem('name'), montant, currentValeur);
             fermerPopup();
         }
         else {
@@ -97,53 +97,53 @@ const Roulette = () => {
     }
 
     const sendMessage = () => {
-
-        //
-    };
+        socket.emit('rlt-sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
+        setMessage('');
+    }
 
     useEffect(() => {
 
         // GESTION stabilité de la connection
         socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"));
         socket.emit("getServ");
-        socket.emit("ArgentViteBatard",sessionStorage.getItem('name'));
+        socket.emit("ArgentViteBatard", sessionStorage.getItem('name'));
+        socket.emit("MB-loadTheChat", sessionStorage.getItem("serverConnected"))
 
-      
     }, [])
 
 
     useEffect(() => {
 
-        socket.on('spinwheel',(resy) => {
+        socket.on('spinwheel', (resy) => {
 
             handleSpin(resy);
 
         });
 
-        socket.on("tropsTard",()=>{
+        socket.on("tropsTard", () => {
 
             alert("trops tard");
 
         });
 
-        socket.on("rouletteTimer",(time)=>{
-            
+        socket.on("rouletteTimer", (time) => {
+
             setTimer(time);
-            
+
         });
 
-        socket.on("VoilaTesSousMonSauce",(argent)=> {
+        socket.on("VoilaTesSousMonSauce", (argent) => {
             setMoney(argent);
         });
 
-        socket.on("listWins",(wins) => {
+        socket.on("listWins", (wins) => {
 
             let sumWins = 0;
             wins.forEach((win) => {
 
-                if(win["name"] === sessionStorage.getItem('name')){
+                if (win["name"] === sessionStorage.getItem('name')) {
 
-                    sumWins+=win["won"];
+                    sumWins += win["won"];
 
                 }
 
@@ -158,12 +158,17 @@ const Roulette = () => {
         if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
 
         socket.on("deco", (name) => {
-            
-            navigate("/login-signup");
-        
-    });
 
-      
+            navigate("/login-signup");
+
+        });
+
+        socket.on("rlt-getMessage", (msgList) => {
+            console.log(msgList);
+            setMessages(msgList);
+        })
+
+
     }, [])
 
 
@@ -180,20 +185,20 @@ const Roulette = () => {
     }
 
     const resultRoulette = () => {
-        
+
         setIsSpinning(false);
         setIsVisible(true);
         setTimeout(() => {
             setIsVisible(false);
-            socket.emit("ArgentViteBatard",sessionStorage.getItem('name'));
-          }, 3000);
-       
+            socket.emit("ArgentViteBatard", sessionStorage.getItem('name'));
+        }, 3000);
+
     }
 
     const Popup = () => {
 
         return (
-            
+
             <div>
                 <div className={`popup ${isVisible ? 'visible' : ''} `}>
                     <p>The number is {result} YOU WIN {moneyWin} $ </p>
@@ -229,15 +234,50 @@ const Roulette = () => {
         document.addEventListener('click', getElementId);
     });
 
-    
+    function YourComponent() {
+        useEffect(() => {
+            let chatContainer = document.getElementById("chatContainer");
+            if (chatContainer == null) { return 0; }
 
+            function getElementId(event) {
+                var clickedElementId = event.target.id;
+                if (clickedElementId === "inputChat") {
+                    chatContainer.style.opacity = 1;
+                } else {
+                    chatContainer.style.opacity = 0.33;
+                }
+                return clickedElementId;
+            }
+
+            function sendMessageOnEnter(event) {
+                if (event.key === "Enter") {
+                    sendMessage();
+                }
+            }
+
+            document.addEventListener('click', getElementId);
+
+            document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
+
+            return () => {
+                document.removeEventListener('click', getElementId);
+                document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+
+            };
+        }, [message]);
+
+        return (
+            <div></div>
+        );
+    }
 
     return (
-        
+
         <body className='roulette'>
             {timer}
+            <YourComponent></YourComponent>
             <div className='rouletteGameContainer' >
-                 {!isSpinning && (<Popup />)}
+                {!isSpinning && (<Popup />)}
                 <div className='rouletteContainer' >
 
                     <div className='vertical-line'></div>
@@ -246,7 +286,7 @@ const Roulette = () => {
                     </div>
 
                 </div>
-               
+
                 <div className='bigPlateauContainer'>
                     <div onClick={() => money > 0 ? handleBet(0) : null} className='numberZero'> {(valueBet.includes(0)) ? <img alt="d" src={coin} className="coin"></img> : 0} </div>
                     <div className='plateauContainer'>
@@ -322,30 +362,23 @@ const Roulette = () => {
 
 
                 <div className="chat-container" id='chatContainer'>
-                    <div className='message-container' >
+                    <div className='message-container MB-message-container' >
                         {messages.map((msg, index) => (
                             <p key={index}>{msg}</p>)
                         )}
-                        {serverMessage.forEach((msg, index) => {
-                            <p className="serverText" key={index}> {msg}</p>
-                        })}
+                        <input
+                            id="inputChat"
+                            className='inputMessage'
+                            type="text"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder="Type message..."
+                        />
                     </div>
-                    <input
-                        id="inputChat"
-                        className='inputMessage'
-                        type="text"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Type message..."
-                    // onFocus={changeOpacity}
-                    />
-                    <button id="messageButton" className="messageButton" onClick={sendMessage}> ⬆️</button>
                 </div>
             </div>
         </body>
     )
-
-    
 }
 
 export default Roulette;

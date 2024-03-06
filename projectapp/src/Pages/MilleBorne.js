@@ -19,7 +19,7 @@ const MilleBorne = () => {
     const navigate = useNavigate();
 
     const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState(["CHAT", "CHAT" ,"CHAT" ,"CHAT"]);
+    const [messages, setMessages] = useState([]);
     const [serverMessage, setServerMessage] = useState([]);
     const [isPopUp, setIsPopUp] = useState(false);
     const [playerList, setPlayerList] = useState([]);
@@ -39,7 +39,8 @@ const MilleBorne = () => {
         return cartes.indexOf(card);
     }
     const sendMessage = () => {
-        alert("message")
+        socket.emit('MB-sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
+        setMessage('');
     }
 
     useEffect(() => {
@@ -47,23 +48,24 @@ const MilleBorne = () => {
         let mounted = true;
         let failed = false;
 
-        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected")  == null) {
-             navigate("/login-signup"); 
-             failed = true;
-            }
-        if(mounted && !failed){
+        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
+            navigate("/login-signup");
+            failed = true;
+        }
+        if (mounted && !failed) {
 
-        socket.emit('join', sessionStorage.getItem('serverConnected'));
-        socket.emit("MB-whatMyInfo", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-        socket.emit("MB-whatMyOpponent", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-        socket.emit("MB-nbCard", sessionStorage.getItem("serverConnected"));
-        socket.emit("whatTheOrder", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-        socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
+            socket.emit('join', sessionStorage.getItem('serverConnected'));
+            socket.emit("MB-whatMyInfo", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
+            socket.emit("MB-whatMyOpponent", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
+            socket.emit("MB-nbCard", sessionStorage.getItem("serverConnected"));
+            socket.emit("whatTheOrder", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
+            socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"));
+            socket.emit("MB-loadTheChat", sessionStorage.getItem("serverConnected"));
         }
 
         return () => {
             mounted = false;
-          }
+        }
     }, [])
 
 
@@ -72,60 +74,65 @@ const MilleBorne = () => {
         let mounted = true;
         let failed = false;
 
-        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected")  == null) {
-             navigate("/login-signup"); 
-             failed = true;
-            }
-        if(mounted && !failed){
+        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
+            navigate("/login-signup");
+            failed = true;
+        }
+        if (mounted && !failed) {
 
-        socket.on("getUpdate", () => {
-            socket.emit("MB-whatMyOpponent", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-            socket.emit("MB-whatMyState", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-            socket.emit("MB-nbCard", sessionStorage.getItem("serverConnected"));
-            socket.emit("whatMyTurn", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-        });
-        socket.on("MB-opponent", (oppoList) => {
-            setPlayerList(oppoList);
-        });
-        socket.on('MB-playerInfo', (data) => {
-            setDeck(data.deck);
-            setMyPoints(data.nbPoints);
-            setBonus(data.bonus);
-            setState(data.state);
-            setIsLimited(data.isLimited)
-            setColor(data.color);
-        });
-        socket.on("chooseVictim", () => {
-            setIsPopUp(true);
-        });
-        socket.on("updateMiddleCard", (data) => {
-            setMiddleCard(data.card);
-        });
-        socket.on("MB-getNbCards", (deckLength) => {
-            setNbCards(deckLength);
-        });
-        socket.on("myTurn", (bool) => {
-            setMyTurn(bool);
-        });
-        socket.on("newState", (newState) => {
-            console.log(newState, state)
-            setState(newState);
-            setTest(newState)
-            console.log(test);
-            console.log(newState, state)
-        });
-        socket.on('MB_FIN', (winner) => {
+            socket.on("getUpdate", () => {
+                socket.emit("MB-whatMyOpponent", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
+                socket.emit("MB-whatMyState", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
+                socket.emit("MB-nbCard", sessionStorage.getItem("serverConnected"));
+                socket.emit("whatMyTurn", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
+            });
+            socket.on("MB-opponent", (oppoList) => {
+                setPlayerList(oppoList);
+            });
+            socket.on('MB-playerInfo', (data) => {
+                setDeck(data.deck);
+                setMyPoints(data.nbPoints);
+                setBonus(data.bonus);
+                setState(data.state);
+                setIsLimited(data.isLimited)
+                setColor(data.color);
+            });
+            socket.on("chooseVictim", () => {
+                setIsPopUp(true);
+            });
+            socket.on("updateMiddleCard", (data) => {
+                setMiddleCard(data.card);
+            });
+            socket.on("MB-getNbCards", (deckLength) => {
+                setNbCards(deckLength);
+            });
+            socket.on("myTurn", (bool) => {
+                setMyTurn(bool);
+            });
+            socket.on("newState", (newState) => {
+                console.log(newState, state)
+                setState(newState);
+                setTest(newState)
+                console.log(test);
+                console.log(newState, state)
+            });
+            socket.on('MB_FIN', (winner) => {
 
-            sessionStorage.setItem('winners', winner);
-            navigate("/winner");
+                sessionStorage.setItem('winners', winner);
+                navigate("/winner");
 
 
-        });
-        socket.on("attacked", (playerAttacked) => {
-            if (playerAttacked === sessionStorage.getItem("name")) {
-                setIsVisible(true);
-            }
-        });
+            });
+            socket.on("attacked", (playerAttacked) => {
+                if (playerAttacked === sessionStorage.getItem("name")) {
+                    setIsVisible(true);
+                }
+            });
+
+            socket.on("MB-getMessage", (msgList) => {
+                console.log(msgList);
+                setMessages(msgList);
+            })
 
         }
         return () => {
@@ -140,6 +147,7 @@ const MilleBorne = () => {
             socket.off('myTurn');
             socket.off('MB_FIN');
             socket.off('attacked');
+            socket.off('MB-getMessage');
         }
     }, []);
 
@@ -184,43 +192,54 @@ const MilleBorne = () => {
     }
 
     const leave = () => {
-        socket.emit("MB-leaveGame",{ name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected")});
+        socket.emit("MB-leaveGame", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
         socket.emit('leave', sessionStorage.getItem('serverConnected'));
         navigate('/');
     }
 
-    //gestion de la toucher entrer pour envoyer un message et de l'animation !! >>>>
-    document.addEventListener('DOMContentLoaded', function () {
+    function YourComponent() {
+        useEffect(() => {
+            let chatContainer = document.getElementById("chatContainer");
+            if (chatContainer == null) { return 0; }
 
-        let chatContainer = document.getElementById("chatContainer");
-        if(chatContainer == null){return 0;}
-
-        function getElementId(event) {
-            var clickedElementId = event.target.id;
-            if (clickedElementId === "inputChat") {
-                chatContainer.style.opacity = 1;
-            } else {
-                chatContainer.style.opacity = 0.33;
+            function getElementId(event) {
+                var clickedElementId = event.target.id;
+                if (clickedElementId === "inputChat") {
+                    chatContainer.style.opacity = 1;
+                } else {
+                    chatContainer.style.opacity = 0.33;
+                }
+                return clickedElementId;
             }
-            return clickedElementId;
-        }
 
-        function sendMessageOnEnter(event) {
-            if (event.key === "Enter") {
-                sendMessage();
+            function sendMessageOnEnter(event) {
+                if (event.key === "Enter") {
+                    sendMessage();
+                }
             }
-        }
 
-        document.addEventListener('click', getElementId);
+            document.addEventListener('click', getElementId);
 
-        document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
+            document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
 
-    });
+            return () => {
+                document.removeEventListener('click', getElementId);
+                document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+
+            };
+        }, [message]);
+
+        return (
+            <div></div>
+        );
+    }
 
     return (
         <div className='MB-container'>
 
             {isVisible && <Popup />}
+
+            <YourComponent></YourComponent>
 
             <div className='MB-adversaire-container-upper-bandeau'>
 
@@ -244,7 +263,7 @@ const MilleBorne = () => {
                                 <img alt='' src={allCard[getCard(player.state)]} className="glow card" />
                             </div>
                             <div className='card'>
-                                <img alt='' src={isLimited ? allCard[getCard("limit")] : allCard[getCard("unlimited")] }  className="glow card"></img>
+                                <img alt='' src={isLimited ? allCard[getCard("limit")] : allCard[getCard("unlimited")]} className="glow card"></img>
                             </div>
                         </div>
                     </div>
@@ -270,10 +289,10 @@ const MilleBorne = () => {
                             <div className='MB-player-name'> {sessionStorage.getItem("name")}</div>
                         </div>
                         <div className='card own'>
-                            <img alt='' src={allCard[getCard(state)]}  className='card own'></img>
+                            <img alt='' src={allCard[getCard(state)]} className='card own'></img>
                         </div>
                         <div className='card own'>
-                            <img alt='' src={isLimited ? allCard[getCard("limit")] : allCard[getCard("unlimited")]}  className='card own'></img>
+                            <img alt='' src={isLimited ? allCard[getCard("limit")] : allCard[getCard("unlimited")]} className='card own'></img>
                         </div>
                     </div>
 
@@ -287,7 +306,7 @@ const MilleBorne = () => {
 
                 <div className='MB-card-holder'>
                     {deck.map((carte) => (
-                        <div className="card  player" onClick={() => myTurn ? playCard(carte) : null}>
+                        <div className="player-card" onClick={() => myTurn ? playCard(carte) : null}>
                             <img alt='' src={allCard[getCard(carte)]} className="player-card"></img>
                         </div>)
                     )}
@@ -298,9 +317,6 @@ const MilleBorne = () => {
                         {messages.map((msg, index) => (
                             <p key={index}>{msg}</p>)
                         )}
-                        {serverMessage.map((msg, index) => {
-                            <p className="serverText" key={index}> {msg}</p>
-                        })}
                         <input
                             id="inputChat"
                             className='inputMessage'

@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 
 const Roulette = () => {
     const navigate = useNavigate();
-    const [timer, setTimer] = useState(-1);
-    const coin = require('./CSS/coin.webp')
+    const [timer,setTimer] = useState(-1);
+    const coin = require('./CSS/pics/coin.webp')
     const [isSpinning, setIsSpinning] = useState(false);
     const [afficherPopup, setAfficherPopup] = useState(false);
     const [money, setMoney] = useState(0);
@@ -25,7 +25,7 @@ const Roulette = () => {
     const [moneyWin, setMoneyWin] = useState(0);
     //EMPLACEMENT DU JETON EN COURS DE PARIS
     const [currentValeur, setCurrentValeur] = useState(null);
-    const roulette = require("./CSS/roulette.jpg");
+    const roulette = require("./CSS/pics/roulette.jpg");
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     // eslint-disable-next-line

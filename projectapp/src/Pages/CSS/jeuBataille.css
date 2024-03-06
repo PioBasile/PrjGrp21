@@ -1,5 +1,5 @@
 .game-container {
-    background-image: url(JeuBataille.png); 
+    background-image: url(pics/JeuBataille.png); 
     background-size: cover;
     height: 100vh;
     position: relative;
@@ -59,7 +59,7 @@
     color: aliceblue;
     width: 80px; 
     height: 120px; 
-    background-image: url('37d253f05b4587d6ef34ab16d942fcb9.jpg');
+    background-image: url('pics/37d253f05b4587d6ef34ab16d942fcb9.jpg');
     background-size: cover;
     border-radius: 8px;
     margin: 10px;

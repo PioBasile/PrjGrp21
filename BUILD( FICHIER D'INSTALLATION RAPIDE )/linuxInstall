@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo $(pwd)
+cd ..
+echo $(pwd)
+npm install express
+npm install sqlite3
+npm install socket.io
+cd projectapp
+echo $(pwd)
+npm install react-scripts -f
+cd ..
+echo $(pwd)
+cd "BUILD( FICHIER D'INSTALLATION RAPIDE )"
+echo $(pwd)
+chmod +x linuxQuickStart
+./linuxQuickStart

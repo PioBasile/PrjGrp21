@@ -17,7 +17,7 @@ cd projet-reformed
 
 3. Accédez au dossier "BUILD( FICHIER D'INSTALLATION RAPIDE )" :
 ```bash
-cd BUILD( FICHIER D'INSTALLATION RAPIDE )
+cd BUILD\(\ FICHIER\ D\'INSTALLATION\ RAPIDE\ \)
 ```
 
 

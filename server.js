@@ -912,7 +912,7 @@ io.on('connection', (socket) => {
   
   socket.on("MB-loadTheChat", (serverId)=> {
     game = findGame(serverId, MilleBornesGames);
-    io.to(data.serverId).emit("MB-getMessage", game.chatContent);
+    io.to(serverId).emit("MB-getMessage", game.chatContent);
   }) 
 
   //CHAT SIX QUI PREND
@@ -925,7 +925,7 @@ io.on('connection', (socket) => {
   
   socket.on("SQP-loadTheChat", (serverId)=> {
     game = findGame(serverId, TaureauGames);
-    io.to(data.serverId).emit("SQP-getMessage", game.chatContent);
+    io.to(serverId).emit("SQP-getMessage", game.chatContent);
   }) 
 
    
@@ -939,7 +939,7 @@ io.on('connection', (socket) => {
   
   // socket.on("rlt-loadTheChat", (serverId)=> {
   //   game = findGame(serverId, MilleBornesGames);
-  //   io.to(data.serverId).emit("rlt-getMessage", game.chatContent);
+  //   io.to(serverId).emit("rlt-getMessage", game.chatContent);
   // }) 
 
   //CHAT BLACKJACK
@@ -952,19 +952,20 @@ io.on('connection', (socket) => {
 
   // socket.on("BJ-loadTheChat", (serverId)=> {
   //   game = findGame(serverId, MilleBornesGames);
-  //   io.to(data.serverId).emit("BJ-getMessage", game.chatContent);
+  //   io.to(serverId).emit("BJ-getMessage", game.chatContent);
   // }) 
 
   
   //bataille
 
-  // socket.on("BTL-loadTheChat", (serverId)=> {
-  //   game = findGame(serverId, MilleBornesGames);
+  // socket.on("BTL-sendMessage", (data) => {
+  //   game = findGame(data.serverId, MilleBornesGames);
+  //   game.addMessage(`${data.name}: ${data.msg}`);
   //   io.to(data.serverId).emit("BTL-getMessage", game.chatContent);
-  // }) 
+  // })
 
   // socket.on("BTL-loadTheChat", (serverId)=> {
   //   game = findGame(serverId, MilleBornesGames);
-  //   io.to(data.serverId).emit("BTL-getMessage", game.chatContent);
+  //   io.to(serverId).emit("BTL-getMessage", game.chatContent);
   // }) 
 });

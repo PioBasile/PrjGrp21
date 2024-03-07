@@ -102,6 +102,8 @@ const findCard = (card, deck) => {
   return count;
 }
 
+
+
 const findRemovePlayer = (player, plist) => {
   let count = 0;
   let found = false;
@@ -139,6 +141,7 @@ class Bataille {
     this.playerList = playerL;
     this.scoreboard = {};
     this.cartes = shuffle(generateCartes());
+    this.chatContent = [];
 
     let index = 0;
 
@@ -283,6 +286,12 @@ class Bataille {
     this.playerList.splice(playerI, 1);
     this.scoreboard[player.name] = -1;
 
+  }
+
+  addMessage(msg) {
+    if (msg != "") {
+      this.chatContent.push(msg);
+    }
   }
 }
 
@@ -467,7 +476,6 @@ class SixQuiPrend {
   tousJouer() {
 
     let no = true;
-
     this.player_list.forEach((player) => {
 
       if (player.selected == null) {

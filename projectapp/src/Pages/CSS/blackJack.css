@@ -6,7 +6,8 @@
 
 .black-jack-container {
     padding-bottom: 3vh;
-    background-color: rgb(26, 42, 53);
+    background-image: url(pics/blackbackgroud.png);
+    background-position: center;
     position: relative;
     background-size: cover;
     justify-content: center;
@@ -22,12 +23,13 @@
     padding-bottom: 1vh;
     display: flex;
     position: relative;
-    background-color: rgb(33, 55, 70);
     justify-content: space-between;
+    background-color: rgb(184, 200, 65);
+
 }
 
 .wallet-container {
-    background-color: rgb(19, 55, 75);
+    background-color: rgb(144, 32, 32);
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 1);
 }
@@ -136,7 +138,9 @@
     bottom: 0;
     width: 100%;
     display: flex;
-    background-color: rgb(46, 76, 95);
+    background-color: rgb(184, 200, 65);
+
+
 }
 
 .bet-action-container {
@@ -147,7 +151,8 @@
 
 
 .action-button-bj {
-    background-color: rgb(40, 66, 83);
+    background-color: rgb(125, 29, 29);
+
     padding-left: 5vw;
     padding-right: 5vw;
     padding-top: 2vh;
@@ -156,11 +161,12 @@
     border-radius: 8px;
     margin-right: 5vw;
     margin-top: 2vh;
+    border: solid 2px rgb(205, 202, 55);
     box-shadow: 0 0 15px rgb(33, 32, 32);
 }
 
 .action-button-bj:hover {
-    background-color: rgb(67, 92, 109);
+    background-color: rgb(109, 67, 67);
     cursor: pointer;
 }
 
@@ -172,7 +178,7 @@
 
 .inputBet-container{
     border-radius: 3px;
-    background-color: rgb(53, 67, 73);
+    background-color: rgb(73, 53, 53);
 
     display: flex;
     padding-right: 2vh;
@@ -217,7 +223,7 @@
     border-radius:15px;
     margin-left: 0.5vw;
 }
-
+    
 
 .giveup-button-bj:hover {
     background-color: rgb(108, 45, 45);
@@ -287,14 +293,17 @@
 
 
 .chat-container {
+    z-index: 1;
     position: absolute;
     border-radius: 100px;
     bottom: 0;
     border-radius: 15px;
+    min-height: 10vh;
+    max-height: 20vh;
 }
 
 .message-container {
-    max-height: 18vh;
+    max-height: 20vh;
     border-radius: 20px;   
 }
 

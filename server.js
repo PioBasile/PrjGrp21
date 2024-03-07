@@ -957,15 +957,16 @@ io.on('connection', (socket) => {
 
   
   //bataille
+  socket.on("BTL-sendMessage", (data) => {
+    game = findGame(data.serverId, BatailGames);
+    game.addMessage(`${data.name}: ${data.msg}`);
+    io.to(data.serverId).emit("BTL-getMessage", game.chatContent);
+  })
+  
+  socket.on("BTL-loadTheChat", (serverId)=> {
+    game = findGame(serverId, BatailGames);
+    io.to(serverId).emit("BTL-getMessage", game.chatContent);
+  }) 
 
-  // socket.on("BTL-sendMessage", (data) => {
-  //   game = findGame(data.serverId, MilleBornesGames);
-  //   game.addMessage(`${data.name}: ${data.msg}`);
-  //   io.to(data.serverId).emit("BTL-getMessage", game.chatContent);
-  // })
 
-  // socket.on("BTL-loadTheChat", (serverId)=> {
-  //   game = findGame(serverId, MilleBornesGames);
-  //   io.to(serverId).emit("BTL-getMessage", game.chatContent);
-  // }) 
 });

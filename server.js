@@ -36,8 +36,7 @@ const {
 } = require("./JS_CustomLib/D_utils.js");
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");
-const { Statement } = require('sqlite3');
-const { cp } = require('fs');
+const {Sentinel_Main} = require('./JS_CustomLib/sentinel.js');
 
 
 
@@ -62,6 +61,8 @@ let lobbyList = [];
 let lobbyIndex = 0;
 let RouletteInstance = new Roulette();
 let isPaused = false;
+
+setInterval(() => {Sentinel_Main(validCookies,BatailGames,TaureauGames,MilleBornesGames,lobbyList,lobbyIndex)},100);
 
 
 //
@@ -235,6 +236,7 @@ io.on('connection', (socket) => {
     clobby = findLobby(lobbyID, lobbyList);
     cplayer = new Player_IN_Lobby(name, cookie);
     clobby.playerList.push(cplayer);
+    clobby.is_empty = false;
     io.emit('newServer', lobbyList);
 
   });
@@ -289,6 +291,10 @@ io.on('connection', (socket) => {
 
     let clobby = findLobby(lobbyID, lobbyList);
     let cplayer = findWaitingPlayer(name, clobby.playerList);
+    if(cplayer == -1 ){
+      socket.emit("deco");
+      return;
+    }
 
     clobby.playerList.splice(clobby.playerList.indexOf(cplayer), 1)
     io.to(lobbyID).emit('here', clobby);

@@ -134,6 +134,12 @@ const MilleBorne = () => {
                 setMessages(msgList);
             })
 
+            socket.on("deco", (name) => {
+
+                navigate("/login-signup");
+
+            });
+
         }
         return () => {
             mounted = false;

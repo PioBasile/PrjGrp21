@@ -415,6 +415,21 @@ io.on('connection', (socket) => {
 
   });
 
+  socket.on("sendCard", (data) => {
+    game = findGame(data.serverId, BatailGames);
+    let cardPlayedList = game.cardPlayedInRound;
+    if(cardPlayedList.includes(data.card)){
+      let cardId = cardPlayedList.indexOf(data.card)
+      cardPlayedList[cardId] = card;
+    }
+
+    else {
+      game.cardPlayedInRound.push(card);
+    }
+    
+    io.to(data.serverId).emit("adversaireCardsPlayed");
+  })
+
   // Phase de choix, permet au joueurs de choisir leurs cartes et une fois tout les cartes chosis donne le résultat du round //
   socket.on('PhaseDeChoix', (GameId, playerName, card) => {
 

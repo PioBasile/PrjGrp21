@@ -235,12 +235,14 @@ const JeuBataille = () => {
             setOldSelect(playerCards.splice(playerCards.indexOf(card), 1)[0]);
         }
         sortCards(playerCards);
-        console.log(card);
         setSelectedCards(card);
         if (!inDraw) {
-            socket.emit('PhaseDeChoix', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
+            setTimeout(() => {
+                socket.emit('PhaseDeChoix', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
+                socket.emit("sendCard", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"),card);
+              }, "3000");
         } else {
-            socket.emit('ResoudreEgalite', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
+            socket.emit('ResoudreEgalite', {serverId:sessionStorage.getItem("serverConnected"),  card:card});
         }
 
     };
@@ -470,8 +472,8 @@ const JeuBataille = () => {
 
             <div className="bo-selected-cards">
                 <div className={"bo-card"}>
-
-                    {selectedCards.length !== 0 ? <img src={getCardImage(selectedCards)} /> : <div></div>}
+                    
+                        {selectedCards.length !== 0 ? <img src={getCardImage(selectedCards)} /> : <div></div>}
                 </div>
             </div>
 

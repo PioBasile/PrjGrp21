@@ -268,3 +268,15 @@
 }
 
 
+.bo-selected-card {
+    color: aliceblue;
+    width: 60px; /* Largeur agrandie */
+    height: 100px; /* Hauteur agrandie */
+    background-color: rgba(0, 0, 0, 0);
+    margin: 5px;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+    display: flex;
+    justify-content: center; /* Centre le texte horizontalement */
+    align-items: center; /* Centre le texte verticalement */
+}

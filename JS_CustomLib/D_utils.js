@@ -40,6 +40,9 @@ const findLobby = (id, lobbyList) => {
 const findWaitingPlayer = (username, plist) => {
 
   let player = 0;
+  if(!plist){
+    return -1;
+  }
   plist.forEach((elem) => {
     if (elem.username == username) { player = elem }
   });
@@ -371,6 +374,7 @@ class Lobby {
     this.tbt = 30;
     this.maxTurn = 20;
     this.moneyBet = moneyBet;
+    this.is_empty = true;
   }
 
 }

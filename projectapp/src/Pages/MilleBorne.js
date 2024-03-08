@@ -39,6 +39,7 @@ const MilleBorne = () => {
     const getCard = (card) => {
         return cartes.indexOf(card);
     }
+    
     const sendMessage = () => {
         socket.emit('MB-sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
         setMessage('');
@@ -340,7 +341,7 @@ const MilleBorne = () => {
             {isPopUp && (
                 <div className='MB-popup-container'>
                     <div className='MB-popup'>
-                        {playerList.map((player, index) => (
+                        {playerList.map((player, _) => (
                             <div className={`adversaire-card-selection ${player.state === "roll" ? player.color : "gris"}`} onClick={() => attaqued(player.name)}>
                                 <div className='MB-player-name'>{player.name}</div>
                             </div>

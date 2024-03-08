@@ -55,7 +55,7 @@
     margin-top: 35px;
     background-color: #333;
     transition: background-color 0.7s ease;
-    width: clamp(15vw,20vw, 25vw );
+    width: clamp(15vw, 20vw, 25vw);
     text-align: center;
     justify-content: center;
     align-items: center;
@@ -69,6 +69,13 @@
     border-radius: 25px;
     cursor: pointer;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    transform: scale(1);
+    transition: transform 0.3 ease;
+}
+
+.BM-server:hover {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
 }
 
 
@@ -89,13 +96,14 @@
     position: relative;
     width: clamp(20vw, 200%, 200%);
     top: 50%;
-    left:-7vw;
+    left: -7vw;
     text-align: center;
-    overflow:hidden;
+    overflow: hidden;
     transform: rotate(-90deg);
     transition: transform 0s ease;
 
 }
+
 .BM-profil:hover .MB-profil-H2 {
     top: 5vh;
     left: 5vh;
@@ -112,11 +120,12 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    
+
 }
 
 .casino {
     background-color: rgb(169, 65, 65);
+    cursor: pointer;
 }
 
 .BM-info-profil {
@@ -171,7 +180,6 @@
     color: gray;
     font-size: 2vh;
     border-radius: 25px;
-    margin-bottom: 30px;
     padding-left: 1vh;
     border: solid gray 3px;
 }
@@ -181,13 +189,17 @@
 }
 
 .BM-creerButton-container {
+    display: flex;
+    align-items: center;
+    margin: auto;
     top: 80vh;
     padding-top: 1vh;
     left: 32%;
+    width: 100%;
     padding-bottom: 1vh;
     padding-left: 1vh;
     padding-right: 1vh;
-    position: absolute;
+    position: relative;
     color: aliceblue;
     border-radius: 10px;
 }
@@ -225,11 +237,80 @@
     background-color: green;
 }
 
-.BM-input-server{
+.BM-input-server {
     margin-top: 1vh;
     background-color: #ddd;
     max-width: 100%;
     border-radius: 15px;
     border: none;
     padding-left: 1vw;
+}
+
+.checkbox-container {
+    display: flex;
+}
+
+.checkbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: clamp(15vw, 15vw, 20vw);
+    margin-right: 19px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    background-color: rgb(88, 98, 98);
+    border-radius: 10px;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+}
+
+
+
+.select-container {
+    position: relative;
+    display: flex;
+    text-align: center;
+    width: 200px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.text-card {
+    font-size: 20px;
+    text-align: center;
+    padding-top: 15px;
+    padding-left: 20px;
+}
+
+.select-dropdown {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.select-dropdown:focus {
+    outline: none;
+    border-color: #2196F3;
+}
+
+.select-arrow {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.select-arrow::before {
+    content: '\25BC';
+
+    font-size: 18px;
+    color: #555;
 }

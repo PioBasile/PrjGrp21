@@ -104,8 +104,6 @@ const BrowserAccountManager = () => {
     handleClose();
   };
 
-
-
   const Profil = () => {
     return (
 

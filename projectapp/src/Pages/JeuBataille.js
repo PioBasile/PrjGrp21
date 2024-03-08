@@ -19,7 +19,8 @@ const JeuBataille = () => {
     const navigate = useNavigate();
     const emoteBubbleRef = useRef(null);
     const [showEmotes, setShowEmotes] = useState(false);
-    
+
+
 
     {/* ------------A FAIRE--------------
 
@@ -32,7 +33,6 @@ const JeuBataille = () => {
         
         
         -----PAGE DE WINNER------
-        1. faire une clean animation avec des feux d'artifice dans le background
         2. ajouter un bouron "return to lobby" qui renvoie a la page de lobby
         3. ajouter le score de chaque joueur/classement
     */}
@@ -469,7 +469,7 @@ const JeuBataille = () => {
             </div>
 
             <div className="bo-selected-cards">
-                <div className={"bo-card"}>
+                <div className={"bo-selected-card"}>
 
                     {selectedCards.length !== 0 ? <img src={getCardImage(selectedCards)} /> : <div></div>}
                 </div>

@@ -182,7 +182,7 @@ const NewBrowserManager = () => {
 
                     <div className='checkbox-container'>
                         <div className='checkbox' onClick={handlePrivate}>Private Sever ?</div>
-                        <div className='checkbox' onClick={ handleBet}>Want to Bet ?</div>x 
+                        <div className='checkbox' onClick={ handleBet}>Want to Bet ?</div>
                     </div>
 
                     {isPrivate && <input type="password" id="BM-password" className="BM-input" placeholder='Password...' value={password} onChange={(e) => setPassword(e.target.value)}></input>}

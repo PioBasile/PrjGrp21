@@ -207,7 +207,64 @@
 }
 
 .bo-message-container {
+    position: absolute;
     right: 0px;
     bottom:24vh;
     max-height: 50vh;
 }
+
+/* Styles pour le conteneur principal des émoticônes */
+.bo-emote-container {
+    position: relative;
+    left: 0;
+    bottom: 24vh;
+}
+
+.bo-emote-button {
+    height: 40px;
+    width: 100px;
+    margin-left: -695%;
+    bottom: 24vh;
+    background-color: #1e4065;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.bo-emote-bubble {
+    margin-left: -690%;
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 0; /* Alignez la bulle d'émoticônes tout à gauche */
+    width: 300px; /* Augmentez la largeur de la bulle d'émoticônes */
+    background-color: rgb(144, 129, 129);
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 1;
+    white-space: nowrap; /* Empêchez le texte de se retourner à la ligne */
+    overflow-x: auto; /* Ajoutez une barre de défilement horizontale si nécessaire */
+}
+
+.bo-emote-list {
+    display: flex;
+    justify-content: flex-start;
+    overflow-x: auto; /* Ajoutez une barre de défilement horizontale si nécessaire */
+}
+
+.bo-emote {
+    margin: 5px;
+    cursor: pointer;
+}
+
+.bo-emote video {
+    padding: 5px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border-color: red;
+}
+
+

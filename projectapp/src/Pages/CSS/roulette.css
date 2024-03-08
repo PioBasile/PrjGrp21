@@ -1,6 +1,7 @@
 body.roulette {
-    background-image: url("pics/wooden-background.jpg");
-    background-size: cover;
+    background-image: url("pics/newredcasinoback.png");
+    background-size: contain;
+    background-position: center;
 }
 
 .rouletteGameContainer {

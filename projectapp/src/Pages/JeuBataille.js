@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CSS/jeuBataille.css';
 import socket from '../socketG';
+import './CSS/emotes/toyota.mp4';
 
 
 const JeuBataille = () => {
@@ -16,6 +17,9 @@ const JeuBataille = () => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const navigate = useNavigate();
+    const emoteBubbleRef = useRef(null);
+    const [showEmotes, setShowEmotes] = useState(false);
+    
 
     {/* ------------A FAIRE--------------
 
@@ -32,6 +36,34 @@ const JeuBataille = () => {
         2. ajouter un bouron "return to lobby" qui renvoie a la page de lobby
         3. ajouter le score de chaque joueur/classement
     */}
+
+    //----------------------EMOTES---------------------
+    const emote = require("./CSS/emotes/toyota.mp4");
+
+    const videos = [
+        { name: 'Emote 1', videoUrl: emote },
+        { name: 'Emote 2', videoUrl: emote },
+        { name: 'Emote 3', videoUrl: emote },
+        { name: 'Emote 4', videoUrl: emote },
+        { name: 'Emote 5', videoUrl: emote },
+        { name: 'Emote 6', videoUrl: emote },
+        { name: 'Emote 7', videoUrl: emote },
+        { name: 'Emote 8', videoUrl: emote },
+    ];
+
+    function playEmote(emoteUrl) {
+        const video = emoteBubbleRef.current.querySelector('video'); // Récupérez l'élément vidéo à partir de la référence
+        video.src = emoteUrl; // Définissez l'URL de la vidéo
+        video.play(); // Lancez la lecture de la vidéo
+        // Réinitialisez la vidéo à la frame de début après la lecture terminée
+        video.addEventListener('ended', () => {
+            video.currentTime = 0; // Réinitialisez la currentTime à zéro
+        });
+    }
+
+    const toggleEmotes = () => {
+        setShowEmotes(!showEmotes);
+      };
 
     //----------------------FONCTION PR LES IMAGES DE CARTES---------------------
 
@@ -193,6 +225,24 @@ const JeuBataille = () => {
         }
 
     },[]);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+          if (emoteBubbleRef.current && !emoteBubbleRef.current.contains(event.target)) {
+            setShowEmotes(false);
+          }
+        };
+    
+        if (showEmotes) {
+          document.addEventListener('mousedown', handleClickOutside);
+        } else {
+          document.removeEventListener('mousedown', handleClickOutside);
+        }
+    
+        return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showEmotes]);
 
     useEffect(() => {
 
@@ -421,6 +471,23 @@ const JeuBataille = () => {
 
             <button className="bo-save-button" onClick={() => leaveGame()}>Save</button>
             <button className="bo-leave-button" onClick={() => leaveGame()}>Leave Game</button>
+
+            <div className="bo-emote-container">
+                <button className="bo-emote-button" onClick={toggleEmotes}>Emotes</button>
+                {showEmotes && (
+                    <div className="bo-emote-bubble" ref={emoteBubbleRef}>
+                    <div className="bo-emote-list">
+                        {videos.map((emote, index) => (
+                            <div key={index} className="bo-emote" onClick={() => playEmote(emote.videoUrl)}>
+                                <video src={emote.videoUrl} />
+                            </div>
+                        ))}
+                    </div>
+                    </div>
+                )}
+            </div>
+
+
         </div>
     );
 };

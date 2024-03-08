@@ -17,6 +17,9 @@ const makecookie = (length) => {
 const findGame = (id, availableGames) => {
 
   let game = 0;
+  if(!availableGames){
+    return -1;
+  }
   availableGames.forEach((elem) => {
     if (elem.identifiant_partie == id) { game = elem }
   });
@@ -47,6 +50,9 @@ const findWaitingPlayer = (username, plist) => {
 
 const findPlayer = (username, plist) => {
 
+  if(!plist){
+    return -1;
+  }
   let player = 0;
   plist.forEach((elem) => {
     if (elem.name == username) { player = elem }
@@ -102,6 +108,8 @@ const findCard = (card, deck) => {
   return count;
 }
 
+
+
 const findRemovePlayer = (player, plist) => {
   let count = 0;
   let found = false;
@@ -140,6 +148,7 @@ class Bataille {
     this.scoreboard = {};
     this.cartes = shuffle(generateCartes());
     this.moneyBet = moneyBet;
+    this.chatContent = [];
 
     let index = 0;
 
@@ -284,6 +293,12 @@ class Bataille {
     this.playerList.splice(playerI, 1);
     this.scoreboard[player.name] = -1;
 
+  }
+
+  addMessage(msg) {
+    if (msg != "") {
+      this.chatContent.push(msg);
+    }
   }
 }
 
@@ -468,7 +483,6 @@ class SixQuiPrend {
   tousJouer() {
 
     let no = true;
-
     this.player_list.forEach((player) => {
 
       if (player.selected == null) {

@@ -200,7 +200,7 @@ const SixQuiPrend = () => {
     return () => {
       mounted = false;
     }
-  }, [])
+  }, [navigate])
 
 
   useEffect(() => {
@@ -279,6 +279,13 @@ const SixQuiPrend = () => {
       navigate("/winner");
 
     });
+
+    socket.on("deco", (name) => {
+
+      navigate("/login-signup");
+
+  });
+
     socket.on('timerDown', () => {
 
 

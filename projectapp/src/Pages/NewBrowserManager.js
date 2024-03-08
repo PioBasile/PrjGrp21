@@ -27,10 +27,8 @@ const NewBrowserManager = () => {
     const [moneyBet, setMoneyBet] = useState(null);
 
 
-
     const handleClick = (Id, server) => {
-        console.log(password, server.password);
-        if (server.isPrivate && password !== server.password) {
+        if (server.isPrivate && gamePassword !== server.password) {
             return;
         }
         console.log("new page asked");
@@ -153,8 +151,8 @@ const NewBrowserManager = () => {
 
                 <h2 className='MB-h2 MB-profil-H2'> PROFIL </h2>
                 <div className='BM-info-profil hide'>
-                    <p className='info-text'></p>
-                    <div className='info-text'>PLAYERNAME : {sessionStorage.getItem("name")}</div>
+                    <p className='info-text'>PLAYERNAME :
+                    <div className='info-text'> {sessionStorage.getItem("name")}</div></p>
                 </div>
                 <div className='BM-info-profil hide'>
                     Parties Jouées : {nbGame}

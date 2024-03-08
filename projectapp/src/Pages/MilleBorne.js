@@ -35,6 +35,7 @@ const MilleBorne = () => {
     const [nbCards, setNbCards] = useState(0);
     const [test, setTest] = useState("");
     const [isVisible, setIsVisible] = useState(false);
+    
     const getCard = (card) => {
         return cartes.indexOf(card);
     }
@@ -131,9 +132,14 @@ const MilleBorne = () => {
             });
 
             socket.on("MB-getMessage", (msgList) => {
-                console.log(msgList);
                 setMessages(msgList);
             })
+
+            socket.on("deco", (name) => {
+
+                navigate("/login-signup");
+
+            });
 
         }
         return () => {

@@ -168,6 +168,53 @@ const JeuBataille = () => {
         navigate('/');
     };
 
+    //----------------------SORT CARDS---------------------
+    function sortCards(deck) {
+        let grp1 = [];
+        let grp2 = [];
+        let grp3 = [];
+        let grp4 = [];
+
+        deck.forEach((card) => {
+
+            card.symbole = card.symbole.charAt(0).toUpperCase() + card.symbole.slice(1);
+            card.number = card.number.charAt(0).toUpperCase() + card.number.slice(1);
+            
+
+            if(card.symbole === "Trefle"){
+                grp1.push(card);
+            } else if(card.symbole === "Carreau"){
+                grp2.push(card);
+            } else if(card.symbole === "Coeur"){
+                grp3.push(card);
+            } else if(card.symbole === "Pique"){
+                grp4.push(card);
+            }
+
+        });
+
+        const sortByPower = (a, b) => {
+            return a.power - b.power;
+        };
+        
+        // Tri par symbole de carte
+        const sortGroupBySymbol = (group) => {
+            return group.sort(sortByPower);
+        };
+
+
+        grp1 = sortGroupBySymbol(grp1);
+        grp2 = sortGroupBySymbol(grp2);
+        grp3 = sortGroupBySymbol(grp3);
+        grp4 = sortGroupBySymbol(grp4);
+    
+
+        deck = grp1.concat(grp2, grp3, grp4);
+    
+
+        setPlayerCards(deck);
+    }
+
     //----------------------SELECT CARD---------------------<
 
     const selectCardClick = (card) => {
@@ -187,6 +234,7 @@ const JeuBataille = () => {
         } else {
             setOldSelect(playerCards.splice(playerCards.indexOf(card), 1)[0]);
         }
+        sortCards(playerCards);
         console.log(card);
         setSelectedCards(card);
         if (!inDraw) {
@@ -258,50 +306,8 @@ const JeuBataille = () => {
             // -----------------
 
             socket.on("Deck", (deck) => {
-             
-                let grp1 = [];
-                let grp2 = [];
-                let grp3 = [];
-                let grp4 = [];
-
-                deck.forEach((card) => {
-
-                    card.symbole = card.symbole.charAt(0).toUpperCase() + card.symbole.slice(1);
-                    card.number = card.number.charAt(0).toUpperCase() + card.number.slice(1);
-                    
-
-                    if(card.symbole === "Trefle"){
-                        grp1.push(card);
-                    } else if(card.symbole === "Carreau"){
-                        grp2.push(card);
-                    } else if(card.symbole === "Coeur"){
-                        grp3.push(card);
-                    } else if(card.symbole === "Pique"){
-                        grp4.push(card);
-                    }
-
-                });
-
-                const sortByPower = (a, b) => {
-                    return a.power - b.power;
-                };
                 
-                // Tri par symbole de carte
-                const sortGroupBySymbol = (group) => {
-                    return group.sort(sortByPower);
-                };
-
-
-                grp1 = sortGroupBySymbol(grp1);
-                grp2 = sortGroupBySymbol(grp2);
-                grp3 = sortGroupBySymbol(grp3);
-                grp4 = sortGroupBySymbol(grp4);
-            
-
-                deck = grp1.concat(grp2, grp3, grp4);
-           
-
-                setPlayerCards(deck);
+                sortCards(deck);
             });
 
 

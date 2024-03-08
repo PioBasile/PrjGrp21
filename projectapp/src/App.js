@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes,Navigate } from "react-router-dom";
 import Start from "./Pages/Start.js";
 import LoginSignup from "../src/Pages/Login-signup";
-import BrowserAccountManager from './Pages/BrowserAccountManager.js';
 import Lobby from './Pages/Lobby.js'
 import JeuBataille from "./Pages/JeuBataille.js";
 import VictoryScreen from "./Pages/VicroryScreen.js";
@@ -13,6 +12,7 @@ import socket from './socketG';
 import NewBrowserManager from './Pages/NewBrowserManager'
 import BlackJack from "./Pages/BlackJack";
 import ItemShop from "./Pages/ItemShop.js";
+import Casino from "./Pages/Casino.js";
 
 function App() {
 
@@ -84,6 +84,7 @@ function App() {
                 <Route path="/BrowserManager" element={<NewBrowserManager></NewBrowserManager>}/>
                 <Route path="/blackJack" element={<BlackJack></BlackJack>}/>
                 <Route path="/itemshop" element={<ItemShop></ItemShop>}/>
+                <Route path="/casino" element={<Casino></Casino>}/>
             </Routes>
         </Router>
     );

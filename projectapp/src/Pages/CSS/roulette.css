@@ -1,9 +1,12 @@
 body.roulette {
-    background-image: url("pics/wooden-background.jpg");
+
     background-size: cover;
 }
 
 .rouletteGameContainer {
+    width: 100vw;
+    height: 100vh;
+    background-color:rgb(94, 15, 18);
     padding-bottom: 3vh;
     position: relative;
     display: flex;

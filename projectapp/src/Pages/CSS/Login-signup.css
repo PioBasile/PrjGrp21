@@ -133,3 +133,13 @@
   [data-popup='tooltip'].popup-overlay {
     background: transparent;
 }
+
+.wrongStuff {
+  color: red;
+  font-style: italic;
+  background-color: rgb(169, 65, 65, 0.3);
+  padding-left: 0.3vh;
+  padding-right: 0.3vh;
+  padding-top: 0.3vh;
+  padding-bottom: 0.3vh;
+}

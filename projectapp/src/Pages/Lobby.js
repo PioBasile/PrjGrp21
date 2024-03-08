@@ -140,7 +140,6 @@ const Lobby = () => {
 
     socket.on("start", (place) => {
 
-
       navigate(`/${place}`);
 
     });

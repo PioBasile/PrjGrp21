@@ -130,7 +130,7 @@ const STATUS = {
 
 class Bataille {
 
-  constructor(idPart, maxJ, maxT, Owner, playerL) {
+  constructor(idPart, maxJ, maxT, Owner, playerL, moneyBet) {
 
     this.identifiant_partie = idPart;
     this.maxJoueurs = maxJ;
@@ -139,6 +139,7 @@ class Bataille {
     this.playerList = playerL;
     this.scoreboard = {};
     this.cartes = shuffle(generateCartes());
+    this.moneyBet = moneyBet;
 
     let index = 0;
 
@@ -341,7 +342,7 @@ class Player_IN_Lobby {
 
 class Lobby {
 
-  constructor(serverName, nbPlayerMax, isPrivate, password, gameType, ID, owner) {
+  constructor(serverName, nbPlayerMax, isPrivate, password, gameType, ID, owner, moneyBet) {
 
     this.serverName = serverName;
     this.nbPlayerMax = nbPlayerMax;
@@ -353,7 +354,7 @@ class Lobby {
     this.owner = owner;
     this.tbt = 30;
     this.maxTurn = 20;
-
+    this.moneyBet = moneyBet;
   }
 
 }
@@ -410,7 +411,7 @@ function generate6Cartes() {
 
 class SixQuiPrend {
 
-  constructor(id_partie, owner, player_list, chrono) {
+  constructor(id_partie, owner, player_list, chrono, moneyBet) {
 
     this.identifiant_partie = id_partie;
     this.owner = owner;
@@ -426,7 +427,7 @@ class SixQuiPrend {
     this.currentP = null;
 
     this.winner = null;
-
+    this.moneyBet = moneyBet;
   }
 
   gagnant() {
@@ -790,7 +791,7 @@ const GameState = {
 
 class MilleBorne {
 
-  constructor(identifiant_partie, owner, playerList) {
+  constructor(identifiant_partie, owner, playerList, moneyBet) {
     this.identifiant_partie = identifiant_partie;
     this.owner = owner;
     this.playerList = playerList;
@@ -804,6 +805,7 @@ class MilleBorne {
     this.state = GameState.EN_COURS;
     this.distribuer();
     this.chatContent = [];
+    this.moneyBet = moneyBet;
   }
 
   construireJeu() {

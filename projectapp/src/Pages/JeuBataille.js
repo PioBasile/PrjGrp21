@@ -59,6 +59,8 @@ const JeuBataille = () => {
         setMessage('');
     };
 
+
+    
     const openChat = () => {
         setIsChatOpen(true);
     };
@@ -81,22 +83,16 @@ const JeuBataille = () => {
             // GESTION stabilité de la connection
             socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
 
-            socket.on('getMessage', (msg) => {
-                console.log("msg : ", msg);
-                setMessages((prevMessages) => [...prevMessages, msg]);
-            });
-
             socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
             socket.emit('join', sessionStorage.getItem('serverConnected'));
             socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
-
+            
         }
         return () => {
             mounted = false;
-            socket.off("getMessage");
         }
 
-    }, [setMessage])
+    }, [])
 
     useEffect(() => {
 

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import socket from '../socketG';
 import './CSS/NewBrowserManager.css'
+import './CSS/BrowerManager.css'
+import { setMaxListeners } from 'events';
 
 const NewBrowserManager = () => {
 
@@ -13,6 +15,7 @@ const NewBrowserManager = () => {
     const [serverName, setServerName] = useState('');
     const [nbPlayerMax, setNbPlayerMax] = useState(2);
     const [isPrivate, setIsPrivate] = useState(false);
+    const [isBet, setIsBet] = useState(false);
     const [password, setPassword] = useState('');
     const [gamePassword, setGamePassword] = useState("");
 
@@ -21,22 +24,9 @@ const NewBrowserManager = () => {
     const [nbWin, setNbWin] = useState('0');
     const [roundWin, setRoundWin] = useState('0');
     const [money, setMoney] = useState('0');
+    const [moneyBet, setMoneyBet] = useState(null);
 
 
-
-    const ElementAvecBouton = ({ children }) => {
-        const [boutonVisible, setBoutonVisible] = useState(false);
-
-        return (
-            <div
-                className={`element-container ${boutonVisible ? 'visible' : ''}`}
-                onMouseEnter={() => setBoutonVisible(true)}
-                onMouseLeave={() => setBoutonVisible(false)}
-            >
-                {children}
-            </div>
-        );
-    };
 
     const handleClick = (Id, server) => {
         console.log(password, server.password);
@@ -118,29 +108,12 @@ const NewBrowserManager = () => {
         if (gameType === "") { return 0; }
         if (nbPlayerMax === "" || nbPlayerMax < 1) { return 0; }
         console.log(gameType, nbPlayerMax, serverName, isServerPrivate());
-        socket.emit("newServer", serverName, nbPlayerMax, isServerPrivate(), password, gameType, sessionStorage.getItem('name'));
+        socket.emit("newServer", serverName, nbPlayerMax, isServerPrivate(), password, gameType, sessionStorage.getItem('name'), moneyBet);
         setGameType("");
         setNbPlayerMax(2);
         setServerName("");
         setPassword("");
     };
-
-    const canJoin = (lobby) => {
-        if (isPrivate) {
-            if (lobby.password === password) {
-                return true
-            }
-            else if (lobby.playerList === lobby.nbPlayerMax) {
-                return false
-            }
-            else {
-                return false
-            }
-        }
-        else {
-            return true
-        }
-    }
 
 
     const whatToLoad = (lobby) => {
@@ -154,14 +127,34 @@ const NewBrowserManager = () => {
     }
 
 
+    const handlePrivate = () => {
+        if (isPrivate) {
+            setIsPrivate(false);
+            return;
+        }
+        setIsPrivate(true)
+    }
+
+    const handleBet = () => {
+        if (isBet) {
+            setIsBet(false)
+            return;
+        }
+        setIsBet(true)
+    }
+
+    const goToCasinoNigga = () =>{
+        navigate("/casino")
+    }
+
     return (
         <div className='BM-container'>
             <div className='BM-profil'>
 
                 <h2 className='MB-h2 MB-profil-H2'> PROFIL </h2>
                 <div className='BM-info-profil hide'>
-                    <p className='info-text'>PLAYERNAME</p>
-                    <div className='info-text'> {sessionStorage.getItem("name")}</div>
+                    <p className='info-text'></p>
+                    <div className='info-text'>PLAYERNAME : {sessionStorage.getItem("name")}</div>
                 </div>
                 <div className='BM-info-profil hide'>
                     Parties Jouées : {nbGame}
@@ -177,7 +170,7 @@ const NewBrowserManager = () => {
                     Round gagnés : {roundWin}
                 </div>
 
-                <div className='BM-info-profil hide casino'>
+                <div className='BM-info-profil hide casino' onClick={goToCasinoNigga}>
                     CASINO
                 </div>
             </div>
@@ -187,9 +180,17 @@ const NewBrowserManager = () => {
 
                 <div className='BM-input-container'>
 
-                    <input type="text" id="BM-serverName" className="BM-input" placeholder='Nom Partie...' value={serverName} onChange={(e) => { setServerName(e.target.value); }} ></input>
-                    <input type="password" id="BM-password" className="BM-input" placeholder='Mot de passe...' value={password} onChange={(e) => setPassword(e.target.value)}></input>
-                    <input type="number" className="BM-input gameNameMargin" placeholder='Nombre de joueurs' value={nbPlayerMax} onChange={(e) => setNbPlayerMax(e.target.value)}></input>
+                    <input type="text" id="BM-serverName" className="BM-input" placeholder='Server name...' value={serverName} onChange={(e) => { setServerName(e.target.value); }} ></input>
+
+                    <div className='checkbox-container'>
+                        <div className='checkbox' onClick={handlePrivate}>Server Private ?</div>
+                        <div className='checkbox' onClick={ handleBet}>Want to Bet ?</div>x 
+                    </div>
+
+                    {isPrivate && <input type="password" id="BM-password" className="BM-input" placeholder='Password...' value={password} onChange={(e) => setPassword(e.target.value)}></input>}
+                    {isBet && <input type="number" id="BM-moneyBet" className="BM-input" placeholder='Money to bet' value={moneyBet} onChange={(e) => setMoneyBet(e.target.value)}></input>}
+
+                    <input type="number" className="BM-input gameNameMargin" placeholder='Player number' value={nbPlayerMax} onChange={(e) => setNbPlayerMax(e.target.value)}></input>
 
                     <div className='select-container'>
                         <label htmlFor="gameType"></label>
@@ -215,15 +216,15 @@ const NewBrowserManager = () => {
 
             <div className='BM-serverList-container'>
 
-                <h2 className='MB-h2'> SERVER LISTE</h2>x
+                <h2 className='MB-h2'> SERVER LISTE</h2>
                 {mesLobby.map((lobby, _) => (
-                    <ElementAvecBouton>
-                        <div className='BM-server' onClick={() => handleClick(lobby.id, lobby)}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)}
-                            {lobby.isPrivate && <input id={`gamePassWord` + lobby.id} type="password" className="BM-input-server" placeholder='Mot de passe...' value={gamePassword} onChange={(e) => {
-                                setGamePassword(e.target.value);
-                            }}></input>}
-                        </div>
-                    </ElementAvecBouton>
+
+                    <div className='BM-server' onClick={() => handleClick(lobby.id, lobby)}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)}
+                        {lobby.isPrivate && <input id={`gamePassWord` + lobby.id} type="password" className="BM-input-server" placeholder='Mot de passe...' value={gamePassword} onChange={(e) => {
+                            setGamePassword(e.target.value);
+                        }}></input>}
+                    </div>
+
                 ))};
             </div>
 

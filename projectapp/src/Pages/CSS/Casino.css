@@ -1,0 +1,128 @@
+.casino-container {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(110, 27, 30);
+}
+
+.casino-upper-bandeau {
+    display: flex;
+    top: 0;
+    width: 100%;
+    height: 15%;
+    background-color: rgb(137, 27, 27);
+    justify-content: space-between;
+    padding-left: 3vw;
+}
+
+.underTheBandeau {
+    width: 100%;
+    height: 85%;
+    display: flex;
+}
+
+.casino-moneyContainer {
+    display: flex;
+    margin-top: 2vh;
+    height: 70%;
+    padding-left: 3vw;
+    padding-right: 3vw;
+    align-items: center;
+    background-color: rgb(110, 27, 30);
+    border: solid 2px rgb(246, 206, 70);
+    border-radius: 10px;
+    color: aliceblue;
+    font-size: 3vh;
+}
+
+.casino-input-container {
+    padding-top: 7vh;
+    width: 66%;
+    height: 100%;
+    border-right: solid 4px rgb(246, 206, 70);
+    border-top: solid 4px rgb(246, 206, 70);
+}
+
+.casino-serverList-container {
+    border-top: solid 4px rgb(246, 206, 70);
+    height: 99.3%;
+    width: 34%;
+    background-color: rgb(49, 54, 29);
+    padding-top: 5%;
+    overflow: auto;
+}
+
+.casino-input {
+    border: solid 2px rgb(246, 206, 70);
+    background-color: rgb(163, 10, 0);
+    color: rgb(246, 206, 91);
+    font-weight: 650;
+    font-size: 3vh;
+    height: 10%;
+    margin-bottom: 4vh;
+    padding-left: 2vw;
+}
+
+.casino-create-button {
+    position: fixed;
+    background-color: rgb(49, 54, 29);
+    color: rgb(246, 206, 91);
+    width: 30%;
+    bottom: 2vh;
+    left: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 2vw;
+    padding-bottom: 2vw;
+
+    display: flex;
+    align-items: center;
+    margin: auto;
+    border-radius: 35px;
+    font-size: 5vh;
+    font-weight: 709;
+    border: solid 2px rgb(246, 206, 70);
+    cursor: pointer;
+}
+
+
+.casino-leave {
+    margin-top: 2vh;
+    display: flex;
+    height: 70%;
+    padding-left: 3vw;
+    padding-right: 3vw;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: rgb(110, 27, 30);
+    border: solid 2px rgb(246, 206, 70);
+    border-radius: 10px;
+    color: aliceblue;
+    font-size: 3vh;
+}
+
+.casino-server {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    width: 80%;
+    height: 15%;
+    border: solid 2px rgb(246, 206, 70);
+    background-color: rgb(163, 10, 0);
+    color: rgb(246, 206, 91);
+    font-size: 3vh;
+    font-weight: 650;
+    margin: auto;
+    margin-bottom: 3vh;
+    border-radius: 20px;
+}
+
+.casino-serverInfo {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}

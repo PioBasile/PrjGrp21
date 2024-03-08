@@ -222,9 +222,9 @@ io.on('connection', (socket) => {
 
   // GESTION LOBBY //
 
-  socket.on('newServer', (serverName, nbPlayerMax, isPrivate, password, gameType, owner) => {
+  socket.on('newServer', (serverName, nbPlayerMax, isPrivate, password, gameType, owner, moneyBet) => {
 
-    let Nlobby = new Lobby(serverName, parseInt(nbPlayerMax), isPrivate, password, gameType, lobbyIndex, owner);
+    let Nlobby = new Lobby(serverName, parseInt(nbPlayerMax), isPrivate, password, gameType, lobbyIndex, owner, moneyBet);
     lobbyList.push(Nlobby);
     lobbyIndex++;
     io.emit('newServer', lobbyList);
@@ -353,7 +353,7 @@ io.on('connection', (socket) => {
 
     if (lobby.gameType == "sqp") {
 
-      nGame = new SixQuiPrend(lobbyID, owner, plist, 10)
+      nGame = new SixQuiPrend(lobbyID, owner, plist, 10, lobby.moneyBet);
       TaureauGames.push(nGame);
 
     }
@@ -367,7 +367,7 @@ io.on('connection', (socket) => {
       let color = ["pink", "red", "yellow", "green"];
 
       plist.forEach((player, index) => {
-        let newMB_player = new MB_Player(player.name, player.cookie, color[index]);
+        let newMB_player = new MB_Player(player.name, player.cookie, color[index], lobby.moneyBet);
         mbPlist.push(newMB_player);
       })
 
@@ -377,9 +377,10 @@ io.on('connection', (socket) => {
     }
 
     //HERE
+    
 
     else {
-      nGame = new Bataille(lobbyID, lobby.nbPlayerMax, lobby.maxTurn, owner, plist);
+      nGame = new Bataille(lobbyID, lobby.nbPlayerMax, lobby.maxTurn, owner, plist, lobby.moneyBet);
       BatailGames.push(nGame);
 
     }
@@ -913,21 +914,21 @@ io.on('connection', (socket) => {
   
   socket.on("MB-loadTheChat", (serverId)=> {
     game = findGame(serverId, MilleBornesGames);
-    io.to(data.serverId).emit("MB-getMessage", game.chatContent);
+    io.to(serverId).emit("MB-getMessage", game.chatContent);
   }) 
 
   //CHAT SIX QUI PREND
 
-  socket.on("SQP-sendMessage", (data) => {
-    game = findGame(data.serverId, TaureauGames);
-    game.addMessage(`${data.name}: ${data.msg}`);
-    io.to(data.serverId).emit("SQP-getMessage", game.chatContent);
-  })
+  // socket.on("SQP-sendMessage", (data) => {
+  //   game = findGame(data.serverId, TaureauGames);
+  //   game.addMessage(`${data.name}: ${data.msg}`);
+  //   io.to(data.serverId).emit("SQP-getMessage", game.chatContent);
+  // })
   
-  socket.on("SQP-loadTheChat", (serverId)=> {
-    game = findGame(serverId, TaureauGames);
-    io.to(data.serverId).emit("SQP-getMessage", game.chatContent);
-  }) 
+  // socket.on("SQP-loadTheChat", (serverId)=> {
+  //   game = findGame(serverId, TaureauGames);
+  //   io.to(serverId).emit("SQP-getMessage", game.chatContent);
+  // }) 
 
    
   // CHAT ROULETTE
@@ -940,7 +941,7 @@ io.on('connection', (socket) => {
   
   // socket.on("rlt-loadTheChat", (serverId)=> {
   //   game = findGame(serverId, MilleBornesGames);
-  //   io.to(data.serverId).emit("rlt-getMessage", game.chatContent);
+  //   io.to(serverId).emit("rlt-getMessage", game.chatContent);
   // }) 
 
   //CHAT BLACKJACK
@@ -953,7 +954,7 @@ io.on('connection', (socket) => {
 
   // socket.on("BJ-loadTheChat", (serverId)=> {
   //   game = findGame(serverId, MilleBornesGames);
-  //   io.to(data.serverId).emit("BJ-getMessage", game.chatContent);
+  //   io.to(serverId).emit("BJ-getMessage", game.chatContent);
   // }) 
 
   
@@ -966,6 +967,6 @@ io.on('connection', (socket) => {
 
   // socket.on("BTL-loadTheChat", (serverId)=> {
   //   game = findGame(serverId, MilleBornesGames);
-  //   io.to(data.serverId).emit("BTL-getMessage", game.chatContent);
+  //   io.to(serverId).emit("BTL-getMessage", game.chatContent);
   // }) 
 });

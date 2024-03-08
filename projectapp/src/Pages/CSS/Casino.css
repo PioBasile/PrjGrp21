@@ -46,7 +46,8 @@
     border-top: solid 4px rgb(246, 206, 70);
     height: 99.3%;
     width: 34%;
-    background-color: rgb(49, 54, 29);
+    background-image: url(pics/9999520.jpg);
+    background-size: cover;
     padding-top: 5%;
     overflow: auto;
 }
@@ -64,7 +65,8 @@
 
 .casino-create-button {
     position: fixed;
-    background-color: rgb(49, 54, 29);
+    background-image: url(pics/9999520.jpg);
+    background-size: auto;
     color: rgb(246, 206, 91);
     width: 30%;
     bottom: 2vh;

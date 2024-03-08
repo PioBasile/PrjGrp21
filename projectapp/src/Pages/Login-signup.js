@@ -80,7 +80,7 @@ const LoginSignup = () => {
             </div>
             <div className="login-container">
                 <div className='lo-si'> <h1>Login or Signup</h1></div>
-                {isWrong && <div className='wrongStuff'>The informations are false try again !</div>}
+                {isWrong && <div className='wrongStuff'>Incorrect login or password please try again !</div>}
                 <input
                     type="text"
                     placeholder="Username"

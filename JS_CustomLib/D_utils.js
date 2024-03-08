@@ -17,6 +17,9 @@ const makecookie = (length) => {
 const findGame = (id, availableGames) => {
 
   let game = 0;
+  if(!availableGames){
+    return -1;
+  }
   availableGames.forEach((elem) => {
     if (elem.identifiant_partie == id) { game = elem }
   });
@@ -47,6 +50,9 @@ const findWaitingPlayer = (username, plist) => {
 
 const findPlayer = (username, plist) => {
 
+  if(!plist){
+    return -1;
+  }
   let player = 0;
   plist.forEach((elem) => {
     if (elem.name == username) { player = elem }

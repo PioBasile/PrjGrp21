@@ -398,6 +398,10 @@ io.on('connection', (socket) => {
 
     game = findGame(gameID, BatailGames);
     player = findPlayer(username, game.playerList);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
 
     socket.emit('Deck', player.deck);
 
@@ -415,6 +419,10 @@ io.on('connection', (socket) => {
 
     let game = findGame(GameId, BatailGames);
     let player = findPlayer(playerName, game.playerList);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
 
     player.selected = card;
 
@@ -490,6 +498,10 @@ io.on('connection', (socket) => {
 
     let game = findGame(GameId, BatailGames);
     let player = findPlayer(playerName, game.playerList);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
 
     player.selected = card;
 
@@ -563,6 +575,10 @@ io.on('connection', (socket) => {
 
     let game = findGame(GameId, BatailGames);
     let player = findPlayer(playerName, game.playerList);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
 
     game.removePlayer(player);
     io.to(GameId).emit('getInfo', game);
@@ -582,6 +598,10 @@ io.on('connection', (socket) => {
     console.log("sqp pas normal ici");
     game = findGame(gameID, TaureauGames);
     player = findPlayer(username, game.player_list);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
 
     let redo = false;
     game.player_list.forEach((player) => {
@@ -627,6 +647,10 @@ io.on('connection', (socket) => {
 
     game = findGame(gameID, TaureauGames);
     player = findPlayer(playername, game.player_list);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
 
 
 
@@ -686,6 +710,10 @@ io.on('connection', (socket) => {
 
     game = findGame(gameID, TaureauGames);
     player = findPlayer(playername, game.player_list);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
 
 
     if (game.play(parseInt(row))) {
@@ -745,6 +773,10 @@ io.on('connection', (socket) => {
   socket.on("MB-whatMyInfo", (data) => {
     game = findGame(data.serverId, MilleBornesGames);
     player = findPlayer(data.name, game.playerList);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
 
     if (player !== 0) {
       socket.emit("MB-playerInfo", { deck: player.deck, nbPoints: player.nbPoints, turn: player.myTurn, bonus: player.bonus, state: player.state, color: player.color, isLimited: player.isLimited });
@@ -757,6 +789,10 @@ io.on('connection', (socket) => {
   socket.on("whatTheOrder", async (data) => {
     let game = findGame(data.serverId, MilleBornesGames);
     let player = findPlayer(data.name, game.playerList);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
 
     if (game.anyonePlayed()) {
       game.playerList[0].myTurn = true;
@@ -772,6 +808,10 @@ io.on('connection', (socket) => {
   socket.on("MB-whatMyOpponent", (data) => {
     game = findGame(data.serverId, MilleBornesGames);
     current_player = findPlayer(data.name, game.playerList);
+    if(current_player == -1 ){
+      socket.emit("deco");
+      return;
+    }
     playerList = game.playerList;
 
     let opponentList = getOpponent(playerList, current_player);
@@ -783,6 +823,10 @@ io.on('connection', (socket) => {
 
     game = findGame(data.serverId, MilleBornesGames);
     player = findPlayer(data.name, game.playerList);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
     card = data.card;
 
     if (game.cardVitesse.includes(card)) {
@@ -832,7 +876,15 @@ io.on('connection', (socket) => {
   socket.on("victim", (data) => {
     game = findGame(data.serverId, MilleBornesGames);
     player = findPlayer(data.name, game.playerList);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
     playerAttacked = findPlayer(data.playerAttackedName, game.playerList);
+    if(playerAttacked == -1 ){
+      socket.emit("deco");
+      return;
+    }
     if (playerAttacked !== 0) {
       if (game.attaqued(playerAttacked, data.card)) {
 
@@ -861,6 +913,10 @@ io.on('connection', (socket) => {
   socket.on("MB-whatMyState", (data) => {
     game = findGame(data.serverId, MilleBornesGames);
     player = findPlayer(data.name, game.playerList);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
 
     socket.emit("newState", (player.state));
   })
@@ -885,6 +941,10 @@ io.on('connection', (socket) => {
   socket.on("whatMyTurn", (data) => {
     game = findGame(data.serverId, MilleBornesGames);
     player = findPlayer(data.name, game.playerList);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
 
     socket.emit("myTurn", player.myTurn);
   })
@@ -893,6 +953,10 @@ io.on('connection', (socket) => {
 
     let game = findGame(data.serverId, MilleBornesGames);
     let player = findPlayer(data.name, game.playerList);
+    if(player == -1 ){
+      socket.emit("deco");
+      return;
+    }
 
 
     game.removePlayer(player);

@@ -181,7 +181,7 @@ const NewBrowserManager = () => {
                     <input type="text" id="BM-serverName" className="BM-input" placeholder='Server name...' value={serverName} onChange={(e) => { setServerName(e.target.value); }} ></input>
 
                     <div className='checkbox-container'>
-                        <div className='checkbox' onClick={handlePrivate}>Server Private ?</div>
+                        <div className='checkbox' onClick={handlePrivate}>Private Sever ?</div>
                         <div className='checkbox' onClick={ handleBet}>Want to Bet ?</div>x 
                     </div>
 

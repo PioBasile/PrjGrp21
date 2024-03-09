@@ -33,7 +33,6 @@ const JeuBataille = () => {
         
         
         -----PAGE DE WINNER------
-        2. ajouter un bouron "return to lobby" qui renvoie a la page de lobby
         3. ajouter le score de chaque joueur/classement
     */}
 

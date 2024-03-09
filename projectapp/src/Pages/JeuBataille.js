@@ -243,10 +243,14 @@ const JeuBataille = () => {
             socket.emit("sendCard", {serverId:sessionStorage.getItem("serverConnected"), name:sessionStorage.getItem("name"),card:card, oldSelect:oldSelect});
             setTimeout(() => {
                 socket.emit('PhaseDeChoix', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
-            }, "2000")
+            }, "3000")
 
         } else { 
-            socket.emit('ResoudreEgalite', {serverId:sessionStorage.getItem("serverConnected"),  card:card});
+            socket.emit("sendCard", {serverId:sessionStorage.getItem("serverConnected"), name:sessionStorage.getItem("name"),card:card, oldSelect:oldSelect});
+            setTimeout(() => {
+
+                socket.emit('ResoudreEgalite', {serverId:sessionStorage.getItem("serverConnected"),  card:card});
+            }, "3000")
         }
 
     };
@@ -259,7 +263,6 @@ const JeuBataille = () => {
         let failed = false;
 
         if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
-            alert("t'es ici mais bizarre")
             navigate("/login-signup");
             failed = true;
         }
@@ -305,9 +308,7 @@ const JeuBataille = () => {
         if (mounted) {
             // GESTION stabilité de la connection
             socket.on("deco", (name) => {
-                alert("pourquoi on te déco meme ????")
-                // navigate("/login-signup");
-
+                navigate("/login-signup");
             });
 
             // -----------------
@@ -374,7 +375,6 @@ const JeuBataille = () => {
 
             });
             socket.on('Winner', (winner) => {
-                console.log(winner);
                 setDraw(false);
                 setInDraw(false);
                 socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
@@ -469,7 +469,7 @@ const JeuBataille = () => {
                           {
                             allCardPlayed.map((card, index) => (
 
-                                  <img src={ selectedCards.length !== 0 ? getCardImage(card) : backCardsImageTest} /> 
+                                  <img src={ selectedCards.length !== 0 || inDraw ? getCardImage(card) : backCardsImageTest} /> 
                               ))
                         }  
                 </div>

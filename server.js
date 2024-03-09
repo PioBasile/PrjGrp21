@@ -506,9 +506,10 @@ io.on('connection', (socket) => {
           });
           io.to(GameId).emit('Draw', game.Rdraw);
         } else {
+          player.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)]
+          io.to(GameId).emit('Winner', game.Rwinner);
           game.cardPlayedInRound = {}
           io.to(GameId).emit("roundCardsPlayed", game.cardPlayedInRound);
-          io.to(GameId).emit('Winner', game.Rwinner);
           game.currentTurn++;
         }
       }
@@ -585,6 +586,9 @@ io.on('connection', (socket) => {
           });
           io.to(GameId).emit('Draw', game.Rdraw);
         } else {
+          player.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)]
+          io.to(GameId).emit('Winner', game.Rwinner);
+          game.cardPlayedInRound = {}
           io.to(GameId).emit('Winner', game.Rwinner);
           game.currentTurn++;
         }

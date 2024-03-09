@@ -152,7 +152,7 @@ class Bataille {
     this.cartes = shuffle(generateCartes());
     this.moneyBet = moneyBet;
     this.chatContent = [];
-    this.cardPlayedInRound = [];
+    this.cardPlayedInRound = {};
 
     let index = 0;
 

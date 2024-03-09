@@ -422,18 +422,17 @@ io.on('connection', (socket) => {
   });
 
   socket.on("sendCard", (data) => {
-    game = findGame(data.serverId, BatailGames);
-    let cardPlayedList = game.cardPlayedInRound;
-    if(cardPlayedList.includes(data.card)){
-      let cardId = cardPlayedList.indexOf(data.card)
-      cardPlayedList[cardId] = card;
+    game = findGame(data.serverId, BatailGames)
+    let card =  data.card
+    if(card) {
+        game.cardPlayedInRound[data.name] = card;
+    }
+    else {
+      socket.emit("deco")
+      throw new Error("This card does not exist")
     }
 
-    else {
-      game.cardPlayedInRound.push(card);
-    }
-    
-    io.to(data.serverId).emit("adversaireCardsPlayed");
+    io.to(data.serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
   })
 
   // Phase de choix, permet au joueurs de choisir leurs cartes et une fois tout les cartes chosis donne le résultat du round //
@@ -507,12 +506,13 @@ io.on('connection', (socket) => {
           });
           io.to(GameId).emit('Draw', game.Rdraw);
         } else {
+          game.cardPlayedInRound = {}
+          io.to(GameId).emit("roundCardsPlayed", game.cardPlayedInRound);
           io.to(GameId).emit('Winner', game.Rwinner);
           game.currentTurn++;
         }
       }
     }
-
   });
 
   // POUR RESOUDRE LES EGALITE

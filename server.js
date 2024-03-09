@@ -58,11 +58,11 @@ let BatailGames = [];
 let TaureauGames = [];
 let MilleBornesGames = [];
 let lobbyList = [];
-let lobbyIndex = 0;
+let lobbyIndex = 1;
 let RouletteInstance = new Roulette();
 let isPaused = false;
 
-setInterval(() => {Sentinel_Main(validCookies,BatailGames,TaureauGames,MilleBornesGames,lobbyList,lobbyIndex)},100);
+//setInterval(() => {Sentinel_Main(io,validCookies,BatailGames,TaureauGames,MilleBornesGames,lobbyList,lobbyIndex)},100);
 
 
 //

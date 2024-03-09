@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import ServerList from "./ServerList";
 import { useNavigate } from 'react-router-dom';
 import './CSS/Casino.css';
 import socket from '../socketG.js'
@@ -10,9 +9,7 @@ const Casino = () => {
     const [nbPlayerMax, setNbPlayerMax] = useState(0);
     const [mesLobby, setMesLobby] = useState([]);
     const navigate = useNavigate();
-    const [showPopup, setShowPopup] = useState(false);
     const [isPrivate, setIsPrivate] = useState(false);
-    const [isBet, setIsBet] = useState(false);
     const [password, setPassword] = useState('');
     const [gamePassword, setGamePassword] = useState("");
 
@@ -32,10 +29,6 @@ const Casino = () => {
         sessionStorage.setItem('serverConnected', Id);
         sessionStorage.setItem('loaded', false);
         navigate("/Lobby");
-    }
-
-    const handlePassword = (passwordd) => {
-        setPassword(passwordd);
     }
 
     useEffect(() => {
@@ -63,7 +56,7 @@ const Casino = () => {
 
         socket.on("newServer", (lobbyListId) => {
             if (mounted) {
-                lobbyListId.map((lobby, _) => {
+                lobbyListId.forEach((lobby) => {
                     if(lobby.gameType === "roulette" || lobby.gameType === "blackjack"){
                         setMesLobby([...mesLobby, lobby])
                     }
@@ -85,7 +78,7 @@ const Casino = () => {
             socket.off("stats");
         }
 
-    }, [navigate]);
+    }, [navigate, mesLobby]);
 
 
     const isServerPrivate = () => {
@@ -125,14 +118,6 @@ const Casino = () => {
             return;
         }
         setIsPrivate(true)
-    }
-
-    const handleBet = () => {
-        if (isBet) {
-            setIsBet(false)
-            return;
-        }
-        setIsBet(true)
     }
 
 

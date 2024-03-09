@@ -22,7 +22,7 @@ const JeuBataille = () => {
 
 
 
-    {/* ------------A FAIRE--------------
+    /* ------------A FAIRE--------------
 
         2. faire en sorte que les cartes soient au milieu if selected avec les autres 
            opponents , puis les retourner quand tout le monde place leur carte.
@@ -35,7 +35,7 @@ const JeuBataille = () => {
         -----PAGE DE WINNER------
         2. ajouter un bouron "return to lobby" qui renvoie a la page de lobby
         3. ajouter le score de chaque joueur/classement
-    */}
+    */
 
     //----------------------EMOTES---------------------
     const emote = require("./CSS/emotes/toyota.mp4");
@@ -92,6 +92,8 @@ const JeuBataille = () => {
                 return "king";
             case "As":
                 return "ace";
+            default:
+                return -1;
         }
     }
     
@@ -103,7 +105,7 @@ const JeuBataille = () => {
             const chemin = require(`./CSS/pics/PNG-cards-1.3/${card.number}_of_${translateSymbol}.png`);
             return chemin;
         }
-        else if(card.number != "As"){
+        else if(card.number !== "As"){
             const translateNumber = cardNumbTranslateSup10(card.number);
             const chemin= require(`./CSS/pics/PNG-cards-1.3/${translateNumber}_of_${translateSymbol}2.png`);
             return chemin;
@@ -152,7 +154,7 @@ const JeuBataille = () => {
                 document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
 
             };
-        }, [message]);
+        }, []);
 
         return (
             <div></div>
@@ -272,7 +274,7 @@ const JeuBataille = () => {
             mounted = false;
         }
 
-    },[]);
+    },[navigate]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -471,7 +473,7 @@ const JeuBataille = () => {
             <div className="bo-selected-cards">
                 <div className={"bo-selected-card"}>
 
-                    {selectedCards.length !== 0 ? <img src={getCardImage(selectedCards)} /> : <div></div>}
+                    {selectedCards.length !== 0 ? <img alt='r' src={getCardImage(selectedCards)} /> : <div></div>}
                 </div>
             </div>
 

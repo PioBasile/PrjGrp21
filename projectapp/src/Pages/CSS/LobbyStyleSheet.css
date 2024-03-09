@@ -1,16 +1,139 @@
-.app-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-  }
-  
-  .left-panel {
-    width: 45%;
-  }
-  
-  .right-panel {
-    width: 45%;
-  }
-  
-  /* Add your additional styling here if needed */
-  
+.lob-container {
+  background-size: auto;
+  background-position: center;
+  display: flex;
+  height: 100vh; 
+}
+
+.lob-left-panel {
+  background-color: #161414; 
+  flex: 2; 
+  padding: 40px;
+  color: white; 
+  width: 100%;
+  height: 100%;
+}
+
+.lob-top {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 15%;
+  background-color: rgb(22, 13, 76);
+  width: 68.35%;
+  display: flex; 
+  align-items: center; 
+}
+
+.lob-leave{
+  margin-right: 30%;
+}
+
+.lob-leave button{
+  margin-right: 30%;
+  background-color: red;
+
+}
+
+.lob-rounded-pill {
+  color: black;
+  font-size: 24px; /* Taille de police plus grande */
+  background-color: white; /* Fond blanc */
+  padding: 10px 20px; /* Ajout de rembourrage */
+  border-radius: 20px; /* Coins arrondis */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Ombre douce */
+}
+
+.lob-info-container {
+  position: relative;
+  top: 20%;
+  left:25%;
+  height: 60%;
+  width: 60%;
+  background-color:#6d8eb7 ;
+  border-radius: 2%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.lob-right-panel {
+  flex: 1; 
+  background-color: #6d8eb7;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+}
+
+.lob-playerlist {
+  position: relative;
+  top:10%;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.lob-playerlist-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.lob-playerlist-item:last-child {
+  border-bottom: none;
+}
+
+.lob-playerlist-item span {
+  flex-grow: 1;
+}
+
+.lob-playerlist-item .lob-status {
+  margin-right: 10px; /* Espacement entre le nom du joueur et son statut */
+}
+
+.lob-playerlist-item .lob-action button {
+  margin-left: 10px; /* Espacement entre le bouton "Pret" et le bouton "Kick" */
+}
+
+.lob-title-j{
+  position: relative;
+  top:5%;
+  font-size: 2em;
+  color: white;
+  text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.7);
+}
+
+.lob-boutton {
+  position: absolute;
+  bottom: 10px; /* Ajustez la distance par rapport au bas selon vos besoins */
+  display: flex;
+  justify-content: center;
+}
+
+.lob-boutton button {
+  padding: 15px 30px; /* Ajustez le rembourrage du bouton selon vos besoins */
+  font-size: 18px; /* Ajustez la taille de la police du bouton selon vos besoins */
+}
+
+
+
+.dino-body {
+  bottom: 0;
+  font-family:'Courier New', Courier, monospace;
+  text-align: center;
+}
+
+#board {
+  position: fixed;
+  left:0;
+  bottom: 0;
+  background-color: lightgray;
+  border-bottom: 1px solid black;
+}
+

@@ -58,11 +58,11 @@ let BatailGames = [];
 let TaureauGames = [];
 let MilleBornesGames = [];
 let lobbyList = [];
-let lobbyIndex = 0;
+let lobbyIndex = 1;
 let RouletteInstance = new Roulette();
 let isPaused = false;
 
-setInterval(() => {Sentinel_Main(validCookies,BatailGames,TaureauGames,MilleBornesGames,lobbyList,lobbyIndex)},100);
+//setInterval(() => {Sentinel_Main(io,validCookies,BatailGames,TaureauGames,MilleBornesGames,lobbyList,lobbyIndex)},100);
 
 
 //
@@ -421,6 +421,20 @@ io.on('connection', (socket) => {
 
   });
 
+  socket.on("sendCard", (data) => {
+    game = findGame(data.serverId, BatailGames)
+    let card =  data.card
+    if(card) {
+        game.cardPlayedInRound[data.name] = card;
+    }
+    else {
+      socket.emit("deco")
+      throw new Error("This card does not exist")
+    }
+
+    io.to(data.serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
+  })
+
   // Phase de choix, permet au joueurs de choisir leurs cartes et une fois tout les cartes chosis donne le résultat du round //
   socket.on('PhaseDeChoix', (GameId, playerName, card) => {
 
@@ -492,12 +506,13 @@ io.on('connection', (socket) => {
           });
           io.to(GameId).emit('Draw', game.Rdraw);
         } else {
+          game.cardPlayedInRound = {}
+          io.to(GameId).emit("roundCardsPlayed", game.cardPlayedInRound);
           io.to(GameId).emit('Winner', game.Rwinner);
           game.currentTurn++;
         }
       }
     }
-
   });
 
   // POUR RESOUDRE LES EGALITE

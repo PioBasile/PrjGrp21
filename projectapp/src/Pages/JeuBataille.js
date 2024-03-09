@@ -19,10 +19,14 @@ const JeuBataille = () => {
     const navigate = useNavigate();
     const emoteBubbleRef = useRef(null);
     const [showEmotes, setShowEmotes] = useState(false);
+    const [allCardPlayed, setAllCardPlayed] = useState([]);
+
+
+    const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/red_joker.png")
 
 
 
-    {/* ------------A FAIRE--------------
+    /* ------------A FAIRE--------------
 
         2. faire en sorte que les cartes soient au milieu if selected avec les autres 
            opponents , puis les retourner quand tout le monde place leur carte.
@@ -34,7 +38,7 @@ const JeuBataille = () => {
         
         -----PAGE DE WINNER------
         3. ajouter le score de chaque joueur/classement
-    */}
+    */
 
     //----------------------EMOTES---------------------
     const emote = require("./CSS/emotes/toyota.mp4");
@@ -91,6 +95,8 @@ const JeuBataille = () => {
                 return "king";
             case "As":
                 return "ace";
+            default:
+                return -1;
         }
     }
     
@@ -102,7 +108,7 @@ const JeuBataille = () => {
             const chemin = require(`./CSS/pics/PNG-cards-1.3/${card.number}_of_${translateSymbol}.png`);
             return chemin;
         }
-        else if(card.number != "As"){
+        else if(card.number !== "As"){
             const translateNumber = cardNumbTranslateSup10(card.number);
             const chemin= require(`./CSS/pics/PNG-cards-1.3/${translateNumber}_of_${translateSymbol}2.png`);
             return chemin;
@@ -151,7 +157,7 @@ const JeuBataille = () => {
                 document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
 
             };
-        }, [message]);
+        }, []);
 
         return (
             <div></div>
@@ -234,12 +240,15 @@ const JeuBataille = () => {
             setOldSelect(playerCards.splice(playerCards.indexOf(card), 1)[0]);
         }
         sortCards(playerCards);
-        console.log(card);
         setSelectedCards(card);
         if (!inDraw) {
-            socket.emit('PhaseDeChoix', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
-        } else {
-            socket.emit('ResoudreEgalite', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
+            socket.emit("sendCard", {serverId:sessionStorage.getItem("serverConnected"), name:sessionStorage.getItem("name"),card:card, oldSelect:oldSelect});
+            setTimeout(() => {
+                socket.emit('PhaseDeChoix', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
+            }, "2000")
+
+        } else { 
+            socket.emit('ResoudreEgalite', {serverId:sessionStorage.getItem("serverConnected"),  card:card});
         }
 
     };
@@ -271,7 +280,7 @@ const JeuBataille = () => {
             mounted = false;
         }
 
-    },[]);
+    },[navigate]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -380,6 +389,11 @@ const JeuBataille = () => {
 
         }
 
+        socket.on("roundCardsPlayed", (cardPlayedList) => {
+            console.log("CARD PLAYDE LIST ", cardPlayedList);
+            setAllCardPlayed(Object.values(cardPlayedList));
+        })
+
         return () => {
             mounted = false;
             socket.off("Deck");
@@ -469,8 +483,12 @@ const JeuBataille = () => {
 
             <div className="bo-selected-cards">
                 <div className={"bo-selected-card"}>
+                          {
+                            allCardPlayed.map((card, index) => (
 
-                    {selectedCards.length !== 0 ? <img src={getCardImage(selectedCards)} /> : <div></div>}
+                                  <img src={ selectedCards.length !== 0 ? getCardImage(card) : backCardsImageTest} /> 
+                              ))
+                        }  
                 </div>
             </div>
 

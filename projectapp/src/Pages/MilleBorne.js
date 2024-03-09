@@ -20,7 +20,6 @@ const MilleBorne = () => {
 
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-    const [serverMessage, setServerMessage] = useState([]);
     const [isPopUp, setIsPopUp] = useState(false);
     const [playerList, setPlayerList] = useState([]);
     const [deck, setDeck] = useState([]);
@@ -29,7 +28,7 @@ const MilleBorne = () => {
     const [bonus, setBonus] = useState(["None"]);
     const [state, setState] = useState("roll");
     const [isLimited, setIsLimited] = useState(false)
-    const [color, setColor] = useState("");
+    //const [color, setColor] = useState("");
     const [middleCard, setMiddleCard] = useState("roll");
     const [currentCard, setCurrentCard] = useState("");
     const [nbCards, setNbCards] = useState(0);
@@ -68,7 +67,7 @@ const MilleBorne = () => {
         return () => {
             mounted = false;
         }
-    }, [])
+    }, [navigate,state,test])
 
 
     useEffect(() => {
@@ -97,7 +96,7 @@ const MilleBorne = () => {
                 setBonus(data.bonus);
                 setState(data.state);
                 setIsLimited(data.isLimited)
-                setColor(data.color);
+                //setColor(data.color);
             });
             socket.on("chooseVictim", () => {
                 setIsPopUp(true);
@@ -156,7 +155,7 @@ const MilleBorne = () => {
             socket.off('attacked');
             socket.off('MB-getMessage');
         }
-    }, []);
+    }, [navigate,state,test]);
 
 
     const Popup = () => {
@@ -166,7 +165,7 @@ const MilleBorne = () => {
             }, 3000);
 
             return () => clearTimeout(timer);
-        }, [isVisible]);
+        }, []);
 
         return (
             <div>
@@ -234,7 +233,7 @@ const MilleBorne = () => {
                 document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
 
             };
-        }, [message]);
+        }, []);
 
         return (
             <div></div>
@@ -254,7 +253,7 @@ const MilleBorne = () => {
                 <div className='MB-info-button'> INFO</div>
 
                 {playerList.map((player, index) => (
-                    <div className={`MB-adversaire-container MB-p${playerList.length == 2 ? "trio" : index + 1}  ${player.myTurn ? "myTurn" : ""}`} key={index}>
+                    <div className={`MB-adversaire-container MB-p${playerList.length === 2 ? "trio" : index + 1}  ${player.myTurn ? "myTurn" : ""}`} key={index}>
                         <div className='MB-adversaire-card'>
                             <div className={`MB-adversaire ${player.color}`}>
                                 <div className='MB-player-name'>{player.name}</div>

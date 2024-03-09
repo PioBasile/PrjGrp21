@@ -31,36 +31,34 @@ const {
 
 
 
-const Sentinel_Main = (validCookies,BatailGames,TaureauGames,MilleBornesGames,lobbyList,lobbyIndex) => {
+const Sentinel_Main = (io,validCookies,BatailGames,TaureauGames,MilleBornesGames,lobbyList,lobbyIndex) => {
 
-    LobbyGuard(lobbyList,validCookies);
+    LobbyGuard(io,lobbyList,validCookies);
 
 }
 
 
-function LobbyGuard(lobbyList,validCookies){
+function LobbyGuard(io,lobbyList,validCookies){
 
 
     lobbyList.forEach(lobby => {
 
         if(!lobby.is_empty){
-        
-            lobby_Player_List = lobby.playerList;
 
-            if(lobby.playerList[0] == [][0]){
-                console.log("sniped")
-                lobbyList.splice(lobbyList.indexOf(lobby));
-            } else {
-                lobby_Player_List.forEach((player) => {
-                                        
+                lobby.playerList.forEach((player) => {
+
                     if(validCookies[player.username] != player.cookie){
                         
-                        lobby.playerList.splice(lobby.playerList.indexOf(player));  
+                        lobby.playerList.splice(lobby.playerList.indexOf(player)); 
+                        io.emit('newServer', lobbyList);
         
                     }
+
+                    
         
                 });
-            }
+
+            
 
         }  
     });

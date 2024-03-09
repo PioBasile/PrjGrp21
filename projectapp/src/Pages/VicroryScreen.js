@@ -16,7 +16,7 @@ const VictoryScreen = () => {
 
 
     useEffect(() => {
-        if (redirectTimer == 0) {
+        if (redirectTimer === 0) {
             window.location.href = '/BrowserManager';
         }
     }, [redirectTimer]);

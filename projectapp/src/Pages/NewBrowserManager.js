@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import socket from '../socketG';
 import './CSS/NewBrowserManager.css'
 import './CSS/BrowerManager.css'
-import { setMaxListeners } from 'events';
 
 const NewBrowserManager = () => {
 
@@ -31,19 +30,20 @@ const NewBrowserManager = () => {
         if (server.isPrivate && gamePassword !== server.password) {
             return;
         }
-        console.log("new page asked");
         socket.emit('joinLobby', sessionStorage.getItem("name"), Id, sessionStorage.getItem("connection_cookie"));
         sessionStorage.setItem('serverConnected', Id);
         sessionStorage.setItem('loaded', false);
         navigate("/Lobby");
     }
 
-    const handlePassword = (passwordd) => {
-        setPassword(passwordd);
-    }
-
     useEffect(() => {
 
+        if(sessionStorage.getItem("serverConnected") > 0){
+            console.log("test");
+            socket.emit('deco_lobby', sessionStorage.getItem("serverConnected"), sessionStorage.getItem('name'));
+            socket.emit('leave', sessionStorage.getItem("serverConnected"));
+            sessionStorage.setItem('serverConnected', -1);
+        }
 
         socket.emit('askStat', sessionStorage.getItem("name"));
 
@@ -95,7 +95,6 @@ const NewBrowserManager = () => {
 
 
     const isServerPrivate = () => {
-        console.log(password);
         if (password === "") return false
         else return true
     }
@@ -105,7 +104,6 @@ const NewBrowserManager = () => {
         // Logique pour sauvegarder les données du formulaire
         if (gameType === "") { return 0; }
         if (nbPlayerMax === "" || nbPlayerMax < 1) { return 0; }
-        console.log(gameType, nbPlayerMax, serverName, isServerPrivate());
         socket.emit("newServer", serverName, nbPlayerMax, isServerPrivate(), password, gameType, sessionStorage.getItem('name'), moneyBet);
         setGameType("");
         setNbPlayerMax(2);

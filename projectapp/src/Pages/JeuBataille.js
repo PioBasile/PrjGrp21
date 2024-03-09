@@ -159,10 +159,8 @@ const JeuBataille = () => {
 
             };
         }, []);
+        return <div></div>
 
-        return (
-            <div></div>
-        );
     }
 
 
@@ -262,6 +260,7 @@ const JeuBataille = () => {
         let failed = false;
 
         if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
+            alert("t'es ici mais bizarre")
             navigate("/login-signup");
             failed = true;
         }
@@ -307,8 +306,8 @@ const JeuBataille = () => {
         if (mounted) {
             // GESTION stabilité de la connection
             socket.on("deco", (name) => {
-
-                navigate("/login-signup");
+                alert("pourquoi on te déco meme ????")
+                // navigate("/login-signup");
 
             });
 
@@ -413,22 +412,6 @@ const JeuBataille = () => {
 
             <YourComponent></YourComponent>
 
-            <div className="chat-container" id='chatContainer'>
-                <div className='message-container bo-message-container' >
-                    {messages.map((msg, index) => (
-                        <p key={index}>{msg}</p>)
-                    )}
-                    <input
-                        id="inputChat"
-                        className='inputMessage'
-                        type="text"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Type message..."
-                    />
-                </div>
-            </div>
-
 
             {/*Opponent player*/}
             <div className="bo-opponent-players">
@@ -511,6 +494,21 @@ const JeuBataille = () => {
                 )}
             </div>
 
+            <div className="chat-container" id='chatContainer'>
+                <div className='message-container bo-message-container' >
+                    {messages.map((msg, index) => (
+                        <p key={index}>{msg}</p>)
+                    )}
+                    <input
+                        id="inputChat"
+                        className='inputMessage'
+                        type="text"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Type message..."
+                    />
+                </div>
+            </div>
 
         </div>
     );

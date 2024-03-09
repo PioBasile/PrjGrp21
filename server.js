@@ -992,7 +992,7 @@ io.on('connection', (socket) => {
   //CHAT MILLES BORNES !!!!!!! DORIAN STP NE SUPPRIME PAS !!!!!
   socket.on("MB-sendMessage", (data) => {
     game = findGame(data.serverId, MilleBornesGames);
-    game.addMessage(`${data.name}: ${data.msg}`);
+  if(data.msg) {game.addMessage(`${data.name}: ${data.msg}`);}
     io.to(data.serverId).emit("MB-getMessage", game.chatContent);
   })
   
@@ -1045,7 +1045,9 @@ io.on('connection', (socket) => {
   //bataille
   socket.on("BTL-sendMessage", (data) => {
     game = findGame(data.serverId, BatailGames);
-    game.addMessage(`${data.name}: ${data.msg}`);
+    if(data.msg){
+      game.addMessage(`${data.name}: ${data.msg}`);
+    }
     io.to(data.serverId).emit("BTL-getMessage", game.chatContent);
   })
   

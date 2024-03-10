@@ -471,11 +471,12 @@ const JeuBataille = () => {
 
             <div className="bo-selected-cards">
                 <div className={"bo-selected-card"}>
-                    {
-                    allCardPlayed.map((card, index) => (
-                        <img src={ selectedCards.length !== 0 || inDraw ? getCardImage(card) : backCardsImageTest} /> 
-                        ))
-                    }  
+                          {
+                            allCardPlayed.map((card, index) => (
+
+                                  <img alt='r' src={ selectedCards.length !== 0 ? getCardImage(card) : backCardsImageTest} /> 
+                              ))
+                        }  
                 </div>
             </div>
 

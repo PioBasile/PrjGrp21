@@ -73,6 +73,8 @@ function LobbyGuard(io,lobbyList,validCookies){
 
         if(!lobby.is_empty){
 
+                let ownerFound = false;
+
                 lobby.playerList.forEach((player) => {
 
                     if(validCookies[player.username] != player.cookie){
@@ -82,13 +84,25 @@ function LobbyGuard(io,lobbyList,validCookies){
         
                     }
 
-                    
+                    if(player.username == lobby.owner){
+                        ownerFound = true;
+                    }
         
                 });
 
-            
 
-        }  
+                if(!ownerFound && lobby.playerList[0] != [][0]){
+                    lobby.owner = lobby.playerList[0].username;
+                    console.log(io);
+                    io.to(lobby.id).emit("yourInfoBebs", {serverName:lobby.serverName, nbPlayerMax:lobby.nbPlayerMax, password:lobby.password, gameType:lobby.gameType, owner:lobby.owner, timer:lobby.tbt});
+                }
+                
+                
+                
+
+        }
+
+        
     });
 
 }

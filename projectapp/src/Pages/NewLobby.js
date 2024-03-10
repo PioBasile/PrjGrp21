@@ -25,32 +25,6 @@ const NewLobby = () => {
     const [clobby, setLobby] = useState({ playerList: [] });
 
 
-
-    function setPlayer(maxP) {
-
-        setMaxPlayers(maxP);
-        socket.emit('updateParam', sessionStorage.getItem('serverConnected'), maxP, timeBetweenTurn, roundsMax);
-
-    };
-
-    function setRound(maxR) {
-
-        setRoundsMax(maxR);
-        socket.emit('updateParam', sessionStorage.getItem('serverConnected'), maxPlayers, timeBetweenTurn, maxR);
-
-    };
-
-    function setTimeTurn(time) {
-
-        setTimeBetweenTurn(time)
-        socket.emit('updateParam', sessionStorage.getItem('serverConnected'), maxPlayers, time, roundsMax);
-
-        return () => {
-            socket.off("failure");
-            socket.off("succes");
-        }
-    };
-
     function leaveGame() {
         socket.emit('leaveGame', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
         socket.emit('leave', sessionStorage.getItem('serverConnected'));
@@ -65,11 +39,6 @@ const NewLobby = () => {
 
     const handleReadyClick = () => {
         socket.emit('ready', sessionStorage.getItem('serverConnected'), sessionStorage.getItem('name'));
-    };
-
-    const handleDisconnectClick = () => {
-        socket.emit('deco_lobby', sessionStorage.getItem("serverConnected"), sessionStorage.getItem('name'));
-        navigate('/BrowserManager');
     };
 
     const handleStart = () => {
@@ -88,7 +57,6 @@ const NewLobby = () => {
 
     }
 
-
     useEffect(() => {
 
         if (sessionStorage.getItem('serverConnected') === "-1") {
@@ -104,11 +72,11 @@ const NewLobby = () => {
     useEffect(() => {
 
         let mounted = true;
-
-
-        if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
+        if(mounted){
 
         socket.on("yourInfoBebs",(data) => {
+
+            console.log("test");
 
             switch (data.gameType) {
                 case "mb":  
@@ -130,8 +98,8 @@ const NewLobby = () => {
             setMaxPlayers(data.nbPlayerMax);
             setOwner(data.owner);
             setPassword(data.password);
-            setTimer(data.timer)
-        })
+            setTimer(data.timer);
+        });
 
         if (sessionStorage.getItem('loaded') === "true") { return; } else {
             socket.emit('WhereAmI', sessionStorage.getItem('serverConnected')); sessionStorage.setItem('loaded', true)
@@ -178,10 +146,12 @@ const NewLobby = () => {
 
         });
 
+    }
+
 
         return () => { mounted = false };
 
-    }, [clobby.owner, navigate]);
+    }, []);
 
     return (
         <div className='NB-container'>

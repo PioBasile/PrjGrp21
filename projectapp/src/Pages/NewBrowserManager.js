@@ -40,7 +40,6 @@ const NewBrowserManager = () => {
     useEffect(() => {
 
         if(sessionStorage.getItem("serverConnected") > 0){
-            console.log("test");
             socket.emit('deco_lobby', sessionStorage.getItem("serverConnected"), sessionStorage.getItem('name'));
             socket.emit('leave', sessionStorage.getItem("serverConnected"));
             sessionStorage.setItem('serverConnected', -1);

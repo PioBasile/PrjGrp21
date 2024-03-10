@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes,Navigate } from "react-router-dom";
 import Start from "./Pages/Start.js";
 import LoginSignup from "../src/Pages/Login-signup";
-import Lobby from './Pages/Lobby.js'
 import JeuBataille from "./Pages/JeuBataille.js";
 import VictoryScreen from "./Pages/VicroryScreen.js";
 import SixQuiPrend from "./Pages/jeuSQP.js"

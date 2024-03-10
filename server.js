@@ -62,7 +62,7 @@ let lobbyIndex = 1;
 let RouletteInstance = new Roulette();
 let isPaused = false;
 
-//setInterval(() => {Sentinel_Main(io,validCookies,BatailGames,TaureauGames,MilleBornesGames,lobbyList,lobbyIndex)},100);
+setInterval(() => {Sentinel_Main(io,validCookies,BatailGames,TaureauGames,MilleBornesGames,lobbyList,lobbyIndex)},100);
 
 
 //
@@ -322,7 +322,7 @@ io.on('connection', (socket) => {
 
   socket.on("lobbyInfo_UwU", (serverId) => {
     let lobby = findLobby(serverId, lobbyList);
-    io.to(serverId).emit("yourInfoBebs", {serverName:lobby.serverName, nbPlayerMax:lobby.nbPlayerMax, password:lobby.password, gameType:lobby.gameType, owner:lobby.owner, timer:lobby.tbt})
+    io.to(serverId).emit("yourInfoBebs", {serverName:lobby.serverName, nbPlayerMax:lobby.nbPlayerMax, password:lobby.password, gameType:lobby.gameType, owner:lobby.owner, timer:lobby.tbt});
   })
 
   socket.on('askStat', (name) => {
@@ -505,6 +505,8 @@ io.on('connection', (socket) => {
           });
 
         });
+
+
       } else {
         if (game.Rdraw != null) {
           game.Rdraw.forEach((player) => {

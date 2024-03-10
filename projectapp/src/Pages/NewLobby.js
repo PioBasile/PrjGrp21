@@ -97,7 +97,7 @@ const NewLobby = () => {
         // GESTION stabilité de la connection
         socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
         socket.emit("getServ");
-        socket.emit("lobbyInfo_UwU")
+        socket.emit("lobbyInfo_UwU", sessionStorage.getItem('serverConnected'))
 
     }, [navigate])
 
@@ -119,12 +119,26 @@ const NewLobby = () => {
         // -----------------
 
         socket.on("yourInfoBebs",(data) => {
+
+            switch (data.gameType) {
+                case "mb":  
+                    setGameType("Mille Bornes");
+
+                case "rd":  
+                    setGameType("Random");
+
+                case "sqp":  
+                    setGameType("Six Qui Prend");
+
+                case "batailleOuverte": 
+                    setGameType("Bataille Ouverte");
+            }
+
             setGameName(data.serverName);
             setMaxPlayers(data.nbPlayerMax);
             setOwner(data.owner);
             setPassword(data.password);
             setTimer(data.timer)
-            setGameType(data.gameType);
         })
 
         if (sessionStorage.getItem('loaded') === "true") { return; } else {
@@ -182,9 +196,8 @@ const NewLobby = () => {
             <div className='UBwithUnderBandeau'>
 
                 <div className='NB-upperBandeau'>
-                    <div className='leave'></div>
-                    <div className='gameNameType'>GAMENAME (GAMETYPE)</div>
-                    <button className="bo-leave-button" onClick={() => leaveGame()}>Leave Game</button>
+                    <div className='leaveLobbyButton' onClick={() => leaveGame()}>LEAVE</div>
+                    <div className='gameNameType'>{gameName} ({gameType})</div>
                     <div></div>
                 </div>
                 <div className='NB-underBandeau'>
@@ -206,7 +219,7 @@ const NewLobby = () => {
                                 </tr>
                                 <tr>
                                     <td className="table-title">password :</td>
-                                    <td className="table-info">{password}</td>
+                                    <td className="table-info">{ password ? password : "None"}</td>
                                     <td className="table-title">Timer :</td>
                                     <td className="table-info">{timer}</td>
                                 </tr>
@@ -227,7 +240,7 @@ const NewLobby = () => {
                             <div className='playerInfoContainer'>
                                 <div className='playerInfo'>{player.username + "   |   " + (player.isReady ? "Pret" : "Pas pret")} </div>
                                 <div></div>
-                                <div className='kickButton' onClick={() => handleKickPlayer(index)} disabled={player.username === sessionStorage.getItem('name') || clobby.owner !== sessionStorage.getItem('name')}>KICK</div>
+                                {clobby.owner === sessionStorage.getItem("name") &&<div className='kickButton' onClick={() => handleKickPlayer(index)} disabled={player.username === sessionStorage.getItem('name') || clobby.owner !== sessionStorage.getItem('name')}>KICK</div>}
                             </div>
                         </div>
                     ))

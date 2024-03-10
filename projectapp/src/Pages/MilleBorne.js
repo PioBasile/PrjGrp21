@@ -134,7 +134,7 @@ const MilleBorne = () => {
 
             socket.on("deco", (name) => {
 
-                navigate("/login-signup");
+                navigate("/BrowserManager");
 
             });
 
@@ -198,7 +198,7 @@ const MilleBorne = () => {
     const leave = () => {
         socket.emit("MB-leaveGame", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
         socket.emit('leave', sessionStorage.getItem('serverConnected'));
-        navigate('/');
+        navigate('/BrowserManager');
     }
 
     function YourComponent() {

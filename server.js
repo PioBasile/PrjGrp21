@@ -209,6 +209,10 @@ io.on('connection', (socket) => {
 
   socket.on('co', (name, cookie) => {
 
+    // DESAC
+
+    return;
+
 
     if (validCookies[name] == cookie) {
       return;
@@ -1056,6 +1060,7 @@ io.on('connection', (socket) => {
   //bataille
   socket.on("BTL-sendMessage", (data) => {
     game = findGame(data.serverId, BatailGames);
+    console.log(data.msg);
     if(data.msg){
       game.addMessage(`${data.name}: ${data.msg}`);
     }

@@ -54,7 +54,7 @@ const NewLobby = () => {
     function leaveGame() {
         socket.emit('leaveGame', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
         socket.emit('leave', sessionStorage.getItem('serverConnected'));
-        navigate('/');
+        navigate('/BrowserManager');
     };
 
 
@@ -88,14 +88,13 @@ const NewLobby = () => {
 
     }
 
+
     useEffect(() => {
 
         if (sessionStorage.getItem('serverConnected') === "-1") {
             navigate("/BrowserManager");
         }
 
-        // GESTION stabilité de la connection
-        socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
         socket.emit("getServ");
         socket.emit("lobbyInfo_UwU", sessionStorage.getItem('serverConnected'))
 
@@ -106,17 +105,8 @@ const NewLobby = () => {
 
         let mounted = true;
 
-        // GESTION stabilité de la connection
 
         if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
-
-        socket.on("deco", (name) => {
-            if (mounted) {
-                navigate("/BrowserManager");
-            }
-        });
-
-        // -----------------
 
         socket.on("yourInfoBebs",(data) => {
 

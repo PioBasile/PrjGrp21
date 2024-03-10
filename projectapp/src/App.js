@@ -14,26 +14,49 @@ import BlackJack from "./Pages/BlackJack";
 import ItemShop from "./Pages/ItemShop.js";
 import Casino from "./Pages/Casino.js";
 import NewLobby from "./Pages/NewLobby.js";
+import { useNavigate, useLocation  } from 'react-router-dom';
+
 function App() {
 
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    /*
+    ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣶⣶⣶⣶⣄⠀ ⢠⣄⡀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣾⣿⣿TOUS⣿⣿⣿⠀ ⢀⣿⣿⣦⡀⠀⠀
+⠀⠀⠀⠀⠀⠀⣠⣴⣿GOUVERNER⣸⣿⣿⡏⠀⢸⣿⣿⣿⣷⡄⠀
+⠀⠀⠀⠀⢀⣾⣿⣿⠋LES⠀⣰⣶⣾⣿⡿⠟⠀ ⢠⣿⣿⣿⣿⣿⣿⡄
+⠀⠀⠀⣴⣿⣿⠟⠛POUR⣿⣿⣿⡿⠛⠉⠀⠀⢠⣾⣿⣿⣿⣿⣿⣿⡇
+⠀⢀⣾⣿⣿EFFECT⣶⣾⣿⡿⠋⠀⠀⠀⠀⣰⣿⣿⡟⠉⢻⣿⣿⣿⠇
+ ⣾⣿⡏USE⢀⣀⣴⣿⡿⠋⠀⠀⠀⠀⣠⣾⣿⣿⠋⠁⠀⢀⣿⣿⡟⠀
+⢸⣿⣿⣧LE⣼⣿⣿⡟⠁⠀⠀⠀⣠⣾⣿⣿⠛⠛⠀⠀⣾⣿⣿⡟⠀⠀
+⠸⣿⣿⣿⣿⣿⡿⠏⠀⠀⢀⣠⣾⣿⡿⠿⠿⠀⢠⣤⣾⣿⣿⠟⠀⠀⠀
+⠀⠈⠉⠉⠁⠀⢀⣀⣤⣾⣿⣿⠿⠿⠃⠀⣀⣠⣾⣿⣿⡿⠃⠀⠀⠀⠀
+⠀⠳⣶⣶⣶⣿⣿⣿⣿⣿⣿⣏⠀⢀⣀⣠⣿⣿⣿⡿⠋⠀⠀⠀⠀⠀⠀
+⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣾⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠙⠻⢿⣿⣿⣿⣿⣿⣿⠿⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+*/
+    useEffect(() => {
+
     
+    
+      }, [location]);
 
     useEffect(() => {
-    
+
         return () => {
             socket.disconnect();
         };
-      }, []);
-    
+    }, []);
 
     return (
-   
-        <Router>
+
             <Routes>
                 <Route path="/start" element={<Start/>} />
                 <Route path="/roulette" element={<Roulette/>} />
                 <Route path="/sqp" element={<SixQuiPrend/>} />
-                <Route path="/login-signup" element={<LoginSignup/>} />
+                <Route refresh={true} path="/login-signup" element={<LoginSignup/>} />
                 <Route path='/Lobby' element={<NewLobby/>}/>
                 <Route path="/batailleOuverte" element={<JeuBataille/>} />
                 <Route path="/winner" element={<VictoryScreen/>} />
@@ -45,7 +68,6 @@ function App() {
                 <Route path="/casino" element={<Casino></Casino>}/>
 
             </Routes>
-        </Router>
     );
 }
 

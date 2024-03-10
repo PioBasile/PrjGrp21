@@ -22,7 +22,7 @@ const JeuBataille = () => {
     const [allCardPlayed, setAllCardPlayed] = useState([]);
 
 
-    const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/red_joker.png")
+    const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/astronaut.png")
 
 
 
@@ -55,12 +55,12 @@ const JeuBataille = () => {
     ];
 
     function playEmote(emoteUrl) {
-        const video = emoteBubbleRef.current.querySelector('video'); // Récupérez l'élément vidéo à partir de la référence
-        video.src = emoteUrl; // Définissez l'URL de la vidéo
-        video.play(); // Lancez la lecture de la vidéo
-        // Réinitialisez la vidéo à la frame de début après la lecture terminée
+        const video = emoteBubbleRef.current.querySelector('video'); 
+        video.src = emoteUrl; 
+        video.play(); 
+        
         video.addEventListener('ended', () => {
-            video.currentTime = 0; // Réinitialisez la currentTime à zéro
+            video.currentTime = 0; 
         });
     }
 
@@ -466,12 +466,11 @@ const JeuBataille = () => {
 
             <div className="bo-selected-cards">
                 <div className={"bo-selected-card"}>
-                          {
-                            allCardPlayed.map((card, index) => (
-
-                                  <img src={ selectedCards.length !== 0 || inDraw ? getCardImage(card) : backCardsImageTest} /> 
-                              ))
-                        }  
+                    {
+                    allCardPlayed.map((card, index) => (
+                        <img src={ selectedCards.length !== 0 || inDraw ? getCardImage(card) : backCardsImageTest} /> 
+                        ))
+                    }  
                 </div>
             </div>
 

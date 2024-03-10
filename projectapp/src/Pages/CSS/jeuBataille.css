@@ -126,20 +126,37 @@
 .bo-selected-cards {
     position: absolute;
     top: 45%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 450px; 
-    height: 350px; 
+    right: 50%;
+    transform: translate(50%, -50%);
+    width: 450px;
+    height: 350px;
     background-color: rgba(41, 28, 28, 0.541);
     border-radius: 15px;
-    color: white; 
+    color: white;
     font-size: 18px;
     font-weight: bold;
-    text-align: center; 
-    display: block;
-    justify-content: center;
-    align-items: center; 
+    text-align: center;
+    display: flex;
+    align-items: flex; /* Aligne les éléments en haut */
+    flex-wrap: nowrap; /* Empêche les éléments de passer à la ligne */
 }
+
+.bo-selected-card {
+    color: aliceblue;
+    width: 60px;
+    height: 100px;
+    background-color: rgba(0, 0, 0, 0);
+    margin-right: 20px; /* Ajoute un petit espace entre les éléments */
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+
 
 .bo-player-info {
     color: aliceblue;
@@ -268,15 +285,3 @@
 }
 
 
-.bo-selected-card {
-    color: aliceblue;
-    width: 60px; /* Largeur agrandie */
-    height: 100px; /* Hauteur agrandie */
-    background-color: rgba(0, 0, 0, 0);
-    margin: 5px;
-    border-radius: 8px;
-    transition: transform 0.3s ease;
-    display: flex;
-    justify-content: center; /* Centre le texte horizontalement */
-    align-items: center; /* Centre le texte verticalement */
-}

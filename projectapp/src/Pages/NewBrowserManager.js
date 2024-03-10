@@ -212,7 +212,7 @@ const NewBrowserManager = () => {
 
             <div className='BM-serverList-container'>
 
-                <h2 className='MB-h2'> SERVER LISTE</h2>
+                <h2 className='MB-h2'> SERVER LIST</h2>
                 {mesLobby.map((lobby, _) => (
 
                     <div className='BM-server' onClick={() => handleClick(lobby.id, lobby)}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)}

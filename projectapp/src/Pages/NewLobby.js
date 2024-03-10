@@ -112,7 +112,7 @@ const NewLobby = () => {
 
         socket.on("deco", (name) => {
             if (mounted) {
-                navigate("/login-signup");
+                navigate("/BrowserManager");
             }
         });
 

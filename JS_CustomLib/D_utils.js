@@ -941,7 +941,7 @@ class MilleBorne {
 
       }
 
-      else if (card == "limite" && !player.bonus.includes("emergency")) {
+      else if (card == "limit" && !player.bonus.includes("emergency")) {
         player.setLimited(true);
         // this.endAttaque('unlimited', player)
         return true
@@ -981,7 +981,7 @@ class MilleBorne {
     if (player.state == State.DRIVING) {
       if (player.isLimited) {
         if (card <= 50) {
-          if (player.points + card < 1000) {
+          if (player.nbPoints + card < 1000) {
             player.addPoint(card);
           }
 

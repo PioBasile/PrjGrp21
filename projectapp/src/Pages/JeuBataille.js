@@ -22,7 +22,7 @@ const JeuBataille = () => {
     const [allCardPlayed, setAllCardPlayed] = useState([]);
 
 
-    const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/red_joker.png")
+    const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/astronaut.png")
 
 
 
@@ -37,7 +37,6 @@ const JeuBataille = () => {
         
         
         -----PAGE DE WINNER------
-        2. ajouter un bouron "return to lobby" qui renvoie a la page de lobby
         3. ajouter le score de chaque joueur/classement
     */
 
@@ -56,12 +55,12 @@ const JeuBataille = () => {
     ];
 
     function playEmote(emoteUrl) {
-        const video = emoteBubbleRef.current.querySelector('video'); // Récupérez l'élément vidéo à partir de la référence
-        video.src = emoteUrl; // Définissez l'URL de la vidéo
-        video.play(); // Lancez la lecture de la vidéo
-        // Réinitialisez la vidéo à la frame de début après la lecture terminée
+        const video = emoteBubbleRef.current.querySelector('video'); 
+        video.src = emoteUrl; 
+        video.play(); 
+        
         video.addEventListener('ended', () => {
-            video.currentTime = 0; // Réinitialisez la currentTime à zéro
+            video.currentTime = 0; 
         });
     }
 
@@ -159,10 +158,8 @@ const JeuBataille = () => {
 
             };
         }, []);
+        return <div></div>
 
-        return (
-            <div></div>
-        );
     }
 
 
@@ -246,10 +243,14 @@ const JeuBataille = () => {
             socket.emit("sendCard", {serverId:sessionStorage.getItem("serverConnected"), name:sessionStorage.getItem("name"),card:card, oldSelect:oldSelect});
             setTimeout(() => {
                 socket.emit('PhaseDeChoix', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
-            }, "2000")
+            }, "3000")
 
         } else { 
-            socket.emit('ResoudreEgalite', {serverId:sessionStorage.getItem("serverConnected"),  card:card});
+            socket.emit("sendCard", {serverId:sessionStorage.getItem("serverConnected"), name:sessionStorage.getItem("name"),card:card, oldSelect:oldSelect});
+            setTimeout(() => {
+
+                socket.emit('ResoudreEgalite', {serverId:sessionStorage.getItem("serverConnected"),  card:card});
+            }, "3000")
         }
 
     };
@@ -307,9 +308,7 @@ const JeuBataille = () => {
         if (mounted) {
             // GESTION stabilité de la connection
             socket.on("deco", (name) => {
-
                 navigate("/login-signup");
-
             });
 
             // -----------------
@@ -376,7 +375,6 @@ const JeuBataille = () => {
 
             });
             socket.on('Winner', (winner) => {
-                console.log(winner);
                 setDraw(false);
                 setInDraw(false);
                 socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
@@ -412,22 +410,6 @@ const JeuBataille = () => {
         <div className="bo-game-container">
 
             <YourComponent></YourComponent>
-
-            <div className="chat-container" id='chatContainer'>
-                <div className='message-container bo-message-container' >
-                    {messages.map((msg, index) => (
-                        <p key={index}>{msg}</p>)
-                    )}
-                    <input
-                        id="inputChat"
-                        className='inputMessage'
-                        type="text"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Type message..."
-                    />
-                </div>
-            </div>
 
 
             {/*Opponent player*/}
@@ -511,6 +493,21 @@ const JeuBataille = () => {
                 )}
             </div>
 
+            <div className="chat-container" id='chatContainer'>
+                <div className='message-container bo-message-container' >
+                    {messages.map((msg, index) => (
+                        <p key={index}>{msg}</p>)
+                    )}
+                    <input
+                        id="inputChat"
+                        className='inputMessage'
+                        type="text"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Type message..."
+                    />
+                </div>
+            </div>
 
         </div>
     );

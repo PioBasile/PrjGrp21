@@ -1,19 +1,29 @@
-.start-container {
+.start-container-big {
+    width: 100vw;
+    height: 100vh;
     position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #1a1a1a; /* Couleur par défaut, gérée dynamiquement */
-    transition: background-color 1s ease;
-    z-index: 1;
 }
 
 .start-container-fade-out {
     background-color: #fff;
+}
+
+.start-button-fade-out {
+    opacity: 0;
+}
+
+.start-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 1s ease;
+    z-index: 1;
 }
 
 .start-button {
@@ -22,13 +32,20 @@
     cursor: pointer;
     border: none;
     border-radius: 5px;
-    background-color: #0066cc;
-    color: white;
+    background-color: #8eaccd;
+    color: rgb(0, 0, 0);
     transition: transform 0.3s ease, opacity 1s ease;
     z-index: 2;
-    opacity: 1; /* Opacité par défaut, gérée dynamiquement */
+    opacity: 1; 
 }
 
-.start-button-fade-out {
-    opacity: 0;
+.start-background video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    object-fit: fill; 
 }
+

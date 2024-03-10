@@ -312,9 +312,14 @@ io.on('connection', (socket) => {
     clobby.maxTurn = parseInt(roundsMax);
 
     io.emit('newServer', lobbyList);
-    io.to(lobbyID).emit('lobbyParams', maxPlayers, timeBetweenTurn, roundsMax);
+    io.to(lobbyID).emit('lobbyParams', maxPlayers, timeBetweenTurn, roundsMax, );
 
   });
+
+  socket.on("lobbyInfo_UwU", (serverId) => {
+    let lobby = findLobby(serverId, lobbyList);
+    io.to(serverId).emit("yourInfoBebs", {serverName:lobby.serverName, nbPlayerMax:lobby.nbPlayerMax, password:lobby.password, gameType:lobby.gameType, owner:lobby.owner, timer:lobby.tbt})
+  })
 
   socket.on('askStat', (name) => {
 
@@ -501,14 +506,16 @@ io.on('connection', (socket) => {
           game.Rdraw.forEach((player) => {
 
             CardIndex = Math.floor(Math.random() * player.deck.length);
-            player.deck.splice(CardIndex, 1)
+            player.deck.splice(CardIndex, 1);
+            
 
           });
           io.to(GameId).emit('Draw', game.Rdraw);
         } else {
+          game.Rwinner.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)]
+          io.to(GameId).emit('Winner', game.Rwinner);
           game.cardPlayedInRound = {}
           io.to(GameId).emit("roundCardsPlayed", game.cardPlayedInRound);
-          io.to(GameId).emit('Winner', game.Rwinner);
           game.currentTurn++;
         }
       }
@@ -585,6 +592,9 @@ io.on('connection', (socket) => {
           });
           io.to(GameId).emit('Draw', game.Rdraw);
         } else {
+          player.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)]
+          io.to(GameId).emit('Winner', game.Rwinner);
+          game.cardPlayedInRound = {}
           io.to(GameId).emit('Winner', game.Rwinner);
           game.currentTurn++;
         }
@@ -957,7 +967,8 @@ io.on('connection', (socket) => {
 
   socket.on("MB-nbCard", (serverId) => {
     game = findGame(serverId, MilleBornesGames);
-    socket.emit("MB-getNbCards", game.deck.length);
+    if(game) socket.emit("MB-getNbCards", game.deck.length);
+    else socket.emit("deco")
   })
 
   socket.on("whatMyTurn", (data) => {
@@ -992,7 +1003,7 @@ io.on('connection', (socket) => {
   //CHAT MILLES BORNES !!!!!!! DORIAN STP NE SUPPRIME PAS !!!!!
   socket.on("MB-sendMessage", (data) => {
     game = findGame(data.serverId, MilleBornesGames);
-    game.addMessage(`${data.name}: ${data.msg}`);
+  if(data.msg) {game.addMessage(`${data.name}: ${data.msg}`);}
     io.to(data.serverId).emit("MB-getMessage", game.chatContent);
   })
   
@@ -1045,7 +1056,9 @@ io.on('connection', (socket) => {
   //bataille
   socket.on("BTL-sendMessage", (data) => {
     game = findGame(data.serverId, BatailGames);
-    game.addMessage(`${data.name}: ${data.msg}`);
+    if(data.msg){
+      game.addMessage(`${data.name}: ${data.msg}`);
+    }
     io.to(data.serverId).emit("BTL-getMessage", game.chatContent);
   })
   

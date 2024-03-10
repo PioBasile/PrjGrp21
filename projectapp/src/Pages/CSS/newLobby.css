@@ -1,0 +1,235 @@
+/*
+
+<div className='NB-playerList'>
+    <div className='playerInList'>
+        <div className='kickButton'>Kick</div>
+    </div>
+    <div className='playerInList'>
+        <div className='kickButton'>Kick</div>
+    </div>
+    <div className='playerInList'>
+        <div className='kickButton'>Kick</div>
+    </div>
+    <div className='playerInList'>
+        <div className='kickButton'>Kick</div>
+    </div>
+</div>
+*/
+
+.NB-container {
+    position: relative;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+
+}
+
+.UBwithUnderBandeau {
+    width: 66%;
+    height: 100%;
+    left: 0;
+    background-image: url('pics/9999520.jpg'); 
+    background-size: cover;
+}
+
+.waitingPlayerTitle {
+    width: 100%;
+    padding-top: 5vh;
+    display: flex;
+    justify-content: center;
+    font-size: 5vh;
+    color: white;
+}
+
+
+
+.NB-upperBandeau {
+    height: 20%;
+    top: 0;
+    display: flex;
+    padding-top: 2vh;
+    justify-content: space-around;
+    background-color: rgb(7, 55, 14);
+    border-bottom: solid 2px grey;
+    border-right: solid 2px grey;
+}
+
+.gameNameType {
+    min-width: 30%;
+    font-size: 3vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    color: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80%;
+    background-color: rgb(21, 35, 44);
+    border:solid 2px gray;
+    border-radius: 25px;
+}
+
+.NB-underBandeau {
+    height: 80%;
+    width: 100%;
+
+}
+
+.gameStat {
+    position: relative;
+    width: 100%;
+    height: 33%;
+    padding-left: 10%;
+    padding-top: 2vh;
+}
+
+.NB-playerList {
+    overflow: auto;
+    padding-left: 2vw;
+    padding-top: 3vh;
+    width: 33%;
+    height: 100%;
+    background-color: rgb(21, 35, 44);
+    border-left: solid 2px grey;
+}
+
+table {
+    border-collapse: collapse;
+    width: 90%;
+    height: 50%;
+    justify-content: center;
+}
+
+table,
+th,
+td {
+    color: #f5f5f5;
+    border: 3px solid rgb(0, 0, 0);
+}
+
+th,
+td {
+    font-size: 2vh;
+    padding: 2vh;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+
+.table-title {
+    background-color: rgb(32, 98, 115);
+}
+
+.table-info {
+    border: 3px solid black;
+    background-color: rgb(116, 170, 183);
+}
+
+.bigReadyButton-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 30%;
+    margin-top: 10%;
+}
+
+.bigReadyButton {
+    width: 60%;
+    height: 80%;
+    border-radius: 30px;
+    border: solid 3px white;
+    font-size: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: antiquewhite;
+    align-items: center;
+    background-color: rgb(8, 52, 11);
+    box-shadow: 0 0 25px rgb(0, 0, 0, 0.6)
+}
+
+.bigReadyButton:hover{
+    background-color: rgb(27, 81, 31);
+    cursor: pointer;
+}
+
+.playerInfoContainer {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.playerInList {
+    display: flex;
+    align-items: center;
+    width: 80%;
+    height: 10%;
+    background-color: rgb(25, 71, 71);
+    border: solid 2px gray;
+    color: gainsboro;
+    margin-top: 25px;
+    border-radius: 20px;
+}
+
+.kickButton {
+    color: black;
+    display: flex;
+    border: solid 1px black;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    height: 40%;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    cursor: pointer;
+    background-color: red;
+}
+
+.kickButton:hover {
+    background-color: rgb(99, 9, 9);
+}
+
+.playerInfo {
+    font-size: 3vh;
+}
+
+@keyframes ellipsis {
+    0% {
+        content: ".";
+    }
+    33% {
+        content: "..";
+    }
+    66% {
+        content: "...";
+    }
+    100% {
+        content: "";
+    }
+}
+
+.animated-ellipsis::after {
+    content: ".";
+    display: inline-block;
+    animation: ellipsis 2s infinite steps(1);
+}
+
+.leaveLobbyButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3vh;
+    border: solid 3px gray;
+    color: #f2f2f2;
+    left: 0;
+    width: 15%;
+    height: 80%;
+    border-radius: 20px ;
+    background-color: red;
+}

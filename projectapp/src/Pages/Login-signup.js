@@ -55,37 +55,37 @@ const LoginSignup = () => {
     //         document.removeEventListener('keydown', sendMessageOnEnter);
     //     };
     // }
-    function HandleEnterLogin({ username, password }) {
-        useEffect(() => {
-          let passwordContainer = document.getElementById("loginPassword");
-          if (passwordContainer == null) {
-            return 0;
-          }
+    // function HandleEnterLogin({ username, password }) {
+    //     useEffect(() => {
+    //       let passwordContainer = document.getElementById("loginPassword");
+    //       if (passwordContainer == null) {
+    //         return 0;
+    //       }
       
-          function sendMessageOnEnter(event) {
-            var clickedElement = event.target.id;
-            if (event.key === "Enter" && clickedElement === "loginPassword") {
-              // Assurez-vous que username et password sont définis avant d'utiliser
-              // les variables dans cette fonction.
-              socket.emit("login", username, password);
-            }
-          }
+    //       function sendMessageOnEnter(event) {
+    //         var clickedElement = event.target.id;
+    //         if (event.key === "Enter" && clickedElement === "loginPassword") {
+    //           // Assurez-vous que username et password sont définis avant d'utiliser
+    //           // les variables dans cette fonction.
+    //           socket.emit("login", username, password);
+    //         }
+    //       }
       
-          document.getElementById("loginPassword").addEventListener('keydown', sendMessageOnEnter);
+    //       document.getElementById("loginPassword").addEventListener('keydown', sendMessageOnEnter);
       
-          return () => {
-            document.getElementById("loginPassword").removeEventListener('keydown', sendMessageOnEnter);
-          };
-        }, [username, password]); // Ajout de username et password aux dépendances
+    //       return () => {
+    //         document.getElementById("loginPassword").removeEventListener('keydown', sendMessageOnEnter);
+    //       };
+    //     }, [username, password]); // Ajout de username et password aux dépendances
       
-        return <div></div>;
-      }
+    //     return <div></div>;
+    //   }
       
 
 
     return (
         <div className="login-signup-container">
-            <HandleEnterLogin></HandleEnterLogin>
+            {/* <HandleEnterLogin></HandleEnterLogin> */}
             <div className="description-container">
                 <h1>Projet Programmation</h1>
                 <div className="project-info">

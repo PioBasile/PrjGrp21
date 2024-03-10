@@ -123,15 +123,17 @@ const NewLobby = () => {
             switch (data.gameType) {
                 case "mb":  
                     setGameType("Mille Bornes");
-
+                    break
                 case "rd":  
                     setGameType("Random");
-
+                    break
                 case "sqp":  
                     setGameType("Six Qui Prend");
-
+                    break
                 case "batailleOuverte": 
                     setGameType("Bataille Ouverte");
+                default:
+                    setGameType("unknow");
             }
 
             setGameName(data.serverName);

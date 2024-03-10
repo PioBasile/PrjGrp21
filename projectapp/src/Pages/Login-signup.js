@@ -79,7 +79,11 @@ const LoginSignup = () => {
     //     }, [username, password]); // Ajout de username et password aux dépendances
       
     //     return <div></div>;
+<<<<<<< HEAD
     // }
+=======
+    //   }
+>>>>>>> 300295f063661906c01fea804fbdc5dfcd3d0fd7
       
 
 

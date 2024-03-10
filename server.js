@@ -506,7 +506,8 @@ io.on('connection', (socket) => {
           game.Rdraw.forEach((player) => {
 
             CardIndex = Math.floor(Math.random() * player.deck.length);
-            player.deck.splice(CardIndex, 1)
+            player.deck.splice(CardIndex, 1);
+            
 
           });
           io.to(GameId).emit('Draw', game.Rdraw);

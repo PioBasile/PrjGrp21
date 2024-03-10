@@ -981,7 +981,7 @@ class MilleBorne {
     if (player.state == State.DRIVING) {
       if (player.isLimited) {
         if (card <= 50) {
-          if (player.points + card < 1000) {
+          if (player.nbPoints + card < 1000) {
             player.addPoint(card);
           }
 

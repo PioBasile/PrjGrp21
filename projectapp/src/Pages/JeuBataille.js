@@ -487,7 +487,7 @@ const JeuBataille = () => {
                           {
                             allCardPlayed.map((card, index) => (
 
-                                  <img src={ selectedCards.length !== 0 ? getCardImage(card) : backCardsImageTest} /> 
+                                  <img alt='r' src={ selectedCards.length !== 0 ? getCardImage(card) : backCardsImageTest} /> 
                               ))
                         }  
                 </div>

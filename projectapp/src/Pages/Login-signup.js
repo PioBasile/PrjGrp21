@@ -51,7 +51,7 @@ const LoginSignup = () => {
         document.addEventListener("keydown", sendMessageOnEnter);
 
         return () => {
-            document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+            document.removeEventListener('keydown', sendMessageOnEnter);
         };
     }
 

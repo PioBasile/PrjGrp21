@@ -31,13 +31,6 @@ const Casino = () => {
         navigate("/Lobby");
     }
 
-    useEffect(() => {
-        // GESTION stabilité de la connection
-        socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
-        socket.emit("getServ");
-
-    }, [])
-
 
     useEffect(() => {
         let mounted = true;

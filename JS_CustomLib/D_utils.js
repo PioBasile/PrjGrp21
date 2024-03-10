@@ -941,7 +941,7 @@ class MilleBorne {
 
       }
 
-      else if (card == "limite" && !player.bonus.includes("emergency")) {
+      else if (card == "limit" && !player.bonus.includes("emergency")) {
         player.setLimited(true);
         // this.endAttaque('unlimited', player)
         return true

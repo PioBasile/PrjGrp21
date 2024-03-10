@@ -219,3 +219,17 @@ th {
     display: inline-block;
     animation: ellipsis 2s infinite steps(1);
 }
+
+.leaveLobbyButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3vh;
+    border: solid 3px gray;
+    color: #f2f2f2;
+    left: 0;
+    width: 15%;
+    height: 80%;
+    border-radius: 20px ;
+    background-color: red;
+}

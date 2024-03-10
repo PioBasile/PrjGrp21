@@ -511,7 +511,7 @@ io.on('connection', (socket) => {
           });
           io.to(GameId).emit('Draw', game.Rdraw);
         } else {
-          player.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)]
+          game.Rwinner.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)]
           io.to(GameId).emit('Winner', game.Rwinner);
           game.cardPlayedInRound = {}
           io.to(GameId).emit("roundCardsPlayed", game.cardPlayedInRound);
@@ -966,7 +966,8 @@ io.on('connection', (socket) => {
 
   socket.on("MB-nbCard", (serverId) => {
     game = findGame(serverId, MilleBornesGames);
-    socket.emit("MB-getNbCards", game.deck.length);
+    if(game) socket.emit("MB-getNbCards", game.deck.length);
+    else socket.emit("deco")
   })
 
   socket.on("whatMyTurn", (data) => {

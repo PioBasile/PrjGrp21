@@ -96,6 +96,7 @@ const MilleBorne = () => {
                 setBonus(data.bonus);
                 setState(data.state);
                 setIsLimited(data.isLimited)
+                console.log(isLimited)
                 //setColor(data.color);
             });
             socket.on("chooseVictim", () => {
@@ -111,11 +112,8 @@ const MilleBorne = () => {
                 setMyTurn(bool);
             });
             socket.on("newState", (newState) => {
-                console.log(newState, state)
                 setState(newState);
                 setTest(newState)
-                console.log(test);
-                console.log(newState, state)
             });
             socket.on('MB_FIN', (winner) => {
 
@@ -269,7 +267,7 @@ const MilleBorne = () => {
                                 <img alt='' src={allCard[getCard(player.state)]} className="glow card" />
                             </div>
                             <div className='card'>
-                                <img alt='' src={isLimited ? allCard[getCard("limit")] : allCard[getCard("unlimited")]} className="glow card"></img>
+                                <img alt='' src={player.isLimited ? allCard[getCard("limit")] : allCard[getCard("unlimited")]} className="glow card"></img>
                             </div>
                         </div>
                     </div>

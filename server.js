@@ -312,9 +312,14 @@ io.on('connection', (socket) => {
     clobby.maxTurn = parseInt(roundsMax);
 
     io.emit('newServer', lobbyList);
-    io.to(lobbyID).emit('lobbyParams', maxPlayers, timeBetweenTurn, roundsMax);
+    io.to(lobbyID).emit('lobbyParams', maxPlayers, timeBetweenTurn, roundsMax, );
 
   });
+
+  socket.on("lobbyInfo_UwU", (serverId) => {
+    let lobby = findLobby(serverId, lobbyList);
+    io.to(serverId).emit("yourInfoBebs", {serverName:lobby.serverName, nbPlayerMax:lobby.nbPlayerMax, password:lobby.password, gameType:lobby.gameType, owner:lobby.owner, timer:lobby.tbt})
+  })
 
   socket.on('askStat', (name) => {
 

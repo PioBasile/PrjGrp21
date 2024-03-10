@@ -249,16 +249,16 @@ const Lobby = () => {
                       Kick
                     </Button>
                 </ListGroup.Item>
-              ))}
+              ))}j
             </ListGroup>
-  
+
         </div>
 
         <div className="lob-boutton">
           <Button variant="success" size="lg" onClick={handleReadyClick}>
             Ready
           </Button>
-          <Button variant="success" size="lg" onClick={handleStart} disabled={clobby.owner !== sessionStorage.getItem('name')}>
+          <Button variant="success" size="lg" onClick={handleStart}>
             Start
           </Button>
           

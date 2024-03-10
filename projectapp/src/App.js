@@ -13,7 +13,7 @@ import NewBrowserManager from './Pages/NewBrowserManager'
 import BlackJack from "./Pages/BlackJack";
 import ItemShop from "./Pages/ItemShop.js";
 import Casino from "./Pages/Casino.js";
-
+import NewLobby from "./Pages/NewLobby.js";
 function App() {
 
     
@@ -34,7 +34,7 @@ function App() {
                 <Route path="/roulette" element={<Roulette/>} />
                 <Route path="/sqp" element={<SixQuiPrend/>} />
                 <Route path="/login-signup" element={<LoginSignup/>} />
-                <Route path='/Lobby' element={<Lobby/>}/>
+                <Route path='/Lobby' element={<NewLobby/>}/>
                 <Route path="/batailleOuverte" element={<JeuBataille/>} />
                 <Route path="/winner" element={<VictoryScreen/>} />
                 <Route path="/" element={<Navigate to="/start" replace />} />
@@ -43,6 +43,7 @@ function App() {
                 <Route path="/blackJack" element={<BlackJack></BlackJack>}/>
                 <Route path="/itemshop" element={<ItemShop></ItemShop>}/>
                 <Route path="/casino" element={<Casino></Casino>}/>
+
             </Routes>
         </Router>
     );

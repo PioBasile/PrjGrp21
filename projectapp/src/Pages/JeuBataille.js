@@ -32,7 +32,6 @@ const JeuBataille = () => {
            opponents , puis les retourner quand tout le monde place leur carte.
            A divise la partie du milieu en 2 (5 par 5 avec le nom du joueur en dessous de chaque
             carte) A separe avec une ligne horizontale au milieu clean
-        3. ajouter un timer a gauche pas obligatoire
         4. faire les emotes , choisir un bouton a maintenir pour les emotes ou faire comme clash royal
         
         
@@ -188,7 +187,7 @@ const JeuBataille = () => {
     function leaveGame() {
         socket.emit('leaveGame', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
         socket.emit('leave', sessionStorage.getItem('serverConnected'));
-        navigate('/');
+        navigate('/BrowserManager');
     };
 
     //----------------------SORT CARDS---------------------
@@ -408,6 +407,12 @@ const JeuBataille = () => {
             console.log("CARD PLAYDE LIST ", cardPlayedList);
             setAllCardPlayed(Object.values(cardPlayedList));
         })
+
+        socket.on("deco", (name) => {
+
+            navigate("/BrowserManager");
+
+        });
 
         return () => {
             mounted = false;

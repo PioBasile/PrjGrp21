@@ -36,19 +36,21 @@ const NewBrowserManager = () => {
         navigate("/Lobby");
     }
 
+    // USE EFFECT POUR L'ANTI CHEAT 
     useEffect(() => {
 
         if(sessionStorage.getItem("serverConnected") > 0){
-            console.log("test");
             socket.emit('deco_lobby', sessionStorage.getItem("serverConnected"), sessionStorage.getItem('name'));
             socket.emit('leave', sessionStorage.getItem("serverConnected"));
             sessionStorage.setItem('serverConnected', -1);
         }
 
-        socket.emit('askStat', sessionStorage.getItem("name"));
+    }, [])
 
-        // GESTION stabilité de la connection
-        socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
+
+    useEffect(() => {
+
+        socket.emit('askStat', sessionStorage.getItem("name"));
         socket.emit("getServ");
 
     }, [])
@@ -57,17 +59,7 @@ const NewBrowserManager = () => {
     useEffect(() => {
         let mounted = true;
 
-        // GESTION stabilité de la connection
-
         if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
-
-        socket.on("deco", (name) => {
-            if (mounted) {
-                navigate("/login-signup");
-            }
-        });
-
-        // -----------------
 
         socket.on("newServer", (lobbyListId) => {
             if (mounted) {

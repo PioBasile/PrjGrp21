@@ -121,6 +121,7 @@ const JeuBataille = () => {
     //----------------------CHAT---------------------
 
     const sendMessage = () => {
+        console.log(messages);
         socket.emit('BTL-sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
         setMessage('');
     }
@@ -146,19 +147,38 @@ const JeuBataille = () => {
                 }
             }
 
-            document.addEventListener('click', getElementId);
+            try {
 
-            document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
-            
+                document.addEventListener('click', getElementId);
+                document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
+              
+              } catch (err) {
+              
+               console.log("meh");
+              
+              }
 
-            return () => {
-                document.removeEventListener('click', getElementId);
-                document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+              return () => {
+
+                try {
+
+                    document.removeEventListener('click', getElementId);
+                    document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+                  
+                  } catch (err) {
+                  
+                   console.log("meh");
+                  
+                  }
+                
 
             };
-        }, []);
-        return <div></div>
 
+        }, []);
+
+        return (
+            <div></div>
+        );
     }
 
 
@@ -305,12 +325,7 @@ const JeuBataille = () => {
 
         let mounted = true;
         if (mounted) {
-            // GESTION stabilité de la connection
-            socket.on("deco", (name) => {
-                navigate("/login-signup");
-            });
-
-            // -----------------
+            
 
             socket.on("Deck", (deck) => {
                 
@@ -382,6 +397,7 @@ const JeuBataille = () => {
             });
 
             socket.on("BTL-getMessage", (msgList) => {
+                console.log(msgList);
                 setMessages(msgList);
             })
 
@@ -499,20 +515,21 @@ const JeuBataille = () => {
             </div>
 
             <div className="chat-container" id='chatContainer'>
-                <div className='message-container bo-message-container' >
-                    {messages.map((msg, index) => (
-                        <p key={index}>{msg}</p>)
-                    )}
-                    <input
-                        id="inputChat"
-                        className='inputMessage'
-                        type="text"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Type message..."
-                    />
+                    <div className='message-container MB-message-container' >
+                        {messages.map((msg, index) => (
+                            <p key={index}>{msg}</p>)
+                        )}
+                        <input
+                            id="inputChat"
+                            className='inputMessage'
+                            type="text"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder="Type message..."
+                        />
+                    </div>
+
                 </div>
-            </div>
 
         </div>
     );

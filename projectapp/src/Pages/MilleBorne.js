@@ -132,11 +132,6 @@ const MilleBorne = () => {
                 setMessages(msgList);
             })
 
-            socket.on("deco", (name) => {
-
-                navigate("/BrowserManager");
-
-            });
 
         }
         return () => {
@@ -222,13 +217,30 @@ const MilleBorne = () => {
                 }
             }
 
-            document.addEventListener('click', getElementId);
+            try {
 
-            document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
+                document.addEventListener('click', getElementId);
+                document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
+              
+              } catch (err) {
+              
+               console.log("meh");
+              
+              }
 
-            return () => {
-                document.removeEventListener('click', getElementId);
-                document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+              return () => {
+
+                try {
+
+                    document.removeEventListener('click', getElementId);
+                    document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+                  
+                  } catch (err) {
+                  
+                   console.log("meh");
+                  
+                  }
+                
 
             };
         }, []);

@@ -103,6 +103,20 @@
 .bo-top-opponent:nth-child(4) { left: 60%; }
 .bo-top-opponent:nth-child(5) { left: 75%; }
 
+.bo-enem-emote-top {
+    position: fixed;
+    top: 100px;
+    width: 120px; 
+    height: 80px; 
+    background-color: rgb(143, 155, 180);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    border-color: rgb(50, 71, 111);
+    justify-content: center;
+}
+
+
+
 .bo-left-opponent {
     position: absolute;
     left: 10px;
@@ -112,6 +126,18 @@
 .bo-left-opponent:nth-child(6) { top: 15%; }
 .bo-left-opponent:nth-child(7) { top: 30%; }
 
+.bo-enem-emote-left {
+    position: fixed;
+    top :25% ;
+    left : 130px;
+    height: 80px; 
+    width: 120px;
+    background-color: rgb(143, 155, 180);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    border-color: rgb(50, 71, 111);
+    justify-content: center;
+}
 
 .bo-right-opponent {
     position: absolute;
@@ -121,6 +147,18 @@
 .bo-right-opponent:nth-child(8) { top: 15%; }
 .bo-right-opponent:nth-child(9) { top: 30%; }
 
+.bo-enem-emote-right {
+    position: fixed;
+    top :25% ;
+    right : 130px;
+    height: 80px; 
+    width: 120px;
+    background-color: rgb(143, 155, 180);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    border-color: rgb(50, 71, 111);
+    justify-content: center;
+}
 
 
 .bo-selected-cards {
@@ -225,8 +263,8 @@
 
 .bo-message-container {
     position: absolute;
-    right: 0px;
-    bottom:24vh;
+    right: 0;
+    bottom:21vh;
     max-height: 50vh;
 }
 

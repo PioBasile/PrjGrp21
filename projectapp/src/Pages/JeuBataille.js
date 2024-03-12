@@ -32,6 +32,7 @@ const JeuBataille = () => {
            opponents , puis les retourner quand tout le monde place leur carte.
            A divise la partie du milieu en 2 (5 par 5 avec le nom du joueur en dessous de chaque
             carte) A separe avec une ligne horizontale au milieu clean
+        3. ajouter un timer a gauche pas obligatoire
         4. faire les emotes , choisir un bouton a maintenir pour les emotes ou faire comme clash royal
         
         
@@ -65,7 +66,11 @@ const JeuBataille = () => {
 
     const toggleEmotes = () => {
         setShowEmotes(!showEmotes);
-      };
+    };
+
+    function showEnemyEmote() {
+        return true;
+    }
 
     //----------------------FONCTION PR LES IMAGES DE CARTES---------------------
 
@@ -187,7 +192,7 @@ const JeuBataille = () => {
     function leaveGame() {
         socket.emit('leaveGame', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
         socket.emit('leave', sessionStorage.getItem('serverConnected'));
-        navigate('/BrowserManager');
+        navigate('/');
     };
 
     //----------------------SORT CARDS---------------------
@@ -408,12 +413,6 @@ const JeuBataille = () => {
             setAllCardPlayed(Object.values(cardPlayedList));
         })
 
-        socket.on("deco", (name) => {
-
-            navigate("/BrowserManager");
-
-        });
-
         return () => {
             mounted = false;
             socket.off("Deck");
@@ -441,6 +440,11 @@ const JeuBataille = () => {
                         <strong>{opponent.name}</strong> 
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
+                        {showEnemyEmote() && (
+                            <div className='bo-enem-emote-top'>
+                                
+                            </div>
+                        )}
                     </div>
                 ))}
 
@@ -450,6 +454,11 @@ const JeuBataille = () => {
                         <strong>{opponent.name}</strong> 
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
+                        {showEnemyEmote() && (
+                            <div className='bo-enem-emote-left'>
+                                
+                            </div>
+                        )}
                     </div>
                 ))}
 
@@ -459,6 +468,11 @@ const JeuBataille = () => {
                         <strong>{opponent.name}</strong>
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
+                        {showEnemyEmote() && (
+                            <div className='bo-enem-emote-right'>
+                                
+                            </div>
+                        )}
                     </div>
                 ))}
 
@@ -515,7 +529,7 @@ const JeuBataille = () => {
             </div>
 
             <div className="chat-container" id='chatContainer'>
-                    <div className='message-container MB-message-container' >
+                    <div className='message-container bo-message-container' >
                         {messages.map((msg, index) => (
                             <p key={index}>{msg}</p>)
                         )}

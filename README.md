@@ -41,8 +41,6 @@ Exécutez le fichier "LinuxInstall" :
 ```bash
 ./LinuxInstall
 ```
-Répétez les mêmes étapes pour le fichier "LinuxQuickStart", qui va lancer le projet + vscode 2 terminal, un pour le serveur et le second pour react.
-
 
 ## Auteurs
 _REY Dorian <br>

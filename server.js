@@ -31,7 +31,8 @@ const {
   MB_Player,
   getOpponent,
   State,
-  GameState
+  GameState,
+  SavedLobby
 
 } = require("./JS_CustomLib/D_utils.js");
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
@@ -57,6 +58,7 @@ let validCookies = {};
 let BatailGames = [];
 let TaureauGames = [];
 let MilleBornesGames = [];
+let gamesSaved = [];
 let lobbyList = [];
 let lobbyIndex = 1;
 let RouletteInstance = new Roulette();
@@ -97,7 +99,6 @@ setInterval(() => {
   if (RouletteInstance.timer == 0) {
 
     RouletteInstance.rolls();
-    console.log("ROLL : " + RouletteInstance.roll);
     io.emit('spinwheel', RouletteInstance.roll);
     RouletteInstance.resolveBets();
 
@@ -226,9 +227,14 @@ io.on('connection', (socket) => {
 
   // GESTION LOBBY //
 
-  socket.on('newServer', (serverName, nbPlayerMax, isPrivate, password, gameType, owner, moneyBet) => {
+  socket.on('newServer', (serverName, nbPlayerMax, isPrivate, password, gameType, owner, moneyBet, isASaved, gameData) => {
 
     let Nlobby = new Lobby(serverName, parseInt(nbPlayerMax), isPrivate, password, gameType, lobbyIndex, owner, moneyBet);
+    
+    if(gameData){
+      Nlobby.gameLinked = gameData;
+    }
+    
     lobbyList.push(Nlobby);
     lobbyIndex++;
     io.emit('newServer', lobbyList);
@@ -339,8 +345,8 @@ io.on('connection', (socket) => {
   socket.on('StartGame', (lobbyID) => {
 
 
-    lobby = findLobby(lobbyID, lobbyList);
-    owner = lobby.owner;
+    let lobby = findLobby(lobbyID, lobbyList);
+    let owner = lobby.owner;
     let plist = [];
 
     console.log(lobby.gameType);
@@ -367,7 +373,7 @@ io.on('connection', (socket) => {
 
     if (lobby.gameType == "sqp") {
 
-      nGame = new SixQuiPrend(lobbyID, owner, plist, 10, lobby.moneyBet);
+      nGame = new SixQuiPrend(lobby.serverName,lobbyID, owner, plist, 10, lobby.moneyBet);
       TaureauGames.push(nGame);
 
     }
@@ -381,7 +387,7 @@ io.on('connection', (socket) => {
       let color = ["pink", "red", "yellow", "green"];
 
       plist.forEach((player, index) => {
-        let newMB_player = new MB_Player(player.name, player.cookie, color[index], lobby.moneyBet);
+        let newMB_player = new MB_Player(lobby.serverName,player.name, player.cookie, color[index], lobby.moneyBet);
         mbPlist.push(newMB_player);
       })
 
@@ -397,11 +403,18 @@ io.on('connection', (socket) => {
       nGame = new Bataille(lobbyID, lobby.nbPlayerMax, lobby.maxTurn, owner, plist, lobby.moneyBet);
       BatailGames.push(nGame);
 
+      const lobbyNotChanged =  Object.assign({}, lobby);
+      
+      nGame.lobbyLinked = lobbyNotChanged;
+
     }
 
     io.to(lobbyID).emit('start', lobby.gameType);
     nGame.status = STATUS.WAITING_FOR_PLAYER_CARD;
 
+    if(lobby.gameLinked){
+      nGame.recreate(lobby.gameLinked);
+    }
 
   });
 
@@ -454,7 +467,13 @@ io.on('connection', (socket) => {
   // Phase de choix, permet au joueurs de choisir leurs cartes et une fois tout les cartes chosis donne le résultat du round //
   socket.on('PhaseDeChoix', (GameId, playerName, card) => {
 
+  
     let game = findGame(GameId, BatailGames);
+    
+    console.log("GAME WHEN A CARD IS PLAYED !!!!!!!!!!!!!!!!!!!!!!" )
+    console.log(game);
+    console.log(game.playerList);
+
     let player = findPlayer(playerName, game.playerList);
     if(player == -1 ){
       socket.emit("deco");
@@ -516,20 +535,28 @@ io.on('connection', (socket) => {
 
       } else {
         if (game.Rdraw != null) {
+          game.cardPlayedInRound = {}
+          console.log(game.Rdraw);
           game.Rdraw.forEach((player) => {
 
             CardIndex = Math.floor(Math.random() * player.deck.length);
             player.deck.splice(CardIndex, 1);
-            
+            game.cardPlayedInRound[player.name] = player.deck[CardIndex];
 
           });
-          io.to(GameId).emit('Draw', game.Rdraw);
+
+            console.log("you are in draw nigga", game.cardPlayedInRound); 
+            game.Rwinner.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)];
+            io.to(GameId).emit("roundCardsPlayed", game.cardPlayedInRound);
+            io.to(GameId).emit('Draw', game.Rdraw);
+            game.cardPlayedInRound = {};
+
         } else {
-          game.Rwinner.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)]
-          io.to(GameId).emit('Winner', game.Rwinner);
-          game.cardPlayedInRound = {}
-          io.to(GameId).emit("roundCardsPlayed", game.cardPlayedInRound);
-          game.currentTurn++;
+            game.Rwinner.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)]
+            io.to(GameId).emit('Winner', game.Rwinner);
+            game.cardPlayedInRound = {}
+            io.to(GameId).emit("roundCardsPlayed", game.cardPlayedInRound);
+            game.currentTurn++;
         }
       }
     }
@@ -601,13 +628,11 @@ io.on('connection', (socket) => {
 
             CardIndex = Math.floor(Math.random() * player.deck.length);
             player.deck.splice(CardIndex, 1)
+            game.cardPlayedInRound[player.username] = player.deck[CardIndex];
 
           });
           io.to(GameId).emit('Draw', game.Rdraw);
         } else {
-          player.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)]
-          io.to(GameId).emit('Winner', game.Rwinner);
-          game.cardPlayedInRound = {}
           io.to(GameId).emit('Winner', game.Rwinner);
           game.currentTurn++;
         }
@@ -1082,4 +1107,25 @@ io.on('connection', (socket) => {
   }) 
 
 
+  socket.on("sendEmoteToLobby", (data) => {
+    game = findGame(data.serverId, BatailGames);
+    emote = data.emote
+
+    io.to(data.serverId).emit("emote", emote, data.playerName)
+  })
+
+
+  socket.on("saveGame", (serverId, playerName) => {
+
+    game = findGame(serverId, BatailGames);
+
+    const gameSave =  JSON.parse(JSON.stringify(game));
+    gamesSaved.push(gameSave); 
+    io.emit("newGameSaved", gamesSaved);
+
+  })
+  
+  socket.on("whatGameSaved", () => {
+    socket.emit("newGameSaved", gamesSaved);
+  })
 });

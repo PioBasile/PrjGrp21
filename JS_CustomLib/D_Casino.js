@@ -34,7 +34,6 @@ class Roulette{
 
     this.bets.forEach((bet) => {
 
-      console.log(bet);
 
       let player = bet['nom'];
       let ammount = bet['betAmmount'];

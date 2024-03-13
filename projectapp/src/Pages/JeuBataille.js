@@ -47,14 +47,14 @@ const JeuBataille = () => {
     const emote = require("./CSS/emotes/toyota.mp4");
 
     const videos = [
-        { name: 'Emote 1', videoUrl: emote },
-        { name: 'Emote 2', videoUrl: emote },
-        { name: 'Emote 3', videoUrl: emote },
-        { name: 'Emote 4', videoUrl: emote },
-        { name: 'Emote 5', videoUrl: emote },
-        { name: 'Emote 6', videoUrl: emote },
-        { name: 'Emote 7', videoUrl: emote },
-        { name: 'Emote 8', videoUrl: emote },
+        { id: 'Emote 2', videoUrl: emote },
+        { id: 'Emote 3', videoUrl: emote },
+        { id: 'Emote 1', videoUrl: emote },
+        { id: 'Emote 4', videoUrl: emote },
+        { id: 'Emote 5', videoUrl: emote },
+        { id: 'Emote 6', videoUrl: emote },
+        { id: 'Emote 7', videoUrl: emote },
+        { id: 'Emote 8', videoUrl: emote },
     ];
 
     const handleVideoEnd = () => {
@@ -65,10 +65,10 @@ const JeuBataille = () => {
     };
 
     function playEmote(emoteUrl) {
-        const video = emoteBubbleRef.current.querySelector('video'); 
-        video.src = emoteUrl; 
-        video.play(); 
-        
+        const video = emoteBubbleRef.current.querySelector('video');
+        video.src = emoteUrl;
+        video.play();
+        socket.emit("sendemoteToLobby", { serverId: sessionStorage.getItem("serverConnected"), emoteId: emoteUrl, playerName: sessionStorage.getItem("name") })
         video.addEventListener('ended', () => {
             video.currentTime = 0; 
         }); 
@@ -117,21 +117,21 @@ const JeuBataille = () => {
                 return -1;
         }
     }
-    
+
 
     function getCardImage(card) {
         const numeros = ['2', '3', '4', '5', '6', '7', '8', '9', '10'];
         const translateSymbol = cardSymbTranslate(card.symbole);
-        if(numeros.includes(card.number)){
+        if (numeros.includes(card.number)) {
             const chemin = require(`./CSS/pics/PNG-cards-1.3/${card.number}_of_${translateSymbol}.png`);
             return chemin;
         }
-        else if(card.number !== "As"){
+        else if (card.number !== "As") {
             const translateNumber = cardNumbTranslateSup10(card.number);
-            const chemin= require(`./CSS/pics/PNG-cards-1.3/${translateNumber}_of_${translateSymbol}2.png`);
+            const chemin = require(`./CSS/pics/PNG-cards-1.3/${translateNumber}_of_${translateSymbol}2.png`);
             return chemin;
         }
-        else{
+        else {
             const chemin = require(`./CSS/pics/PNG-cards-1.3/ace_of_${translateSymbol}.png`);
             return chemin;
         }
@@ -170,26 +170,26 @@ const JeuBataille = () => {
 
                 document.addEventListener('click', getElementId);
                 document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
-              
-              } catch (err) {
-              
-               console.log("meh");
-              
-              }
 
-              return () => {
+            } catch (err) {
+
+                console.log("meh");
+
+            }
+
+            return () => {
 
                 try {
 
                     document.removeEventListener('click', getElementId);
                     document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
-                  
-                  } catch (err) {
-                  
-                   console.log("meh");
-                  
-                  }
-                
+
+                } catch (err) {
+
+                    console.log("meh");
+
+                }
+
 
             };
 
@@ -209,6 +209,11 @@ const JeuBataille = () => {
         navigate('/');
     };
 
+    const saveGame = () => {
+        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"))
+    }
+
+
     //----------------------SORT CARDS---------------------
     function sortCards(deck) {
         let grp1 = [];
@@ -220,15 +225,15 @@ const JeuBataille = () => {
 
             card.symbole = card.symbole.charAt(0).toUpperCase() + card.symbole.slice(1);
             card.number = card.number.charAt(0).toUpperCase() + card.number.slice(1);
-            
 
-            if(card.symbole === "Trefle"){
+
+            if (card.symbole === "Trefle") {
                 grp1.push(card);
-            } else if(card.symbole === "Carreau"){
+            } else if (card.symbole === "Carreau") {
                 grp2.push(card);
-            } else if(card.symbole === "Coeur"){
+            } else if (card.symbole === "Coeur") {
                 grp3.push(card);
-            } else if(card.symbole === "Pique"){
+            } else if (card.symbole === "Pique") {
                 grp4.push(card);
             }
 
@@ -237,7 +242,7 @@ const JeuBataille = () => {
         const sortByPower = (a, b) => {
             return a.power - b.power;
         };
-        
+
         // Tri par symbole de carte
         const sortGroupBySymbol = (group) => {
             return group.sort(sortByPower);
@@ -248,10 +253,10 @@ const JeuBataille = () => {
         grp2 = sortGroupBySymbol(grp2);
         grp3 = sortGroupBySymbol(grp3);
         grp4 = sortGroupBySymbol(grp4);
-    
+
 
         deck = grp1.concat(grp2, grp3, grp4);
-    
+
 
         setPlayerCards(deck);
     }
@@ -263,6 +268,7 @@ const JeuBataille = () => {
         socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
 
         if (!inDraw && isDraw) {
+            alert("is dranw but not in draw")
             return 0;
         }
 
@@ -278,19 +284,17 @@ const JeuBataille = () => {
         sortCards(playerCards);
         setSelectedCards(card);
         if (!inDraw) {
-            socket.emit("sendCard", {serverId:sessionStorage.getItem("serverConnected"), name:sessionStorage.getItem("name"),card:card, oldSelect:oldSelect});
+            socket.emit("sendCard", { serverId: sessionStorage.getItem("serverConnected"), name: sessionStorage.getItem("name"), card: card, oldSelect: oldSelect });
             setTimeout(() => {
                 socket.emit('PhaseDeChoix', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
             }, "3000")
 
-        } else { 
-            socket.emit("sendCard", {serverId:sessionStorage.getItem("serverConnected"), name:sessionStorage.getItem("name"),card:card, oldSelect:oldSelect});
-            setTimeout(() => {
-
-                socket.emit('ResoudreEgalite', {serverId:sessionStorage.getItem("serverConnected"),  card:card});
-            }, "3000")
         }
-
+        else {
+            alert("Reoudre egalité");
+            socket.emit("sendCard", { serverId: sessionStorage.getItem("serverConnected"), name: sessionStorage.getItem("name"), card: card, oldSelect: oldSelect });
+            socket.emit('ResoudreEgalite', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
+        }
     };
 
     //----------------------USE EFFECT---------------------
@@ -320,23 +324,23 @@ const JeuBataille = () => {
             mounted = false;
         }
 
-    },[navigate]);
+    }, [navigate]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-          if (emoteBubbleRef.current && !emoteBubbleRef.current.contains(event.target)) {
-            setShowEmotes(false);
-          }
+            if (emoteBubbleRef.current && !emoteBubbleRef.current.contains(event.target)) {
+                setShowEmotes(false);
+            }
         };
-    
+
         if (showEmotes) {
-          document.addEventListener('mousedown', handleClickOutside);
+            document.addEventListener('mousedown', handleClickOutside);
         } else {
-          document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('mousedown', handleClickOutside);
         }
-    
+
         return () => {
-          document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [showEmotes]);
 
@@ -344,10 +348,10 @@ const JeuBataille = () => {
 
         let mounted = true;
         if (mounted) {
-            
+
 
             socket.on("Deck", (deck) => {
-                
+
                 sortCards(deck);
             });
 
@@ -388,11 +392,15 @@ const JeuBataille = () => {
 
             });
 
-            socket.on('Draw', (drawPlayers, cardIndex) => {
+            socket.on('Draw', (drawPlayers, _) => {
+                alert("DRAW");
                 setDraw(true);
-                console.log(drawPlayers);
-                socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
-                socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
+                setTimeout(() => {
+                    setAllCardPlayed([]);
+                    socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+                    socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
+                    // setInDraw(false)
+                }, "3000");
                 let ami = false;
                 drawPlayers.forEach((player) => {
                     if (player.name === sessionStorage.getItem("name")) {
@@ -407,6 +415,7 @@ const JeuBataille = () => {
                 setSelectedCards([])
 
             });
+
             socket.on('Winner', (winner) => {
                 setDraw(false);
                 setInDraw(false);
@@ -443,6 +452,11 @@ const JeuBataille = () => {
     }, [navigate]);
 
 
+    const Emote = () => {
+        return (
+            <div className='card'></div>
+        )
+    }
     //----------------------RETURN---------------------
     return (
         <div className="bo-game-container">
@@ -455,7 +469,7 @@ const JeuBataille = () => {
                 {/* Joueurs en haut */}
                 {opponents.slice(0, 5).map((opponent, index) => (
                     <div key={index} className="bo-opponent bo-top-opponent">
-                        <strong>{opponent.name}</strong> 
+                        <strong>{opponent.name}</strong>
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
                         {showEnemyEmote(opponent.name) && (
@@ -471,12 +485,12 @@ const JeuBataille = () => {
                 {/* Joueurs à gauche */}
                 {opponents.slice(5, 7).map((opponent, index) => (
                     <div key={index} className="bo-opponent bo-left-opponent">
-                        <strong>{opponent.name}</strong> 
+                        <strong>{opponent.name}</strong>
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
                         {showEnemyEmote() && (
                             <div className='bo-enem-emote-left'>
-                                
+
                             </div>
                         )}
                     </div>
@@ -490,7 +504,7 @@ const JeuBataille = () => {
                         Score : {scoreboard[opponent.name]}
                         {showEnemyEmote() && (
                             <div className='bo-enem-emote-right'>
-                                
+
                             </div>
                         )}
                     </div>
@@ -499,10 +513,10 @@ const JeuBataille = () => {
             </div>
 
             {/*les cartes du joueur*/}
-            <div className="bo-player-cards-holder"> 
+            <div className="bo-player-cards-holder">
                 <div className="bo-user-info-container">
                     <div className="bo-user-info">
-                        Mon Score : {scoreboard[sessionStorage.getItem("name")]} 
+                        Mon Score : {scoreboard[sessionStorage.getItem("name")]}
                     </div>
                     <div className="bo-user-info">
                         Nombre de cartes : {playerCards.length}
@@ -521,51 +535,52 @@ const JeuBataille = () => {
 
             <div className="bo-selected-cards">
                 <div className={"bo-selected-card"}>
-                          {
-                            allCardPlayed.map((card, index) => (
+                    {
+                        allCardPlayed.map((card, index) => (
 
-                                  <img alt='r' src={ selectedCards.length !== 0 ? getCardImage(card) : backCardsImageTest} /> 
-                              ))
-                        }  
+                            <img alt='r' src={selectedCards.length !== 0 || inDraw && !isDraw ? getCardImage(card) : backCardsImageTest} />
+                        ))
+                    }
                 </div>
             </div>
 
-            <button className="bo-save-button" onClick={() => leaveGame()}>Save</button>
+            <button className="bo-save-button" onClick={() => saveGame()}>Save</button>
             <button className="bo-leave-button" onClick={() => leaveGame()}>Leave Game</button>
 
             <div className="bo-emote-container">
                 <button className="bo-emote-button" onClick={toggleEmotes}>Emotes</button>
                 {showEmotes && (
                     <div className="bo-emote-bubble" ref={emoteBubbleRef}>
-                    <div className="bo-emote-list">
-                        {videos.map((emote, index) => (
-                            <div key={index} className="bo-emote" onClick={() => playEmote(emote.videoUrl)}>
-                                <video src={emote.videoUrl} />
-                            </div>
-                        ))}
-                    </div>
+                        <div className="bo-emote-list">
+                            {videos.map((emote, index) => (
+                                <div key={index} className="bo-emote" onClick={() => playEmote(emote.videoUrl)}>
+                                    <video src={emote.videoUrl} />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>
 
             <div className="chat-container" id='chatContainer'>
-                    <div className='message-container bo-message-container' >
-                        {messages.map((msg, index) => (
-                            <p key={index}>{msg}</p>)
-                        )}
-                        <input
-                            id="inputChat"
-                            className='inputMessage'
-                            type="text"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Type message..."
-                        />
-                    </div>
-
+                <div className='message-container bo-message-container' >
+                    {messages.map((msg, index) => (
+                        <p key={index}>{msg}</p>)
+                    )}
+                    <input
+                        id="inputChat"
+                        className='inputMessage'
+                        type="text"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Type message..."
+                    />
                 </div>
 
+            </div>
+
         </div>
+
     );
 };
 

@@ -142,7 +142,6 @@ const STATUS = {
 class Bataille {
 
   constructor(idPart, maxJ, maxT, Owner, playerL, moneyBet) {
-
     this.identifiant_partie = idPart;
     this.maxJoueurs = maxJ;
     this.maxTurn = maxT;
@@ -153,6 +152,7 @@ class Bataille {
     this.moneyBet = moneyBet;
     this.chatContent = [];
     this.cardPlayedInRound = {};
+    this.lobbyLinked = null;
 
     let index = 0;
 
@@ -192,6 +192,9 @@ class Bataille {
       }
 
       let power = player.selected.power
+      console.log("PLAYER BEFORE CARD REMOVED !!!!!!!!!!!!!!!!!!!!")
+      console.log(player);
+
       player.removeCard(player.selected);
       player.selected = null;
 
@@ -304,6 +307,65 @@ class Bataille {
       this.chatContent.push(msg);
     }
   }
+/*
+{
+  cartes: [
+  ],
+  chatContent: [],
+  currentTurn: 0,
+  idPartie: '1',
+  maxJoueurs: 2,
+  maxTurn: 20,
+  owner: 'player1',
+  playerList: [
+    {
+      out: false,
+      name: 'player1',
+      deck: [Array],
+      selected: null,
+      cookie: 'eIcOodS9DE',
+      score: 0
+    },
+    {
+      out: false,
+      name: 'florian',
+      deck: [Array],
+      selected: null,
+      cookie: 'ND2MArXXhX',
+      score: 0
+    }
+  ],
+  scoreboard: { player1: 0, florian: 0 },
+  status: 'phase1'
+
+  this.out = false;
+    this.name = username;
+    this.deck = [];
+    this.selected = null;
+    this.cookie = cookie;
+
+
+*/
+  recreate(gameData) {
+    let newPlayerList = [];
+    this.currentTurn = gameData['currentTurn']
+
+
+    for(let player of gameData["playerList"]){
+      let newPlayer = new Player(player["name"],player["cookie"])
+      newPlayer.out = player["out"]
+      newPlayer.deck = player["deck"]
+      newPlayer.selected = player["selected"]
+       
+      newPlayerList.push(newPlayer);
+    }
+
+    this.playerList = newPlayerList;
+    this.scoreboard = gameData["scoreboard"];
+    this.cartes = gameData["cartes"];
+    this.chatContent = gameData["chatContent"];
+    this.status = gameData["status"];
+  }
 }
 
 
@@ -374,10 +436,19 @@ class Lobby {
     this.tbt = 30;
     this.maxTurn = 20;
     this.moneyBet = moneyBet;
-    this.is_empty = true;
+    this.gameLinked = null;
   }
 
 }
+
+class SavedLobby extends Lobby {
+  constructor(serverName, nbPlayerMax, isPrivate, password, gameType, ID, owner, moneyBet, gameData) {
+    super(serverName, nbPlayerMax, isPrivate, password, gameType, ID, owner, moneyBet);
+    
+    this.gameData = gameData;
+  }
+}
+
 
 // 6 QUI PREND 
 
@@ -431,8 +502,8 @@ function generate6Cartes() {
 
 class SixQuiPrend {
 
-  constructor(id_partie, owner, player_list, chrono, moneyBet) {
-
+  constructor( gameName, id_partie, owner, player_list, chrono, moneyBet) {
+    this.gameName = gameName;
     this.identifiant_partie = id_partie;
     this.owner = owner;
     this.player_list = player_list;
@@ -810,7 +881,8 @@ const GameState = {
 
 class MilleBorne {
 
-  constructor(identifiant_partie, owner, playerList, moneyBet) {
+  constructor(gameName, identifiant_partie, owner, playerList, moneyBet) {
+    this.gameName = gameName;
     this.identifiant_partie = identifiant_partie;
     this.owner = owner;
     this.playerList = playerList;
@@ -1134,5 +1206,6 @@ module.exports = {
   MB_Player,
   getOpponent,
   State,
-  GameState
+  GameState,
+  SavedLobby
 }

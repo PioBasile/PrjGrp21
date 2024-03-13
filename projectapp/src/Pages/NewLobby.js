@@ -16,6 +16,7 @@ const NewLobby = () => {
     const [gameType, setGameType] = useState("")
     const [password, setPassword] = useState("")
     const [timer, setTimer] = useState(0)
+    const [isReady, setIsReady] = useState(false);
 
 
     const [allReady, setAllReady] = useState(false)
@@ -23,6 +24,7 @@ const NewLobby = () => {
     const [roundsMax, setRoundsMax] = useState(20);
     const navigate = useNavigate();
     const [clobby, setLobby] = useState({ playerList: [] });
+    const [savedGames, setSavedGames] = useState([]);
 
 
     function leaveGame() {
@@ -38,6 +40,8 @@ const NewLobby = () => {
     };
 
     const handleReadyClick = () => {
+        if(isReady) setIsReady(false);
+        else setIsReady(true)
         socket.emit('ready', sessionStorage.getItem('serverConnected'), sessionStorage.getItem('name'));
     };
 
@@ -52,9 +56,8 @@ const NewLobby = () => {
             setAllReady(true)
             setTimeout(() => {
                 socket.emit("StartGame", sessionStorage.getItem('serverConnected'));
-            }, "5000")
+            }, "3000")
         };
-
     }
 
     useEffect(() => {
@@ -84,14 +87,16 @@ const NewLobby = () => {
                     break
                 case "rd":  
                     setGameType("Random");
-                    break
+                    break;
                 case "sqp":  
                     setGameType("Six Qui Prend");
-                    break
+                    break;
                 case "batailleOuverte": 
                     setGameType("Bataille Ouverte");
+                    break;
                 default:
                     setGameType("unknow");
+                    return;
             }
 
             setGameName(data.serverName);
@@ -189,7 +194,7 @@ const NewLobby = () => {
                         </table>
                     </div>
                     <div className='bigReadyButton-container'>
-                        <div className='bigReadyButton' onClick={handleReadyClick}>READY </div>
+                        <div className='bigReadyButton' onClick={handleReadyClick}>{!isReady ? "READY" : "UNREADY"} </div>
                         {clobby.owner === sessionStorage.getItem("name") && <div className='bigReadyButton' onClick={handleStart}>START </div>}
                     </div>
                 </div>

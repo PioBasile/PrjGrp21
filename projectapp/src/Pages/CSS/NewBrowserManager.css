@@ -5,6 +5,7 @@
     background-image: url("pics/9999520.jpg");
     width: 100vw;
     height: 100vh;
+    overflow: hidden;
 }
 
 .BM-profil {
@@ -128,6 +129,11 @@
     cursor: pointer;
 }
 
+.itemShop{
+    background-color: rgb(58, 83, 152);
+    cursor: pointer;
+}
+
 .BM-info-profil {
     position: relative;
     top: 10vh;
@@ -151,9 +157,26 @@
     background-color: rgb(169, 65, 65);
     color: wheat;
     font-size: 5vh;
+    align-content: center;
     align-items: center;
-    padding-left: 30%;
+    right :25%;
+    padding-left: 7%;
     height: 15%;
+    width: 30%;
+}
+
+.BM-info-profil.itemShop{
+    padding-left: 5%;
+    position: relative;
+    background-color: rgb(40, 74, 153);
+    color: wheat;
+    font-size: 5vh;
+    align-items: center;
+    height: 15%;
+    width: 30%;
+    align-content: center;
+    left: 25%;
+    top: -10%;
 }
 
 .BM-input-container {
@@ -320,29 +343,54 @@
 .showSaved-container {
     position: fixed;
     overflow: auto;
-    top: 10vh;
-    left: 10vw;
+    top: 45vh;
+    left: 30vw;
     width: 33%;
     height: 33%;
-    background-color: #2a3949;
+    background-color: #19734a;
     z-index: 1;
     border-radius: 15px;
     box-shadow: 0 0 20px  rgba(0, 0, 0, 0.5);
-    border: solid 3px #0a1a2a;
+    border: solid 3px #0a2a1a;
 }
 
 .gameSavedButton {
+    cursor: pointer;
     display: flex;
     align-items: center;
+    margin: auto;
+    top: 70vh;
+    padding-top: 1vh;
+    left: 275%;
+    width: 100%;
+    padding-bottom: 1vh;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    position: relative;
+    color: aliceblue;
+    border-radius: 10px;
+}
+
+.BM-save-button{
+    display: flex;
     justify-content: center;
-    border: solid gray 3px;
-    color: wheat;
-    font-size: 3vh;
-    background-color: #0056b3;
-    cursor: pointer;
+    align-items: center;
+    width: 15vw;
+    height: 8vh;
+    border: none;
+    background-color: #0d8a1c;
+    transition: background-color 0.3s ease;
+    border: solid black 1px;
+    border-radius: 35px;
+    font-size: 4vh;
+}
+
+.BM-save-button:hover {
+    background-color: #0f6630;
 }
 
 .gameSaved {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;

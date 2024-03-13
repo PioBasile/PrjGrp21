@@ -148,6 +148,10 @@ const NewBrowserManager = () => {
         navigate("/casino")
     }
 
+    const goToItemShop = () =>{
+        navigate("/itemShop")
+    }
+
     const showSavedGames = () => {
         if(showSaved) setShowSaved(false)
         else setShowSaved(true)
@@ -193,11 +197,14 @@ const NewBrowserManager = () => {
                 <div className='BM-info-profil hide casino' onClick={goToCasinoNigga}>
                     CASINO
                 </div>
+                <div className='BM-info-profil hide itemShop' onClick={goToItemShop}>
+                    ITEM SHOP
+                </div>
             </div>
 
             <div className='BM-acttion-container'>
                 <h2 className='MB-h2'> CREER LE SERVER</h2>
-                <div className='gameSavedButton' onClick={showSavedGames}> GAME SAVED </div>
+                
                 
 
                 <div className='BM-input-container'>
@@ -232,6 +239,10 @@ const NewBrowserManager = () => {
                     <div></div>
                     <button onClick={handleSave} className="BM-button">CRÉER</button>
                     <div></div>
+                </div>
+
+                <div className='gameSavedButton'>
+                    <div className='BM-save-button' onClick={showSavedGames}> GAME SAVED </div>
                 </div>
 
             </div>

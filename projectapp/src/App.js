@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes,Navigate } from "react-router-dom";
+import './Pages/CSS/App.css';
 import Start from "./Pages/Start.js";
 import LoginSignup from "../src/Pages/Login-signup";
 import JeuBataille from "./Pages/JeuBataille.js";

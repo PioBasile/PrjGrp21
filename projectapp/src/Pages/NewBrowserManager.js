@@ -7,6 +7,7 @@ import './CSS/BrowerManager.css'
 const NewBrowserManager = () => {
 
     const [mesLobby, setMesLobby] = useState([]);
+    const [gameSaved, setGameSaved] = useState([])
     const navigate = useNavigate();
     // eslint-disable-next-line
     const [showPopup, setShowPopup] = useState(false);
@@ -24,7 +25,7 @@ const NewBrowserManager = () => {
     const [roundWin, setRoundWin] = useState('0');
     const [money, setMoney] = useState('0');
     const [moneyBet, setMoneyBet] = useState(null);
-
+    const [showSaved, setShowSaved] = useState(false);
 
     const handleClick = (Id, server) => {
         if (server.isPrivate && gamePassword !== server.password) {
@@ -52,6 +53,7 @@ const NewBrowserManager = () => {
 
         socket.emit('askStat', sessionStorage.getItem("name"));
         socket.emit("getServ");
+        socket.emit("whatGameSaved")
 
     }, [])
 
@@ -76,11 +78,17 @@ const NewBrowserManager = () => {
 
         });
 
+        socket.on("newGameSaved", (allGameSaved) => {
+            console.log(allGameSaved)
+            setGameSaved(allGameSaved);
+        })
+
         return () => {
             mounted = false;
             socket.off("deco");
             socket.off("newServer");
             socket.off("stats");
+            socket.off("newGameSaved")
         }
 
     }, [navigate]);
@@ -96,13 +104,19 @@ const NewBrowserManager = () => {
         // Logique pour sauvegarder les données du formulaire
         if (gameType === "") { return 0; }
         if (nbPlayerMax === "" || nbPlayerMax < 1) { return 0; }
-        socket.emit("newServer", serverName, nbPlayerMax, isServerPrivate(), password, gameType, sessionStorage.getItem('name'), moneyBet);
+        socket.emit("newServer", serverName, nbPlayerMax, isServerPrivate(), password, gameType, sessionStorage.getItem('name'), moneyBet, false, "");
         setGameType("");
         setNbPlayerMax(2);
         setServerName("");
         setPassword("");
     };
 
+    const handleRecreate = (game) => {
+        alert("recreate or what")
+        let lobby = game["lobbyLinked"]
+        let gameInfo = {cartes: game["cartes"], chatContent : game["chatContent"], currentTurn:game['currentTurn'], idPartie:game["identifiant_partie"],maxJoueurs : game['maxJoueurs'], maxTurn:game["maxTurn"], owner: game["owner"], playerList : game['playerList'], scoreboard : game['scoreboard'], status:game["status"]}
+        socket.emit("newServer", lobby["serverName"],lobby["nbPlayerMax"],lobby['isPrivate'], lobby['password'],lobby['gameType'], lobby["owner"], lobby["moneyBet"], true, gameInfo)
+    } 
 
     const whatToLoad = (lobby) => {
         if (lobby.playerList.length === lobby.nbPlayerMax) {
@@ -135,14 +149,33 @@ const NewBrowserManager = () => {
         navigate("/casino")
     }
 
+    const showSavedGames = () => {
+        if(showSaved) setShowSaved(false)
+        else setShowSaved(true)
+    }
+
+
+    const GameSaved = () => {
+        return (
+            <div className='showSaved-container'>
+                {gameSaved.map((game, index) => (
+                    <div className='gameSaved' onClick={() => handleRecreate(game)}> <div/>
+                        {game.lobbyLinked["serverName"]} : {game.lobbyLinked["gameType"]}
+
+                    </div>
+                ))}
+            </div>
+        )
+
+    }
+
     return (
         <div className='BM-container'>
             <div className='BM-profil'>
 
                 <h2 className='MB-h2 MB-profil-H2'> PROFIL </h2>
                 <div className='BM-info-profil hide'>
-                    <p className='info-text'>PLAYERNAME :
-                    <div className='info-text'> {sessionStorage.getItem("name")}</div></p>
+                    <div className='info-text'> PLAYERNAME : {sessionStorage.getItem("name")}</div>
                 </div>
                 <div className='BM-info-profil hide'>
                     Parties Jouées : {nbGame}
@@ -165,6 +198,8 @@ const NewBrowserManager = () => {
 
             <div className='BM-acttion-container'>
                 <h2 className='MB-h2'> CREER LE SERVER</h2>
+                <div className='gameSavedButton' onClick={showSavedGames}> GAME SAVED </div>
+                
 
                 <div className='BM-input-container'>
 
@@ -177,6 +212,7 @@ const NewBrowserManager = () => {
 
                     {isPrivate && <input type="password" id="BM-password" className="BM-input" placeholder='Password...' value={password} onChange={(e) => setPassword(e.target.value)}></input>}
                     {isBet && <input type="number" id="BM-moneyBet" className="BM-input" placeholder='Money to bet' value={moneyBet} onChange={(e) => setMoneyBet(e.target.value)}></input>}
+                    {showSaved  && <GameSaved></GameSaved>}
 
                     <input type="number" className="BM-input gameNameMargin" placeholder='Player number' value={nbPlayerMax} onChange={(e) => setNbPlayerMax(e.target.value)}></input>
 
@@ -213,10 +249,8 @@ const NewBrowserManager = () => {
                         }}></input>}
                     </div>
 
-                ))};
+                ))}
             </div>
-
-
         </div>
     )
 }

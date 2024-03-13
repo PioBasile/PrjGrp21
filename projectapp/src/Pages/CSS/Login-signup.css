@@ -104,7 +104,7 @@
 
 .number-21 {
   display: inline-block; /* Permet à la div de se comporter comme un élément inline pour le positionnement */
-  margin-left: 120px; /* Espacement à gauche de "21" par rapport au texte précédent */
+  margin-left: 75px; /* Espacement à gauche de "21" par rapport au texte précédent */
   vertical-align: middle; /* Alignement vertical si nécessaire */
 }
 

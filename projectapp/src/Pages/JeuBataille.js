@@ -20,9 +20,12 @@ const JeuBataille = () => {
     const emoteBubbleRef = useRef(null);
     const [showEmotes, setShowEmotes] = useState(false);
     const [allCardPlayed, setAllCardPlayed] = useState([]);
+    const [playerNameEmote, setPlayerNameEmote] = useState("");
+    const [showVideo, setShowVideo] = useState(true);
+    const emoteRef = useRef(null); // Référence à la div de l'emote
 
 
-    const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/astronaut.png")
+    const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/blue.png")
 
 
 
@@ -54,6 +57,13 @@ const JeuBataille = () => {
         { name: 'Emote 8', videoUrl: emote },
     ];
 
+    const handleVideoEnd = () => {
+        if (emoteRef.current) {
+            emoteRef.current.hidden = true; // Cache la div en ajustant l'attribut `hidden`
+        }
+        
+    };
+
     function playEmote(emoteUrl) {
         const video = emoteBubbleRef.current.querySelector('video'); 
         video.src = emoteUrl; 
@@ -61,15 +71,19 @@ const JeuBataille = () => {
         
         video.addEventListener('ended', () => {
             video.currentTime = 0; 
-        });
+        }); 
+      socket.emit('sendEmoteToLobby', {emote :  "", playerName :    sessionStorage.getItem('name'), serverId : sessionStorage.getItem('serverConnected')});
     }
 
     const toggleEmotes = () => {
         setShowEmotes(!showEmotes);
     };
 
-    function showEnemyEmote() {
-        return true;
+    function showEnemyEmote(opponentName)  {
+        if(opponentName === playerNameEmote){
+            return true;
+        }
+        return false;
     }
 
     //----------------------FONCTION PR LES IMAGES DE CARTES---------------------
@@ -413,6 +427,10 @@ const JeuBataille = () => {
             setAllCardPlayed(Object.values(cardPlayedList));
         })
 
+        socket.on("emote", (emote, opponentName) => {
+            setPlayerNameEmote(opponentName);
+        });
+
         return () => {
             mounted = false;
             socket.off("Deck");
@@ -440,9 +458,11 @@ const JeuBataille = () => {
                         <strong>{opponent.name}</strong> 
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
-                        {showEnemyEmote() && (
+                        {showEnemyEmote(opponent.name) && (
                             <div className='bo-enem-emote-top'>
-                                
+                                <div className="bo-emote-enemy" >
+                                    <video src={emote} autoPlay onEnded={handleVideoEnd} />
+                                </div> 
                             </div>
                         )}
                     </div>

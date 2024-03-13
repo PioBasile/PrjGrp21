@@ -21,6 +21,7 @@ const JeuBataille = () => {
     const [showEmotes, setShowEmotes] = useState(false);
     const [allCardPlayed, setAllCardPlayed] = useState([]);
     const [playerNameEmote, setPlayerNameEmote] = useState("");
+    const [EmoteToShow, setEmoteToShow] = useState("");
     const [showVideo, setShowVideo] = useState(true);
     const emoteRef = useRef(null); // Référence à la div de l'emote
 
@@ -44,17 +45,54 @@ const JeuBataille = () => {
     */
 
     //----------------------EMOTES---------------------
-    const emote = require("./CSS/emotes/toyota.mp4");
+    const toyota = require("./CSS/emotes/toyota.mp4");
+    const BOING = require("./CSS/emotes/BOING.mp4");
+    const Hampter = require("./CSS/emotes/hampter.mp4");
+    const MissInput = require("./CSS/emotes/MissInput.mp4");
+    const PutinMewing = require("./CSS/emotes/PutinMEWING.mp4");
+    const KillurSelf = require("./CSS/emotes/KillUrSelf.mp4");
+    const horse = require("./CSS/emotes/horse.mp4");
+    const bookies = require("./CSS/emotes/bookies.mp4");
+    const holy = require("./CSS/emotes/holy.mp4");
+    const freddy = require("./CSS/emotes/freddy.mp4");
+    const NuhUh = require("./CSS/emotes/NuhUh.mp4");
+    const hellnaw = require("./CSS/emotes/hellnaw.mp4");
+    const hogRider = require("./CSS/emotes/hogRider.mp4");
+    const josh = require("./CSS/emotes/josh.mp4");
+    const quandale = require("./CSS/emotes/quandale.mp4");
+    const mao = require("./CSS/emotes/mao.mp4");
+    const bible = require("./CSS/emotes/bible.mp4");
+    const spiderman = require("./CSS/emotes/spiderman.mp4");
+    const goku = require("./CSS/emotes/goku.mp4");
+    const gatorade = require("./CSS/emotes/gatorade.mp4");
+    const dj = require("./CSS/emotes/dj.mp4");
+    const jumpascare = require("./CSS/emotes/jumpascare.mp4");
+    const shrek = require("./CSS/emotes/shrek.mp4");
 
     const videos = [
-        { id: 'Emote 2', videoUrl: emote },
-        { id: 'Emote 3', videoUrl: emote },
-        { id: 'Emote 1', videoUrl: emote },
-        { id: 'Emote 4', videoUrl: emote },
-        { id: 'Emote 5', videoUrl: emote },
-        { id: 'Emote 6', videoUrl: emote },
-        { id: 'Emote 7', videoUrl: emote },
-        { id: 'Emote 8', videoUrl: emote },
+        { id: 1, videoUrl: toyota },
+        { id: 2, videoUrl: BOING },
+        { id: 3, videoUrl: Hampter },
+        { id: 4, videoUrl: MissInput },
+        { id: 5, videoUrl: PutinMewing },
+        { id: 6, videoUrl: KillurSelf },
+        { id: 7, videoUrl: horse },
+        { id: 8, videoUrl: bookies },
+        { id: 9, videoUrl: holy },
+        { id: 10, videoUrl: freddy },
+        { id: 11, videoUrl: NuhUh },
+        { id: 12, videoUrl: hellnaw },
+        { id: 13, videoUrl: hogRider },
+        { id: 14, videoUrl: josh },
+        { id: 15, videoUrl: quandale },
+        { id: 16, videoUrl: mao },
+        { id: 17, videoUrl: bible },
+        { id: 18, videoUrl: spiderman },
+        { id: 19, videoUrl: goku },
+        { id: 20, videoUrl: gatorade },
+        { id: 21, videoUrl: dj },
+        { id: 22, videoUrl: jumpascare },
+        { id: 23, videoUrl: shrek },
     ];
 
     const handleVideoEnd = () => {
@@ -65,14 +103,7 @@ const JeuBataille = () => {
     };
 
     function playEmote(emoteUrl) {
-        const video = emoteBubbleRef.current.querySelector('video');
-        video.src = emoteUrl;
-        video.play();
-        socket.emit("sendemoteToLobby", { serverId: sessionStorage.getItem("serverConnected"), emoteId: emoteUrl, playerName: sessionStorage.getItem("name") })
-        video.addEventListener('ended', () => {
-            video.currentTime = 0; 
-        }); 
-      socket.emit('sendEmoteToLobby', {emote :  "", playerName :    sessionStorage.getItem('name'), serverId : sessionStorage.getItem('serverConnected')});
+        socket.emit('sendEmoteToLobby', {emote :  emoteUrl.id, playerName :    sessionStorage.getItem('name'), serverId : sessionStorage.getItem('serverConnected')});
     }
 
     const toggleEmotes = () => {
@@ -140,7 +171,6 @@ const JeuBataille = () => {
     //----------------------CHAT---------------------
 
     const sendMessage = () => {
-        console.log(messages);
         socket.emit('BTL-sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
         setMessage('');
     }
@@ -425,18 +455,32 @@ const JeuBataille = () => {
             });
 
             socket.on("BTL-getMessage", (msgList) => {
-                console.log(msgList);
                 setMessages(msgList);
             })
 
         }
 
         socket.on("roundCardsPlayed", (cardPlayedList) => {
-            console.log("CARD PLAYDE LIST ", cardPlayedList);
             setAllCardPlayed(Object.values(cardPlayedList));
         })
 
         socket.on("emote", (emote, opponentName) => {
+
+            let video = 0;
+            videos.forEach((videos) => {
+
+                if(videos.id == emote){
+                    video = videos;
+                }
+
+            });
+            if(video == 0){
+                return;
+            }
+
+            console.log(video, opponentName);
+
+            setEmoteToShow(video.videoUrl);
             setPlayerNameEmote(opponentName);
         });
 
@@ -463,6 +507,14 @@ const JeuBataille = () => {
 
             <YourComponent></YourComponent>
 
+            {showEnemyEmote(sessionStorage.getItem("name")) && (
+                            <div className='bo-enem-emote-top'>
+                            <div className="bo-emote-enemy" >
+                                <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
+                            </div> 
+                        </div>
+                        )}
+
 
             {/*Opponent player*/}
             <div className="bo-opponent-players">
@@ -475,7 +527,8 @@ const JeuBataille = () => {
                         {showEnemyEmote(opponent.name) && (
                             <div className='bo-enem-emote-top'>
                                 <div className="bo-emote-enemy" >
-                                    <video src={emote} autoPlay onEnded={handleVideoEnd} />
+                                    {console.log(EmoteToShow)}
+                                    <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
                                 </div> 
                             </div>
                         )}
@@ -488,9 +541,9 @@ const JeuBataille = () => {
                         <strong>{opponent.name}</strong>
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
-                        {showEnemyEmote() && (
+                        {showEnemyEmote(opponent.name) && (
                             <div className='bo-enem-emote-left'>
-
+                                <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
                             </div>
                         )}
                     </div>
@@ -502,9 +555,9 @@ const JeuBataille = () => {
                         <strong>{opponent.name}</strong>
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
-                        {showEnemyEmote() && (
+                        {showEnemyEmote(opponent.name) && (
                             <div className='bo-enem-emote-right'>
-
+                                <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
                             </div>
                         )}
                     </div>
@@ -553,7 +606,7 @@ const JeuBataille = () => {
                     <div className="bo-emote-bubble" ref={emoteBubbleRef}>
                         <div className="bo-emote-list">
                             {videos.map((emote, index) => (
-                                <div key={index} className="bo-emote" onClick={() => playEmote(emote.videoUrl)}>
+                                <div key={index} className="bo-emote" onClick={() => playEmote(emote)}>
                                     <video src={emote.videoUrl} />
                                 </div>
                             ))}

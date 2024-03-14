@@ -1,7 +1,7 @@
 .victory-container {
     padding: 0;
     margin: 0;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     overflow: hidden; 
 }
@@ -16,8 +16,9 @@
     align-items: center;
     font-size: 0.1em; 
     color: white;
+    background-color:aqua;
     text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.7);
-    animation: zoomIn 2s ease-in-out forwards, rotate 6s linear infinite; 
+    /* animation: zoomIn 2s ease-in-out forwards, rotate 6s linear infinite;  */
 }
 
 @keyframes zoomIn {

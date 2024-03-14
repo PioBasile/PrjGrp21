@@ -404,7 +404,6 @@ io.on('connection', (socket) => {
       BatailGames.push(nGame);
 
       const lobbyNotChanged =  Object.assign({}, lobby);
-      
       nGame.lobbyLinked = lobbyNotChanged;
 
     }
@@ -1109,8 +1108,19 @@ io.on('connection', (socket) => {
 
 
   socket.on("saveGame", (serverId, playerName) => {
-
-    game = findGame(serverId, BatailGames);
+    lobby = findLobby(serverId, lobbyList);
+    if(lobby.gameType == "batailleOuverte"){
+      game = findGame(serverId, BatailGames);
+    }
+    else if (lobby.gameType == "sqp"){
+      game = findGame(serverID, TaureauGames);
+    }
+    else if (lobby.gameType == "mb"){
+      game = findGame(serverId, MilleBornesGames)
+    }
+    else {
+      throw new Error("aucun jeu connu sous ce nom: " , lobby.gameType);
+    }
 
     const gameSave =  JSON.parse(JSON.stringify(game));
     gamesSaved.push(gameSave); 

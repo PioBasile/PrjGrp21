@@ -112,9 +112,14 @@ const NewBrowserManager = () => {
     };
 
     const handleRecreate = (game) => {
-        alert("recreate or what")
         let lobby = game["lobbyLinked"]
-        let gameInfo = {cartes: game["cartes"], chatContent : game["chatContent"], currentTurn:game['currentTurn'], idPartie:game["identifiant_partie"],maxJoueurs : game['maxJoueurs'], maxTurn:game["maxTurn"], owner: game["owner"], playerList : game['playerList'], scoreboard : game['scoreboard'], status:game["status"]}
+        if(lobby.gameType === "batailleOuverte"){
+            var gameInfo = {cartes: game["cartes"], chatContent : game["chatContent"], currentTurn:game['currentTurn'], idPartie:game["identifiant_partie"],maxJoueurs : game['maxJoueurs'], maxTurn:game["maxTurn"], owner: game["owner"], playerList : game['playerList'], scoreboard : game['scoreboard'], status:game["status"]}
+        }
+
+        else if (lobby.gameType === "mb"){
+            var gameInfo = {playerList: game["playerList"], cardPlayed : game["cardPlayed"], deck : game["deck"], state : game["state"], chatContent : game["chatContent"]}
+        }
         socket.emit("newServer", lobby["serverName"],lobby["nbPlayerMax"],lobby['isPrivate'], lobby['password'],lobby['gameType'], lobby["owner"], lobby["moneyBet"], true, gameInfo)
     } 
 

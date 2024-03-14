@@ -17,7 +17,7 @@ const makecookie = (length) => {
 const findGame = (id, availableGames) => {
 
   let game = 0;
-  if(!availableGames){
+  if (!availableGames) {
     return -1;
   }
   availableGames.forEach((elem) => {
@@ -40,7 +40,7 @@ const findLobby = (id, lobbyList) => {
 const findWaitingPlayer = (username, plist) => {
 
   let player = 0;
-  if(!plist){
+  if (!plist) {
     return -1;
   }
   plist.forEach((elem) => {
@@ -53,7 +53,7 @@ const findWaitingPlayer = (username, plist) => {
 
 const findPlayer = (username, plist) => {
 
-  if(!plist){
+  if (!plist) {
     return -1;
   }
   let player = 0;
@@ -307,56 +307,57 @@ class Bataille {
       this.chatContent.push(msg);
     }
   }
-/*
-{
-  cartes: [
-  ],
-  chatContent: [],
-  currentTurn: 0,
-  idPartie: '1',
-  maxJoueurs: 2,
-  maxTurn: 20,
-  owner: 'player1',
-  playerList: [
-    {
-      out: false,
-      name: 'player1',
-      deck: [Array],
-      selected: null,
-      cookie: 'eIcOodS9DE',
-      score: 0
-    },
-    {
-      out: false,
-      name: 'florian',
-      deck: [Array],
-      selected: null,
-      cookie: 'ND2MArXXhX',
-      score: 0
-    }
-  ],
-  scoreboard: { player1: 0, florian: 0 },
-  status: 'phase1'
-
-  this.out = false;
-    this.name = username;
-    this.deck = [];
-    this.selected = null;
-    this.cookie = cookie;
-
-
-*/
+  /*
+  {
+    cartes: [
+    ],
+    chatContent: [],
+    currentTurn: 0,
+    idPartie: '1',
+    maxJoueurs: 2,
+    maxTurn: 20,
+    owner: 'player1',
+    playerList: [
+      {
+        out: false,
+        name: 'player1',
+        deck: [Array],
+        selected: null,
+        cookie: 'eIcOodS9DE',
+        score: 0
+      },
+      {
+        out: false,
+        name: 'florian',
+        deck: [Array],
+        selected: null,
+        cookie: 'ND2MArXXhX',
+        score: 0
+      }
+    ],
+    scoreboard: { player1: 0, florian: 0 },
+    status: 'phase1'
+  
+    this.out = false;
+      this.name = username;
+      this.deck = [];
+      this.selected = null;
+      this.cookie = cookie;
+  
+  
+  */
   recreate(gameData) {
     let newPlayerList = [];
+    
     this.currentTurn = gameData['currentTurn']
 
 
-    for(let player of gameData["playerList"]){
-      let newPlayer = new Player(player["name"],player["cookie"])
+    for (let player of gameData["playerList"]) {
+      let newPlayer = new Player(player["name"], player["cookie"])
       newPlayer.out = player["out"]
       newPlayer.deck = player["deck"]
       newPlayer.selected = player["selected"]
-       
+
       newPlayerList.push(newPlayer);
     }
 
@@ -444,7 +445,7 @@ class Lobby {
 class SavedLobby extends Lobby {
   constructor(serverName, nbPlayerMax, isPrivate, password, gameType, ID, owner, moneyBet, gameData) {
     super(serverName, nbPlayerMax, isPrivate, password, gameType, ID, owner, moneyBet);
-    
+
     this.gameData = gameData;
   }
 }
@@ -502,7 +503,7 @@ function generate6Cartes() {
 
 class SixQuiPrend {
 
-  constructor( gameName, id_partie, owner, player_list, chrono, moneyBet) {
+  constructor(gameName, id_partie, owner, player_list, chrono, moneyBet) {
     this.gameName = gameName;
     this.identifiant_partie = id_partie;
     this.owner = owner;
@@ -519,6 +520,8 @@ class SixQuiPrend {
 
     this.winner = null;
     this.moneyBet = moneyBet;
+
+    this.lobbyLinked = null;
   }
 
   gagnant() {
@@ -897,6 +900,30 @@ class MilleBorne {
     this.distribuer();
     this.chatContent = [];
     this.moneyBet = moneyBet;
+    this.lobbyLinked = null;
+  }
+
+  recreate(gameData) {
+
+    let newPlayerList = [];
+    this.currentTurn = gameData['currentTurn']
+
+
+    for (let player of gameData["playerList"]) {
+      let newPlayer = new Player(player["name"], player["cookie"])
+      newPlayer.out = player["out"]
+      newPlayer.deck = player["deck"]
+      newPlayer.selected = player["selected"]
+
+      newPlayerList.push(newPlayer);
+    }
+
+    this.playerList = newPlayerList;
+    this.scoreboard = gameData["scoreboard"];
+    this.cartes = gameData["cartes"];
+    this.chatContent = gameData["chatContent"];
+    this.status = gameData["status"];
+
   }
 
   construireJeu() {
@@ -1027,7 +1054,7 @@ class MilleBorne {
       else { return false; }
     }
 
-    else {return false}
+    else { return false }
 
   }
 
@@ -1148,22 +1175,22 @@ class MilleBorne {
     return false;
   }
 
-  anyonePlayed(){
-    for(let i = 0; i < this.playerList.length; i++){
-      if(this.playerList[i].myTurn){
+  anyonePlayed() {
+    for (let i = 0; i < this.playerList.length; i++) {
+      if (this.playerList[i].myTurn) {
         return false
       }
     }
     return true;
   }
 
-  removePlayer(player){
+  removePlayer(player) {
     let playerI = findRemovePlayer(player, this.playerList);
-    this.playerList.splice(playerI,1);
+    this.playerList.splice(playerI, 1);
   }
 
-  addMessage(msg){
-    if(msg != ""){
+  addMessage(msg) {
+    if (msg != "") {
       this.chatContent.push(msg);
     }
     console.log(this.chatContent);

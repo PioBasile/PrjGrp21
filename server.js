@@ -435,6 +435,13 @@ io.on('connection', (socket) => {
 
   });
 
+  socket.on("sendEmoteToLobby",(data) => {
+    // game = findGame(data.serverId, BatailGames);
+    // emote = data.emote;
+  
+    io.to(data.serverId).emit("emote", data.emote, data.playerName);
+  })
+
   socket.on('askGameInfo', (GameID) => {
 
     game = findGame(GameID, BatailGames);

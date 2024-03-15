@@ -1,7 +1,16 @@
+.item-shop-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Change to column to allow for bottom-right nav buttons */
+    justify-content: center;
+    align-items: center;
+    position: relative; /* Needed for absolute positioning of nav buttons */
+}
+
 .item-shop-title {
+    padding-top: 2vh;;
     text-align: center; /* Centre le titre horizontalement */
-    margin-top: 20px; /* Espacement au-dessus du titre */
-    margin-bottom: 40px; /* Espacement en dessous du titre, avant la grille d'items */
     font-size: 24px; /* Taille de police appropriée */
     color: #ffffff; /* Couleur de police discrète */
     font-weight: normal; /* Poids de la police (ajustez selon vos préférences) */
@@ -15,23 +24,12 @@
     margin: 5px auto; /* Espacement au-dessus et en dessous de la ligne, centrage horizontal */
 }
 
-.item-shop-container {
-    background-image: url("pics/wooden-background.jpg");
-    background-size: cover;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column; /* Change to column to allow for bottom-right nav buttons */
-    justify-content: center;
-    align-items: center;
-    position: relative; /* Needed for absolute positioning of nav buttons */
-}
+
 
 .item-shop {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap:100px; /* Espacement entre les items */
+    gap:70px; /* Espacement entre les items */
     padding: 20px; /* Space around the grid */
     width: fit-content; /* Ensure the grid itself does not stretch too wide */
 }
@@ -40,25 +38,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px; /* Espacement entre l'item et son info */
-    margin-bottom: 1px; /* Espacement entre les items */
 }
 
 .is-item {
     border-radius: 10px; /* Arrondi les images */
     overflow: hidden; /* Assure que les images arrondies ne dépassent pas */
-    width: 15vh; /* Ajustez en fonction des besoins spécifiques de vos images */
-    height: 20ch; /* Ajustez en fonction des besoins spécifiques de vos images */
+    width: 8vw; /* Ajustez en fonction des besoins spécifiques de vos images */
+    height: 8vw; /* Ajustez en fonction des besoins spécifiques de vos images */
     box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ajoute une ombre pour du relief */
     display: flex;
     justify-content: center; /* Centre l'image horizontalement */
     align-items: center; /* Centre l'image verticalement */
+    cursor: pointer;
 }
 
-.is-item img {
+.is-item video {
+    object-fit: contain;
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Assure que l'image couvre l'espace sans être déformée */
     background-color: black;
 }
 
@@ -111,22 +108,45 @@
 }
 
 .is-navigation {
-    position: absolute;
-    right: 20px;
-    bottom: 20px; /* Position at the bottom-right */
+    position: fixed; /* Assure que les boutons de navigation sont positionnés par rapport à ce conteneur */
+    right: 2%;
+    bottom: 5%; /* Position at the bottom-right */
 }
 
-.nav-button {
+.is-previous{
     padding: 20px 30px; /* Augmentez le padding pour agrandir les boutons */
     margin-left: 10px; /* Espace entre les boutons */
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #007bff;
+    background-color: #203e5e;
     color: white;
     font-size: 18px; /* Augmentez la taille de police pour rendre le texte plus grand */
     display: inline-block; /* Assurez-vous que les boutons se comportent correctement avec padding et font-size */
-    text-align: center; /* Centre le texte dans le bouton */
+    text-align: center; 
+    left: 10%;
+}
+
+.is-next{
+    padding: 20px 30px; /* Augmentez le padding pour agrandir les boutons */
+    margin-left: 10px; /* Espace entre les boutons */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #203e5e;
+    color: white;
+    font-size: 18px; /* Augmentez la taille de police pour rendre le texte plus grand */
+    display: inline-block; /* Assurez-vous que les boutons se comportent correctement avec padding et font-size */
+    text-align: center; 
+    right: 10%;
+}
+
+.is-previous:hover {
+    background-color: #0056b3;
+}
+
+.is-:hover {
+    background-color: #0056b3;
 }
 
 .is-page {
@@ -138,13 +158,54 @@
 
 .is-moneyContainer {
     padding-top: 10px;
-    left: 0; /* Ajusté pour aligner à gauche */
-    top: 0; /* Ajusté pour aligner en haut */
+    left: 1%; /* Ajusté pour aligner à gauche */
+    top: 5%; /* Ajusté pour aligner en haut */
     font-size: 300%;
     width: 200px;
     height: 100px;
     background-color: beige;
     position: absolute;
     text-align: center;
+    align-items: center;
+    align-content: center;
     border-radius: 19px;
+}
+
+.item-shop-container {
+    /* Vos styles existants */
+    position: relative; /* Assure que le conteneur est le référentiel de positionnement pour les éléments absolus */
+    z-index: 0; /* Assure que le contenu reste au-dessus de la vidéo de fond */
+}
+
+.is-background video {
+    position: fixed; /* Utilisez fixed pour couvrir tout l'écran */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Largeur de la vue entière */
+    height: 100vh; /* Hauteur de la vue entière */
+    object-fit: cover; /* Assure que la vidéo couvre la zone sans perdre ses proportions */
+    z-index: -1; /* Garde la vidéo en arrière-plan */
+}
+
+.is-leave{
+    left:1%;
+    bottom: 5%;
+    position: fixed;
+}
+
+.is-leave-button{
+    align-items: center;
+    align-content: center;
+    height: 7vh;
+    width: 10vw;
+    padding: 20px 30px; /* Augmentez le padding pour agrandir les boutons */
+    margin-left: 10px; /* Espace entre les boutons */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #203e5e;
+    color: white;
+    font-size: 18px; /* Augmentez la taille de police pour rendre le texte plus grand */
+    display: inline-block; /* Assurez-vous que les boutons se comportent correctement avec padding et font-size */
+    text-align: center;
 }

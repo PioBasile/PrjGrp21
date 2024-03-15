@@ -16,6 +16,8 @@
 }
 
 .MB-exit-button{
+    width: 10vw;
+    height: 5vh;
     position: absolute;
     color: #e3e3e3;
     font-size: 3vh;

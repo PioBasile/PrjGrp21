@@ -354,6 +354,43 @@
     border: solid 3px #0a2a1a;
 }
 
+.BM-leave-container{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin: auto;
+    top: 60vh;
+    padding-top: 1vh;
+    left: 155%;
+    width: 100%;
+    padding-bottom: 1vh;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    position: relative;
+    color: aliceblue;
+    border-radius: 10px;
+}
+
+.BM-leave{
+    cursor: pointer;
+    color: aliceblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 15vw;
+    height: 8vh;
+    border: none;
+    background-color: #8a190d;
+    transition: background-color 0.3s ease;
+    border: solid black 1px;
+    border-radius: 35px;
+    font-size: 4vh;
+}
+
+.BM-leave:hover {
+    background-color: #5b0606;
+}
+
 .gameSavedButton {
     cursor: pointer;
     display: flex;

@@ -167,6 +167,10 @@ const NewBrowserManager = () => {
         else setShowSaved(true)
     }
 
+    const leave = () => {
+        navigate('/login-signup');
+    }
+
 
     const GameSaved = () => {
         return (
@@ -253,6 +257,10 @@ const NewBrowserManager = () => {
 
                 <div className='gameSavedButton'>
                     <div className='BM-save-button' onClick={showSavedGames}> GAME SAVED </div>
+                </div>
+
+                <div className='BM-leave-container'>
+                    <button className='BM-leave' onClick={leave}> LEAVE </button>
                 </div>
 
             </div>

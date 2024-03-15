@@ -24,7 +24,6 @@ const JeuBataille = () => {
 
     const [playerNameEmote, setPlayerNameEmote] = useState("");
     const [EmoteToShow, setEmoteToShow] = useState("");
-    const [showVideo, setShowVideo] = useState(true);
     const emoteRef = useRef(null); // Référence à la div de l'emote
 
 
@@ -236,7 +235,7 @@ const JeuBataille = () => {
     function leaveGame() {
         socket.emit('leaveGame', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
         socket.emit('leave', sessionStorage.getItem('serverConnected'));
-        navigate('/');
+        navigate('/BrowserManager');
     };
 
     const saveGame = () => {
@@ -507,11 +506,12 @@ const JeuBataille = () => {
 
             <YourComponent></YourComponent>
 
+            {/*Ur emote*/}
             {showEnemyEmote(sessionStorage.getItem("name")) && (
-                <div className='bo-enem-emote-top'>
-                    <div className="bo-emote-enemy" >
+                <div className='bo-player-emote-container'>
+                    <div className="bo-player-emote" >
                         <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
-                    </div>
+                    </div> 
                 </div>
             )}
 
@@ -585,13 +585,13 @@ const JeuBataille = () => {
                     ))}
                 </div>
             </div>
-
+                            
+            {/*les cartes selectionnées*/}
             <div className="bo-selected-cards">
                 <div className={"bo-selected-card"}>
                     {
                         allCardPlayed.map((card, index) => (
-
-                            <img alt='r' src={selectedCards.length !== 0 || inDraw && !isDraw ? getCardImage(card) : backCardsImageTest} />
+                            <img alt='r' src={selectedCards.length !== 0 || inDraw && !isDraw ? getCardImage(card) : backCardsImageTest}/>
                         ))
                     }
                 </div>

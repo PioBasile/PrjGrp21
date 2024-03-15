@@ -40,7 +40,7 @@ const MilleBorne = () => {
     }
     
     const sendMessage = () => {
-        socket.emit('MB-sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
+        socket.emit('sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
         setMessage('');
     }
 
@@ -61,7 +61,7 @@ const MilleBorne = () => {
             socket.emit("MB-nbCard", sessionStorage.getItem("serverConnected"));
             socket.emit("whatTheOrder", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
             socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"));
-            socket.emit("MB-loadTheChat", sessionStorage.getItem("serverConnected"));
+            socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
         }
 
         return () => {
@@ -128,7 +128,8 @@ const MilleBorne = () => {
                 }
             });
 
-            socket.on("MB-getMessage", (msgList) => {
+            socket.on("getMessage", (msgList) => {
+
                 setMessages(msgList);
             })
 
@@ -196,6 +197,10 @@ const MilleBorne = () => {
         navigate('/BrowserManager');
     }
 
+    const saveGame = () => {
+        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"))
+    }
+
     function YourComponent() {
         useEffect(() => {
             let chatContainer = document.getElementById("chatContainer");
@@ -260,6 +265,10 @@ const MilleBorne = () => {
             <div className='MB-adversaire-container-upper-bandeau'>
 
                 <div className='MB-exit-button' onClick={() => leave()}> QUITTER</div>
+                <br></br>
+                <p></p>
+                <div></div>
+                <div className='' onClick={() => saveGame()}> SAVE</div>
                 <div className='MB-info-button'> INFO</div>
 
                 {playerList.map((player, index) => (

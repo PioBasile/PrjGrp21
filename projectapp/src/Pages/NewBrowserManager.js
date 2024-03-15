@@ -120,6 +120,10 @@ const NewBrowserManager = () => {
         else if (lobby.gameType === "mb"){
             var gameInfo = {playerList: game["playerList"], cardPlayed : game["cardPlayed"], deck : game["deck"], state : game["state"], chatContent : game["chatContent"]}
         }
+        
+        else {
+            var gameInfo = {playerList: game["playerList"], chatContent : game["chatContent"]}
+        }
         socket.emit("newServer", lobby["serverName"],lobby["nbPlayerMax"],lobby['isPrivate'], lobby['password'],lobby['gameType'], lobby["owner"], lobby["moneyBet"], true, gameInfo)
     } 
 

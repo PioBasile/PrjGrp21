@@ -150,7 +150,7 @@ class Bataille {
     this.scoreboard = {};
     this.cartes = shuffle(generateCartes());
     this.moneyBet = moneyBet;
-    this.chatContent = [];
+    this.chatContent = ["use <global> to talk to everyone"];
     this.cardPlayedInRound = {};
     this.lobbyLinked = null;
 
@@ -192,8 +192,6 @@ class Bataille {
       }
 
       let power = player.selected.power
-      console.log("PLAYER BEFORE CARD REMOVED !!!!!!!!!!!!!!!!!!!!")
-      console.log(player);
 
       player.removeCard(player.selected);
       player.selected = null;
@@ -522,6 +520,8 @@ class SixQuiPrend {
     this.moneyBet = moneyBet;
 
     this.lobbyLinked = null;
+
+    this.chatContent = ["use <global> to talk to everyone"];
   }
 
   gagnant() {
@@ -814,6 +814,12 @@ class SixQuiPrend {
 
   }
 
+  addMessage(msg) {
+    if (msg != "") {
+      this.chatContent.push(msg);
+    }
+  }
+
 }
 
 class Player6 {
@@ -884,8 +890,7 @@ const GameState = {
 
 class MilleBorne {
 
-  constructor(gameName, identifiant_partie, owner, playerList, moneyBet) {
-    this.gameName = gameName;
+  constructor(identifiant_partie, owner, playerList, moneyBet) {
     this.identifiant_partie = identifiant_partie;
     this.owner = owner;
     this.playerList = playerList;
@@ -898,32 +903,35 @@ class MilleBorne {
     this.deck = this.construireJeu();
     this.state = GameState.EN_COURS;
     this.distribuer();
-    this.chatContent = [];
+    this.chatContent = ["use <global> to talk to everyone"];
     this.moneyBet = moneyBet;
     this.lobbyLinked = null;
   }
 
   recreate(gameData) {
-
+  
     let newPlayerList = [];
     this.currentTurn = gameData['currentTurn']
 
 
     for (let player of gameData["playerList"]) {
-      let newPlayer = new Player(player["name"], player["cookie"])
-      newPlayer.out = player["out"]
+      let newPlayer = new MB_Player(player["name"],player["cookie"],player["color"])
       newPlayer.deck = player["deck"]
-      newPlayer.selected = player["selected"]
-
+      newPlayer.state = player["state"]
+      newPlayer.bonus = player["bonus"]
+      newPlayer.nbPoints = player["nbPoints"]
+      newPlayer.isLimited = player["isLimited"]
+      newPlayer.myTurn = player["myTurn"]
       newPlayerList.push(newPlayer);
     }
 
     this.playerList = newPlayerList;
-    this.scoreboard = gameData["scoreboard"];
-    this.cartes = gameData["cartes"];
+    this.scoreboard = gameData["state"];
     this.chatContent = gameData["chatContent"];
-    this.status = gameData["status"];
+    this.order = gameData["order"];
 
+    console.log("GAME DATA !!!!!!!!!!!!!!")
+    console.log(gameData);
   }
 
   construireJeu() {
@@ -973,7 +981,6 @@ class MilleBorne {
 
 
   distribuer() {
-    console.log("nym");
     this.playerList.forEach(player => {
       for (let j = 0; j < 7; j++) {
         let randomId = Math.floor(Math.random() * this.deck.length)
@@ -1193,7 +1200,6 @@ class MilleBorne {
     if (msg != "") {
       this.chatContent.push(msg);
     }
-    console.log(this.chatContent);
   }
 
 }

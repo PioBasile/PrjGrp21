@@ -33,7 +33,9 @@ const SixQuiPrend = () => {
   const [score, setScore] = useState(0);
   const [opponents, setOpponents] = useState([]);
   const [visibleCard, setVisibleCard] = useState("");
-  
+
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
 
   const [myTurn, setMyTurn] = useState(true);
 
@@ -178,23 +180,23 @@ const SixQuiPrend = () => {
 
 
 
-  
- 
+
+
 
   useEffect(() => {
 
     let mounted = true;
     let failed = false;
 
-    if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected")  == null) {
-          navigate("/login-signup"); 
-          failed = true;
-        }
-    if(mounted && !failed){
+    if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
+      navigate("/login-signup");
+      failed = true;
+    }
+    if (mounted && !failed) {
 
-    socket.emit('join', sessionStorage.getItem('serverConnected'));
-    socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
-    socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
+      socket.emit('join', sessionStorage.getItem('serverConnected'));
+      socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+      socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
     }
 
     return () => {
@@ -206,107 +208,111 @@ const SixQuiPrend = () => {
   useEffect(() => {
 
     let mounted = true;
-        let failed = false;
+    let failed = false;
 
-        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected")  == null) {
-             navigate("/login-signup"); 
-             failed = true;
-            }
-        if(mounted && !failed){
+    if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
+      navigate("/login-signup");
+      failed = true;
+    }
+    if (mounted && !failed) {
 
-    let deckmem;
-    socket.on("Deck", (deck) => {
-      setPlayerCards(deck);
-      deckmem = deck;
-    });
-    socket.on('Row', (rowL) => {
+      let deckmem;
+      socket.on("Deck", (deck) => {
+        setPlayerCards(deck);
+        deckmem = deck;
+      });
+      socket.on('Row', (rowL) => {
 
-      setBox1Container(rowL[0]);
-      setBox2Container(rowL[1]);
-      setBox3Container(rowL[2]);
-      setBox4Container(rowL[3]);
+        setBox1Container(rowL[0]);
+        setBox2Container(rowL[1]);
+        setBox3Container(rowL[2]);
+        setBox4Container(rowL[3]);
 
-    });
-    socket.on('6oppo', (oppo) => {
+      });
+      socket.on('6oppo', (oppo) => {
 
-      setOpponents(oppo);
+        setOpponents(oppo);
 
-      oppo.forEach(element => {
+        oppo.forEach(element => {
 
-        if (element.nom === sessionStorage.getItem("name")) {
+          if (element.nom === sessionStorage.getItem("name")) {
 
-          setScore(element.score);
+            setScore(element.score);
 
+          }
+
+        });
+
+      });
+      socket.on('cartesDroite', (cards) => {
+
+        setCardInWaiting(cards);
+
+      });
+      socket.on('phase2', () => {
+        setMyTurn(false);
+        setAllPlayerSelected(true);
+
+      });
+      socket.on('phase1', () => {
+        setAllPlayerSelected(false);
+        setMyTurn(true);
+        setMyTurnP2(false);
+        setselected(false);
+        socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+
+      });
+      socket.on("nextPlayer", (payload) => {
+
+        if (payload.name === sessionStorage.getItem('name')) {
+
+          setMyTurnP2(true);
+
+        } else {
+
+          setMyTurnP2(false);
         }
 
       });
+      socket.on('FIN', (winner) => {
 
-    });
-    socket.on('cartesDroite', (cards) => {
+        console.log(JSON.parse(JSON.stringify(winner)).name);
+        sessionStorage.setItem('winners', JSON.parse(JSON.stringify(winner)).name);
+        navigate("/winner");
 
-      setCardInWaiting(cards);
+      });
 
-    });
-    socket.on('phase2', () => {
-      setMyTurn(false);
-      setAllPlayerSelected(true);
+      socket.on("deco", (name) => {
 
-    });
-    socket.on('phase1', () => {
-      setAllPlayerSelected(false);
-      setMyTurn(true);
-      setMyTurnP2(false);
-      setselected(false);
-      socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+        navigate("/login-signup");
 
-    });
-    socket.on("nextPlayer", (payload) => {
+      });
 
-      if (payload.name === sessionStorage.getItem('name')) {
-
-        setMyTurnP2(true);
-
-      } else {
-
-        setMyTurnP2(false);
-      }
-
-    });
-    socket.on('FIN', (winner) => {
-
-      console.log(JSON.parse(JSON.stringify(winner)).name);
-      sessionStorage.setItem('winners', JSON.parse(JSON.stringify(winner)).name);
-      navigate("/winner");
-
-    });
-
-    socket.on("deco", (name) => {
-
-      navigate("/login-signup");
-
-  });
-
-    socket.on('timerDown', () => {
+      socket.on('timerDown', () => {
 
 
-   
-      setSeconds(prevSeconds => {
+
+        setSeconds(prevSeconds => {
           if (prevSeconds === 0 || !myTurn) {
-            if(myTurn && !selected){
+            if (myTurn && !selected) {
               setselected(true);
               socket.emit('send6cardphase1', deckmem[Math.floor(Math.random() * deckmem.length)], sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
             }
-              return 30; 
+            return 30;
           } else {
-              return prevSeconds - 1;
+            return prevSeconds - 1;
           }
 
+        });
       });
-  });
 
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-}
+      socket.on("getMessage", (msgList) => {
+        setMessages(msgList);
+      })
+
+      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener("keyup", handleKeyUp);
+    }
     return () => {
       mounted = false;
       window.removeEventListener("keydown", handleKeyDown);
@@ -320,8 +326,9 @@ const SixQuiPrend = () => {
       socket.off('phase1');
       socket.off('FIN');
       socket.off('nextPlayer');
+      socket.off("getMessage")
     };
-  }, [isVisible,navigate,myTurn,selected]);
+  }, [isVisible, navigate, myTurn, selected]);
 
   const handleKeyDown = (e) => {
     if (e.key === "Tab") {
@@ -336,14 +343,75 @@ const SixQuiPrend = () => {
     }
   };
 
+  const sendMessage = () => {
+    socket.emit('sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
+    setMessage('');
+  }
 
+
+  function YourComponent() {
+    useEffect(() => {
+      let chatContainer = document.getElementById("chatContainer");
+      if (chatContainer == null) { return 0; }
+
+      function getElementId(event) {
+        var clickedElementId = event.target.id;
+        if (clickedElementId === "inputChat") {
+          chatContainer.style.opacity = 1;
+        } else {
+          chatContainer.style.opacity = 0.33;
+        }
+        return clickedElementId;
+      }
+
+      function sendMessageOnEnter(event) {
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+      }
+
+      try {
+
+        document.addEventListener('click', getElementId);
+        document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
+
+      } catch (err) {
+
+        console.log("meh");
+
+      }
+
+      return () => {
+
+        try {
+
+          document.removeEventListener('click', getElementId);
+          document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+
+        } catch (err) {
+
+          console.log("meh");
+
+        }
+
+
+      };
+
+    }, []);
+
+    return (
+      <div></div>
+    );
+  }
   return (
     <div className="six-container">
 
-        <div className='timer'>
-            <p>{seconds}</p>
-        </div>
-      
+      <YourComponent></YourComponent>
+
+      <div className='timer'>
+        <p>{seconds}</p>
+      </div>
+
 
       <div className="adverse-players">
         {opponents.map((opponent, index) => (
@@ -388,7 +456,7 @@ const SixQuiPrend = () => {
       <div className={`scoreboard ${isVisible ? 'visible' : ''}`}>
         <div className="scoreboard-tab">Scoreboard</div>
         <div className="scoreboard-content">
-        {opponents.map((opponent, index) => (
+          {opponents.map((opponent, index) => (
             <div key={index}>
               <strong>{opponent.nom}</strong>'s
               score: {opponent.score} <br />
@@ -396,6 +464,23 @@ const SixQuiPrend = () => {
           ))}
 
         </div>
+      </div>
+
+      <div className="chat-container" id='chatContainer'>
+        <div className='message-container bo-message-container' >
+          {messages.map((msg, index) => (
+            <p key={index}>{msg}</p>)
+          )}
+          <input
+            id="inputChat"
+            className='inputMessage'
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type message..."
+          />
+        </div>
+
       </div>
     </div>
   );

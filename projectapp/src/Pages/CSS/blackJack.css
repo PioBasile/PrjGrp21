@@ -294,16 +294,18 @@
 
 .chat-container {
     z-index: 1;
-    position: absolute;
+    position: fixed;
     border-radius: 100px;
-    bottom: 0;
+    bottom: 5vh;
     border-radius: 15px;
-    min-height: 10vh;
+    min-height: 20vh;
     max-height: 20vh;
 }
 
 .message-container {
+    overflow-wrap: break-word;
     max-height: 20vh;
+    max-width: 20vw;
     border-radius: 20px;   
 }
 

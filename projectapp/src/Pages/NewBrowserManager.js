@@ -113,16 +113,17 @@ const NewBrowserManager = () => {
 
     const handleRecreate = (game) => {
         let lobby = game["lobbyLinked"]
+        let gameInfo;
         if(lobby.gameType === "batailleOuverte"){
-            var gameInfo = {cartes: game["cartes"], chatContent : game["chatContent"], currentTurn:game['currentTurn'], idPartie:game["identifiant_partie"],maxJoueurs : game['maxJoueurs'], maxTurn:game["maxTurn"], owner: game["owner"], playerList : game['playerList'], scoreboard : game['scoreboard'], status:game["status"]}
+            gameInfo = {cartes: game["cartes"], chatContent : game["chatContent"], currentTurn:game['currentTurn'], idPartie:game["identifiant_partie"],maxJoueurs : game['maxJoueurs'], maxTurn:game["maxTurn"], owner: game["owner"], playerList : game['playerList'], scoreboard : game['scoreboard'], status:game["status"]}
         }
 
         else if (lobby.gameType === "mb"){
-            var gameInfo = {playerList: game["playerList"], cardPlayed : game["cardPlayed"], deck : game["deck"], state : game["state"], chatContent : game["chatContent"]}
+            gameInfo = {playerList: game["playerList"], cardPlayed : game["cardPlayed"], deck : game["deck"], state : game["state"], chatContent : game["chatContent"]}
         }
         
         else {
-            var gameInfo = {player_list: game["player_list"], chatContent : game["chatContent"], selected_cards : game["selected_cards"],order:game["order"], currentP : game["currentP"], chatContent :game["chatContent"], row1: game["row1"], row2: game["row2"],row3: game["row3"],row4: game["row4"]  }
+            gameInfo = {player_list: game["player_list"], chatContent : game["chatContent"], selected_cards : game["selected_cards"],order:game["order"], currentP : game["currentP"], row1: game["row1"], row2: game["row2"],row3: game["row3"],row4: game["row4"]  }
         }
         socket.emit("newServer", lobby["serverName"],lobby["nbPlayerMax"],lobby['isPrivate'], lobby['password'],lobby['gameType'], lobby["owner"], lobby["moneyBet"], true, gameInfo)
     } 

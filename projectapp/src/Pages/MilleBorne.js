@@ -149,7 +149,7 @@ const MilleBorne = () => {
             socket.off('attacked');
             socket.off('MB-getMessage');
         }
-    }, [navigate,state,test]);
+    }, [navigate,state,test,isLimited]);
 
 
     const Popup = () => {

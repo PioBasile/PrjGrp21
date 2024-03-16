@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import socket from '../socketG';
 import './CSS/ItemShop.css';
 import stars from './CSS/vids/stars.mp4';

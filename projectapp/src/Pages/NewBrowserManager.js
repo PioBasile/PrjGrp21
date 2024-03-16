@@ -37,17 +37,6 @@ const NewBrowserManager = () => {
         navigate("/Lobby");
     }
 
-    // USE EFFECT POUR L'ANTI CHEAT 
-    useEffect(() => {
-
-        if(sessionStorage.getItem("serverConnected") > 0){
-            socket.emit('deco_lobby', sessionStorage.getItem("serverConnected"), sessionStorage.getItem('name'));
-            socket.emit('leave', sessionStorage.getItem("serverConnected"));
-            sessionStorage.setItem('serverConnected', -1);
-        }
-
-    }, [])
-
 
     useEffect(() => {
 

@@ -64,7 +64,7 @@ let lobbyIndex = 1;
 let RouletteInstance = new Roulette();
 let isPaused = false;
 
-setInterval(() => {Sentinel_Main(io,validCookies,BatailGames,TaureauGames,MilleBornesGames,lobbyList,lobbyIndex)},100);
+
 
 
 //
@@ -1107,16 +1107,16 @@ io.on('connection', (socket) => {
       throw new Error("aucun jeu connu sous ce nom: " , lobby.gameType);
     }
 
-    io.to(serverId).emit("getMessage", game.chatContent)
-  })
+    io.to(serverId).emit("getMessage", game.chatContent);
+  });
 
 
   socket.on("sendEmoteToLobby", (data) => {
     game = findGame(data.serverId, BatailGames);
-    emote = data.emote
+    emote = data.emote;
 
-    io.to(data.serverId).emit("emote", emote, data.playerName)
-  })
+    io.to(data.serverId).emit("emote", emote, data.playerName);
+  });
 
 
   socket.on("saveGame", (serverId, playerName) => {
@@ -1128,7 +1128,7 @@ io.on('connection', (socket) => {
       game = findGame(serverId, TaureauGames);
     }
     else if (lobby.gameType == "mb"){
-      game = findGame(serverId, MilleBornesGames)
+      game = findGame(serverId, MilleBornesGames);
     }
     else {
       throw new Error("aucun jeu connu sous ce nom: " , lobby.gameType);
@@ -1138,9 +1138,31 @@ io.on('connection', (socket) => {
     gamesSaved.push(gameSave); 
     io.emit("newGameSaved", gamesSaved);
 
-  })
+  });
   
   socket.on("whatGameSaved", () => {
     socket.emit("newGameSaved", gamesSaved);
-  })
+  });
+
+
+
+
+// SENTINEL 
+socket.on("player_auth_validity", (data) => {
+
+  if(data.player_name == ""){return;}
+
+  if(validCookies[data.player_name] != data.cookie){
+    console.log("test");
+      socket.emit("sentinel_auth_error");
+  }
+
 });
+
+
+});
+
+
+
+setInterval(() => {Sentinel_Main(io,validCookies,BatailGames,TaureauGames,MilleBornesGames,lobbyList,lobbyIndex)},100);
+

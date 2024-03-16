@@ -37,17 +37,6 @@ const NewBrowserManager = () => {
         navigate("/Lobby");
     }
 
-    // USE EFFECT POUR L'ANTI CHEAT 
-    useEffect(() => {
-
-        if(sessionStorage.getItem("serverConnected") > 0){
-            socket.emit('deco_lobby', sessionStorage.getItem("serverConnected"), sessionStorage.getItem('name'));
-            socket.emit('leave', sessionStorage.getItem("serverConnected"));
-            sessionStorage.setItem('serverConnected', -1);
-        }
-
-    }, [])
-
 
     useEffect(() => {
 
@@ -178,7 +167,7 @@ const NewBrowserManager = () => {
             <div className='showSaved-container'>
                 {gameSaved.map((game, index) => (
                     <div className='gameSaved' onClick={() => handleRecreate(game)}> <div/>
-                        {game.lobbyLinked["serverName"]} : {game.lobbyLinked["gameType"]}
+                        {game["saveName"]} : {game.lobbyLinked["gameType"]}   
 
                     </div>
                 ))}

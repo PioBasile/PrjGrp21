@@ -21,6 +21,12 @@ function App() {
     const navigate = useNavigate();
     const location = useLocation();
 
+    setInterval(() => {
+        if(sessionStorage.getItem("name") === ""){return}
+        socket.emit("player_auth_validity", {player_name:sessionStorage.getItem("name"),cookie:sessionStorage.getItem("connection_cookie")});
+    }, 2000);
+
+
     /*
     ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣶⣶⣶⣶⣄⠀ ⢠⣄⡀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣾⣿⣿TOUS⣿⣿⣿⠀ ⢀⣿⣿⣦⡀⠀⠀
@@ -39,11 +45,39 @@ function App() {
 */
     useEffect(() => {
 
+        sessionStorage.setItem("location", location.pathname);
+
+        if(location.pathname === "/BrowserManager" || location.pathname === "/start" || location.pathname === "/login-signup"){
+
+            if(sessionStorage.getItem("serverConnected") > 0){
+                        socket.emit('deco_lobby', sessionStorage.getItem("serverConnected"), sessionStorage.getItem('name'));
+                        socket.emit('leave', sessionStorage.getItem("serverConnected"));
+                        sessionStorage.setItem('serverConnected', -1);
+                    }
+
+        }
+        
     
-    
+        
       }, [location]);
 
     useEffect(() => {
+
+
+        socket.on("sentinel_auth_error", () => {
+
+            navigate("/login-signup");
+
+            if(sessionStorage.getItem("name") === ""){return}
+
+            sessionStorage.setItem("name", "");
+            sessionStorage.setItem("connection_cookie", "");
+
+            alert("Erreur d'authentification !");
+
+            
+
+        });
 
         return () => {
             socket.disconnect();
@@ -66,7 +100,6 @@ function App() {
                 <Route path="/blackJack" element={<BlackJack></BlackJack>}/>
                 <Route path="/itemshop" element={<ItemShop></ItemShop>}/>
                 <Route path="/casino" element={<Casino></Casino>}/>
-
             </Routes>
     );
 }

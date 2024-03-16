@@ -36,7 +36,8 @@ const MilleBorne = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
 
-    
+    const [saveName, setSaveName] = useState("");
+    const [isSave, setIsSave] = useState(false);
     const getCard = (card) => {
         return cartes.indexOf(card);
     }
@@ -73,7 +74,7 @@ const MilleBorne = () => {
         return () => {
             mounted = false;
         }
-    }, [navigate,state,test])
+    }, [navigate, state, test])
 
 
     useEffect(() => {
@@ -204,7 +205,12 @@ const MilleBorne = () => {
     }
 
     const saveGame = () => {
-        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"))
+        setIsSave(false);
+        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), saveName)
+    }
+
+    const openSavePopUp = () => {
+        setIsSave(true);
     }
 
     function YourComponent() {
@@ -232,26 +238,26 @@ const MilleBorne = () => {
 
                 document.addEventListener('click', getElementId);
                 document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
-              
-              } catch (err) {
-              
-               console.log("meh");
-              
-              }
 
-              return () => {
+            } catch (err) {
+
+                console.log("meh");
+
+            }
+
+            return () => {
 
                 try {
 
                     document.removeEventListener('click', getElementId);
                     document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
-                  
-                  } catch (err) {
-                  
-                   console.log("meh");
-                  
-                  }
-                
+
+                } catch (err) {
+
+                    console.log("meh");
+
+                }
+
 
             };
         }, []);
@@ -261,8 +267,17 @@ const MilleBorne = () => {
         );
     }
 
+
     return (
         <div className='MB-container'>
+
+            {isSave && (
+                <div className='savePopUp'>
+                    <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
+                    <input className="inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
+                    <div className="saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
+                </div>
+            )}
 
             {isVisible && <Popup />}
 

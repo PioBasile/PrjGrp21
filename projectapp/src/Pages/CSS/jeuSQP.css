@@ -1,4 +1,5 @@
 .six-container {
+    position: relative;
     background-color: rgb(13, 13, 50);
     height: 100vh;
     width: 100vw;
@@ -6,103 +7,131 @@
 
 .adverse-players {
     display: flex;
-    justify-content: space-evenly;
-    margin-bottom: 20px;
+    
+}
+
+.sqp-upperBandeau {
+    display: flex;
+    width: 100%;
+    height: 20%;
+    background-color: rgb(12, 30, 42);
+}
+
+.sqp-gameContainer {
+    width: 100%;
+    height: 60%;
+    background-color: rgb(26, 42, 53);
+    display: flex;
+}
+
+.sqp-cardContianer {
+    display: flex;
+    width: 100%;
+    height: 20%;
+    padding-top: 2vh;
+    background-color: rgb(7, 24, 36);
 }
 
 .opponent-six {
     border-radius: 8px;
-    width: 3cm;
-    height: 3cm;
-    background-color: rgb(164, 141, 141);
-    position: absolute;
+    margin: auto;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    font-size: 2vh;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    background-color: rgb(119, 138, 193);
     top: 10px;
     justify-content: center;
     display: block;
+    margin-right: 10px;
     align-items: center;
 }
 
-.opponent-six:nth-child(1) { left: 10%; }
-.opponent-six:nth-child(2) { left: 20%; }
-.opponent-six:nth-child(3) { left: 30%; }
-.opponent-six:nth-child(4) { left: 40%; }
-.opponent-six:nth-child(5) { left: 50%; }
-.opponent-six:nth-child(6) { left: 60%; }
-.opponent-six:nth-child(7) { left: 70%; }
-.opponent-six:nth-child(8) { left: 80%; }
-.opponent-six:nth-child(9) { left: 90%; }
+.opponent-six:nth-child(1) {
+    left: 10%;
+}
+
+.opponent-six:nth-child(2) {
+    left: 20%;
+}
+
+.opponent-six:nth-child(3) {
+    left: 30%;
+}
+
+.opponent-six:nth-child(4) {
+    left: 40%;
+}
+
+.opponent-six:nth-child(5) {
+    left: 50%;
+}
+
+.opponent-six:nth-child(6) {
+    left: 60%;
+}
+
+.opponent-six:nth-child(7) {
+    left: 70%;
+}
+
+.opponent-six:nth-child(8) {
+    left: 80%;
+}
+
+.opponent-six:nth-child(9) {
+    left: 90%;
+}
 
 .card-holder {
-    position:relative;
-    bottom: 20vh;
-    display: flex; /* Utilisez flexbox pour centrer le contenu */
-    justify-content: center; /* Centre horizontalement les cartes à l'intérieur */
-    align-items: center; /* Centre verticalement les cartes à l'intérieur */
-    width: 900px; /* Largeur du conteneur, ajustez selon vos besoins */
-    height: 150px; /* Hauteur du conteneur, ajustez selon vos besoins */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 900px;
+    height: 150px;
     background-image: url('pics/9999520.jpg');
-    margin: 0 auto; /* Centre le card-holder dans la page */
-    padding: 20px; /* Espace autour des cartes */
-    border: 1px solid #ccc; /* Bordure du card-holder */
-    border-radius: 10px; /* Arrondit les coins */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ombre portée pour un effet en relief */
-    bottom : 10px;
-    padding-top:2vh;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     box-shadow: rgb(60, 255, 0) 0px 0px 100px;
 }
 
-.table-row {
-    display: contents;
-}
-  
-.table-cell {
-    width: 50px; /* Largeur des cellules */
-    height: 50px; /* Hauteur des cellules */
-    background-color: #e0e0e0; /* Couleur de fond des cellules */
-    border: 1px solid #ccc; /* Bordure des cellules */
-}
 
-.player-cards {
-    position: relative;
-    bottom: 70px; /* Positionne le conteneur à la moitié de l'écran */
-    transform: translateY(50%); /* Décale le conteneur vers le haut de sa propre hauteur */
-    width: 100%; /* Assure que le conteneur s'étend sur toute la largeur */
-    display: flex;
-    justify-content: center; /* Centre le contenu horizontalement */
-    align-items: center; /* Centre le contenu verticalement */
+
+.card:hover {
+    transform: translateY(-20%);
 }
 
 .card {
     background-color: transparent;
-    width: 85px; /* Largeur de la carte */
-    height: 125px; /* Hauteur de la carte */
+    width: 85px;
+    height: 125px;
     margin: 5px;
     transition: transform 0.3s ease;
     display: flex;
-    justify-content: center; /* Centre le texte horizontalement */
-    align-items: center; /* Centre le texte verticalement */
+    justify-content: center;
+    align-items: center;
     box-shadow: 10px 5px 5px rgb(30, 29, 29);
 }
 
-.card-holderNYT{
-    position:relative;
-    bottom: 20vh;
-    display: flex; /* Utilisez flexbox pour centrer le contenu */
-    justify-content: center; /* Centre horizontalement les cartes à l'intérieur */
-    align-items: center; /* Centre verticalement les cartes à l'intérieur */
-    width: 900px; /* Largeur du conteneur, ajustez selon vos besoins */
-    height: 150px; /* Hauteur du conteneur, ajustez selon vos besoins */
+.card-holderNYT {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 900px;
+    height: 150px;
     background-image: url('pics/9999520.jpg');
-    margin: 0 auto; /* Centre le card-holder dans la page */
-    padding: 20px; /* Espace autour des cartes */
-    border: 1px solid #ccc; /* Bordure du card-holder */
-    border-radius: 10px; /* Arrondit les coins */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ombre portée pour un effet en relief */
-    bottom : 10px;
-    padding-top:2vh;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     box-shadow: rgb(255, 0, 0, 1) 0px 0px 100px;
-
-
 }
 
 .notYourTurn-cards {
@@ -124,7 +153,6 @@
 }
 
 .rectangle-container {
-    position:relative;
     display: flex;
     flex-direction: column;
     top: 5vh;
@@ -132,48 +160,57 @@
     margin-top: 2vh;
     margin-left: 1vh;
     padding-bottom: 8vh;
-    padding-top: 13vh;
 }
 
-.rectangle{
+.rectangle {
     width: 65vh;
     height: 14.5vh;
-    background-color:beige;
+    background-color: rgb(72, 84, 94);
+    border: solid 2px gray;
     background-size: contain;
     display: flex;
     margin-bottom: 10px;
-    border-radius: 5px; /* Arrondit les coins */
-    padding-top:0.5vh;
+    border-radius: 5px;
+    padding-top: 0.5vh;
     padding-left: 1vh;
+    box-shadow: 0 0 20px black;
 }
-
 
 
 .row {
     position: absolute;
-    top: 130px; /* Ajustez selon la hauteur du timer */
-    left: 20px; /* Alignez avec le timer */
+    top: 130px;
+    /* Ajustez selon la hauteur du timer */
+    left: 20px;
+    /* Alignez avec le timer */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-  
+
 button {
-    margin-top: 5px; /* Espace entre les boutons */
-    padding: 5px 10px; /* Réduire la taille des boutons */
-    font-size: 12px; /* Taille de texte plus petite pour les boutons */
+    margin-top: 5px;
+    /* Espace entre les boutons */
+    padding: 5px 10px;
+    /* Réduire la taille des boutons */
+    font-size: 12px;
+    /* Taille de texte plus petite pour les boutons */
 }
-  
+
 .scoreboard {
     position: fixed;
     top: 50%;
-    right: -250px; /* Cache le contenu à l'extérieur de la vue, garde l'onglet visible */
+    right: -250px;
+    /* Cache le contenu à l'extérieur de la vue, garde l'onglet visible */
     transform: translateY(-50%);
-    width: 300px; /* Largeur totale du scoreboard, incluant l'onglet */
-    height: 200px; /* Hauteur du scoreboard */
+    width: 300px;
+    /* Largeur totale du scoreboard, incluant l'onglet */
+    height: 200px;
+    /* Hauteur du scoreboard */
     background-color: #f2f2f2;
     border: 1px solid #ccc;
-    transition: right 0.5s; /* Anime le mouvement latéral */
+    transition: right 0.5s;
+    /* Anime le mouvement latéral */
     display: flex;
 }
 
@@ -184,7 +221,8 @@ button {
     color: white;
     padding: 10px;
     cursor: pointer;
-    width: 50px; /* Largeur de l'onglet */
+    width: 50px;
+    /* Largeur de l'onglet */
 }
 
 .scoreboard-content {
@@ -193,45 +231,113 @@ button {
 }
 
 .scoreboard.visible {
-    right: 0; /* Ramène le scoreboard dans la vue */
+    right: 0;
+    /* Ramène le scoreboard dans la vue */
 }
 
 .waitingCards {
     display: flex;
-    position: absolute;
     padding-bottom: 30px;
     padding-top: 50px;
-    padding-left:20px;
-    background-color: #b0814f; /* Couleur de fond du card-holder */
-    border: 1px solid #ccc; /* Bordure du card-holder */
+    padding-left: 20px;
+    border: 1px solid #ccc;
     border-radius: 15px;
     width: 500px;
     height: 400px;
     right: 25ch;
     top: 30vh;
-    flex-wrap: wrap; /* Permet aux éléments de passer à la ligne */
+    flex-wrap: wrap;
+    background-size: cover;
+    margin-left: 30vw;
+    margin-top: 10vh;
     background-image: url('pics/9999520.jpg');
-  }
-  
-  img {
+}
+
+img {
     max-width: 110%;
 
     /* ou */
-    object-fit: contain; /* ou "contain", selon le comportement souhaité */
-  }
+    object-fit: contain;
+    /* ou "contain", selon le comportement souhaité */
+}
 
-  .timer {
-    position: absolute;
-    top: 20px; /* Ajustez selon vos besoins */
-    left: 20px; /* Ajustez selon vos besoins */
-    width: 100px; /* Ajustez selon vos besoins */
-    height: 100px; /* Ajustez selon vos besoins */
+.timer {
+    margin-top: 2vh;
+    margin-left: 2vh;
+    width: 4vw;
+    height: 8vh;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #ddd; /* Couleur de fond du timer */
-    border: 1px solid #ccc; /* Bordure du timer */
+    background-color: rgb(123, 59, 59);
+    border: 1px solid #ccc;
+    font-size: 4VH;
 }
 
+.save-button {
+    margin: 4vh;
+    display: flex;
+    background-color: green;
+    width: 5%;
+    height: 20%;
+    border-radius: 15Px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
 
+.savePopUp {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+    margin: auto;
+    top: 40%;
+    left: 40%;
+    width: 20%;
+    height: 20%;
+    background-color: rgb(30, 109, 32);
+    border-radius: 15px;
+    box-shadow: 0 0 22px rgb(0,0,0, 1);
+}
+
+.titlePopUp {
+    width: 90%;
+    height: 28%;
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+}
+
+.inputPopup{
+    width: 90%;
+    height: 25%;
+    border: none;
+    margin-top: 10px;
+    font-size: 3vh;
+    background-color: rgb(204, 208, 208);
+    border-radius: 15px;
+    padding-left: 1vw;
+}
+
+.saveButtonPopUp {
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    height: 30%;
+    font-size: 4vh;
+    border-radius: 15px;
+    background-color: rgb(16, 73, 32);
+    border: solid 2px gray;
+    cursor: pointer;
+}
+
+.saveButtonPopUp:hover{
+    background-color: rgb(24, 99, 45);
+}

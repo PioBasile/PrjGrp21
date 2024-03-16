@@ -25,7 +25,8 @@ const JeuBataille = () => {
     const [playerNameEmote, setPlayerNameEmote] = useState("");
     const [EmoteToShow, setEmoteToShow] = useState("");
     const emoteRef = useRef(null); // Référence à la div de l'emote
-
+    const [saveName, setSaveName] = useState("");
+    const [isSave, setIsSave] = useState(false);
 
     const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/blue.png")
 
@@ -239,7 +240,12 @@ const JeuBataille = () => {
     };
 
     const saveGame = () => {
-        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"))
+        setIsSave(false);
+        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), saveName)
+    }
+
+    const openSavePopUp = () => {
+        setIsSave(true);
     }
 
 
@@ -499,6 +505,14 @@ const JeuBataille = () => {
     return (
         <div className="bo-game-container">
 
+            {isSave && (
+                <div className='savePopUp'>
+                    <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
+                    <input className="inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
+                    <div className='save-button' onClick={() => openSavePopUp()}> SAVE</div>
+                </div>
+            )}
+
             <YourComponent></YourComponent>
 
             {/*Ur emote*/}
@@ -506,7 +520,7 @@ const JeuBataille = () => {
                 <div className='bo-player-emote-container'>
                     <div className="bo-player-emote" >
                         <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
-                    </div> 
+                    </div>
                 </div>
             )}
 
@@ -580,7 +594,7 @@ const JeuBataille = () => {
                     ))}
                 </div>
             </div>
-                            
+
             {/*les cartes selectionnées*/}
             <div className="bo-selected-cards">
                 <div className={"bo-selected-card"}>

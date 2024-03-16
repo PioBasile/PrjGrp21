@@ -348,6 +348,10 @@ const SixQuiPrend = () => {
     setMessage('');
   }
 
+  const saveGame = () => {
+    socket.emit("saveGame", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"))
+  }
+
 
   function YourComponent() {
     useEffect(() => {
@@ -405,6 +409,8 @@ const SixQuiPrend = () => {
   }
   return (
     <div className="six-container">
+
+      <div className='' onClick={() => saveGame()}> SAVE</div>
 
       <YourComponent></YourComponent>
 

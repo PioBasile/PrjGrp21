@@ -820,6 +820,28 @@ class SixQuiPrend {
     }
   }
 
+  recreate(gameData) {
+    let newPlayerList = [];
+    for (let player of gameData["player_list"]) {
+      let newPlayer = new Player(player["name"], player["cookie"])
+      newPlayer.out = player["out"]
+      newPlayer.deck = player["deck"]
+      newPlayer.selected = player["selected"]
+      newPlayer.score = player["score"]
+      newPlayerList.push(newPlayer);
+    }
+    this.selected_cards = gameData["selected_cards"]
+    this.playerList = newPlayerList;
+    this.chatContent = gameData["chatContent"];
+    this.row1 = gameData["row1"]
+    this.row2 = gameData["row2"]
+    this.row3 = gameData["row3"]
+    this.row4 = gameData["row4"]
+    this.order = gameData["order"]
+    this.currentP = gameData["currentP"]
+
+  }
+
 }
 
 class Player6 {
@@ -929,9 +951,6 @@ class MilleBorne {
     this.scoreboard = gameData["state"];
     this.chatContent = gameData["chatContent"];
     this.order = gameData["order"];
-
-    console.log("GAME DATA !!!!!!!!!!!!!!")
-    console.log(gameData);
   }
 
   construireJeu() {

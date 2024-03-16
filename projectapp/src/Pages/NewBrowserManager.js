@@ -122,7 +122,7 @@ const NewBrowserManager = () => {
         }
         
         else {
-            var gameInfo = {playerList: game["playerList"], chatContent : game["chatContent"]}
+            var gameInfo = {player_list: game["player_list"], chatContent : game["chatContent"], selected_cards : game["selected_cards"],order:game["order"], currentP : game["currentP"], chatContent :game["chatContent"], row1: game["row1"], row2: game["row2"],row3: game["row3"],row4: game["row4"]  }
         }
         socket.emit("newServer", lobby["serverName"],lobby["nbPlayerMax"],lobby['isPrivate'], lobby['password'],lobby['gameType'], lobby["owner"], lobby["moneyBet"], true, gameInfo)
     } 

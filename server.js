@@ -374,6 +374,13 @@ io.on('connection', (socket) => {
     if (lobby.gameType == "sqp") {
 
       nGame = new SixQuiPrend(lobby.serverName,lobbyID, owner, plist, 10, lobby.moneyBet);
+      
+      console.log("GAME DATA OF SQP CLASS !!!!!!!!!!!!")
+      console.log(nGame);
+
+      const lobbyNotChanged = Object.assign({}, lobby);
+      nGame.lobbyLinked = lobbyNotChanged;
+
       TaureauGames.push(nGame);
 
     }
@@ -392,7 +399,9 @@ io.on('connection', (socket) => {
       nGame = new MilleBorne(lobbyID, owner, mbPlist);
 
       const lobbyNotChanged = Object.assign({}, lobby);
+
       nGame.lobbyLinked = lobbyNotChanged;
+
       MilleBornesGames.push(nGame);
     }
 
@@ -1116,7 +1125,7 @@ io.on('connection', (socket) => {
       game = findGame(serverId, BatailGames);
     }
     else if (lobby.gameType == "sqp"){
-      game = findGame(serverID, TaureauGames);
+      game = findGame(serverId, TaureauGames);
     }
     else if (lobby.gameType == "mb"){
       game = findGame(serverId, MilleBornesGames)

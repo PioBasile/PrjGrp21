@@ -41,7 +41,8 @@ const SixQuiPrend = () => {
 
   const [allPlayerSelected, setAllPlayerSelected] = useState(false);
   const [myTurnP2, setMyTurnP2] = useState(false);
-
+  const [saveName, setSaveName] = useState("");
+  const [isSave, setIsSave] = useState(false);
 
   const selectCardClick = (payload) => {
 
@@ -179,10 +180,6 @@ const SixQuiPrend = () => {
 
 
 
-
-
-
-
   useEffect(() => {
 
     let mounted = true;
@@ -197,6 +194,7 @@ const SixQuiPrend = () => {
       socket.emit('join', sessionStorage.getItem('serverConnected'));
       socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
       socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
+      socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
     }
 
     return () => {
@@ -349,8 +347,11 @@ const SixQuiPrend = () => {
   }
 
   const saveGame = () => {
-    socket.emit("saveGame", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"))
+    setIsSave(false);
+    socket.emit("saveGame", sessionStorage.getItem("serverConnected"),saveName)
   }
+
+
 
 
   function YourComponent() {
@@ -407,70 +408,107 @@ const SixQuiPrend = () => {
       <div></div>
     );
   }
+
+  const openSavePopUp = () => {
+    setIsSave(true);
+  }
+  const leave = () => {
+    socket.emit("MB-leaveGame", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
+    socket.emit('leave', sessionStorage.getItem('serverConnected'));
+    navigate('/BrowserManager');
+}
   return (
+
+
     <div className="six-container">
 
-      <div className='' onClick={() => saveGame()}> SAVE</div>
 
-      <YourComponent></YourComponent>
+      {/* UPPER BANDEAU */}
 
-      <div className='timer'>
-        <p>{seconds}</p>
-      </div>
-
-
-      <div className="adverse-players">
-        {opponents.map((opponent, index) => (
-          <div key={index} className="opponent-six">
-            <strong>{opponent.nom}</strong> <br />
-            Cards: {opponent.deck} <br />
-          </div>
-        ))}
-      </div>
-
-
-      <div className="waitingCards">
-        {cardInWaiting.map((card) => (
-          <WaitingCards
-            key={card.number}
-            card={card}
-          >
-          </WaitingCards>
-        ))}
-      </div>
-
-      {/* Game table section */}
-      <div className="rectangle-container">
-        <Rectangle></Rectangle>
-        <Rectangle1></Rectangle1>
-        <Rectangle2></Rectangle2>
-        <Rectangle3></Rectangle3>
-      </div>
-
-      {/* Joueur cards en bas */}
-      <div className={(myTurnP2 || !allPlayerSelected) ? 'card-holder' : 'card-holderNYT'} >
-        <div className={myTurn ? "player-cards" : "notYourTurn-cards"} >
-          {playerCards.map((card) => (
-            <Carte
-              key={card.number}
-              card={card}
-            ></Carte>
-          ))}
+      {isSave && (
+        <div className='savePopUp'>
+          <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
+          <input className = "inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
+          <div className = "saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
         </div>
-      </div>
-      {/* Scoreboard on the side */}
-      <div className={`scoreboard ${isVisible ? 'visible' : ''}`}>
-        <div className="scoreboard-tab">Scoreboard</div>
-        <div className="scoreboard-content">
+      )}
+
+
+      <div className='sqp-upperBandeau'>
+
+        <div className='save-button' onClick={() => openSavePopUp()}> SAVE</div>
+        <div className='MB-exit-button' onClick={() => leave()}> QUITTER</div>
+
+        <YourComponent></YourComponent>
+
+        
+
+
+        <div className="adverse-players">
           {opponents.map((opponent, index) => (
-            <div key={index}>
-              <strong>{opponent.nom}</strong>'s
-              score: {opponent.score} <br />
+            <div key={index} className="opponent-six">
+              <strong>{opponent.nom}</strong> <br />
+              Cards: {opponent.deck} <br />
             </div>
           ))}
+        </div>
 
+      </div>
+
+
+      <div className='sqp-gameContainer'>
+
+      <div className="rectangle-container">
+          <Rectangle></Rectangle>
+          <Rectangle1></Rectangle1>
+          <Rectangle2></Rectangle2>
+          <Rectangle3></Rectangle3>
+        </div>
+
+        <div className="waitingCards">
+          {cardInWaiting.map((card) => (
+            <WaitingCards
+              key={card.number}
+              card={card}
+            >
+            </WaitingCards>
+          ))}
+        </div>
+
+        {/* Game table section */}
+       
+      </div>
+      {/* Joueur cards en bas */}
+      <div className='sqp-cardContianer'>
+
+      <div className='timer'>
+          <p>{seconds}</p>
+        </div>
+        <div className={(myTurnP2 || !allPlayerSelected) ? 'card-holder' : 'card-holderNYT'} >
+          <div className={"notYourTurn-cards"} >
+            {playerCards.map((card) => (
+              <Carte
+                key={card.number}
+                card={card}
+              ></Carte>
+            ))}
+          </div>
+        </div>
+        {/* Scoreboard on the side */}
+        <div className={`scoreboard ${isVisible ? 'visible' : ''}`}>
+          <div className="scoreboard-tab">Scoreboard</div>
+          <div className="scoreboard-content">
+            {opponents.map((opponent, index) => (
+              <div key={index}>
+                <strong>{opponent.nom}</strong>'s
+                score: {opponent.score} <br />
+              </div>
+            ))}
+
+          </div>
         </div>
       </div>
+
 
       <div className="chat-container" id='chatContainer'>
         <div className='message-container bo-message-container' >

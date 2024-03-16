@@ -58,7 +58,7 @@ let validCookies = {};
 let BatailGames = [];
 let TaureauGames = [];
 let MilleBornesGames = [];
-let gamesSaved = [];
+let gamesSaved = {};
 let lobbyList = [];
 let lobbyIndex = 1;
 let RouletteInstance = new Roulette();
@@ -1076,8 +1076,9 @@ io.on('connection', (socket) => {
         io.to(data.serverId).emit("getMessage", game.chatContent);
       }
       else {
+          data.msg = data.msg.replace("<global>","");
           for(let btlGame of BatailGames){
-            btlGame.addMessage(`${data.name}: ${data.msg}`)
+            btlGame.addMessage(` 🌐 > ${data.name}: ${data.msg}`)
             io.emit("getMessage", btlGame.chatContent);
           }
           for(let mbGame of MilleBornesGames){
@@ -1107,6 +1108,8 @@ io.on('connection', (socket) => {
       throw new Error("aucun jeu connu sous ce nom: " , lobby.gameType);
     }
 
+
+
     io.to(serverId).emit("getMessage", game.chatContent)
   })
 
@@ -1119,7 +1122,7 @@ io.on('connection', (socket) => {
   })
 
 
-  socket.on("saveGame", (serverId, playerName) => {
+  socket.on("saveGame", (serverId, saveName) => {
     lobby = findLobby(serverId, lobbyList);
     if(lobby.gameType == "batailleOuverte"){
       game = findGame(serverId, BatailGames);
@@ -1135,12 +1138,13 @@ io.on('connection', (socket) => {
     }
 
     const gameSave =  JSON.parse(JSON.stringify(game));
-    gamesSaved.push(gameSave); 
-    io.emit("newGameSaved", gamesSaved);
+    gameSave["saveName"] = saveName;
+    gamesSaved[saveName] = gameSave;
+    io.emit("newGameSaved", Object.values(gamesSaved));
 
   })
   
   socket.on("whatGameSaved", () => {
-    socket.emit("newGameSaved", gamesSaved);
+    socket.emit("newGameSaved", Object.values(gamesSaved));
   })
 });

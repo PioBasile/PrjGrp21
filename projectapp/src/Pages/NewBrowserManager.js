@@ -177,7 +177,7 @@ const NewBrowserManager = () => {
             <div className='showSaved-container'>
                 {gameSaved.map((game, index) => (
                     <div className='gameSaved' onClick={() => handleRecreate(game)}> <div/>
-                        {game.lobbyLinked["serverName"]} : {game.lobbyLinked["gameType"]}
+                        {game["saveName"]} : {game.lobbyLinked["gameType"]}   
 
                     </div>
                 ))}

@@ -34,11 +34,12 @@ const MilleBorne = () => {
     const [nbCards, setNbCards] = useState(0);
     const [test, setTest] = useState("");
     const [isVisible, setIsVisible] = useState(false);
-    
+    const [saveName, setSaveName] = useState("");
+    const [isSave, setIsSave] = useState(false);
     const getCard = (card) => {
         return cartes.indexOf(card);
     }
-    
+
     const sendMessage = () => {
         socket.emit('sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
         setMessage('');
@@ -67,7 +68,7 @@ const MilleBorne = () => {
         return () => {
             mounted = false;
         }
-    }, [navigate,state,test])
+    }, [navigate, state, test])
 
 
     useEffect(() => {
@@ -149,7 +150,7 @@ const MilleBorne = () => {
             socket.off('attacked');
             socket.off('MB-getMessage');
         }
-    }, [navigate,state,test]);
+    }, [navigate, state, test]);
 
 
     const Popup = () => {
@@ -198,7 +199,12 @@ const MilleBorne = () => {
     }
 
     const saveGame = () => {
-        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"))
+        setIsSave(false);
+        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), saveName)
+    }
+
+    const openSavePopUp = () => {
+        setIsSave(true);
     }
 
     function YourComponent() {
@@ -226,26 +232,26 @@ const MilleBorne = () => {
 
                 document.addEventListener('click', getElementId);
                 document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
-              
-              } catch (err) {
-              
-               console.log("meh");
-              
-              }
 
-              return () => {
+            } catch (err) {
+
+                console.log("meh");
+
+            }
+
+            return () => {
 
                 try {
 
                     document.removeEventListener('click', getElementId);
                     document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
-                  
-                  } catch (err) {
-                  
-                   console.log("meh");
-                  
-                  }
-                
+
+                } catch (err) {
+
+                    console.log("meh");
+
+                }
+
 
             };
         }, []);
@@ -255,8 +261,17 @@ const MilleBorne = () => {
         );
     }
 
+
     return (
         <div className='MB-container'>
+
+            {isSave && (
+                <div className='savePopUp'>
+                    <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
+                    <input className="inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
+                    <div className="saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
+                </div>
+            )}
 
             {isVisible && <Popup />}
 
@@ -268,7 +283,7 @@ const MilleBorne = () => {
                 <br></br>
                 <p></p>
                 <div></div>
-                <div className='' onClick={() => saveGame()}> SAVE</div>
+                <div className='save-button' onClick={() => openSavePopUp()}> SAVE</div>
                 <div className='MB-info-button'> INFO</div>
 
                 {playerList.map((player, index) => (

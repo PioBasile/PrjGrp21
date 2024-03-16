@@ -199,7 +199,9 @@ const NewBrowserManager = () => {
             </div>
 
             <div className='BM-acttion-container'>
-                <h2 className='MB-h2'> CREER LE SERVER</h2>
+                <div className='BM-upperBandeau'>
+                    <h2 className='MB-h2'> CREER LE SERVER</h2>
+                </div>
 
 
 
@@ -230,20 +232,17 @@ const NewBrowserManager = () => {
                         <div className="select-arrow"></div>
                     </div>
                 </div>
+                <div className='NB-underBandeau'>
+                    <div className='bigReadyButton-container BM'>
 
-                <div className='BM-creerButton-container'>
-                    <div></div>
-                    <button onClick={handleSave} className="BM-button">CRÉER</button>
-                    <div></div>
+                        <button className='bigReadyButton BM red' onClick={leave}> LEAVE </button>
+
+                        <div className='bigReadyButton BM' onClick={showSavedGames}> GAME SAVED </div>
+
+                        <button onClick={handleSave} className="bigReadyButton BM">CRÉER</button>
+                    </div>
                 </div>
 
-                <div className='gameSavedButton'>
-                    <div className='BM-save-button' onClick={showSavedGames}> GAME SAVED </div>
-                </div>
-
-                <div className='BM-leave-container'>
-                    <button className='BM-leave' onClick={leave}> LEAVE </button>
-                </div>
 
             </div>
             {/* du vide */}

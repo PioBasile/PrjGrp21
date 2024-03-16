@@ -1,7 +1,0 @@
-echo $(pwd)
-cd ..
-echo $(pwd)
-code .
-gnome-terminal -- node server.js
-cd projectapp
-npm run start

@@ -1,0 +1,5 @@
+echo $(pwd)
+cd ..
+echo $(pwd)
+code .
+npm run dev

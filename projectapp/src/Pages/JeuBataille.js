@@ -474,12 +474,12 @@ const JeuBataille = () => {
             let video = 0;
             videos.forEach((videos) => {
 
-                if (videos.id == emote) {
+                if (videos.id === emote) {
                     video = videos;
                 }
 
             });
-            if (video == 0) {
+            if (video === 0) {
                 return;
             }
 
@@ -498,14 +498,9 @@ const JeuBataille = () => {
             socket.off("FIN");
             socket.off('getMessage');
         };
-    }, [navigate]);
+    });
 
 
-    const Emote = () => {
-        return (
-            <div className='card'></div>
-        )
-    }
     //----------------------RETURN---------------------
     return (
         <div className="bo-game-container">
@@ -605,7 +600,7 @@ const JeuBataille = () => {
                 <div className={"bo-selected-card"}>
                     {
                         allCardPlayed.map((card, index) => (
-                            <img alt='r' src={selectedCards.length !== 0 || inDraw && !isDraw ? getCardImage(card) : backCardsImageTest} />
+                            <img alt='r' src={(selectedCards.length !== 0 || inDraw) && !isDraw ? getCardImage(card) : backCardsImageTest}/>
                         ))
                     }
                 </div>

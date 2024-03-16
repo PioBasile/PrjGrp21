@@ -16,6 +16,7 @@
 }
 
 .MB-exit-button{
+    cursor: pointer;
     width: 10vw;
     height: 5vh;
     position: absolute;
@@ -29,6 +30,44 @@
     font-size: 3vh;
     right: 0;
     padding-right: 2vh;
+}
+
+.MB-info-content{
+    justify-content: center;
+    text-align: justify;
+    padding: 2vh;
+    overflow-y: auto;
+    z-index: 1;
+    position: fixed;
+    width: 20vw;
+    height: 60vh;
+    background-color: rgb(99, 132, 160);
+    right: 1% ;
+    top: 7%;
+}
+
+.MB-info-content strong{
+    text-align: center;
+    font-size: 4vh;
+}
+
+.MB-info-content p {
+    color: #e3e3e3;
+    font-size: 2.5vh;
+}
+
+.MB-info-content::after{
+    content: '';
+    position: fixed;
+    top:6%;
+    right:2%;
+    width: 0;
+    height: 0;
+    border: 15px solid transparent;
+    border-bottom-color: rgb(99, 132, 160);
+    border-top: 0;
+    margin-left: -15px;
+    margin-bottom: -15px;
 }
 
 .MB-adversaire-container{

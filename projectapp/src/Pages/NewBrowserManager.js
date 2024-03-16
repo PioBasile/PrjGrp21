@@ -68,8 +68,11 @@ const NewBrowserManager = () => {
         });
 
         socket.on("newGameSaved", (allGameSaved) => {
-            console.log(allGameSaved)
-            setGameSaved(allGameSaved);
+            for(let game of allGameSaved){
+                if(game.startsWith(sessionStorage.getItem("name"))){
+                    setGameSaved([...gameSaved, game])
+                }
+            }
         })
 
         return () => {
@@ -93,7 +96,7 @@ const NewBrowserManager = () => {
         // Logique pour sauvegarder les données du formulaire
         if (gameType === "") { return 0; }
         if (nbPlayerMax === "" || nbPlayerMax < 1) { return 0; }
-        socket.emit("newServer", serverName, nbPlayerMax, isServerPrivate(), password, gameType, sessionStorage.getItem('name'), moneyBet, false, "");
+        socket.emit("newServer", serverName, nbPlayerMax, isServerPrivate(), password, gameType, sessionStorage.getItem('name'), moneyBet, "");
         setGameType("");
         setNbPlayerMax(2);
         setServerName("");
@@ -102,19 +105,20 @@ const NewBrowserManager = () => {
 
     const handleRecreate = (game) => {
         let lobby = game["lobbyLinked"]
-        let gameInfo;
+        // let gameInfo;sssss
         if(lobby.gameType === "batailleOuverte"){
-            gameInfo = {cartes: game["cartes"], chatContent : game["chatContent"], currentTurn:game['currentTurn'], idPartie:game["identifiant_partie"],maxJoueurs : game['maxJoueurs'], maxTurn:game["maxTurn"], owner: game["owner"], playerList : game['playerList'], scoreboard : game['scoreboard'], status:game["status"]}
+            socket.emit("newServer", lobby["serverName"],lobby["nbPlayerMax"],lobby['isPrivate'], lobby['password'],lobby['gameType'], lobby["owner"], lobby["moneyBet"],  game)
+            // gameInfo = {cartes: game["cartes"], chatContent : game["chatContent"], currentTurn:game['currentTurn'], idPartie:game["identifiant_partie"],maxJoueurs : game['maxJoueurs'], maxTurn:game["maxTurn"], owner: game["owner"], playerList : game['playerList'], scoreboard : game['scoreboard'], status:game["status"]}
         }
 
-        else if (lobby.gameType === "mb"){
-            gameInfo = {playerList: game["playerList"], cardPlayed : game["cardPlayed"], deck : game["deck"], state : game["state"], chatContent : game["chatContent"]}
-        }
+        // else if (lobby.gameType === "mb"){
+        //     // gameInfo = {playerList: game["playerList"], cardPlayed : game["cardPlayed"], deck : game["deck"], state : game["state"], chatContent : game["chatContent"]}
+        // }
         
-        else {
-            gameInfo = {player_list: game["player_list"], chatContent : game["chatContent"], selected_cards : game["selected_cards"],order:game["order"], currentP : game["currentP"], row1: game["row1"], row2: game["row2"],row3: game["row3"],row4: game["row4"]  }
-        }
-        socket.emit("newServer", lobby["serverName"],lobby["nbPlayerMax"],lobby['isPrivate'], lobby['password'],lobby['gameType'], lobby["owner"], lobby["moneyBet"], true, gameInfo)
+        // else {
+        //     // gameInfo = {player_list: game["player_list"], chatContent : game["chatContent"], selected_cards : game["selected_cards"],order:game["order"], currentP : game["currentP"], row1: game["row1"], row2: game["row2"],row3: game["row3"],row4: game["row4"]  }
+        // }
+        
     } 
 
     const whatToLoad = (lobby) => {

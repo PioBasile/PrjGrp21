@@ -200,7 +200,7 @@ const MilleBorne = () => {
 
     const saveGame = () => {
         setIsSave(false);
-        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), saveName)
+        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), saveName, sessionStorage.getItem("name"))
     }
 
     const openSavePopUp = () => {

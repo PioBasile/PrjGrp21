@@ -241,7 +241,7 @@ const JeuBataille = () => {
 
     const saveGame = () => {
         setIsSave(false);
-        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), saveName)
+        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), saveName, sessionStorage.getItem("name"))
     }
 
     const openSavePopUp = () => {
@@ -505,13 +505,13 @@ const JeuBataille = () => {
     return (
         <div className="bo-game-container">
 
-            {isSave && (
-                <div className='savePopUp'>
-                    <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
-                    <input className="inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
-                    <div className='save-button' onClick={() => openSavePopUp()}> SAVE</div>
-                </div>
-            )}
+{isSave && (
+        <div className='savePopUp'>
+          <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
+          <input className = "inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
+          <div className = "saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
+        </div>
+      )}
 
             <YourComponent></YourComponent>
 
@@ -606,7 +606,7 @@ const JeuBataille = () => {
                 </div>
             </div>
 
-            <button className="bo-save-button" onClick={() => saveGame()}>Save</button>
+            <button className="bo-save-button" onClick={() =>  openSavePopUp()}>Save</button>
             <button className="bo-leave-button" onClick={() => leaveGame()}>Leave Game</button>
 
             <div className="bo-emote-container">

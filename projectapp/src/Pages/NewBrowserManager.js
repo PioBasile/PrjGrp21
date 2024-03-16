@@ -68,8 +68,8 @@ const NewBrowserManager = () => {
         });
 
         socket.on("newGameSaved", (allGameSaved) => {
-            for(let game of allGameSaved){
-                if(game.startsWith(sessionStorage.getItem("name"))){
+            for (let game of allGameSaved) {
+                if (game.startsWith(sessionStorage.getItem("name"))) {
                     setGameSaved([...gameSaved, game])
                 }
             }
@@ -96,7 +96,7 @@ const NewBrowserManager = () => {
         // Logique pour sauvegarder les données du formulaire
         if (gameType === "") { return 0; }
         if (nbPlayerMax === "" || nbPlayerMax < 1) { return 0; }
-        socket.emit("newServer", serverName, nbPlayerMax, isServerPrivate(), password, gameType, sessionStorage.getItem('name'), moneyBet, "");
+        socket.emit("newServer", serverName, nbPlayerMax, isServerPrivate(), password, gameType, sessionStorage.getItem('name'), moneyBet);
         setGameType("");
         setNbPlayerMax(2);
         setServerName("");
@@ -104,22 +104,10 @@ const NewBrowserManager = () => {
     };
 
     const handleRecreate = (game) => {
-        let lobby = game["lobbyLinked"]
-        // let gameInfo;sssss
-        if(lobby.gameType === "batailleOuverte"){
-            socket.emit("newServer", lobby["serverName"],lobby["nbPlayerMax"],lobby['isPrivate'], lobby['password'],lobby['gameType'], lobby["owner"], lobby["moneyBet"],  game)
-            // gameInfo = {cartes: game["cartes"], chatContent : game["chatContent"], currentTurn:game['currentTurn'], idPartie:game["identifiant_partie"],maxJoueurs : game['maxJoueurs'], maxTurn:game["maxTurn"], owner: game["owner"], playerList : game['playerList'], scoreboard : game['scoreboard'], status:game["status"]}
-        }
 
-        // else if (lobby.gameType === "mb"){
-        //     // gameInfo = {playerList: game["playerList"], cardPlayed : game["cardPlayed"], deck : game["deck"], state : game["state"], chatContent : game["chatContent"]}
-        // }
-        
-        // else {
-        //     // gameInfo = {player_list: game["player_list"], chatContent : game["chatContent"], selected_cards : game["selected_cards"],order:game["order"], currentP : game["currentP"], row1: game["row1"], row2: game["row2"],row3: game["row3"],row4: game["row4"]  }
-        // }
-        
-    } 
+        socket.emit("recreateNewServer", game)
+
+    }
 
     const whatToLoad = (lobby) => {
         if (lobby.playerList.length === lobby.nbPlayerMax) {
@@ -148,16 +136,16 @@ const NewBrowserManager = () => {
         setIsBet(true)
     }
 
-    const goToCasinoNigga = () =>{
+    const goToCasinoNigga = () => {
         navigate("/casino")
     }
 
-    const goToItemShop = () =>{
+    const goToItemShop = () => {
         navigate("/itemShop")
     }
 
     const showSavedGames = () => {
-        if(showSaved) setShowSaved(false)
+        if (showSaved) setShowSaved(false)
         else setShowSaved(true)
     }
 
@@ -170,8 +158,8 @@ const NewBrowserManager = () => {
         return (
             <div className='showSaved-container'>
                 {gameSaved.map((game, index) => (
-                    <div className='gameSaved' onClick={() => handleRecreate(game)}> <div/>
-                        {game["saveName"]} : {game.lobbyLinked["gameType"]}   
+                    <div className='gameSaved' onClick={() => handleRecreate(game)}> <div />
+                        {game}
 
                     </div>
                 ))}
@@ -212,8 +200,8 @@ const NewBrowserManager = () => {
 
             <div className='BM-acttion-container'>
                 <h2 className='MB-h2'> CREER LE SERVER</h2>
-                
-                
+
+
 
                 <div className='BM-input-container'>
 
@@ -221,12 +209,12 @@ const NewBrowserManager = () => {
 
                     <div className='checkbox-container'>
                         <div className='checkbox' onClick={handlePrivate}>Private Sever ?</div>
-                        <div className='checkbox' onClick={ handleBet}>Want to Bet ?</div>
+                        <div className='checkbox' onClick={handleBet}>Want to Bet ?</div>
                     </div>
 
                     {isPrivate && <input type="password" id="BM-password" className="BM-input" placeholder='Password...' value={password} onChange={(e) => setPassword(e.target.value)}></input>}
                     {isBet && <input type="number" id="BM-moneyBet" className="BM-input" placeholder='Money to bet' value={moneyBet} onChange={(e) => setMoneyBet(e.target.value)}></input>}
-                    {showSaved  && <GameSaved></GameSaved>}
+                    {showSaved && <GameSaved></GameSaved>}
 
                     <input type="number" className="BM-input gameNameMargin" placeholder='Player number' value={nbPlayerMax} onChange={(e) => setNbPlayerMax(e.target.value)}></input>
 

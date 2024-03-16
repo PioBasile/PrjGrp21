@@ -289,7 +289,7 @@ const MilleBorne = () => {
                 <br></br>
                 <p></p>
                 <div></div>
-                <div className='' onClick={() => saveGame()}> SAVE</div>
+                <div className='' onClick={() => openSavePopUp()}> SAVE</div>
                 
                 
                 <div className='MB-info-button' onClick={toggleInfo}>INFO</div>

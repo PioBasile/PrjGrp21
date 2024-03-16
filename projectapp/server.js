@@ -7,6 +7,7 @@ const { start } = require('repl');
 const { platform } = require('os');
 const roomName = "room"
 const fs = require("fs")
+const path = require('path');
 // CUSTOM LIB
 const {
   makecookie,
@@ -227,12 +228,17 @@ io.on('connection', (socket) => {
 
   // GESTION LOBBY //
 
-  socket.on('newServer', (serverName, nbPlayerMax, isPrivate, password, gameType, owner, moneyBet,  saveFileName) => {
+  socket.on('newServer', (serverName, nbPlayerMax, isPrivate, password, gameType, owner, moneyBet) => {
 
     let Nlobby = new Lobby(serverName, parseInt(nbPlayerMax), isPrivate, password, gameType, lobbyIndex, owner, moneyBet);
     
-    if(saveFileName){
-      fs.readFile(`saves/${saveFileName}.json`, 'utf8', (err, data) => {
+    lobbyList.push(Nlobby);
+    lobbyIndex++;
+    io.emit('newServer', lobbyList);
+  });
+
+  socket.on("recreateNewServer", (fileName) => {
+      fs.readFile(`saves/${fileName}.json`, 'utf8', (err, data) => {
         if (err) {
           console.error("Impossible de lire le fichier :", err);
           return;
@@ -240,15 +246,16 @@ io.on('connection', (socket) => {
 
         const gameData = JSON.parse(data);
       
+        let lobbyData = gameData["lobbyLinked"]
+        let Nlobby = new Lobby(lobbyData["serverName"], lobbyData["nbPlayerMax"], lobbyData["isPrivate"], lobbyData["password"], lobbyData["gameType"], lobbyData["id"], lobbyData["owner"], lobbyData["moneyBet"])
+
         Nlobby.gameLinked = gameData;
+        lobbyList.push(Nlobby);
       });
-    }
     
-    lobbyList.push(Nlobby);
     lobbyIndex++;
     io.emit('newServer', lobbyList);
-
-  });
+  })
 
   socket.on('joinLobby', (name, lobbyID, cookie) => {
 
@@ -1175,7 +1182,7 @@ io.on('connection', (socket) => {
     }
 
     const gameSave =  JSON.stringify(game);
-    fs.writeFile(`saves/${playerName}_${saveName}.json`, gameSave, (err) => {
+    fs.writeFile(`saves/${playerName}_${saveName}-${lobby.gameType}.json`, gameSave, (err) => {
       if (err) throw err;
       console.log("fichier créer gg")
     });
@@ -1186,13 +1193,28 @@ io.on('connection', (socket) => {
         return;
       }
     
-      const jsonFile = files.filter(file => fichier.endsWith('.json'));
+      const jsonFile = files.filter(file => file.endsWith('.json'));
     
       const fileNameSave = jsonFile.map(file => path.parse(file).name);
       
       io.to(serverId).emit("newGameSaved", fileNameSave)
     });
-
-
   })
+
+   socket.on("whatGameSaved", () => {
+    const dossier = "./saves/"
+    fs.readdir(dossier, (err, files) => {
+      if (err) {
+        console.error("PROBLEM !!! :", err);
+        return;
+      }
+    
+      const jsonFile = files.filter(file => file.endsWith('.json'));
+    
+      const fileNameSave = jsonFile.map(file => path.parse(file).name);
+      
+      socket.emit("newGameSaved", fileNameSave);
+    });
+  })
+
 }); 

@@ -27,6 +27,7 @@ const JeuBataille = () => {
     const emoteRef = useRef(null); // Référence à la div de l'emote
     const [saveName, setSaveName] = useState("");
     const [isSave, setIsSave] = useState(false);
+    const [owner, setOwner] = useState("");
 
     const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/blue.png")
 
@@ -353,6 +354,7 @@ const JeuBataille = () => {
             socket.emit('join', sessionStorage.getItem('serverConnected'));
             socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
             socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
+            socket.emit("whatIsOwner", sessionStorage.getItem("serverConnected"));
 
         }
         return () => {
@@ -384,6 +386,9 @@ const JeuBataille = () => {
         let mounted = true;
         if (mounted) {
 
+            socket.on("owner", (owner) => {
+                setOwner(owner)
+            })
 
             socket.on("Deck", (deck) => {
 
@@ -500,18 +505,28 @@ const JeuBataille = () => {
         };
     });
 
+    const handleSaveNameChange = (e) => {
+        const inputValue = e.target.value;
+        // Supprimer les caractères non autorisés en utilisant une expression régulière
+        const filteredValue = inputValue.replace(/[^a-zA-Z0-9]/g, '');
+        // Mettre à jour le state avec la valeur filtrée
+        setSaveName(filteredValue);
+    };
+
+
+       
 
     //----------------------RETURN---------------------
     return (
         <div className="bo-game-container">
 
-{isSave && (
-        <div className='savePopUp'>
-          <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
-          <input className = "inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
-          <div className = "saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
-        </div>
-      )}
+            {isSave && (
+                <div className='savePopUp'>
+                    <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
+                    <input className="inputPopup" type="text" placeholder='save Name' value={saveName} onChange={handleSaveNameChange} />
+                    <div className="saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
+                </div>
+            )}
 
             <YourComponent></YourComponent>
 
@@ -600,13 +615,13 @@ const JeuBataille = () => {
                 <div className={"bo-selected-card"}>
                     {
                         allCardPlayed.map((card, index) => (
-                            <img alt='r' src={(selectedCards.length !== 0 || inDraw) && !isDraw ? getCardImage(card) : backCardsImageTest}/>
+                            <img alt='r' src={(selectedCards.length !== 0 || inDraw) && !isDraw ? getCardImage(card) : backCardsImageTest} />
                         ))
                     }
                 </div>
             </div>
 
-            <button className="bo-save-button" onClick={() =>  openSavePopUp()}>Save</button>
+            {owner === sessionStorage.getItem("name") && <button className="bo-save-button" onClick={() => openSavePopUp()}>Save</button>}
             <button className="bo-leave-button" onClick={() => leaveGame()}>Leave Game</button>
 
             <div className="bo-emote-container">

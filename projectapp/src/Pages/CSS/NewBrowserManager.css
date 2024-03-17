@@ -466,9 +466,38 @@
     width: 80%;
     height: 20%;
     background-color: gainsboro;
+    padding: 1vh;
     margin: 2vh;
     font-size: 2vh;
     color: black;
     border-radius: 15px;
+    border: solid gray 3px; 
+    transition: background-color 0.4s ease;
+}
+
+.gameSaved:hover {
+    cursor: pointer;
+    background-color: #0d8a1c;
+}
+
+.gameSave-container {
+    display: flex;
+    padding-top: 1vh;
+}
+
+.supprSave {
+    display: flex;
+    margin-top: 2.3vh;
+    font-size: 3vh;
+    justify-content: center;
+    align-items: center;
+    height: 4vh;
+    padding-left: 0.5vh;
+    padding-right: 0.5vh;
+    cursor: pointer;
+}
+
+.supprSave:hover{
+    background-color: rgba(255, 0, 0, 0.511);
     
 }

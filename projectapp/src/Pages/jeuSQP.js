@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import socket from '../socketG';
@@ -36,13 +36,87 @@ const SixQuiPrend = () => {
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-
+  const [owner, setOwner] = useState("");
   const [myTurn, setMyTurn] = useState(true);
 
   const [allPlayerSelected, setAllPlayerSelected] = useState(false);
   const [myTurnP2, setMyTurnP2] = useState(false);
   const [saveName, setSaveName] = useState("");
   const [isSave, setIsSave] = useState(false);
+  const [playerNameEmote, setPlayerNameEmote] = useState("");
+  const [EmoteToShow, setEmoteToShow] = useState("");
+  const emoteRef = useRef(null); // Référence à la div de l'emote
+  const [showEmotes, setShowEmotes] = useState(false);
+
+  const toyota = require("./CSS/emotes/toyota.mp4");
+  const BOING = require("./CSS/emotes/BOING.mp4");
+  const Hampter = require("./CSS/emotes/hampter.mp4");
+  const MissInput = require("./CSS/emotes/MissInput.mp4");
+  const PutinMewing = require("./CSS/emotes/PutinMEWING.mp4");
+  const KillurSelf = require("./CSS/emotes/KillUrSelf.mp4");
+  const horse = require("./CSS/emotes/horse.mp4");
+  const bookies = require("./CSS/emotes/bookies.mp4");
+  const holy = require("./CSS/emotes/holy.mp4");
+  const freddy = require("./CSS/emotes/freddy.mp4");
+  const NuhUh = require("./CSS/emotes/NuhUh.mp4");
+  const hellnaw = require("./CSS/emotes/hellnaw.mp4");
+  const hogRider = require("./CSS/emotes/hogRider.mp4");
+  const josh = require("./CSS/emotes/josh.mp4");
+  const quandale = require("./CSS/emotes/quandale.mp4");
+  const mao = require("./CSS/emotes/mao.mp4");
+  const bible = require("./CSS/emotes/bible.mp4");
+  const spiderman = require("./CSS/emotes/spiderman.mp4");
+  const goku = require("./CSS/emotes/goku.mp4");
+  const gatorade = require("./CSS/emotes/gatorade.mp4");
+  const dj = require("./CSS/emotes/dj.mp4");
+  const jumpascare = require("./CSS/emotes/jumpascare.mp4");
+
+  const videos = [
+    { id: 1, videoUrl: toyota },
+    { id: 2, videoUrl: BOING },
+    { id: 3, videoUrl: Hampter },
+    { id: 4, videoUrl: MissInput },
+    { id: 5, videoUrl: PutinMewing },
+    { id: 6, videoUrl: KillurSelf },
+    { id: 7, videoUrl: horse },
+    { id: 8, videoUrl: bookies },
+    { id: 9, videoUrl: holy },
+    { id: 10, videoUrl: freddy },
+    { id: 11, videoUrl: NuhUh },
+    { id: 12, videoUrl: hellnaw },
+    { id: 13, videoUrl: hogRider },
+    { id: 14, videoUrl: josh },
+    { id: 15, videoUrl: quandale },
+    { id: 16, videoUrl: mao },
+    { id: 17, videoUrl: bible },
+    { id: 18, videoUrl: spiderman },
+    { id: 19, videoUrl: goku },
+    { id: 20, videoUrl: gatorade },
+    { id: 21, videoUrl: dj },
+    { id: 22, videoUrl: jumpascare },
+  ];
+
+  const handleVideoEnd = () => {
+    if (emoteRef.current) {
+      emoteRef.current.hidden = true; // Cache la div en ajustant l'attribut `hidden`
+    }
+
+  };
+
+  function playEmote(emoteUrl) {
+    socket.emit('sendEmoteToLobby', { emote: emoteUrl.id, playerName: sessionStorage.getItem('name'), serverId: sessionStorage.getItem('serverConnected') });
+  }
+
+  const toggleEmotes = () => {
+    setShowEmotes(!showEmotes);
+  };
+
+  function showEnemyEmote(opponentName) {
+    if (opponentName === playerNameEmote) {
+      return true;
+    }
+    return false;
+  }
 
   const selectCardClick = (payload) => {
 
@@ -195,6 +269,7 @@ const SixQuiPrend = () => {
       socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
       socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
       socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
+      socket.emit("whatIsOwner", sessionStorage.getItem("serverConnected"));
     }
 
     return () => {
@@ -213,6 +288,11 @@ const SixQuiPrend = () => {
       failed = true;
     }
     if (mounted && !failed) {
+
+
+      socket.on("owner", (owner) => {
+        setOwner(owner)
+      })
 
       let deckmem;
       socket.on("Deck", (deck) => {
@@ -304,9 +384,31 @@ const SixQuiPrend = () => {
         });
       });
 
+
+      socket.on("emote", (emote, opponentName) => {
+
+        let video = 0;
+        videos.forEach((videos) => {
+
+          if (videos.id === emote) {
+            video = videos;
+          }
+
+        });
+        if (video === 0) {
+          return;
+        }
+
+        console.log(video, opponentName);
+
+        setEmoteToShow(video.videoUrl);
+        setPlayerNameEmote(opponentName);
+      });
+
       socket.on("getMessage", (msgList) => {
         setMessages(msgList);
       })
+
 
       window.addEventListener("keydown", handleKeyDown);
       window.addEventListener("keyup", handleKeyUp);
@@ -325,6 +427,7 @@ const SixQuiPrend = () => {
       socket.off('FIN');
       socket.off('nextPlayer');
       socket.off("getMessage")
+      socket.off("emote");
     };
   }, [isVisible, navigate, myTurn, selected]);
 
@@ -348,7 +451,7 @@ const SixQuiPrend = () => {
 
   const saveGame = () => {
     setIsSave(false);
-    socket.emit("saveGame", sessionStorage.getItem("serverConnected"),saveName)
+    socket.emit("saveGame", sessionStorage.getItem("serverConnected"), saveName)
   }
 
 
@@ -416,7 +519,9 @@ const SixQuiPrend = () => {
     socket.emit("MB-leaveGame", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
     socket.emit('leave', sessionStorage.getItem('serverConnected'));
     navigate('/BrowserManager');
-}
+  }
+
+
   return (
 
 
@@ -428,20 +533,27 @@ const SixQuiPrend = () => {
       {isSave && (
         <div className='savePopUp'>
           <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
-          <input className = "inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
-          <div className = "saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
+          <input className="inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
+          <div className="saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
         </div>
       )}
 
+      {showEnemyEmote(sessionStorage.getItem("name")) && (
+        <div className='bo-player-emote-container'>
+          <div className="bo-player-emote" >
+            <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
+          </div>
+        </div>
+      )}
 
       <div className='sqp-upperBandeau'>
 
-        <div className='save-button' onClick={() => openSavePopUp()}> SAVE</div>
+       {owner === sessionStorage.getItem("name") &&  <div className='save-button' onClick={() => openSavePopUp()}> SAVE</div>}
         <div className='MB-exit-button' onClick={() => leave()}> QUITTER</div>
 
         <YourComponent></YourComponent>
 
-        
+
 
 
         <div className="adverse-players">
@@ -458,7 +570,7 @@ const SixQuiPrend = () => {
 
       <div className='sqp-gameContainer'>
 
-      <div className="rectangle-container">
+        <div className="rectangle-container">
           <Rectangle></Rectangle>
           <Rectangle1></Rectangle1>
           <Rectangle2></Rectangle2>
@@ -476,12 +588,12 @@ const SixQuiPrend = () => {
         </div>
 
         {/* Game table section */}
-       
+
       </div>
       {/* Joueur cards en bas */}
       <div className='sqp-cardContianer'>
 
-      <div className='timer'>
+        <div className='timer'>
           <p>{seconds}</p>
         </div>
         <div className={(myTurnP2 || !allPlayerSelected) ? 'card-holder' : 'card-holderNYT'} >

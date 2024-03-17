@@ -42,7 +42,7 @@ const NewBrowserManager = () => {
 
         socket.emit('askStat', sessionStorage.getItem("name"));
         socket.emit("getServ");
-        socket.emit("whatGameSaved")
+        socket.emit("whatGameSaved");
 
     }, [])
 
@@ -52,9 +52,21 @@ const NewBrowserManager = () => {
 
         if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
 
-        socket.on("newServer", (lobbyListId) => {
+        socket.on("newServer", (lobbyList) => {
             if (mounted) {
-                setMesLobby(lobbyListId);
+                //en vrai masterclass jS c'est trop bien comment tout tient sur une ligne a chaque fois
+                //en fait ici je filtre les lobby de type Saved en regardant si elles ont une gameLinked si ils l'ont je filtre les parties ou ton nom
+                //apparait dans la liste des joueurs 
+                //et si c'est pas une game saved bah je l'ajoute pour tout le monde dans la liste des saved
+                const lobbyListSaved = lobbyList.filter(lobby => lobby.gameLinked !== null);
+                const lobbyCreated = lobbyList.filter(lobby => lobby.gameLinked === null);
+                let lobbys = lobbyListSaved.filter(lobby => {
+                    const playerName = sessionStorage.getItem("name");
+                    const playerList = lobby.gameLinked["playerList"].map(player => player.name);
+                    console.log(playerList);
+                    return playerList.includes(playerName);
+                });
+                setMesLobby([...lobbys, ...lobbyCreated]);
             }
         });
 
@@ -68,11 +80,7 @@ const NewBrowserManager = () => {
         });
 
         socket.on("newGameSaved", (allGameSaved) => {
-            for (let game of allGameSaved) {
-                if (game.startsWith(sessionStorage.getItem("name"))) {
-                    setGameSaved([...gameSaved, game])
-                }
-            }
+            setGameSaved(allGameSaved.filter(gameName => gameName.startsWith(sessionStorage.getItem("name"))))
         })
 
         return () => {
@@ -104,7 +112,6 @@ const NewBrowserManager = () => {
     };
 
     const handleRecreate = (game) => {
-
         socket.emit("recreateNewServer", game)
 
     }
@@ -153,14 +160,19 @@ const NewBrowserManager = () => {
         navigate('/login-signup');
     }
 
+    const deleteFile = (fileName) => {
+        socket.emit("deleteFile", fileName);
+    }
 
     const GameSaved = () => {
         return (
             <div className='showSaved-container'>
                 {gameSaved.map((game, index) => (
-                    <div className='gameSaved' onClick={() => handleRecreate(game)}> <div />
-                        {game}
-
+                    <div className='gameSave-container'>
+                        <div className='gameSaved' onClick={() => handleRecreate(game)}> 
+                            {game}
+                        </div>
+                        <div className='supprSave' onClick={() => deleteFile(game)}>X</div>
                     </div>
                 ))}
             </div>
@@ -252,7 +264,7 @@ const NewBrowserManager = () => {
                 <h2 className='MB-h2'> SERVER LIST</h2>
                 {mesLobby.map((lobby, _) => (
 
-                    <div className='BM-server' onClick={() => handleClick(lobby.id, lobby)}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)}
+                    <div className='BM-server' onClick={() => whatToLoad(lobby) === "FULL" ? null : handleClick(lobby.id, lobby)}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)}
                         {lobby.isPrivate && <input id={`gamePassWord` + lobby.id} type="password" className="BM-input-server" placeholder='Mot de passe...' value={gamePassword} onChange={(e) => {
                             setGamePassword(e.target.value);
                         }}></input>}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import socket from '../socketG';
 import { useNavigate } from 'react-router-dom';
 import './CSS/MilleBorne.css'
@@ -38,6 +38,83 @@ const MilleBorne = () => {
 
     const [saveName, setSaveName] = useState("");
     const [isSave, setIsSave] = useState(false);
+    const [playerNameEmote, setPlayerNameEmote] = useState("");
+    const [EmoteToShow, setEmoteToShow] = useState("");
+    const emoteRef = useRef(null); // Référence à la div de l'emote
+    const [showEmotes, setShowEmotes] = useState(false);
+    const [owner, setOwner] = useState("");
+
+    const toyota = require("./CSS/emotes/toyota.mp4");
+    const BOING = require("./CSS/emotes/BOING.mp4");
+    const Hampter = require("./CSS/emotes/hampter.mp4");
+    const MissInput = require("./CSS/emotes/MissInput.mp4");
+    const PutinMewing = require("./CSS/emotes/PutinMEWING.mp4");
+    const KillurSelf = require("./CSS/emotes/KillUrSelf.mp4");
+    const horse = require("./CSS/emotes/horse.mp4");
+    const bookies = require("./CSS/emotes/bookies.mp4");
+    const holy = require("./CSS/emotes/holy.mp4");
+    const freddy = require("./CSS/emotes/freddy.mp4");
+    const NuhUh = require("./CSS/emotes/NuhUh.mp4");
+    const hellnaw = require("./CSS/emotes/hellnaw.mp4");
+    const hogRider = require("./CSS/emotes/hogRider.mp4");
+    const josh = require("./CSS/emotes/josh.mp4");
+    const quandale = require("./CSS/emotes/quandale.mp4");
+    const mao = require("./CSS/emotes/mao.mp4");
+    const bible = require("./CSS/emotes/bible.mp4");
+    const spiderman = require("./CSS/emotes/spiderman.mp4");
+    const goku = require("./CSS/emotes/goku.mp4");
+    const gatorade = require("./CSS/emotes/gatorade.mp4");
+    const dj = require("./CSS/emotes/dj.mp4");
+    const jumpascare = require("./CSS/emotes/jumpascare.mp4");
+
+    const videos = [
+        { id: 1, videoUrl: toyota },
+        { id: 2, videoUrl: BOING },
+        { id: 3, videoUrl: Hampter },
+        { id: 4, videoUrl: MissInput },
+        { id: 5, videoUrl: PutinMewing },
+        { id: 6, videoUrl: KillurSelf },
+        { id: 7, videoUrl: horse },
+        { id: 8, videoUrl: bookies },
+        { id: 9, videoUrl: holy },
+        { id: 10, videoUrl: freddy },
+        { id: 11, videoUrl: NuhUh },
+        { id: 12, videoUrl: hellnaw },
+        { id: 13, videoUrl: hogRider },
+        { id: 14, videoUrl: josh },
+        { id: 15, videoUrl: quandale },
+        { id: 16, videoUrl: mao },
+        { id: 17, videoUrl: bible },
+        { id: 18, videoUrl: spiderman },
+        { id: 19, videoUrl: goku },
+        { id: 20, videoUrl: gatorade },
+        { id: 21, videoUrl: dj },
+        { id: 22, videoUrl: jumpascare },
+    ];
+
+    const handleVideoEnd = () => {
+        if (emoteRef.current) {
+            emoteRef.current.hidden = true; // Cache la div en ajustant l'attribut `hidden`
+        }
+
+    };
+
+    function playEmote(emoteUrl) {
+        socket.emit('sendEmoteToLobby', { emote: emoteUrl.id, playerName: sessionStorage.getItem('name'), serverId: sessionStorage.getItem('serverConnected') });
+    }
+
+    const toggleEmotes = () => {
+        setShowEmotes(!showEmotes);
+    };
+
+    function showEnemyEmote(opponentName) {
+        if (opponentName === playerNameEmote) {
+            return true;
+        }
+        return false;
+    }
+
+
     const getCard = (card) => {
         return cartes.indexOf(card);
     }
@@ -45,7 +122,7 @@ const MilleBorne = () => {
     const toggleInfo = () => {
         setShowInfo(prevShowInfo => !prevShowInfo);
     };
-    
+
     const sendMessage = () => {
         socket.emit('sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
         setMessage('');
@@ -69,6 +146,7 @@ const MilleBorne = () => {
             socket.emit("whatTheOrder", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
             socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"));
             socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
+            socket.emit("whaIsOwner", sessionStorage.getItem("serverConnected"));
         }
 
         return () => {
@@ -140,6 +218,30 @@ const MilleBorne = () => {
                 setMessages(msgList);
             })
 
+            socket.on("emote", (emote, opponentName) => {
+
+                let video = 0;
+                videos.forEach((videos) => {
+
+                    if (videos.id === emote) {
+                        video = videos;
+                    }
+
+                });
+                if (video === 0) {
+                    return;
+                }
+
+                console.log(video, opponentName);
+
+                setEmoteToShow(video.videoUrl);
+                setPlayerNameEmote(opponentName);
+            });
+
+            socket.on("owner", (owner) => {
+                setOwner(owner)
+            })
+
 
         }
         return () => {
@@ -155,8 +257,10 @@ const MilleBorne = () => {
             socket.off('MB_FIN');
             socket.off('attacked');
             socket.off('MB-getMessage');
+            socket.off("emote");
+            socket.off("owner");
         }
-    }, [navigate,state,test,isLimited]);
+    }, [navigate, state, test, isLimited]);
 
 
     const Popup = () => {
@@ -275,7 +379,7 @@ const MilleBorne = () => {
                 <div className='savePopUp'>
                     <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
                     <input className="inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
-                    <div className="saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
+                     <div className="saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
                 </div>
             )}
 
@@ -284,46 +388,51 @@ const MilleBorne = () => {
             <YourComponent></YourComponent>
 
             <div className='MB-adversaire-container-upper-bandeau'>
+                <div className='exitAndSave-container'>
+                    <div className='MB-exit-button' onClick={() => leave()}> LEAVE</div>
+                    {owner === sessionStorage.getItem("name") &&<div className='MB-exit-button' onClick={() => openSavePopUp()}> SAVE</div>}
+                </div>
 
-                <div className='MB-exit-button' onClick={() => leave()}> QUITTER</div>
-                <br></br>
-                <p></p>
-                <div></div>
-                <div className='' onClick={() => openSavePopUp()}> SAVE</div>
-                
-                
+                {showEnemyEmote(sessionStorage.getItem("name")) && (
+                    <div className='bo-player-emote-container'>
+                        <div className="bo-player-emote" >
+                            <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
+                        </div>
+                    </div>
+                )}
+
                 <div className='MB-info-button' onClick={toggleInfo}>INFO</div>
-                    {showInfo && (
-                        <div className='MB-info-content'>
-                        <p> 
+                {showInfo && (
+                    <div className='MB-info-content'>
+                        <p>
                             <strong>Mille Borne</strong> <br /> <br />
-                            <strong> Description</strong> 
+                            <strong> Description</strong>
                             <p>
                                 Le jeu comprend 106 cartes. Les joueurs doivent accumuler des bornes. Il faut aller jusqu'à 1 000 bornes exactement pour que la partie se termine. Le jeu comporte donc des cartes représentant :
                                 les distances parcourues ;
                                 les attaques, c'est-à-dire des aléas de la route (accidents, crevaisons, pannes...), et la signalisation routière (limitation de vitesse, feux) qui permettent de freiner ou stopper son adversaire ;
                                 les parades, qui permettent de contrer l'effet des attaques ;
                                 les bottes, qui sont des protections contre une attaque spécifique, au nombre de quatre.
-                                La liberté du joueur est surtout dans la décision d'appliquer des obstacles à l'adversaire avec le risque, si celui-ci possède la protection spéciale, qu'il marque 300 points supplémentaires comme « coup fourré ». 
+                                La liberté du joueur est surtout dans la décision d'appliquer des obstacles à l'adversaire avec le risque, si celui-ci possède la protection spéciale, qu'il marque 300 points supplémentaires comme « coup fourré ».
                                 Bien sûr, ce risque augmente au cours du jeu au fur et à mesure que plus de cartes sont piochées.
-                                Le jeu se joue sur table, avec une pioche et une défausse centrale. 
-                                Chaque joueur a devant lui ces cartes de distance, visible de tous, ainsi que sa 
-                                pile de jeu, sur laquelle sont empilées au fur et à mesure les cartes d'attaque et de 
-                                parade. Chaque joueur doit commencer par poser un feu vert pour pouvoir rouler et poser 
-                                des cartes de distance. A son tour, un joueur joue une carte (ou en défausse une, s'il ne 
-                                peut rien jouer), puis en re-pioche une, de manière à toujours en avoir 6 en main. 
-                                Les kilomètres, parades et bottes sont jouées pour soi, les attaques sont jouées chez les adversaires pour les ralentir 
+                                Le jeu se joue sur table, avec une pioche et une défausse centrale.
+                                Chaque joueur a devant lui ces cartes de distance, visible de tous, ainsi que sa
+                                pile de jeu, sur laquelle sont empilées au fur et à mesure les cartes d'attaque et de
+                                parade. Chaque joueur doit commencer par poser un feu vert pour pouvoir rouler et poser
+                                des cartes de distance. A son tour, un joueur joue une carte (ou en défausse une, s'il ne
+                                peut rien jouer), puis en re-pioche une, de manière à toujours en avoir 6 en main.
+                                Les kilomètres, parades et bottes sont jouées pour soi, les attaques sont jouées chez les adversaires pour les ralentir
                                 voire les arrêter.
                             </p> <br /> <br /> <br />
 
                             <strong> Attaque </strong>
                             <p>
                                 Il y a cinq attaques différentes : l'accident, la crevaison, la panne d'essence, la limite de vitesse et le feu rouge.
-                                L'accident, la crevaison et la panne d'essence immobilisent le véhicule : le joueur à qui on pose une de ces attaques ne peut plus poser aucune carte étape. 
+                                L'accident, la crevaison et la panne d'essence immobilisent le véhicule : le joueur à qui on pose une de ces attaques ne peut plus poser aucune carte étape.
                                 Pour redémarrer, le joueur doit jouer la parade correspondant
                                 à l'attaque, puis jouer un feu vert pour repartir et pouvoir recommencer à rouler.
                                 Le feu rouge empêche également de continuer à avancer (on ne peut plus poser de cartes étapes), mais il se pare simplement avec un feu vert.
-                                La limite de vitesse est une attaque qui peut se superposer aux autres. Elle n'empêche pas d'avancer, mais elle oblige le joueur à ne poser que des cartes de 25 ou 50km, ce qui ralentit beaucoup le jeu. 
+                                La limite de vitesse est une attaque qui peut se superposer aux autres. Elle n'empêche pas d'avancer, mais elle oblige le joueur à ne poser que des cartes de 25 ou 50km, ce qui ralentit beaucoup le jeu.
                                 On peut avoir une limitation de vitesse même en étant à l'arrêt. Elle se pare simplement avec une fin de limite de vitesse.
                             </p> <br /> <br /> <br />
 
@@ -332,30 +441,30 @@ const MilleBorne = () => {
                                 Il y a cinq parades différentes, qui correspondent chacune à une attaque (respectivement) : les réparations, l'essence, la roue de secours, la fin de limite de vitesse et le feu vert.
                                 Ces cartes sont les plus utiles à conserver en main, afin de pouvoir parer rapidement une attaque et repartir. On ne peut jouer la parade que sur l'attaque qui lui correspond, et en réponse
                                 à cette attaque (on ne peut pas se prémunir d'un éventuel accident en jouant une réparation en avance).
-                                Le feu vert est la carte la plus disponible (14 exemplaires) et la plus importante du jeu. En effet, non seulement les joueurs doivent en jouer un au début de la partie pour commencer à rouler, 
+                                Le feu vert est la carte la plus disponible (14 exemplaires) et la plus importante du jeu. En effet, non seulement les joueurs doivent en jouer un au début de la partie pour commencer à rouler,
                                 mais ils doivent aussi en jouer un après une réparation, une essence ou une roue de secours pour pouvoir repartir
                             </p> <br /> <br /> <br />
 
                             <strong> Botte </strong>
-                            <p> Les bottes sont des cartes spéciales, qui permettent de se prémunir contre un type d'attaque. Lors qu'un joueur a une botte devant lui, il est impossible de lui mettre l'attaque parée par cette botte. 
+                            <p> Les bottes sont des cartes spéciales, qui permettent de se prémunir contre un type d'attaque. Lors qu'un joueur a une botte devant lui, il est impossible de lui mettre l'attaque parée par cette botte.
                                 Cette carte est permanente, et un joueur peut avoir plusieurs bottes.
                                 <ul>L'as du volant ne peut pas avoir d'accident. </ul>
                                 <ul>Le camion-citerne ne peut pas tomber en panne d'essence. </ul>
                                 <ul>L'increvable ne peut pas crever. </ul>
                                 <ul>Le véhicule prioritaire ne peut pas avoir de limite de vitesse ou de feu rouge. Par ailleurs, le véhicule prioritaire n'a pas besoin de feu vert pour redémarrer après un accident, une panne ou une crevaison,
                                     ni en début de partie avant de poser sa première borne. </ul>
-                                Il est possible de jouer une botte dès qu'on l'a en main, pour s'éviter des attaques futures. Mais il est aussi possible de la conserver en main. Dans ce cas, au moment où le joueur se fait attaquer par une carte 
+                                Il est possible de jouer une botte dès qu'on l'a en main, pour s'éviter des attaques futures. Mais il est aussi possible de la conserver en main. Dans ce cas, au moment où le joueur se fait attaquer par une carte
                                 qu'il peut botter (on lui met une crevaison alors qu'il a l'increvable en main, par ex.), il s'agit d'un « coup fourré »
-                                (qui vaut 300 points). Le joueur attaqué annonce le coup fourré à haute voix et joue immédiatement sa botte. L'attaque jouée est défaussée, le joueur venant de faire le coup fourré pioche une carte. 
+                                (qui vaut 300 points). Le joueur attaqué annonce le coup fourré à haute voix et joue immédiatement sa botte. L'attaque jouée est défaussée, le joueur venant de faire le coup fourré pioche une carte.
                                 Le joueur ayant posé l'attaque termine son tour et pioche sa carte, et c'est au tour du joueur suivant, dans l'ordre normal de jeu.
                             </p>
                         </p>
-                        </div>
-                    )}
-                
+                    </div>
+                )}
+
 
                 {playerList.map((player, index) => (
-                    <div className={`MB-adversaire-container MB-p${playerList.length === 2 ? "trio" : index + 1}  ${player.myTurn ? "myTurn" : ""}`} key={index}>
+                    <div className={`MB-adversaire-container MB-p${index + 1}  ${player.myTurn ? "myTurn" : ""}`} key={index}>
                         <div className='MB-adversaire-card'>
                             <div className={`MB-adversaire ${player.color}`}>
                                 <div className='MB-player-name'>{player.name}</div>
@@ -385,7 +494,10 @@ const MilleBorne = () => {
                 </div>
 
                 <div className='pioche-container'>
-                    <div className='pioche'>{nbCards}</div>
+                    <div className='pioche'>{nbCards}
+                        <div className='MB-pioche-petit'>cartes</div>
+                        <div className='MB-pioche-petit'>restante</div>
+                    </div>
                 </div>
             </div>
 

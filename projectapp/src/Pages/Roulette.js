@@ -97,7 +97,7 @@ const Roulette = () => {
     }
 
     const sendMessage = () => {
-        socket.emit('rlt-sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
+        socket.emit('rlt-sendMessage', { name: sessionStorage.getItem("name"), msg: message});
         setMessage('');
     }
 
@@ -107,7 +107,7 @@ const Roulette = () => {
         socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"));
         socket.emit("getServ");
         socket.emit("ArgentViteBatard", sessionStorage.getItem('name'));
-        socket.emit("MB-loadTheChat", sessionStorage.getItem("serverConnected"))
+        socket.emit("rlt-loadTheChat", sessionStorage.getItem("serverConnected"))
 
     }, [])
 

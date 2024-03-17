@@ -19,9 +19,15 @@ class Roulette{
     this.lastRolls = [];
     this.bets = [];
     this.wins = [];
+    this.chatContent = ["use <global> to talk to everyone"];
 
   }
 
+  addMessage(msg){
+    if (msg != "") {
+      this.chatContent.push(msg);
+    }
+  } 
 
   rolls(){
 

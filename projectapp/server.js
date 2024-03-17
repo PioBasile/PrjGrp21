@@ -1130,9 +1130,16 @@ io.on('connection', (socket) => {
       socket.emit("deco")
     }
 
-
-
     io.to(serverId).emit("getMessage", game.chatContent)
+  })
+
+  socket.on("rlt-sendMessage", (data) =>{
+    RouletteInstance.addMessage(`${data.name} : ${data.msg}`);
+    io.emit("rlt-getMessage", RouletteInstance.chatContent);
+  })
+
+  socket.on("rlt-loadTheChat",()=> {
+    io.emit("rlt-getMessage", RouletteInstance.chatContent)
   })
 
 

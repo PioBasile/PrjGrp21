@@ -144,7 +144,7 @@ const NewBrowserManager = () => {
     }
 
     const goToCasinoNigga = () => {
-        navigate("/casino")
+        navigate("/roulette")
     }
 
     const goToItemShop = () => {

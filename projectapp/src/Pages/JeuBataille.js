@@ -97,9 +97,8 @@ const JeuBataille = () => {
 
     const handleVideoEnd = () => {
         if (emoteRef.current) {
-            emoteRef.current.hidden = true; // Cache la div en ajustant l'attribut `hidden`
+            emoteRef.current.style.display = 'none'; 
         }
-
     };
 
     function playEmote(emoteUrl) {
@@ -517,7 +516,7 @@ const JeuBataille = () => {
 
             {/*Ur emote*/}
             {showEnemyEmote(sessionStorage.getItem("name")) && (
-                <div className='bo-player-emote-container'>
+                <div className='bo-player-emote-container' ref={emoteRef}>
                     <div className="bo-player-emote" >
                         <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
                     </div>
@@ -534,8 +533,8 @@ const JeuBataille = () => {
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
                         {showEnemyEmote(opponent.name) && (
-                            <div className='bo-enem-emote-top'>
-                                <div className="bo-emote-enemy" >
+                            <div className='bo-enem-emote-top' ref={emoteRef}>
+                                <div className="bo-emote-enemy">
                                     {console.log(EmoteToShow)}
                                     <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
                                 </div>
@@ -551,8 +550,11 @@ const JeuBataille = () => {
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
                         {showEnemyEmote(opponent.name) && (
-                            <div className='bo-enem-emote-left'>
-                                <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
+                            <div className='bo-enem-emote-left' ref={emoteRef}>
+                                <div className="bo-emote-enemy" >
+                                    {console.log(EmoteToShow)}
+                                    <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
+                                </div>                            
                             </div>
                         )}
                     </div>
@@ -565,8 +567,11 @@ const JeuBataille = () => {
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
                         {showEnemyEmote(opponent.name) && (
-                            <div className='bo-enem-emote-right'>
-                                <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
+                            <div className='bo-enem-emote-right'ref={emoteRef}>
+                                <div className="bo-emote-enemy" >
+                                    {console.log(EmoteToShow)}
+                                    <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
+                                </div>                            
                             </div>
                         )}
                     </div>

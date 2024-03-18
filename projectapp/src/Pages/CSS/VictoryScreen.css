@@ -3,33 +3,37 @@
     margin: 0;
     width: 100vw;
     height: 100vh;
-    overflow: hidden; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    position: relative;
+    overflow: hidden;
 }
 
 .victory-text {
-    position: center;
-    width: 30%;
-    height: 30%;
-    top: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 0.1em; 
+    position: absolute; /* Utilisez absolute pour le positionnement spécifique si le conteneur est flex */
+    width: 100%; /* Prend la pleine largeur pour centrer le texte */
+    text-align: center; /* Centre le texte à l'intérieur de l'élément */
+    font-size: 2em; /* Ajustez la taille de la police selon vos besoins */
     color: white;
-    background-color:aqua;
     text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.7);
-    /* animation: zoomIn 2s ease-in-out forwards, rotate 6s linear infinite;  */
+    z-index: 1000;
+    top: 30%; /* Positionne à 50% du haut de l'écran */
+    transform: translateY(-50%); /* Décale l'élément vers le haut de 50% de sa hauteur pour le centrage vertical */
+    animation: zoomIn 2s ease-in-out forwards, rotate 6s linear infinite; 
 }
 
 @keyframes zoomIn {
-    0% {
-        font-size: 0.1em; 
+    from {
+      transform: scale(0.8);
+      opacity: 0;
     }
-    100% {
-        font-size: 3em; 
+    to {
+      transform: scale(1);
+      opacity: 1;
     }
 }
-
+  
 .victory-background video {
     width: 100%;
     height: 100%;
@@ -37,22 +41,38 @@
 }
 
 .victory-timer {
-    color: #ffffff;
+    color: #FFD700; /* Une couleur dorée pour évoquer la victoire */
     position: absolute;
-    bottom: 10%; 
-    left: 50%; 
-    transform: translateX(-50%); 
+    bottom: 15%; /* Ajusté pour un meilleur espacement avec le bouton */
+    left: 50%;
+    transform: translateX(-50%);
     font-size: 2em;
+    font-weight: bold; /* Rendre le texte plus impactant */
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Ajouter une ombre pour plus de profondeur */
 }
 
+
 .victory-button {
-    color: aqua;
     position: absolute;
-    bottom: 5%; 
-    left: 50%; 
-    transform: translateX(-50%); 
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
 }
 
 .victory-button button {
     font-size: 1.5em;
+    background-color: #28A745; /* Un vert vibrant pour inciter à l'action */
+    color: #ffffff; /* Couleur du texte */
+    border: none; /* Supprimer la bordure par défaut */
+    border-radius: 5px; /* Ajouter des coins arrondis */
+    padding: 10px 20px; /* Ajuster le padding pour un bouton plus grand */
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease; /* Ajouter une transition pour le survol */
+}
+
+.victory-button button:hover {
+    background-color: #218838; /* Assombrir le bouton au survol */
+    transform: scale(1.05); /* Effet de zoom léger pour indiquer l'interactivité */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Ajouter une ombre pour plus de profondeur */
 }

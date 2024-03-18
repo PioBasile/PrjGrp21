@@ -1,17 +1,17 @@
-body.roulette {
+.roulette{
     background-image: url("pics/newredcasinoback.png");
     background-size: contain;
     background-position: center;
+    overflow: hidden;
 }
 
 .rouletteGameContainer {
     width: 100vw;
     height: 100vh;
-    background-color:rgb(94, 15, 18);
     padding-bottom: 3vh;
     position: relative;
     display: flex;
-
+    overflow: hidden;
     text-align: center;
     justify-content: center;
 }
@@ -45,8 +45,8 @@ body.roulette {
 
 .oneTo36Number {
     flex: 1;
-    max-width: 10vh;
-    max-height: 6.5vh;
+    width: 5vw;
+    height: 6vh;
     color: #fff;
     border: 3px solid #ccc;
     align-items: center;
@@ -57,8 +57,8 @@ body.roulette {
 }
 
 .numberZero {
-    max-width: 50vh;
-    max-height: 10vh;
+    width: 25.8vw;
+    height: 10vh;
     background-color: #31b358;
     border: 3px solid #ccc;
     display: flex;
@@ -112,7 +112,7 @@ body.roulette {
     left: 0;
     width: 100%;
     height: 100%;
-    color: black;
+    color: rgb(255, 255, 255);
     background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
@@ -126,7 +126,8 @@ body.roulette {
     justify-content: space-between;
     width: 500px;
     height: 300px;
-    background-image: url("pics/9999520.jpg");
+    background-image: url("pics/pokerbackgroud.jpg");
+    background-size: fill;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -135,7 +136,7 @@ body.roulette {
 
 
 .inputMoney {
-    background-color: rgb(30, 120, 209);
+    background-color: cadetblue;
     border-radius: 10px;
     height: 70px;
     width: 240px;
@@ -149,16 +150,20 @@ body.roulette {
 }
 
 .moneyContainer {
-    padding-top: 10px;
-    right: 0;
+    position: absolute;
+    top: 5%;
+    right: 5%;
     font-size: 300%;
     width: 200px;
     height: 100px;
-    background-color: beige;
-    position: absolute;
-    text-align: center;
+    background-color:  rgb(177,129,141);
     border-radius: 19px;
+    display: flex; /* Utilise Flexbox pour le layout */
+    align-items: center; /* Centre verticalement le contenu */
+    justify-content: center; /* Centre horizontalement le contenu */
+    padding: 0; /* Ajustez selon le besoin, mais pour le centrage, le padding pourrait ne pas être nécessaire */
 }
+
 
 .rouletteContainer {
     padding-top: 10vh;
@@ -311,3 +316,53 @@ body.roulette {
     /* Marge à gauche du triangle (ajustez selon vos besoins) */
     z-index: 1;
 }
+
+.rou-timer {
+    position: absolute;
+    top: 5%;
+    left: 17%;
+    background: linear-gradient(145deg, rgba(128, 0, 32, 0.9), rgba(64, 0, 16, 0.9)); /* Gradient pour un effet plus profond */
+    color: #FFD700; /* Or pour le texte, rappelant les couleurs du casino */
+    border: 2px solid #FFD700; /* Bordure dorée */
+    border-radius: 10px;
+    padding: 15px 25px; /* Un peu plus de padding pour un look plus riche */
+    font-weight: bold;
+    font-size: 20px; /* Taille de police légèrement augmentée pour l'importance */
+    text-shadow: 0px 0px 2px #ffd700b3; /* Ombre de texte dorée pour un effet brillant */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Ombre portée plus prononcée pour un effet 3D */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ro-leave {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    opacity: 0.5; /* Légère visibilité pour un look discret */
+    transition: opacity 0.3s ease; /* Transition douce pour l'opacité */
+}
+
+.ro-leave:hover {
+    opacity: 0.7; /* Augmente l'opacité au survol pour une meilleure visibilité sans attirer trop l'attention */
+}
+
+.ro-bye-button {
+    padding: 10px 20px; /* Confort de clic */
+    background-color: #757575; /* Couleur de fond neutre */
+    color: #ECECEC; /* Couleur de texte légère pour un contraste subtil */
+    border: 1px solid #636363; /* Bordure discrète */
+    border-radius: 5px; /* Bords arrondis pour un look moderne */
+    font-size: 14px; /* Taille de texte appropriée */
+    cursor: pointer; /* Indicateur de clic */
+    transition: background-color 0.2s ease; /* Transition douce pour le fond */
+}
+
+.ro-bye-button:hover {
+    background-color: #636363; /* Assombrissement au survol pour indiquer l'interaction */
+    color: #ffffff; /* Texte plus clair pour le contraste */
+}
+
+
+  
+  

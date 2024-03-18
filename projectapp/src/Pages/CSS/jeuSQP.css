@@ -288,6 +288,7 @@ img {
 }
 
 .savePopUp {
+    z-index: 1;
     position: fixed;
     display: flex;
     flex-direction: column;

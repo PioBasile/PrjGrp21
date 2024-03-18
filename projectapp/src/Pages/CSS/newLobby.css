@@ -1,21 +1,3 @@
-/*
-
-<div className='NB-playerList'>
-    <div className='playerInList'>
-        <div className='kickButton'>Kick</div>
-    </div>
-    <div className='playerInList'>
-        <div className='kickButton'>Kick</div>
-    </div>
-    <div className='playerInList'>
-        <div className='kickButton'>Kick</div>
-    </div>
-    <div className='playerInList'>
-        <div className='kickButton'>Kick</div>
-    </div>
-</div>
-*/
-
 .NB-container {
     position: relative;
     display: flex;

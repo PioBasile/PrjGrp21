@@ -12,16 +12,22 @@
     width: 100%;
     height: 40vh;
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
 }
-
+.exitAndSave-container {
+    display: flex;
+    flex-direction: column;
+}
 .MB-exit-button{
     cursor: pointer;
-    width: 10vw;
-    height: 5vh;
-    position: absolute;
+    padding: 2vh;
     color: #e3e3e3;
+    margin-bottom: 1vh;
     font-size: 3vh;
+}
+
+.MB-exit-button:hover{
+    border: solid black 2px;
 }
 
 .MB-info-button {
@@ -125,10 +131,19 @@
 
 .MB-p1 {    
     transform: translateY(30vh);
+    position: absolute;
+    background-color: #035d03;
+}
+
+.MB-p2 {
+    position: absolute;
+    transform: translateX(40vw);
+    background-color: #035d03;
 }
 
 .MB-p3 {
     transform: translateY(30vh);
+    /* background-color: #035d03; */
 }
 
 .green {
@@ -184,13 +199,13 @@
 
 
 .carte-milieu {
-    border: solid rgb(46, 138, 66) 5px;
+    height: 100%;
+    border: solid rgb(46, 138, 66) 3px;
     margin-right: 2vw;
 }
 .pioche-container {
     padding-top: 2.5vh;
     position: relative;
-    display: flex;
     height: 30vh;
 }
 
@@ -201,12 +216,16 @@
     border-radius: 8px;
     border : solid 5px green;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     font-size: 5vh;
     font-weight: 700;
      box-shadow: 15px 15px 0 #035d03;
+}
 
+.MB-pioche-petit {
+    font-size: 2vh;
 }
 
 .MB-card-holder-container {

@@ -42,7 +42,7 @@ const NewBrowserManager = () => {
 
         socket.emit('askStat', sessionStorage.getItem("name"));
         socket.emit("getServ");
-        socket.emit("whatGameSaved")
+        socket.emit("whatGameSaved");
 
     }, [])
 
@@ -52,9 +52,21 @@ const NewBrowserManager = () => {
 
         if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
 
-        socket.on("newServer", (lobbyListId) => {
+        socket.on("newServer", (lobbyList) => {
             if (mounted) {
-                setMesLobby(lobbyListId);
+                //en vrai masterclass jS c'est trop bien comment tout tient sur une ligne a chaque fois
+                //en fait ici je filtre les lobby de type Saved en regardant si elles ont une gameLinked si ils l'ont je filtre les parties ou ton nom
+                //apparait dans la liste des joueurs 
+                //et si c'est pas une game saved bah je l'ajoute pour tout le monde dans la liste des saved
+                const lobbyListSaved = lobbyList.filter(lobby => lobby.gameLinked !== null);
+                const lobbyCreated = lobbyList.filter(lobby => lobby.gameLinked === null);
+                let lobbys = lobbyListSaved.filter(lobby => {
+                    const playerName = sessionStorage.getItem("name");
+                    const playerList = lobby.gameLinked["playerList"].map(player => player.name);
+                    console.log(playerList);
+                    return playerList.includes(playerName);
+                });
+                setMesLobby([...lobbys, ...lobbyCreated]);
             }
         });
 
@@ -68,8 +80,7 @@ const NewBrowserManager = () => {
         });
 
         socket.on("newGameSaved", (allGameSaved) => {
-            console.log(allGameSaved)
-            setGameSaved(allGameSaved);
+            setGameSaved(allGameSaved.filter(gameName => gameName.startsWith(sessionStorage.getItem("name"))))
         })
 
         return () => {
@@ -93,7 +104,7 @@ const NewBrowserManager = () => {
         // Logique pour sauvegarder les données du formulaire
         if (gameType === "") { return 0; }
         if (nbPlayerMax === "" || nbPlayerMax < 1) { return 0; }
-        socket.emit("newServer", serverName, nbPlayerMax, isServerPrivate(), password, gameType, sessionStorage.getItem('name'), moneyBet, false, "");
+        socket.emit("newServer", serverName, nbPlayerMax, isServerPrivate(), password, gameType, sessionStorage.getItem('name'), moneyBet);
         setGameType("");
         setNbPlayerMax(2);
         setServerName("");
@@ -101,21 +112,9 @@ const NewBrowserManager = () => {
     };
 
     const handleRecreate = (game) => {
-        let lobby = game["lobbyLinked"]
-        let gameInfo;
-        if(lobby.gameType === "batailleOuverte"){
-            gameInfo = {cartes: game["cartes"], chatContent : game["chatContent"], currentTurn:game['currentTurn'], idPartie:game["identifiant_partie"],maxJoueurs : game['maxJoueurs'], maxTurn:game["maxTurn"], owner: game["owner"], playerList : game['playerList'], scoreboard : game['scoreboard'], status:game["status"]}
-        }
+        socket.emit("recreateNewServer", game)
 
-        else if (lobby.gameType === "mb"){
-            gameInfo = {playerList: game["playerList"], cardPlayed : game["cardPlayed"], deck : game["deck"], state : game["state"], chatContent : game["chatContent"]}
-        }
-        
-        else {
-            gameInfo = {player_list: game["player_list"], chatContent : game["chatContent"], selected_cards : game["selected_cards"],order:game["order"], currentP : game["currentP"], row1: game["row1"], row2: game["row2"],row3: game["row3"],row4: game["row4"]  }
-        }
-        socket.emit("newServer", lobby["serverName"],lobby["nbPlayerMax"],lobby['isPrivate'], lobby['password'],lobby['gameType'], lobby["owner"], lobby["moneyBet"], true, gameInfo)
-    } 
+    }
 
     const whatToLoad = (lobby) => {
         if (lobby.playerList.length === lobby.nbPlayerMax) {
@@ -144,16 +143,16 @@ const NewBrowserManager = () => {
         setIsBet(true)
     }
 
-    const goToCasinoNigga = () =>{
-        navigate("/casino")
+    const goToCasinoNigga = () => {
+        navigate("/roulette")
     }
 
-    const goToItemShop = () =>{
+    const goToItemShop = () => {
         navigate("/itemShop")
     }
 
     const showSavedGames = () => {
-        if(showSaved) setShowSaved(false)
+        if (showSaved) setShowSaved(false)
         else setShowSaved(true)
     }
 
@@ -161,14 +160,19 @@ const NewBrowserManager = () => {
         navigate('/login-signup');
     }
 
+    const deleteFile = (fileName) => {
+        socket.emit("deleteFile", fileName);
+    }
 
     const GameSaved = () => {
         return (
             <div className='showSaved-container'>
                 {gameSaved.map((game, index) => (
-                    <div className='gameSaved' onClick={() => handleRecreate(game)}> <div/>
-                        {game["saveName"]} : {game.lobbyLinked["gameType"]}   
-
+                    <div className='gameSave-container'>
+                        <div className='gameSaved' onClick={() => handleRecreate(game)}> 
+                            {game}
+                        </div>
+                        <div className='supprSave' onClick={() => deleteFile(game)}>X</div>
                     </div>
                 ))}
             </div>
@@ -207,9 +211,11 @@ const NewBrowserManager = () => {
             </div>
 
             <div className='BM-acttion-container'>
-                <h2 className='MB-h2'> CREER LE SERVER</h2>
-                
-                
+                <div className='BM-upperBandeau'>
+                    <h2 className='MB-h2'> CREER LE SERVER</h2>
+                </div>
+
+
 
                 <div className='BM-input-container'>
 
@@ -217,12 +223,12 @@ const NewBrowserManager = () => {
 
                     <div className='checkbox-container'>
                         <div className='checkbox' onClick={handlePrivate}>Private Sever ?</div>
-                        <div className='checkbox' onClick={ handleBet}>Want to Bet ?</div>
+                        <div className='checkbox' onClick={handleBet}>Want to Bet ?</div>
                     </div>
 
                     {isPrivate && <input type="password" id="BM-password" className="BM-input" placeholder='Password...' value={password} onChange={(e) => setPassword(e.target.value)}></input>}
                     {isBet && <input type="number" id="BM-moneyBet" className="BM-input" placeholder='Money to bet' value={moneyBet} onChange={(e) => setMoneyBet(e.target.value)}></input>}
-                    {showSaved  && <GameSaved></GameSaved>}
+                    {showSaved && <GameSaved></GameSaved>}
 
                     <input type="number" className="BM-input gameNameMargin" placeholder='Player number' value={nbPlayerMax} onChange={(e) => setNbPlayerMax(e.target.value)}></input>
 
@@ -238,20 +244,17 @@ const NewBrowserManager = () => {
                         <div className="select-arrow"></div>
                     </div>
                 </div>
+                <div className='NB-underBandeau'>
+                    <div className='bigReadyButton-container BM'>
 
-                <div className='BM-creerButton-container'>
-                    <div></div>
-                    <button onClick={handleSave} className="BM-button">CRÉER</button>
-                    <div></div>
+                        <button className='bigReadyButton BM red' onClick={leave}> LEAVE </button>
+
+                        <div className='bigReadyButton BM' onClick={showSavedGames}> GAME SAVED </div>
+
+                        <button onClick={handleSave} className="bigReadyButton BM">CRÉER</button>
+                    </div>
                 </div>
 
-                <div className='gameSavedButton'>
-                    <div className='BM-save-button' onClick={showSavedGames}> GAME SAVED </div>
-                </div>
-
-                <div className='BM-leave-container'>
-                    <button className='BM-leave' onClick={leave}> LEAVE </button>
-                </div>
 
             </div>
             {/* du vide */}
@@ -261,7 +264,7 @@ const NewBrowserManager = () => {
                 <h2 className='MB-h2'> SERVER LIST</h2>
                 {mesLobby.map((lobby, _) => (
 
-                    <div className='BM-server' onClick={() => handleClick(lobby.id, lobby)}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)}
+                    <div className='BM-server' onClick={() => whatToLoad(lobby) === "FULL" ? null : handleClick(lobby.id, lobby)}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)}
                         {lobby.isPrivate && <input id={`gamePassWord` + lobby.id} type="password" className="BM-input-server" placeholder='Mot de passe...' value={gamePassword} onChange={(e) => {
                             setGamePassword(e.target.value);
                         }}></input>}

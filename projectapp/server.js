@@ -6,7 +6,8 @@ const cors = require("cors");
 const { start } = require('repl');
 const { platform } = require('os');
 const roomName = "room"
-
+const fs = require("fs")
+const path = require('path');
 // CUSTOM LIB
 const {
   makecookie,
@@ -33,11 +34,12 @@ const {
   State,
   GameState,
   SavedLobby
-
 } = require("./JS_CustomLib/D_utils.js");
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
+const { read } = require('fs');
+
 
 
 
@@ -58,13 +60,12 @@ let validCookies = {};
 let BatailGames = [];
 let TaureauGames = [];
 let MilleBornesGames = [];
-let gamesSaved = {};
 let lobbyList = [];
 let lobbyIndex = 1;
 let RouletteInstance = new Roulette();
 let isPaused = false;
 
-
+setInterval(() => { Sentinel_Main(io, validCookies, BatailGames, TaureauGames, MilleBornesGames, lobbyList, lobbyIndex) }, 100);
 
 
 //
@@ -227,19 +228,35 @@ io.on('connection', (socket) => {
 
   // GESTION LOBBY //
 
-  socket.on('newServer', (serverName, nbPlayerMax, isPrivate, password, gameType, owner, moneyBet, isASaved, gameData) => {
+  socket.on('newServer', (serverName, nbPlayerMax, isPrivate, password, gameType, owner, moneyBet) => {
 
     let Nlobby = new Lobby(serverName, parseInt(nbPlayerMax), isPrivate, password, gameType, lobbyIndex, owner, moneyBet);
-
-    if (gameData) {
-      Nlobby.gameLinked = gameData;
-    }
 
     lobbyList.push(Nlobby);
     lobbyIndex++;
     io.emit('newServer', lobbyList);
-
   });
+
+  socket.on("recreateNewServer", (fileName) => {
+    fs.readFile(`saves/${fileName}.json`, 'utf8', (err, data) => {
+      if (err) {
+        console.error("Impossible de lire le fichier :", err);
+        return;
+      }
+
+      const gameData = JSON.parse(data);
+
+      let lobbyData = gameData["lobbyLinked"]
+      let Nlobby = new Lobby(lobbyData["serverName"], lobbyData["nbPlayerMax"], lobbyData["isPrivate"], lobbyData["password"], lobbyData["gameType"], lobbyData["id"], lobbyData["owner"], lobbyData["moneyBet"])
+
+      Nlobby.gameLinked = gameData;
+      lobbyList.push(Nlobby);
+      lobbyIndex++;
+      io.emit('newServer', lobbyList);
+    });
+
+
+  })
 
   socket.on('joinLobby', (name, lobbyID, cookie) => {
 
@@ -1093,6 +1110,11 @@ io.on('connection', (socket) => {
     }
   })
 
+  socket.on("whaIsOwner", (serverId) => {
+    lobby = findLobby(serverId, lobbyList);
+    socket.emit("owner", lobby.owner);
+  })
+
   socket.on("loadTheChat", (serverId) => {
     lobby = findLobby(serverId, lobbyList);
     if (lobby.gameType == "batailleOuverte") {
@@ -1105,65 +1127,94 @@ io.on('connection', (socket) => {
       game = findGame(serverId, MilleBornesGames);
     }
     else {
-      throw new Error("aucun jeu connu sous ce nom: ", lobby.gameType);
+      socket.emit("deco")
     }
 
-    io.to(serverId).emit("getMessage", game.chatContent);
-  });
+    io.to(serverId).emit("getMessage", game.chatContent)
+  })
+
+  socket.on("rlt-sendMessage", (data) =>{
+    RouletteInstance.addMessage(`${data.name} : ${data.msg}`);
+    io.emit("rlt-getMessage", RouletteInstance.chatContent);
+  })
+
+  socket.on("rlt-loadTheChat",()=> {
+    io.emit("rlt-getMessage", RouletteInstance.chatContent)
+  })
 
 
   socket.on("sendEmoteToLobby", (data) => {
     game = findGame(data.serverId, BatailGames);
-    emote = data.emote;
+    emote = data.emote
 
-    io.to(data.serverId).emit("emote", emote, data.playerName);
-  });
-
-
-  socket.on("saveGame", (serverId, saveName) => {
-    lobby = findLobby(serverId, lobbyList);
-    if (lobby.gameType == "batailleOuverte") {
-      game = findGame(serverId, BatailGames);
-    }
-    else if (lobby.gameType == "sqp") {
-      game = findGame(serverId, TaureauGames);
-    }
-    else if (lobby.gameType == "mb") {
-      game = findGame(serverId, MilleBornesGames);
-    }
-    else {
-      throw new Error("aucun jeu connu sous ce nom: ", lobby.gameType);
-    }
-
-    const gameSave = JSON.parse(JSON.stringify(game));
-    gameSave["saveName"] = saveName;
-    gamesSaved[saveName] = gameSave;
-    io.emit("newGameSaved", Object.values(gamesSaved));
-
-  });
-
-  socket.on("whatGameSaved", () => {
-    socket.emit("newGameSaved", Object.values(gamesSaved));
+    io.to(data.serverId).emit("emote", emote, data.playerName)
   })
 
 
+  function readSaveDir() {
+    const dossier = "./saves/"
+    fs.readdir(dossier, (err, files) => {
+      if (err) {
+        console.error("PROBLEM !!! :", err);
+        return;
+      }
 
-  // SENTINEL 
-  socket.on("player_auth_validity", (data) => {
+      const jsonFile = files.filter(file => file.endsWith('.json'));
 
-    if (data.player_name == "") { return; }
+      const fileNameSave = jsonFile.map(file => path.parse(file).name);
+      socket.emit("newGameSaved", fileNameSave)
+    });
+  }
 
-    if (validCookies[data.player_name] != data.cookie) {
-      console.log("test");
-      socket.emit("sentinel_auth_error");
+  socket.on("saveGame", (serverId, saveName, playerName) => {
+    const dossier = "./saves/"
+    let lobby = findLobby(serverId, lobbyList);
+    if(lobby.owner == playerName){
+      if (lobby.gameType == "batailleOuverte") {
+        game = findGame(serverId, BatailGames);
+      }
+      else if (lobby.gameType == "sqp") {
+        game = findGame(serverId, TaureauGames);
+      }
+      else if (lobby.gameType == "mb") {
+        game = findGame(serverId, MilleBornesGames)
+      }
+      else {
+        throw new Error("aucun jeu connu sous ce nom: ", lobby.gameType);
+      }
+
+      game.serverName = saveName;
+      game.lobbyLinked["serverName"] = saveName;
+
+      const gameSave = JSON.stringify(game);
+
+      fs.writeFile(`saves/${playerName}_${saveName}_${lobby.gameType}.json`, gameSave, (err) => {
+        if (err) throw err;
+        console.log("fichier créer gg")
+      });
+
+      readSaveDir();
+
     }
+    else return 0;
+  })
 
-  });
+  socket.on("whatGameSaved", () => {
+    readSaveDir()
+  })
 
 
-});
+  socket.on("deleteFile", (fileName) => {
+    console.log(fileName)
+    fs.unlink(`saves/${fileName}.json`, (err) => {
+      if(err){
+        console.log("nigga se fichier existe pas");
+        return
+      }
+      console.log("file deleted")
+      readSaveDir()
+    })
 
+  })
 
-
-setInterval(() => { Sentinel_Main(io, validCookies, BatailGames, TaureauGames, MilleBornesGames, lobbyList, lobbyIndex) }, 100);
-
+}); 

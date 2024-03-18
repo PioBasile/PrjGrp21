@@ -132,13 +132,13 @@
 .MB-p1 {    
     transform: translateY(30vh);
     position: absolute;
-    background-color: #035d03;
+
 }
 
 .MB-p2 {
     position: absolute;
     transform: translateX(40vw);
-    background-color: #035d03;
+
 }
 
 .MB-p3 {

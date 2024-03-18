@@ -96,6 +96,10 @@ const Roulette = () => {
         return (orderInRoulette[number]);
     }
 
+    const leave = () => {
+        navigate('/BrowserManager');
+    }
+
     const sendMessage = () => {
         socket.emit('rlt-sendMessage', { name: sessionStorage.getItem("name"), msg: message});
         setMessage('');
@@ -273,9 +277,15 @@ const Roulette = () => {
 
     return (
 
-        <body className='roulette'>
-            {timer}
+        <div className='roulette'>
+            <button className='rou-timer'> vous avez encore {timer}s pour bet </button>
+            
             <YourComponent></YourComponent>
+            
+            <div className="ro-leave">
+                <button className="ro-bye-button" onClick={() => leave()}> Leave </button>
+            </div>
+            
             <div className='rouletteGameContainer' >
                 {!isSpinning && (<Popup />)}
                 <div className='rouletteContainer' >
@@ -304,7 +314,7 @@ const Roulette = () => {
                         <div className='numberContainer'>
                             {rouletteEuropeenne.douzaines.map((valeur, index) => (
                                 <div onClick={() => money > 0 ? handleBet(valeur) : null} className='douzaine' key={index}>
-                                    {(valueBet.includes(valeur)) ? <img alt='' src={coin} className="coin"></img> : valeur}
+                                    {(valueBet.includes(valeur)) ? <img alt='coin' src={coin} className="coin"></img> : valeur}
                                 </div>
                             ))}
                         </div>
@@ -377,7 +387,7 @@ const Roulette = () => {
                     </div>
                 </div>
             </div>
-        </body>
+        </div>
     )
 }
 

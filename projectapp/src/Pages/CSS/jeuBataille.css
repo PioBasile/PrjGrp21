@@ -128,7 +128,7 @@
 
 .bo-enem-emote-left {
     position: fixed;
-    top: 110px;
+    left:150px;
     width: 120px; 
     height: 80px; 
     background-color: rgb(68, 102, 176);
@@ -136,6 +136,20 @@
     border-radius: 2px;
     border-color: rgb(50, 71, 111);
     justify-content: center;
+}
+
+.bo-enem-emote-left::after {
+    content: '';
+    position: absolute;
+    top: 50%; /* Centre le triangle verticalement */
+    left: 5%; /* Positionne le triangle à gauche du conteneur */
+    transform: translateY(-50%); /* Ajuste le positionnement vertical pour le centrer parfaitement */
+    width: 0;
+    height: 0;
+    border: 15px solid transparent;
+    border-right-color: rgb(68, 102, 176); /* La couleur est maintenant appliquée à border-right pour qu'il pointe vers la gauche */
+    border-left: 0; /* Assurez-vous que le côté gauche du triangle est transparent */
+    margin-left: -15px; /* Ajuste légèrement la position si nécessaire */
 }
 
 .bo-right-opponent {
@@ -148,16 +162,29 @@
 
 .bo-enem-emote-right {
     position: fixed;
-    top :25% ;
-    right : 130px;
+    right:150px;
+    width: 120px; 
     height: 80px; 
-    width: 120px;
-    background-color: rgb(143, 155, 180);
+    background-color: rgb(68, 102, 176);
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
     border-radius: 2px;
     border-color: rgb(50, 71, 111);
     justify-content: center;
 }
+
+.bo-enem-emote-right::after {
+    content: '';
+    position: absolute;
+    top: 50%; /* Centre le triangle verticalement */
+    right: -7%; /* Positionne le triangle à droite du conteneur, en dehors de celui-ci */
+    transform: translateY(-50%); /* Ajuste le positionnement vertical pour le centrer parfaitement */
+    width: 0;
+    height: 0;
+    border: 15px solid transparent;
+    border-left-color: rgb(68, 102, 176); /* La couleur doit être appliquée à border-left pour que le triangle pointe vers la droite */
+    margin-right: -15px; /* Ajuste légèrement la position si nécessaire */
+}
+
 
 .bo-selected-cards {
     position: absolute;
@@ -252,9 +279,9 @@
 }
 
 .bo-message-container {
-    position: absolute;
+    position: fixed;
     right: 0;
-    bottom:21vh;
+    bottom:10vh;
     max-height: 50vh;
 }
 

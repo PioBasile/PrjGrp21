@@ -48,6 +48,10 @@
     align-items: center;
 }
 
+.opponent-six.hisTurn {
+    box-shadow: rgb(60, 255, 0) 0px 0px 20px;
+}
+
 .opponent-six:nth-child(1) {
     left: 10%;
 }

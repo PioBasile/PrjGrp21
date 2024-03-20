@@ -856,6 +856,9 @@ io.on('connection', (socket) => {
 
   });
 
+  socket.on("thisIsThePlayerWhoPlayed", (playerName, serverId) => {
+    io.to(serverId).emit("playerWhosPlaying", playerName);
+  })
 
 
 

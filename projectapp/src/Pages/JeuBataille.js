@@ -32,21 +32,6 @@ const JeuBataille = () => {
     const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/blue.png")
 
 
-
-    /* ------------A FAIRE--------------
-
-        2. faire en sorte que les cartes soient au milieu if selected avec les autres 
-           opponents , puis les retourner quand tout le monde place leur carte.
-           A divise la partie du milieu en 2 (5 par 5 avec le nom du joueur en dessous de chaque
-            carte) A separe avec une ligne horizontale au milieu clean
-        3. ajouter un timer a gauche pas obligatoire
-        4. faire les emotes , choisir un bouton a maintenir pour les emotes ou faire comme clash royal
-        
-        
-        -----PAGE DE WINNER------
-        3. ajouter le score de chaque joueur/classement
-    */
-
     //----------------------EMOTES---------------------
     const toyota = require("./CSS/emotes/toyota.mp4");
     const BOING = require("./CSS/emotes/BOING.mp4");

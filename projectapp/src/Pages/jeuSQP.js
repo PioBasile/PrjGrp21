@@ -42,6 +42,7 @@ const SixQuiPrend = () => {
   const [allPlayerSelected, setAllPlayerSelected] = useState(false);
   const [myTurnP2, setMyTurnP2] = useState(false);
   const [saveName, setSaveName] = useState("");
+  const [playerPlaying, setPlayerPlaying] = useState("")
   const [isSave, setIsSave] = useState(false);
   const [playerNameEmote, setPlayerNameEmote] = useState("");
   const [EmoteToShow, setEmoteToShow] = useState("");
@@ -308,8 +309,8 @@ const SixQuiPrend = () => {
 
       });
       socket.on('6oppo', (oppo) => {
-
-        setOpponents(oppo);
+        let oppoWithoutMe = oppo.filter(opponent => opponent.nom !== sessionStorage.getItem("name"))
+        setOpponents(oppoWithoutMe);
 
         oppo.forEach(element => {
 
@@ -345,6 +346,7 @@ const SixQuiPrend = () => {
         if (payload.name === sessionStorage.getItem('name')) {
 
           setMyTurnP2(true);
+          socket.emit("thisIsThePlayerWhoPlayed", sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
 
         } else {
 
@@ -409,6 +411,10 @@ const SixQuiPrend = () => {
         setMessages(msgList);
       })
 
+      socket.on("playerWhosPlaying", (playerName) => {
+        console.log(playerName);
+        setPlayerPlaying(playerName);
+      }); 
 
       window.addEventListener("keydown", handleKeyDown);
       window.addEventListener("keyup", handleKeyUp);
@@ -558,7 +564,7 @@ const SixQuiPrend = () => {
 
         <div className="adverse-players">
           {opponents.map((opponent, index) => (
-            <div key={index} className="opponent-six">
+            <div key={index} className={`opponent-six ${playerPlaying !== opponent.nom ? "" : "hisTurn"}`}>
               <strong>{opponent.nom}</strong> <br />
               Cards: {opponent.deck} <br />
             </div>

@@ -305,45 +305,7 @@ class Bataille {
       this.chatContent.push(msg);
     }
   }
-  /*
-  {
-    cartes: [
-    ],
-    chatContent: [],
-    currentTurn: 0,
-    idPartie: '1',
-    maxJoueurs: 2,
-    maxTurn: 20,
-    owner: 'player1',
-    playerList: [
-      {
-        out: false,
-        name: 'player1',
-        deck: [Array],
-        selected: null,
-        cookie: 'eIcOodS9DE',
-        score: 0
-      },
-      {
-        out: false,
-        name: 'florian',
-        deck: [Array],
-        selected: null,
-        cookie: 'ND2MArXXhX',
-        score: 0
-      }
-    ],
-    scoreboard: { player1: 0, florian: 0 },
-    status: 'phase1'
-  
-    this.out = false;
-      this.name = username;
-      this.deck = [];
-      this.selected = null;
-      this.cookie = cookie;
-  
-  
-  */
+
   recreate(gameData) {
     let newPlayerList = [];
     

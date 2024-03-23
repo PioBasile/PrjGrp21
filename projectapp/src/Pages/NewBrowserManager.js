@@ -63,7 +63,6 @@ const NewBrowserManager = () => {
                 let lobbys = lobbyListSaved.filter(lobby => {
                     const playerName = sessionStorage.getItem("name");
                     const playerList = lobby.gameLinked["playerList"].map(player => player.name);
-                    console.log(playerList);
                     return playerList.includes(playerName);
                 });
                 setMesLobby([...lobbys, ...lobbyCreated]);

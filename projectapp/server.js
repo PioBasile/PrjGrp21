@@ -476,208 +476,79 @@ io.on('connection', (socket) => {
 
   });
 
-  socket.on("sendCard", (data) => {
-    game = findGame(data.serverId, BatailGames)
-    let card = data.card
-    if (card) {
-      game.cardPlayedInRound[data.name] = card;
+
+  socket.on("playCard", (serverId, card, playerName) => {
+    let game = findGame(serverId, BatailGames)
+    let player = findPlayer(playerName, game.playerList);
+    player.selected = card;
+    game.cardPlayedInRound[player.name] = card;
+    player.removeCard(card);
+    socket.emit("yourDeck");
+    io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
+    if (game.allPlayerPlayed()) {
+      console.log("all played");
+      if (game.isADraw()) {
+        console.log("draw")
+        socket.emit("resolveDrawAsk");
+        io.to(serverId).emit("canPlay?", false);
+      }
+
+      else {
+        console.log("not draw")
+        socket.emit("resolveRoundAsk");
+        io.to(serverId).emit("canPlay?", false);
+      }
     }
     else {
-      socket.emit("deco")
-      throw new Error("This card does not exist")
+      console.log("not all played");
+      player.removeCard(card);
+      socket.emit("yourDeck");
     }
-
-    io.to(data.serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
   })
 
-  // Phase de choix, permet au joueurs de choisir leurs cartes et une fois tout les cartes chosis donne le résultat du round //
-  socket.on('PhaseDeChoix', (GameId, playerName, card) => {
+  socket.on("resetCardSelected", (serverId) => {
+    game = findGame(serverId, BatailGames);
+    game.cardPlayedInRound = {};
+    io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
+  })
+
+  socket.on("resolveRound", (serverId, niggerName) => {
+    console.log("lets resolve this round", niggerName);
+    let game = findGame(serverId, BatailGames);
+    let allCardPlayed = Object.values(game.cardPlayedInRound);
+    let winner = game.findWinner(game.playerList);
+    winner.deck = [...winner.deck, ...allCardPlayed];
+    socket.emit("yourDeck", winner.deck);
+    game.restartRound();
+    io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
+    io.to(serverId).emit("canPlay?", true);
+  })
 
 
-    let game = findGame(GameId, BatailGames);
+  socket.on("resolveDrawFirstPart", (serverId) => {
+    let game = findGame(serverId, BatailGames);
+    game.resolveDrawFirstPart()
+    io.to(serverId).emit("yourDeck");
+    io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
+    socket.emit("resolveDrawAfter");
+  })
 
-    let player = findPlayer(playerName, game.playerList);
-    if (player == -1) {
-      socket.emit("deco");
-      return;
-    }
+  socket.on("resolveDraw", (serverId) => {
+    let game = findGame(serverId, BatailGames);
+    let playersInDraw = game.findPlayerWasInDraw()
+    let winner = game.findWinner(playersInDraw);
 
-    player.selected = card;
+    game.resolveDraw(winner);
+    io.to(serverId).emit("yourDeck");
+    game.restartRound();
+    io.to(serverId).emit("reset")
+  })
 
-    let readyUP = true;
-    game.playerList.forEach((player) => {
-      if (player.selected == null && !player.out) {
-        readyUP = false;
-      }
-
-    });
-    if (!readyUP) {
-      return;
-    } else {
-      game.resolve();
-      let count = 0;
-
-      game.playerList.forEach((player) => {
-
-        // HAHAHAHAHAHA
-        if (player.deck[0] == [][0]) {
-          player.out = true;
-          count++;
-        }
-
-      });
-
-      if (count >= game.playerList.length - 1 || game.currentTurn == game.maxTurn) {
-        io.to(GameId).emit('FIN', game.scoreboard, game.playerList);
-
-        let max = -1;
-        let winner = [];
-        game.playerList.forEach((player) => {
-
-          if (max < game.scoreboard[player.name]) {
-            max = game.scoreboard[player.name];
-            winner = [playerName];
-          } else if (max == game.scoreboard[player.name]) {
-            winner.push(player.name);
-          }
-
-        });
-
-        winner.forEach((player) => {
-
-          get_user_info(player).then((res) => {
-
-
-            changeDataBase('nbWin', res.nbWin + 1, player);
-
-          });
-
-        });
-
-
-      } else {
-        if (game.Rdraw != null) {
-          game.cardPlayedInRound = {}
-          console.log(game.Rdraw);
-          game.Rdraw.forEach((player) => {
-
-            CardIndex = Math.floor(Math.random() * player.deck.length);
-            player.deck.splice(CardIndex, 1);
-            game.cardPlayedInRound[player.name] = player.deck[CardIndex];
-
-          });
-
-
-          game.Rwinner.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)];
-          io.to(GameId).emit("roundCardsPlayed", game.cardPlayedInRound);
-          io.to(GameId).emit('Draw', game.Rdraw);
-          game.cardPlayedInRound = {};
-
-        } else {
-          game.Rwinner.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)]
-          io.to(GameId).emit('Winner', game.Rwinner);
-          game.cardPlayedInRound = {}
-          io.to(GameId).emit("roundCardsPlayed", game.cardPlayedInRound);
-          game.currentTurn++;
-        }
-      }
-    }
-  });
-
-  // POUR RESOUDRE LES EGALITE
-  socket.on('ResoudreEgalite', (GameId, playerName, card) => {
-
-    let game = findGame(GameId, BatailGames);
-    let player = findPlayer(playerName, game.playerList);
-    if (player == -1) {
-      socket.emit("deco");
-      return;
-    }
-
-    player.selected = card;
-
-    let readyUP = true;
-    game.Rdraw.forEach((player) => {
-      if (player.selected == null && !player.out) {
-        readyUP = false;
-      }
-
-    });
-    if (!readyUP) {
-      return;
-    } else {
-      game.resolve_draw();
-      let count = 0;
-
-      game.playerList.forEach((player) => {
-
-        // HAHAHAHAHAHA
-        if (player.deck[0] == [][0]) {
-          player.out = true;
-          count++;
-        }
-
-      });
-
-      if (count >= game.playerList.length - 1 || game.currentTurn == game.maxTurn) {
-        io.to(GameId).emit('FIN', game.scoreboard, game.playerList);
-        let max = -1;
-        let winner = [];
-        game.playerList.forEach((player) => {
-
-          if (max < game.scoreboard[player.name]) {
-            max = game.scoreboard[player.name];
-            winner = [playerName];
-          } else if (max == game.scoreboard[player.name]) {
-            winner.push(player.name);
-          }
-
-        });
-
-        winner.forEach((player) => {
-
-          get_user_info(player).then((res) => {
-
-            changeDataBase('nbWin', res.nbWin + 1, player);
-
-          });
-
-        });
-
-      } else {
-        if (game.Rdraw != null) {
-          game.Rdraw.forEach((player) => {
-
-            CardIndex = Math.floor(Math.random() * player.deck.length);
-            player.deck.splice(CardIndex, 1)
-            game.cardPlayedInRound[player.username] = player.deck[CardIndex];
-
-          });
-          io.to(GameId).emit('Draw', game.Rdraw);
-        } else {
-          io.to(GameId).emit('Winner', game.Rwinner);
-          game.currentTurn++;
-        }
-      }
-    }
-
-  });
-
-  socket.on('leaveGame', (playerName, GameId) => {
-
-    let game = findGame(GameId, BatailGames);
-    let player = findPlayer(playerName, game.playerList);
-    if (player == -1) {
-      socket.emit("deco");
-      return;
-    }
-
-    game.removePlayer(player);
-    io.to(GameId).emit('getInfo', game);
-
-
-  });
-
+  socket.on("whatMyDeck", (serverId, playerName) => {
+    let game = findGame(serverId, BatailGames)
+    let player = findPlayer(playerName, game.playerList)
+    socket.emit("Deck", player.deck);
+  })
 
 
 
@@ -1136,12 +1007,12 @@ io.on('connection', (socket) => {
     io.to(serverId).emit("getMessage", game.chatContent)
   })
 
-  socket.on("rlt-sendMessage", (data) =>{
+  socket.on("rlt-sendMessage", (data) => {
     RouletteInstance.addMessage(`${data.name} : ${data.msg}`);
     io.emit("rlt-getMessage", RouletteInstance.chatContent);
   })
 
-  socket.on("rlt-loadTheChat",()=> {
+  socket.on("rlt-loadTheChat", () => {
     io.emit("rlt-getMessage", RouletteInstance.chatContent)
   })
 
@@ -1172,7 +1043,7 @@ io.on('connection', (socket) => {
   socket.on("saveGame", (serverId, saveName, playerName) => {
     const dossier = "./saves/"
     let lobby = findLobby(serverId, lobbyList);
-    if(lobby.owner == playerName){
+    if (lobby.owner == playerName) {
       if (lobby.gameType == "batailleOuverte") {
         game = findGame(serverId, BatailGames);
       }
@@ -1210,7 +1081,7 @@ io.on('connection', (socket) => {
   socket.on("deleteFile", (fileName) => {
     console.log(fileName)
     fs.unlink(`saves/${fileName}.json`, (err) => {
-      if(err){
+      if (err) {
         console.log("nigga se fichier existe pas");
         return
       }
@@ -1219,5 +1090,22 @@ io.on('connection', (socket) => {
     })
 
   })
+  // SENTINEL 
+  socket.on("player_auth_validity", (data) => {
 
-}); 
+    if (data.player_name == "") { return; }
+
+    if (validCookies[data.player_name] != data.cookie) {
+      console.log("test");
+      socket.emit("sentinel_auth_error");
+    }
+
+  });
+
+
+});
+
+
+
+setInterval(() => { Sentinel_Main(io, validCookies, BatailGames, TaureauGames, MilleBornesGames, lobbyList, lobbyIndex) }, 100);
+

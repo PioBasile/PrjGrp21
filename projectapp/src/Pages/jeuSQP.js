@@ -123,7 +123,6 @@ const SixQuiPrend = () => {
 
     if (!myTurn) { return 0 };
     let card = payload.card
-    console.log('test');
 
 
 
@@ -174,7 +173,6 @@ const SixQuiPrend = () => {
 
     socket.emit('send6cardphase2', 1, sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
 
-    console.log("1");
   }
 
 
@@ -184,7 +182,6 @@ const SixQuiPrend = () => {
 
     socket.emit('send6cardphase2', 2, sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
 
-    console.log("2");
   }
 
   const addCard3 = () => {
@@ -193,7 +190,6 @@ const SixQuiPrend = () => {
 
     socket.emit('send6cardphase2', 3, sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
 
-    console.log("3");
   }
 
   const addCard4 = () => {
@@ -202,7 +198,6 @@ const SixQuiPrend = () => {
 
     socket.emit('send6cardphase2', 4, sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
 
-    console.log("4");
   }
 
   const Rectangle = () => {
@@ -270,7 +265,7 @@ const SixQuiPrend = () => {
       socket.emit('6update', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
       socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
       socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
-      socket.emit("whatIsOwner", sessionStorage.getItem("serverConnected"));
+      socket.emit("whaIsOwner", sessionStorage.getItem("serverConnected"));
     }
 
     return () => {
@@ -292,6 +287,7 @@ const SixQuiPrend = () => {
 
 
       socket.on("owner", (owner) => {
+        console.log(owner)
         setOwner(owner)
       })
 
@@ -356,7 +352,7 @@ const SixQuiPrend = () => {
       });
       socket.on('FIN', (winner) => {
 
-        console.log(JSON.parse(JSON.stringify(winner)).name);
+
         sessionStorage.setItem('winners', JSON.parse(JSON.stringify(winner)).name);
         navigate("/winner");
 
@@ -401,7 +397,7 @@ const SixQuiPrend = () => {
           return;
         }
 
-        console.log(video, opponentName);
+
 
         setEmoteToShow(video.videoUrl);
         setPlayerNameEmote(opponentName);
@@ -412,9 +408,9 @@ const SixQuiPrend = () => {
       })
 
       socket.on("playerWhosPlaying", (playerName) => {
-        console.log(playerName);
+
         setPlayerPlaying(playerName);
-      }); 
+      });
 
       window.addEventListener("keydown", handleKeyDown);
       window.addEventListener("keyup", handleKeyUp);
@@ -535,7 +531,7 @@ const SixQuiPrend = () => {
 
 
       {/* UPPER BANDEAU */}
-
+      <button className="bo-emote-button" onClick={toggleEmotes}>Emotes</button>
       {isSave && (
         <div className='savePopUp'>
           <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
@@ -554,7 +550,7 @@ const SixQuiPrend = () => {
 
       <div className='sqp-upperBandeau'>
 
-       {owner === sessionStorage.getItem("name") &&  <div className='save-button' onClick={() => openSavePopUp()}> SAVE</div>}
+        {owner === sessionStorage.getItem("name") && <div className='save-button' onClick={() => openSavePopUp()}> SAVE</div>}
         <div className='MB-exit-button' onClick={() => leave()}> QUITTER</div>
 
         <YourComponent></YourComponent>

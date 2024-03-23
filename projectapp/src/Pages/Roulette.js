@@ -118,6 +118,11 @@ const Roulette = () => {
 
     useEffect(() => {
 
+        socket.on("bets" ,(betList) => {
+            let bets = betList.map(bet => bet.betPos);
+            setValueBet(bets);
+        })
+
         socket.on('spinwheel', (resy) => {
 
             handleSpin(resy);

@@ -379,7 +379,7 @@ const MilleBorne = () => {
                 <div className='savePopUp'>
                     <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
                     <input className="inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
-                     <div className="saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
+                    <div className="saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
                 </div>
             )}
 
@@ -390,10 +390,11 @@ const MilleBorne = () => {
             <div className='MB-adversaire-container-upper-bandeau'>
                 <div className='exitAndSave-container'>
                     <div className='MB-exit-button' onClick={() => leave()}> LEAVE</div>
-                    {owner === sessionStorage.getItem("name") &&<div className='MB-exit-button' onClick={() => openSavePopUp()}> SAVE</div>}
+                    {owner === sessionStorage.getItem("name") && <div className='MB-exit-button' onClick={() => openSavePopUp()}> SAVE</div>}
+                    <div className="MB-exit-button" onClick={toggleEmotes}>EMOTES</div>
                 </div>
 
-                {showEnemyEmote(sessionStorage.getItem("name")) && (
+                {true&& (
                     <div className='bo-player-emote-container'>
                         <div className="bo-player-emote" >
                             <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
@@ -462,7 +463,6 @@ const MilleBorne = () => {
                     </div>
                 )}
 
-
                 {playerList.map((player, index) => (
                     <div className={`MB-adversaire-container MB-p${index + 1}  ${player.myTurn ? "myTurn" : ""}`} key={index}>
                         <div className='MB-adversaire-card'>
@@ -496,7 +496,7 @@ const MilleBorne = () => {
                 <div className='pioche-container'>
                     <div className='pioche'>{nbCards}
                         <div className='MB-pioche-petit'>cartes</div>
-                        <div className='MB-pioche-petit'>restante</div>
+                        <div className='MB-pioche-petit'>restantes</div>
                     </div>
                 </div>
             </div>

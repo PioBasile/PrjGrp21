@@ -554,7 +554,10 @@ const JeuBataille = () => {
                 </div>
             </div>
 
-            {owner === sessionStorage.getItem("name") && <button className="bo-save-button" onClick={() => openSavePopUp()}>Save</button>}
+            {owner === sessionStorage.getItem("name") && 
+                <button className="bo-save-button" onClick={() => openSavePopUp()}>Save</button>
+            }
+            
             <button className="bo-leave-button" onClick={() => leaveGame()}>Leave Game</button>
 
             <div className="bo-emote-container">

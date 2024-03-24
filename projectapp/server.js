@@ -1113,11 +1113,12 @@ io.on('connection', (socket) => {
   // SENTINEL 
   socket.on("player_auth_validity", (data) => {
 
-    if (data.player_name == "") { return; }
+    if (data.player_name == "" || validCookies[data.player_name] == "no") { return; }
 
     if (validCookies[data.player_name] != data.cookie) {
       console.log("test");
       socket.emit("sentinel_auth_error");
+      validCookies[data.player_name] = "no";
     }
 
   });

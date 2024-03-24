@@ -178,6 +178,7 @@ class Bataille {
 
     this.Rwinner;
     this.Rdraw;
+    this.previousCardsOfDraw = [];
 
   }
 
@@ -222,7 +223,8 @@ class Bataille {
   }
 
   restartRound() {
-    this.cardPlayedInRound = {}
+    this.cardPlayedInRound = {};
+    this.previousCardsOfDraw = [];
     for (let player of this.playerList) {
       player.selected = null;
     }
@@ -231,21 +233,24 @@ class Bataille {
   playerInDraw() {
     let playersInDraw = []
     for (let i = 0; i < this.playerList.length; i++) {
-      for (let j = 0; j < this.playerList.length; j++) {
+      for (let j = i+1; j < this.playerList.length; j++) {
         if (this.playerList[i].selected.power == this.playerList[j].selected.power) {
-          playersInDraw.push(this.playerList[i])
+          playersInDraw.push(this.playerList[i], this.playerList[j]);
         }
       }
     }
-    return playersInDraw;
+    return playersInDraw.filter((elem,index) => playersInDraw.indexOf(elem) == index); 
   }
 
   isADraw() {
+    let maxCard =  Math.max(...this.playerList.map((player) => player.selected.power));
     for (let i = 0; i < this.playerList.length; i++) {
       for (let j = i + 1; j < this.playerList.length; j++) {
         if (this.playerList[i].selected.power == this.playerList[j].selected.power) {
-          console.log("TRUE");
-          return true
+          if(this.playerList[i].selected.power >= maxCard){
+            return true
+          }
+          return false
         }
       }
     }
@@ -256,10 +261,11 @@ class Bataille {
     if (playerList[0].selected != null) {
       let winner = playerList[0]
       for (let player of playerList) {
-        if (winner.selected.power < player.selected.power) {
+        if (winner.selected.power <= player.selected.power) {
           winner = player;
         }
       }
+      console.log("winnir",winner)
       return winner;
     }
     else {
@@ -267,9 +273,13 @@ class Bataille {
     }
   }
 
+
   resolveDrawFirstPart() {
-    let playerInDraw = this.playerInDraw();
-    playerInDraw.forEach(player => {
+    let playersInDraw = this.playerInDraw();
+    console.log("resolveDrawFirstPart");
+    console.log(playersInDraw);
+    this.previousCardsOfDraw = Object.values(this.cardPlayedInRound)
+    playersInDraw.forEach(player => {
       let randomId = Math.floor(Math.random() * player.deck.length);
       let card = player.deck[randomId];
       this.cardPlayedInRound[player.name] = card
@@ -291,13 +301,15 @@ class Bataille {
   resolveDraw(winner) {
 
     let cardWin = Object.values(this.cardPlayedInRound);
-    winner.deck = [...winner.deck, ...cardWin];
-    console.log("wionner", winner);
+    winner.deck = [...winner.deck, ...cardWin,...this.previousCardsOfDraw];
 
   }
 
   isGameEnded() {
     let nbPlayerAtZeroCard = 0
+    if (game.maxTurn <= game.currentTurn) {
+      return true;
+    }
     for (let player of this.playerList) {
       if (player.deck.length == 0) {
         nbPlayerAtZeroCard++
@@ -305,6 +317,27 @@ class Bataille {
     }
     return nbPlayerAtZeroCard == this.playerList.length - 1;
   }
+
+  findGameWinner() {
+    if (this.isGameEnded()) {
+      let winners = [this.playerList[0]]
+      for (let player of this.playerList) {
+        if(player.deck.length <= winners.deck.length){
+          if(player.deck.length == winners.deck.length){
+            winners.push(player)
+          }
+          else {
+            winners = [player]
+          }
+        }
+      } 
+      return winners
+    }
+    else {
+      return false
+    }
+  }
+
 
   playCard(player, card) {
     player.selected = card;
@@ -385,6 +418,12 @@ class Player {
     let icard = findCard(card, this.deck);
     this.deck.splice(icard, 1);
 
+  }
+
+  switchCard(newCard) {
+    this.removeCard(newCard);
+    this.deck.push(this.selected);
+    this.selected = newCard;
   }
 
 }

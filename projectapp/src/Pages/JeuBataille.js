@@ -8,12 +8,10 @@ import './CSS/emotes/toyota.mp4';
 const JeuBataille = () => {
 
     const [playerCards, setPlayerCards] = useState([]);
-    const [selectedCards, setSelectedCards] = useState([]);
-    const [oldSelect, setOldSelect] = useState(null);
+    const [selectedCard, setSelectedCard] = useState({ symbole: 'mathis', number: '1000', power: -1 });
     const [opponents, setOpponents] = useState([]);
     const [scoreboard, setScore] = useState({});
-    const [isDraw, setDraw] = useState(false);
-    const [inDraw, setInDraw] = useState(false);
+    const [showAll, setShowAll] = useState(false);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const navigate = useNavigate();
@@ -285,6 +283,7 @@ const JeuBataille = () => {
     //----------------------SELECT CARD---------------------<
 
     const selectCardClick = (card) => {
+        setSelectedCard(card);
         socket.emit("playCard", sessionStorage.getItem("serverConnected"), card, sessionStorage.getItem("name"));
     };
 
@@ -310,6 +309,7 @@ const JeuBataille = () => {
             socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
             socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
             socket.emit("whaIsOwner", sessionStorage.getItem("serverConnected"));
+            socket.emit("loadCardsPlayed",sessionStorage.getItem("serverConnected"));
 
         }
         return () => {
@@ -360,13 +360,15 @@ const JeuBataille = () => {
             })
 
             socket.on("resolveRoundAsk", () => {
+                setShowAll(true)
                 setTimeout(() => {
                     socket.emit("resolveRound", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"));
                     console.log("resolve round")
-                }, "2000");
+                }, "3000");
             });
 
             socket.on("resolveDrawAsk", () => {
+                console.log("resolveDrawAsk")
                 setTimeout(() => {
                     socket.emit("resolveDrawFirstPart", sessionStorage.getItem("serverConnected"));
                     console.log("ntm si c ca");
@@ -374,20 +376,29 @@ const JeuBataille = () => {
             });
 
             socket.on("resolveDrawAfter", () => {
+                console.log("resolveDrawAfter")
                 setTimeout(() => {
                     socket.emit("resolveDraw", sessionStorage.getItem("serverConnected"));
                     console.log("bizzare mon nigga");
                 }, '3000');
             });
 
+            socket.on("fin", (winner) =>{
+
+                sessionStorage.setItem("winner", winner);
+                navigate("/winner");
+
+            })
 
             socket.on("getMessage", (msgList) => {
                 setMessages(msgList);
             })
 
             socket.on("roundCardsPlayed", (cardPlayedList) => {
-
+                console.log(selectCardClick)
                 setAllCardPlayed(Object.values(cardPlayedList));
+                console.log("roundCardsPlayed", allCardPlayed);
+
             })
 
             socket.on("emote", (emote, opponentName) => {
@@ -411,7 +422,9 @@ const JeuBataille = () => {
             });
 
             socket.on("reset", () => {
+                console.log("reset")
                 setAllCardPlayed([]);
+                setCanPlay(true);
             })
         }
 
@@ -421,12 +434,16 @@ const JeuBataille = () => {
             mounted = false;
             socket.off("Deck");
             socket.off("owner");
+            socket.off("emote");
+            socket.off("canPlay?");
             socket.off("yourDeck");
             socket.off('getMessage');
             socket.off("resolveDrawAsk");
             socket.off("resolveRoundAsk");
             socket.off("resolveDrawAfter");
             socket.off("roundCardsPlayed");
+            socket.off("reset")
+            socket.off("fin")
         };
     }, []);
 
@@ -547,8 +564,9 @@ const JeuBataille = () => {
                     {
                         allCardPlayed.map((card, index) => (
                             // <img alt='r' src={(selectedCards.length !== 0 || inDraw) && !isDraw ? getCardImage(card) : backCardsImageTest} />
-                            <img alt='r' src={getCardImage(card)} />
-
+                            <img alt='r' src={ ((selectedCard.power === card.power && selectedCard.symbole === card.symbole) || showAll) ? getCardImage(card) : backCardsImageTest} />
+                            
+                            
                         ))
                     }
                 </div>

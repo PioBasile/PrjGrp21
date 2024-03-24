@@ -476,13 +476,24 @@ io.on('connection', (socket) => {
 
   });
 
+  socket.on("loadCardsPlayed", (serverId) => {
+    let game = findGame(serverId, BatailGames);
+    socket.emit("roundCardsPlayed", game.cardPlayedInRound);
+  })
 
   socket.on("playCard", (serverId, card, playerName) => {
     let game = findGame(serverId, BatailGames)
     let player = findPlayer(playerName, game.playerList);
-    player.selected = card;
+    if(game.cardPlayedInRound.hasOwnProperty(playerName)){
+      console.log("switch");
+      player.switchCard(card);
+    }
+    else {
+      player.selected = card;
+      console.log("not switch");
+      player.removeCard(card);
+    }
     game.cardPlayedInRound[player.name] = card;
-    player.removeCard(card);
     socket.emit("yourDeck");
     io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
     if (game.allPlayerPlayed()) {
@@ -497,6 +508,15 @@ io.on('connection', (socket) => {
         console.log("not draw")
         socket.emit("resolveRoundAsk");
         io.to(serverId).emit("canPlay?", false);
+      }
+
+      let winner = game.findGameWinner();
+      if(winner){
+        game.status = STATUS.ENDED;
+        socket.emit("fin", winner)
+      }
+      else {
+        game.currentTurn += 1
       }
     }
     else {

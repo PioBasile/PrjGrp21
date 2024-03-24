@@ -309,10 +309,7 @@ const JeuBataille = () => {
             socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
             socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
             socket.emit("whaIsOwner", sessionStorage.getItem("serverConnected"));
-<<<<<<< HEAD
-=======
             socket.emit("loadCardsPlayed",sessionStorage.getItem("serverConnected"));
->>>>>>> 4a5de3348e111daffaf7ffa51e1edfe95698b0b6
 
         }
         return () => {

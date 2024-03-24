@@ -1,4 +1,3 @@
-const { REPL_MODE_STRICT } = require("repl");
 const { login, changeDataBase, get_user_info, register } = require("./D_db.js");
 
 const makecookie = (length) => {
@@ -148,27 +147,26 @@ class Bataille {
     this.owner = Owner;
     this.playerList = playerL;
     this.scoreboard = {};
-    this.cartes = shuffle(generateCartes());
+    this.cartes = this.generateCartes();
     this.moneyBet = moneyBet;
     this.chatContent = ["use <global> to talk to everyone"];
     this.cardPlayedInRound = {};
+    this.cardPlayed = [];
     this.lobbyLinked = null;
+    this.distribuer();
 
     let index = 0;
 
-    this.playerList.forEach((player) => {
+    // this.playerList.forEach((player) => {
 
-      this.scoreboard[player.name] = 0;
+    //     this.scoreboard[player.name] = 0;
 
-
-      for (let i = 0; i < Math.floor(52 / (this.maxJoueurs)); i++) {
-        if (i == 20) { break }
-        player.deck.push(this.cartes[index]);
-        index++;
-      }
-
-
-    });
+    //     for (let i = 0; i < Math.floor(52 / (this.maxJoueurs)); i++) {
+    //         if (i == 20) { break }
+    //         player.deck.push(this.cartes[index]);
+    //         index++;
+    //     }
+    // });
 
 
     this.currentTurn = 0;
@@ -176,119 +174,184 @@ class Bataille {
 
     this.Rwinner;
     this.Rdraw;
+    this.previousCardsOfDraw = [];
 
   }
 
-  resolve() {
 
-    let maxP = 0;
-    let currentW = null;
-    let drawP = [];
+  generateCartes() {
+    const symbols = ['Coeur', 'Carreau', 'Trefle', 'Pique'];
+    const numbers = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'V', 'Reine', 'Roi', 'As'];
+    const powers = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
-    this.playerList.forEach((player) => {
-
-      if (player.out) {
-        return;
+    const deck = [];
+    for (const symbol of symbols) {
+      for (let i = 0; i < numbers.length; i++) {
+        const card = new Bataille_Card(symbol, numbers[i], powers[i]);
+        deck.push(card);
       }
-
-      let power = player.selected.power
-
-      player.removeCard(player.selected);
-      player.selected = null;
-
-      if (power == maxP) {
-
-        drawP.push(player, currentW);
-        currentW = null;
-
-      }
-
-      if (power > maxP) {
-
-        maxP = power;
-        currentW = player;
-        drawP = [];
-
-      }
-
-
-
-    });
-
-    if (currentW != null) {
-
-      this.Rwinner = currentW;
-      this.Rdraw = null;
-      this.scoreboard[currentW.name] += 1;
-      get_user_info(currentW.name).then((res) => {
-
-        changeDataBase('roundWin', res.roundWin + 1, currentW.name);
-
-      });
-
-    } else {
-
-      this.Rwinner = null;
-      this.Rdraw = drawP;
-
     }
 
-    return 0;
+    return deck;
+  }
+
+  distribuer() {
+    let cardsByPlayers = Math.floor(this.cartes.length / this.playerList.length);
+    this.playerList.forEach((player, index) => {
+      for (let i = 0; i < cardsByPlayers; i++) {
+        let randomId = Math.floor(Math.random() * this.cartes.length)
+        let randomCard = this.cartes[randomId];
+        this.cartes.splice(randomId, 1);
+        player.deck.push(randomCard);
+      }
+    })
+  }
+
+  allPlayerPlayed() {
+    for (let player of this.playerList) {
+      if (player.selected == null) {
+        console.log("false")
+        return false
+      }
+    }
+    console.log("true")
+    return true
+  }
+
+  restartRound() {
+    this.cardPlayedInRound = {};
+    this.previousCardsOfDraw = [];
+    for (let player of this.playerList) {
+      player.selected = null;
+    }
+  }
+
+  playerInDraw() {
+    let playersInDraw = []
+    for (let i = 0; i < this.playerList.length; i++) {
+      for (let j = i+1; j < this.playerList.length; j++) {
+        if (this.playerList[i].selected.power == this.playerList[j].selected.power) {
+          playersInDraw.push(this.playerList[i], this.playerList[j]);
+        }
+      }
+    }
+    return playersInDraw.filter((elem,index) => playersInDraw.indexOf(elem) == index); 
+  }
+
+  isADraw() {
+    let maxCard =  Math.max(...this.playerList.map((player) => player.selected.power));
+    for (let i = 0; i < this.playerList.length; i++) {
+      for (let j = i + 1; j < this.playerList.length; j++) {
+        if (this.playerList[i].selected.power == this.playerList[j].selected.power) {
+          if(this.playerList[i].selected.power >= maxCard){
+            return true
+          }
+          return false
+        }
+      }
+    }
+    return false;
+  }
+
+  findWinner(playerList) {
+    if (playerList[0].selected != null) {
+      let winner = playerList[0]
+      for (let player of playerList) {
+        if (winner.selected.power <= player.selected.power) {
+          winner = player;
+        }
+      }
+      console.log("winnir",winner)
+      return winner;
+    }
+    else {
+      return 0;
+    }
+  }
+
+
+  resolveDrawFirstPart() {
+    let playersInDraw = this.playerInDraw();
+    console.log("resolveDrawFirstPart");
+    console.log(playersInDraw);
+    this.previousCardsOfDraw = Object.values(this.cardPlayedInRound)
+    playersInDraw.forEach(player => {
+      let randomId = Math.floor(Math.random() * player.deck.length);
+      let card = player.deck[randomId];
+      this.cardPlayedInRound[player.name] = card
+      player.deck.splice(randomId, 1);
+    });
+    console.log(this.cardPlayedInRound);
+  }
+
+  findPlayerWasInDraw() {
+    let playersInDrawList = []
+    let playersName = Object.keys(this.cardPlayedInRound);
+    for (let playerName of playersName) {
+      let playerInDraw = findPlayer(playerName, this.playerList)
+      playersInDrawList.push(playerInDraw);
+    }
+    return playersInDrawList;
+  }
+
+  resolveDraw(winner) {
+
+    let cardWin = Object.values(this.cardPlayedInRound);
+    winner.deck = [...winner.deck, ...cardWin,...this.previousCardsOfDraw];
 
   }
 
-  resolve_draw() {
+  isGameEnded() {
+    let nbPlayerAtZeroCard = 0
+    if (game.maxTurn <= game.currentTurn) {
+      return true;
+    }
+    for (let player of this.playerList) {
+      if (player.deck.length == 0) {
+        nbPlayerAtZeroCard++
+      }
+    }
+    return nbPlayerAtZeroCard == this.playerList.length - 1;
+  }
 
-    let maxP = 0;
-    let currentW = null;
-    let drawP = [];
+  findGameWinner() {
+    if (this.isGameEnded()) {
+      let winners = [this.playerList[0]]
+      for (let player of this.playerList) {
+        if(player.deck.length <= winners.deck.length){
+          if(player.deck.length == winners.deck.length){
+            winners.push(player)
+          }
+          else {
+            winners = [player]
+          }
+        }
+      } 
+      return winners
+    }
+    else {
+      return false
+    }
+  }
 
-    this.Rdraw.forEach((player) => {
 
-      if (player.out) {
-        return;
+  playCard(player, card) {
+    player.selected = card;
+    this.cardPlayedInRound[player.name] = card;
+    if (this.allPlayerPlayed()) {
+      if (this.isADraw()) {
+        console.log("a drraw")
+        return false;
       }
 
-      let power = player.selected.power
-      player.removeCard(player.selected);
-      player.selected = null;
-
-
-      if (power == maxP) {
-
-        drawP.push(player, currentW);
-        currentW = null;
-
+      else {
+        let allCardPlayed = Object.values(this.cardPlayedInRound);
+        player.deck = [...player.deck, ...allCardPlayed];
+        return true
       }
-
-      if (power > maxP) {
-
-        maxP = power;
-        currentW = player;
-        drawP = [];
-
-      }
-    });
-
-    if (currentW != null) {
-
-      this.Rwinner = currentW;
-      this.Rdraw = null;
-      this.scoreboard[currentW.name] += 1;
-      get_user_info(currentW.name).then((res) => {
-
-        changeDataBase('roundWin', res.roundWin + 1, currentW.name);
-
-      });
-
-    } else {
-
-      this.Rwinner = null;
-      this.Rdraw = drawP;
 
     }
-
-
+    this.allCardPlayed = {};
   }
 
 
@@ -308,7 +371,7 @@ class Bataille {
 
   recreate(gameData) {
     let newPlayerList = [];
-    
+
     this.currentTurn = gameData['currentTurn']
 
 
@@ -351,6 +414,12 @@ class Player {
     let icard = findCard(card, this.deck);
     this.deck.splice(icard, 1);
 
+  }
+
+  switchCard(newCard) {
+    this.removeCard(newCard);
+    this.deck.push(this.selected);
+    this.selected = newCard;
   }
 
 }
@@ -893,13 +962,13 @@ class MilleBorne {
   }
 
   recreate(gameData) {
-  
+
     let newPlayerList = [];
     this.currentTurn = gameData['currentTurn']
 
 
     for (let player of gameData["playerList"]) {
-      let newPlayer = new MB_Player(player["name"],player["cookie"],player["color"])
+      let newPlayer = new MB_Player(player["name"], player["cookie"], player["color"])
       newPlayer.deck = player["deck"]
       newPlayer.state = player["state"]
       newPlayer.bonus = player["bonus"]

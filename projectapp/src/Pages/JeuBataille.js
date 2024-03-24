@@ -8,12 +8,10 @@ import './CSS/emotes/toyota.mp4';
 const JeuBataille = () => {
 
     const [playerCards, setPlayerCards] = useState([]);
-    const [selectedCards, setSelectedCards] = useState([]);
-    const [oldSelect, setOldSelect] = useState(null);
+    const [selectedCard, setSelectedCard] = useState({ symbole: 'mathis', number: '1000', power: -1 });
     const [opponents, setOpponents] = useState([]);
     const [scoreboard, setScore] = useState({});
-    const [isDraw, setDraw] = useState(false);
-    const [inDraw, setInDraw] = useState(false);
+    const [showAll, setShowAll] = useState(false);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const navigate = useNavigate();
@@ -21,6 +19,7 @@ const JeuBataille = () => {
     const [showEmotes, setShowEmotes] = useState(false);
 
     const [allCardPlayed, setAllCardPlayed] = useState([]);
+    const [canPlay, setCanPlay] = useState(true);
 
     const [playerNameEmote, setPlayerNameEmote] = useState("");
     const [EmoteToShow, setEmoteToShow] = useState("");
@@ -83,7 +82,7 @@ const JeuBataille = () => {
 
     const handleVideoEnd = () => {
         if (emoteRef.current) {
-            emoteRef.current.style.display = 'none'; 
+            emoteRef.current.style.display = 'none';
         }
     };
 
@@ -284,37 +283,8 @@ const JeuBataille = () => {
     //----------------------SELECT CARD---------------------<
 
     const selectCardClick = (card) => {
-
-        socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
-
-        if (!inDraw && isDraw) {
-            alert("is dranw but not in draw")
-            return 0;
-        }
-
-        if (oldSelect != null) {
-            if (oldSelect !== card) {
-                playerCards.push(oldSelect);
-                setOldSelect(playerCards.splice(playerCards.indexOf(card), 1)[0]);
-            }
-
-        } else {
-            setOldSelect(playerCards.splice(playerCards.indexOf(card), 1)[0]);
-        }
-        sortCards(playerCards);
-        setSelectedCards(card);
-        if (!inDraw) {
-            socket.emit("sendCard", { serverId: sessionStorage.getItem("serverConnected"), name: sessionStorage.getItem("name"), card: card, oldSelect: oldSelect });
-            setTimeout(() => {
-                socket.emit('PhaseDeChoix', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
-            }, "3000")
-
-        }
-        else {
-            alert("Reoudre egalité");
-            socket.emit("sendCard", { serverId: sessionStorage.getItem("serverConnected"), name: sessionStorage.getItem("name"), card: card, oldSelect: oldSelect });
-            socket.emit('ResoudreEgalite', sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"), card);
-        }
+        setSelectedCard(card);
+        socket.emit("playCard", sessionStorage.getItem("serverConnected"), card, sessionStorage.getItem("name"));
     };
 
     //----------------------USE EFFECT---------------------
@@ -339,6 +309,10 @@ const JeuBataille = () => {
             socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
             socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
             socket.emit("whaIsOwner", sessionStorage.getItem("serverConnected"));
+<<<<<<< HEAD
+=======
+            socket.emit("loadCardsPlayed",sessionStorage.getItem("serverConnected"));
+>>>>>>> 4a5de3348e111daffaf7ffa51e1edfe95698b0b6
 
         }
         return () => {
@@ -370,124 +344,111 @@ const JeuBataille = () => {
         let mounted = true;
         if (mounted) {
 
-            socket.on("owner", (owner) => {
-                setOwner(owner)
+            socket.on("owner", (ownerFromServer) => {
+                console.log("owner")
+                console.log(owner)
+                setOwner(ownerFromServer)
             })
 
             socket.on("Deck", (deck) => {
-
                 sortCards(deck);
             });
 
+            socket.on("canPlay?", (bool) => {
+                setCanPlay(bool)
+            })
 
-            socket.on("getInfo", (game) => {
-                let plist = [];
-                if (game.playerList.length <= 1) {
-                    sessionStorage.setItem('winners', sessionStorage.getItem('name'));
-                    navigate("/winner");
-                }
-                game.playerList.forEach((player) => {
+            socket.on("yourDeck", () => {
+                socket.emit("whatMyDeck", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"))
+            })
 
-                    if (player.name !== sessionStorage.getItem("name")) {
-                        plist.push(player);
-                    }
-
-                });
-                setScore(game.scoreboard);
-                setOpponents(plist);
-
+            socket.on("resolveRoundAsk", () => {
+                setShowAll(true)
+                setTimeout(() => {
+                    socket.emit("resolveRound", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"));
+                    console.log("resolve round")
+                }, "3000");
             });
 
-            socket.on('FIN', (fscore, pList) => {
-                let winner = [];
-                let score = 0;
-                pList.forEach(element => {
-                    if (fscore[element.name] > score) {
-                        winner = [element.name];
-                    } else if (fscore[element.name] === score) {
-                        winner.push(element.name);
-                    }
-                });
+            socket.on("resolveDrawAsk", () => {
+                console.log("resolveDrawAsk")
+                setTimeout(() => {
+                    socket.emit("resolveDrawFirstPart", sessionStorage.getItem("serverConnected"));
+                    console.log("ntm si c ca");
+                }, "3000");
+            });
 
-                sessionStorage.setItem('winners', winner);
+            socket.on("resolveDrawAfter", () => {
+                console.log("resolveDrawAfter")
+                setTimeout(() => {
+                    socket.emit("resolveDraw", sessionStorage.getItem("serverConnected"));
+                    console.log("bizzare mon nigga");
+                }, '3000');
+            });
+
+            socket.on("fin", (winner) =>{
+
+                sessionStorage.setItem("winner", winner);
                 navigate("/winner");
 
-
-
-            });
-
-            socket.on('Draw', (drawPlayers, _) => {
-                alert("DRAW");
-                setDraw(true);
-                setTimeout(() => {
-                    setAllCardPlayed([]);
-                    socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
-                    socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
-                    // setInDraw(false)
-                }, "3000");
-                let ami = false;
-                drawPlayers.forEach((player) => {
-                    if (player.name === sessionStorage.getItem("name")) {
-                        ami = true;
-                    }
-                });
-                if (ami) {
-                    setInDraw(true);
-                } else {
-                    setInDraw(false);
-                }
-                setSelectedCards([])
-
-            });
-
-            socket.on('Winner', (winner) => {
-                setDraw(false);
-                setInDraw(false);
-                socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
-                socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
-                setSelectedCards([]);
-            });
+            })
 
             socket.on("getMessage", (msgList) => {
                 setMessages(msgList);
             })
 
-        }
+            socket.on("roundCardsPlayed", (cardPlayedList) => {
+                console.log(selectCardClick)
+                setAllCardPlayed(Object.values(cardPlayedList));
+                console.log("roundCardsPlayed", allCardPlayed);
 
-        socket.on("roundCardsPlayed", (cardPlayedList) => {
-            setAllCardPlayed(Object.values(cardPlayedList));
-        })
+            })
 
-        socket.on("emote", (emote, opponentName) => {
+            socket.on("emote", (emote, opponentName) => {
 
-            let video = 0;
-            videos.forEach((videos) => {
+                let video = 0;
+                videos.forEach((videos) => {
 
-                if (videos.id === emote) {
-                    video = videos;
+                    if (videos.id === emote) {
+                        video = videos;
+                    }
+
+                });
+                if (video === 0) {
+                    return;
                 }
 
+                console.log(video, opponentName);
+
+                setEmoteToShow(video.videoUrl);
+                setPlayerNameEmote(opponentName);
             });
-            if (video === 0) {
-                return;
-            }
 
-            console.log(video, opponentName);
+            socket.on("reset", () => {
+                console.log("reset")
+                setAllCardPlayed([]);
+                setCanPlay(true);
+            })
+        }
 
-            setEmoteToShow(video.videoUrl);
-            setPlayerNameEmote(opponentName);
-        });
+
 
         return () => {
             mounted = false;
             socket.off("Deck");
-            socket.off("getInfo");
-            socket.off("Winner");
-            socket.off("Draw");
-            socket.off("FIN");
+            socket.off("owner");
+            socket.off("emote");
+            socket.off("canPlay?");
+            socket.off("yourDeck");
             socket.off('getMessage');
+            socket.off("resolveDrawAsk");
+            socket.off("resolveRoundAsk");
+            socket.off("resolveDrawAfter");
+            socket.off("roundCardsPlayed");
+            socket.off("reset")
+            socket.off("fin")
         };
-    });
+    }, []);
 
     const handleSaveNameChange = (e) => {
         const inputValue = e.target.value;
@@ -498,7 +459,7 @@ const JeuBataille = () => {
     };
 
 
-       
+
 
     //----------------------RETURN---------------------
     return (
@@ -554,7 +515,7 @@ const JeuBataille = () => {
                                 <div className="bo-emote-enemy" >
                                     {console.log(EmoteToShow)}
                                     <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
-                                </div>                            
+                                </div>
                             </div>
                         )}
                     </div>
@@ -567,11 +528,11 @@ const JeuBataille = () => {
                         Cartes: {opponent.deck.length} <br />
                         Score : {scoreboard[opponent.name]}
                         {showEnemyEmote(opponent.name) && (
-                            <div className='bo-enem-emote-right'ref={emoteRef}>
+                            <div className='bo-enem-emote-right' ref={emoteRef}>
                                 <div className="bo-emote-enemy" >
                                     {console.log(EmoteToShow)}
                                     <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
-                                </div>                            
+                                </div>
                             </div>
                         )}
                     </div>
@@ -591,7 +552,7 @@ const JeuBataille = () => {
                 </div>
                 <div className="bo-player-cards">
                     {playerCards.map((card, index) => (
-                        <div key={index} className={"bo-card"} onClick={() => selectCardClick(card)} >
+                        <div key={index} className={"bo-card"} onClick={() => !canPlay ? null : selectCardClick(card)} >
                             {/* {card.symbole} <br />
                             {card.number}*/}
                             <img src={getCardImage(card)} alt="Carte" />
@@ -605,7 +566,10 @@ const JeuBataille = () => {
                 <div className={"bo-selected-card"}>
                     {
                         allCardPlayed.map((card, index) => (
-                            <img alt='r' src={(selectedCards.length !== 0 || inDraw) && !isDraw ? getCardImage(card) : backCardsImageTest} />
+                            // <img alt='r' src={(selectedCards.length !== 0 || inDraw) && !isDraw ? getCardImage(card) : backCardsImageTest} />
+                            <img alt='r' src={ ((selectedCard.power === card.power && selectedCard.symbole === card.symbole) || showAll) ? getCardImage(card) : backCardsImageTest} />
+                            
+                            
                         ))
                     }
                 </div>

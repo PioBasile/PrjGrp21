@@ -13,7 +13,7 @@
 .sqp-upperBandeau {
     display: flex;
     width: 100%;
-    height: 20%;
+    height: 15%;
     background-color: rgb(12, 30, 42);
 }
 
@@ -26,9 +26,9 @@
 
 .sqp-cardContianer {
     display: flex;
+    align-items: center;
     width: 100%;
-    height: 20%;
-    padding-top: 2vh;
+    height: 25%;
     background-color: rgb(7, 24, 36);
 }
 
@@ -89,15 +89,13 @@
 }
 
 .card-holder {
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 900px;
-    height: 150px;
     background-image: url('pics/9999520.jpg');
     margin: 0 auto;
-    padding: 20px;
+
+    max-height: 100%;
     border: 1px solid #ccc;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -123,15 +121,13 @@
 }
 
 .card-holderNYT {
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 900px;
-    height: 150px;
     background-image: url('pics/9999520.jpg');
     margin: 0 auto;
-    padding: 20px;
+
+    max-height: 100%;
     border: 1px solid #ccc;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -163,7 +159,7 @@
     left: 10vh;
     margin-top: 2vh;
     margin-left: 1vh;
-    padding-bottom: 8vh;
+    /* padding-bottom: 8vh; */
 }
 
 .rectangle {
@@ -252,8 +248,8 @@ button {
     top: 30vh;
     flex-wrap: wrap;
     background-size: cover;
-    margin-left: 30vw;
-    margin-top: 10vh;
+    margin-left: 10%;
+    margin-top: 3%;
     background-image: url('pics/9999520.jpg');
 }
 
@@ -345,4 +341,8 @@ img {
 
 .saveButtonPopUp:hover{
     background-color: rgb(24, 99, 45);
+}
+
+.chat-container {
+    transform: translateY(110%);
 }

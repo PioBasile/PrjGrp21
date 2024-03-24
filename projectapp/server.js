@@ -483,30 +483,17 @@ io.on('connection', (socket) => {
 
   });
 
-  socket.on("sendCard", (data) => {
-    game = findGame(data.serverId, BatailGames)
-    let card = data.card
-    if (card) {
-      game.cardPlayedInRound[data.name] = card;
-    }
-    else {
-      socket.emit("deco")
-      throw new Error("This card does not exist")
-    }
-
-    io.to(data.serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
+  socket.on("loadCardsPlayed", (serverId) => {
+    let game = findGame(serverId, BatailGames);
+    socket.emit("roundCardsPlayed", game.cardPlayedInRound);
   })
 
-  // Phase de choix, permet au joueurs de choisir leurs cartes et une fois tout les cartes chosis donne le résultat du round //
-  socket.on('PhaseDeChoix', (GameId, playerName, card) => {
-
-
-    let game = findGame(GameId, BatailGames);
-
+  socket.on("playCard", (serverId, card, playerName) => {
+    let game = findGame(serverId, BatailGames)
     let player = findPlayer(playerName, game.playerList);
-    if (player == -1) {
-      socket.emit("deco");
-      return;
+    if(game.cardPlayedInRound.hasOwnProperty(playerName)){
+      console.log("switch");
+      player.switchCard(card);
     }
 
     player.selected = card;
@@ -647,7 +634,6 @@ io.on('connection', (socket) => {
           get_user_info(player).then((res) => {
 
             changeDataBase('nbWin', res.nbWin + 1, player);
-            changeScoreBoard('bataille-ouverte', player);
 
           });
 
@@ -1150,12 +1136,12 @@ io.on('connection', (socket) => {
     io.to(serverId).emit("getMessage", game.chatContent)
   })
 
-  socket.on("rlt-sendMessage", (data) =>{
+  socket.on("rlt-sendMessage", (data) => {
     RouletteInstance.addMessage(`${data.name} : ${data.msg}`);
     io.emit("rlt-getMessage", RouletteInstance.chatContent);
   })
 
-  socket.on("rlt-loadTheChat",()=> {
+  socket.on("rlt-loadTheChat", () => {
     io.emit("rlt-getMessage", RouletteInstance.chatContent)
   })
 
@@ -1186,7 +1172,7 @@ io.on('connection', (socket) => {
   socket.on("saveGame", (serverId, saveName, playerName) => {
     const dossier = "./saves/"
     let lobby = findLobby(serverId, lobbyList);
-    if(lobby.owner == playerName){
+    if (lobby.owner == playerName) {
       if (lobby.gameType == "batailleOuverte") {
         game = findGame(serverId, BatailGames);
       }
@@ -1224,7 +1210,7 @@ io.on('connection', (socket) => {
   socket.on("deleteFile", (fileName) => {
     console.log(fileName)
     fs.unlink(`saves/${fileName}.json`, (err) => {
-      if(err){
+      if (err) {
         console.log("nigga se fichier existe pas");
         return
       }
@@ -1233,5 +1219,23 @@ io.on('connection', (socket) => {
     })
 
   })
+  // SENTINEL 
+  socket.on("player_auth_validity", (data) => {
 
-}); 
+    if (data.player_name == "" || validCookies[data.player_name] == "no") { return; }
+
+    if (validCookies[data.player_name] != data.cookie) {
+      console.log("test");
+      socket.emit("sentinel_auth_error");
+      validCookies[data.player_name] = "no";
+    }
+
+  });
+
+
+});
+
+
+
+setInterval(() => { Sentinel_Main(io, validCookies, BatailGames, TaureauGames, MilleBornesGames, lobbyList, lobbyIndex) }, 100);
+

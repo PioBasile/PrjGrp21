@@ -142,7 +142,7 @@ const NewBrowserManager = () => {
         setIsBet(true)
     }
 
-    const goToCasinoNigga = () => {
+    const goToCasino = () => {
         navigate("/roulette")
     }
 
@@ -157,6 +157,10 @@ const NewBrowserManager = () => {
 
     const leave = () => {
         navigate('/login-signup');
+    }
+
+    const goToScoreboard = () => {
+        navigate('/scoreboard');
     }
 
     const deleteFile = (fileName) => {
@@ -201,8 +205,11 @@ const NewBrowserManager = () => {
                     Round gagnés : {roundWin}
                 </div>
 
-                <div className='BM-info-profil hide casino' onClick={goToCasinoNigga}>
+                <div className='BM-info-profil hide casino' onClick={goToCasino}>
                     CASINO
+                </div>
+                <div className='BM-info-profil hide scoreboard' onClick={goToScoreboard}>
+                    SCOREBOARD
                 </div>
                 <div className='BM-info-profil hide itemShop' onClick={goToItemShop}>
                     ITEM SHOP

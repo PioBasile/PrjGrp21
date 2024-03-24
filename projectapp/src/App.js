@@ -14,6 +14,7 @@ import BlackJack from "./Pages/BlackJack";
 import ItemShop from "./Pages/ItemShop.js";
 import Casino from "./Pages/Casino.js";
 import NewLobby from "./Pages/NewLobby.js";
+import Scoreboard from "./Pages/Scoreboard.js";
 import { useNavigate, useLocation  } from 'react-router-dom';
 
 function App() {
@@ -100,6 +101,7 @@ function App() {
                 <Route path="/blackJack" element={<BlackJack></BlackJack>}/>
                 <Route path="/itemshop" element={<ItemShop></ItemShop>}/>
                 <Route path="/casino" element={<Casino></Casino>}/>
+                <Route path="/scoreboard" element={<Scoreboard></Scoreboard>}/>
             </Routes>
     );
 }

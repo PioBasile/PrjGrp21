@@ -155,27 +155,43 @@
 .BM-info-profil.casino {
     background-color: rgb(169, 65, 65);
     color: wheat;
-    font-size: 5vh;
+    font-size: 4vh;
     align-content: center;
     align-items: center;
-    right :25%;
-    padding-left: 7%;
+    right :30%;
+    padding-left: 5%;
     height: 15%;
-    width: 30%;
+    width: 25%;
+}
+
+.BM-info-profil.scoreboard {
+    cursor: pointer;
+    position: relative;
+    padding-left: 1.5%;
+    background-color: rgb(19, 76, 53);
+    color: wheat;
+    font-size: 3.5vh;
+    align-items: center;
+    height: 15%;
+    width: 25%;
+    align-content: center;
+    left: 1%;
+    top: -2.5%;
+
 }
 
 .BM-info-profil.itemShop{
-    padding-left: 5%;
+    padding-left: 3%;
     position: relative;
     background-color: rgb(40, 74, 153);
     color: wheat;
-    font-size: 5vh;
+    font-size: 4vh;
     align-items: center;
     height: 15%;
-    width: 30%;
+    width: 25%;
     align-content: center;
-    left: 25%;
-    top: -10%;
+    left: 30%;
+    top: -30%;
 }
 
 .BM-input-container {

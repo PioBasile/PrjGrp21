@@ -36,6 +36,7 @@ const {
   SavedLobby
 } = require("./JS_CustomLib/D_utils.js");
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
+const { getAllScores,changeScoreBoard } = require("./JS_CustomLib/P_db.js");
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
 const { read } = require('fs');
@@ -358,6 +359,12 @@ io.on('connection', (socket) => {
 
   });
 
+  socket.on('askScoreboard', () => {
+    getAllScores().then((res) => {
+        socket.emit('scoreboard', res);
+      });
+  });
+
 
   socket.on('StartGame', (lobbyID) => {
 
@@ -488,87 +495,184 @@ io.on('connection', (socket) => {
       console.log("switch");
       player.switchCard(card);
     }
-    else {
-      player.selected = card;
-      console.log("not switch");
-      player.removeCard(card);
+
+    player.selected = card;
+
+    let readyUP = true;
+    game.playerList.forEach((player) => {
+      if (player.selected == null && !player.out) {
+        readyUP = false;
+      }
+
+    });
+    if (!readyUP) {
+      return;
+    } else {
+      game.resolve();
+      let count = 0;
+
+      game.playerList.forEach((player) => {
+
+        // HAHAHAHAHAHA
+        if (player.deck[0] == [][0]) {
+          player.out = true;
+          count++;
+        }
+
+      });
+
+      if (count >= game.playerList.length - 1 || game.currentTurn == game.maxTurn) {
+        io.to(GameId).emit('FIN', game.scoreboard, game.playerList);
+
+        let max = -1;
+        let winner = [];
+        game.playerList.forEach((player) => {
+
+          if (max < game.scoreboard[player.name]) {
+            max = game.scoreboard[player.name];
+            winner = [playerName];
+          } else if (max == game.scoreboard[player.name]) {
+            winner.push(player.name);
+          }
+
+        });
+
+        winner.forEach((player) => {
+
+          get_user_info(player).then((res) => {
+
+
+            changeDataBase('nbWin', res.nbWin + 1, player);
+            changeScoreBoard('bataille-ouverte', player);
+
+          });
+
+        });
+
+
+      } else {
+        if (game.Rdraw != null) {
+          game.cardPlayedInRound = {}
+          console.log(game.Rdraw);
+          game.Rdraw.forEach((player) => {
+
+            CardIndex = Math.floor(Math.random() * player.deck.length);
+            player.deck.splice(CardIndex, 1);
+            game.cardPlayedInRound[player.name] = player.deck[CardIndex];
+
+          });
+
+
+          game.Rwinner.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)];
+          io.to(GameId).emit("roundCardsPlayed", game.cardPlayedInRound);
+          io.to(GameId).emit('Draw', game.Rdraw);
+          game.cardPlayedInRound = {};
+
+        } else {
+          game.Rwinner.deck = [...player.deck, ...Object.values(game.cardPlayedInRound)]
+          io.to(GameId).emit('Winner', game.Rwinner);
+          game.cardPlayedInRound = {}
+          io.to(GameId).emit("roundCardsPlayed", game.cardPlayedInRound);
+          game.currentTurn++;
+        }
+      }
     }
-    game.cardPlayedInRound[player.name] = card;
-    socket.emit("yourDeck");
-    io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
-    if (game.allPlayerPlayed()) {
-      console.log("all played");
-      if (game.isADraw()) {
-        console.log("draw")
-        socket.emit("resolveDrawAsk");
-        io.to(serverId).emit("canPlay?", false);
+  });
+
+  // POUR RESOUDRE LES EGALITE
+  socket.on('ResoudreEgalite', (GameId, playerName, card) => {
+
+    let game = findGame(GameId, BatailGames);
+    let player = findPlayer(playerName, game.playerList);
+    if (player == -1) {
+      socket.emit("deco");
+      return;
+    }
+
+    player.selected = card;
+
+    let readyUP = true;
+    game.Rdraw.forEach((player) => {
+      if (player.selected == null && !player.out) {
+        readyUP = false;
       }
 
-      else {
-        console.log("not draw")
-        socket.emit("resolveRoundAsk");
-        io.to(serverId).emit("canPlay?", false);
-      }
+    });
+    if (!readyUP) {
+      return;
+    } else {
+      game.resolve_draw();
+      let count = 0;
 
-      let winner = game.findGameWinner();
-      if(winner){
-        game.status = STATUS.ENDED;
-        socket.emit("fin", winner)
-      }
-      else {
-        game.currentTurn += 1
+      game.playerList.forEach((player) => {
+
+        // HAHAHAHAHAHA
+        if (player.deck[0] == [][0]) {
+          player.out = true;
+          count++;
+        }
+
+      });
+
+      if (count >= game.playerList.length - 1 || game.currentTurn == game.maxTurn) {
+        io.to(GameId).emit('FIN', game.scoreboard, game.playerList);
+        let max = -1;
+        let winner = [];
+        game.playerList.forEach((player) => {
+
+          if (max < game.scoreboard[player.name]) {
+            max = game.scoreboard[player.name];
+            winner = [playerName];
+          } else if (max == game.scoreboard[player.name]) {
+            winner.push(player.name);
+          }
+
+        });
+
+        winner.forEach((player) => {
+
+          get_user_info(player).then((res) => {
+
+            changeDataBase('nbWin', res.nbWin + 1, player);
+
+          });
+
+        });
+
+      } else {
+        if (game.Rdraw != null) {
+          game.Rdraw.forEach((player) => {
+
+            CardIndex = Math.floor(Math.random() * player.deck.length);
+            player.deck.splice(CardIndex, 1)
+            game.cardPlayedInRound[player.username] = player.deck[CardIndex];
+
+          });
+          io.to(GameId).emit('Draw', game.Rdraw);
+        } else {
+          io.to(GameId).emit('Winner', game.Rwinner);
+          game.currentTurn++;
+        }
       }
     }
-    else {
-      console.log("not all played");
-      player.removeCard(card);
-      socket.emit("yourDeck");
+
+  });
+
+  socket.on('leaveGame', (playerName, GameId) => {
+
+    let game = findGame(GameId, BatailGames);
+    let player = findPlayer(playerName, game.playerList);
+    if (player == -1) {
+      socket.emit("deco");
+      return;
     }
-  })
 
-  socket.on("resetCardSelected", (serverId) => {
-    game = findGame(serverId, BatailGames);
-    game.cardPlayedInRound = {};
-    io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
-  })
-
-  socket.on("resolveRound", (serverId, niggerName) => {
-    console.log("lets resolve this round", niggerName);
-    let game = findGame(serverId, BatailGames);
-    let allCardPlayed = Object.values(game.cardPlayedInRound);
-    let winner = game.findWinner(game.playerList);
-    winner.deck = [...winner.deck, ...allCardPlayed];
-    socket.emit("yourDeck", winner.deck);
-    game.restartRound();
-    io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
-    io.to(serverId).emit("canPlay?", true);
-  })
+    game.removePlayer(player);
+    io.to(GameId).emit('getInfo', game);
 
 
-  socket.on("resolveDrawFirstPart", (serverId) => {
-    let game = findGame(serverId, BatailGames);
-    game.resolveDrawFirstPart()
-    io.to(serverId).emit("yourDeck");
-    io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
-    socket.emit("resolveDrawAfter");
-  })
+  });
 
-  socket.on("resolveDraw", (serverId) => {
-    let game = findGame(serverId, BatailGames);
-    let playersInDraw = game.findPlayerWasInDraw()
-    let winner = game.findWinner(playersInDraw);
-
-    game.resolveDraw(winner);
-    io.to(serverId).emit("yourDeck");
-    game.restartRound();
-    io.to(serverId).emit("reset")
-  })
-
-  socket.on("whatMyDeck", (serverId, playerName) => {
-    let game = findGame(serverId, BatailGames)
-    let player = findPlayer(playerName, game.playerList)
-    socket.emit("Deck", player.deck);
-  })
 
 
 
@@ -704,6 +808,8 @@ io.on('connection', (socket) => {
       if (game.status == STATUS.ENDED) {
 
         io.to(gameID).emit('FIN', game.winner);
+        
+        changeScoreBoard('six-qui-prend', game.winner.name);
         return;
       }
 
@@ -846,6 +952,9 @@ io.on('connection', (socket) => {
 
     if (game.state == "FIN") {
       io.to(data.serverId).emit("MB_FIN", player.name);
+
+      changeScoreBoard('six-qui-prend', player.name);
+      
     }
 
     player.deck.splice(player.deck.indexOf(card), 1)

@@ -394,7 +394,7 @@ const MilleBorne = () => {
                     <div className="MB-exit-button" onClick={toggleEmotes}>EMOTES</div>
                 </div>
 
-                {true&& (
+                {showEmotes && (
                     <div className='bo-player-emote-container'>
                         <div className="bo-player-emote" >
                             <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
@@ -463,6 +463,21 @@ const MilleBorne = () => {
                     </div>
                 )}
 
+            </div>
+
+
+            <div className='middleCard-container'>
+                <div className='la-ou-on-pose-les-cartes-tmtc'>
+                    <img alt='' src={allCard[getCard(middleCard)]} className="carte-milieu"></img>
+                </div>
+
+                <div className='pioche-container'>
+                    <div className='pioche'>{nbCards}
+                        <div className='MB-pioche-petit'>cartes</div>
+                        <div className='MB-pioche-petit'>restantes</div>
+                    </div>
+                </div>
+
                 {playerList.map((player, index) => (
                     <div className={`MB-adversaire-container MB-p${index + 1}  ${player.myTurn ? "myTurn" : ""}`} key={index}>
                         <div className='MB-adversaire-card'>
@@ -488,25 +503,17 @@ const MilleBorne = () => {
             </div>
 
 
-            <div className='middleCard-container'>
-                <div className='la-ou-on-pose-les-cartes-tmtc'>
-                    <img alt='' src={allCard[getCard(middleCard)]} className="carte-milieu"></img>
-                </div>
-
-                <div className='pioche-container'>
-                    <div className='pioche'>{nbCards}
-                        <div className='MB-pioche-petit'>cartes</div>
-                        <div className='MB-pioche-petit'>restantes</div>
-                    </div>
-                </div>
-            </div>
-
-
             <div className='MB-card-holder-container'>
                 <div className={`me-container ${myTurn ? "myTurn" : ""}`}>
                     <div className='state-container'>
                         <div className={`my-card ${"red"}`}>
                             <div className='MB-player-name'> {sessionStorage.getItem("name")}</div>
+                            <div className='info-container'>
+                                <div className='MB-nbPoints'>Nombre de points : {myPoints}</div>
+                                <br></br>
+                                <div>Bonus : {bonus.join(', ')}</div>
+                                <br></br>
+                            </div>
                         </div>
                         <div className='card own'>
                             <img alt='' src={allCard[getCard(state)]} className='card own'></img>
@@ -514,25 +521,20 @@ const MilleBorne = () => {
                         <div className='card own'>
                             <img alt='' src={isLimited ? allCard[getCard("limit")] : allCard[getCard("unlimited")]} className='card own'></img>
                         </div>
+
                     </div>
 
-                    <div className='info-container'>
-                        <div>Nombre de points : {myPoints}</div>
-                        <br></br>
-                        <div>Bonus : {bonus.join(', ')}</div>
-                        <br></br>
-                    </div>
                 </div>
 
                 <div className='MB-card-holder'>
                     {deck.map((carte) => (
-                        <div className="player-card" onClick={() => myTurn ? playCard(carte) : null}>
-                            <img alt='' src={allCard[getCard(carte)]} className="player-card"></img>
-                        </div>)
+
+                        <img alt='' src={allCard[getCard(carte)]} className="player-card" onClick={() => myTurn ? playCard(carte) : null}></img>
+                    )
                     )}
                 </div>
 
-                <div className="chat-container" id='chatContainer'>
+                <div className="chat-container MB-chat" id='chatContainer'>
                     <div className='message-container MB-message-container' >
                         {messages.map((msg, index) => (
                             <p key={index}>{msg}</p>)

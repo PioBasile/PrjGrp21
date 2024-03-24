@@ -36,6 +36,7 @@ const {
   SavedLobby
 } = require("./JS_CustomLib/D_utils.js");
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
+const { getAllScores,changeScoreBoard } = require("./JS_CustomLib/P_db.js");
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
 const { read } = require('fs');
@@ -358,6 +359,12 @@ io.on('connection', (socket) => {
 
   });
 
+  socket.on('askScoreboard', () => {
+    getAllScores().then((res) => {
+        socket.emit('scoreboard', res);
+      });
+  });
+
 
   socket.on('StartGame', (lobbyID) => {
 
@@ -549,6 +556,7 @@ io.on('connection', (socket) => {
 
 
             changeDataBase('nbWin', res.nbWin + 1, player);
+            changeScoreBoard('bataille-ouverte', player);
 
           });
 
@@ -639,6 +647,7 @@ io.on('connection', (socket) => {
           get_user_info(player).then((res) => {
 
             changeDataBase('nbWin', res.nbWin + 1, player);
+            changeScoreBoard('bataille-ouverte', player);
 
           });
 
@@ -813,6 +822,8 @@ io.on('connection', (socket) => {
       if (game.status == STATUS.ENDED) {
 
         io.to(gameID).emit('FIN', game.winner);
+        
+        changeScoreBoard('six-qui-prend', game.winner.name);
         return;
       }
 
@@ -955,6 +966,9 @@ io.on('connection', (socket) => {
 
     if (game.state == "FIN") {
       io.to(data.serverId).emit("MB_FIN", player.name);
+
+      changeScoreBoard('six-qui-prend', player.name);
+      
     }
 
     player.deck.splice(player.deck.indexOf(card), 1)

@@ -364,7 +364,7 @@ const SixQuiPrend = () => {
 
       socket.on("deco", (name) => {
 
-        navigate("/login-signup");
+        navigate("/BrowserManager");
 
       });
 

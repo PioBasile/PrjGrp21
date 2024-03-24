@@ -1,0 +1,106 @@
+.sb-container {
+    width: 100vw;
+    height: 100vh;
+    background-image: url(pics/blackbackgroud.png);
+    background-position: center;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #555 #2E2E2E; 
+}
+
+  
+
+
+
+.sb-tableau {
+    font-family: 'Arial', sans-serif;
+    width: 80%; 
+    max-width: 800px; 
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden; 
+    background-color: #1E1E1E; 
+}
+
+.sb-title h1 {
+    background-color: #007bff;
+    color: white;
+    margin: 0;
+    padding: 12px 20px;
+    text-align: center; 
+}
+
+.sb-table {
+    width: 100%;
+    overflow-y: auto; 
+    max-height: 600px; 
+}
+
+.sb-header, .sb-row {
+    display: flex;
+}
+
+.sb-header-item, .sb-cell {
+    flex: 1;
+    padding: 12px 20px;
+    text-align: left;
+    color: #DDD; 
+}
+
+.sb-header {
+    background-color: #333; 
+    color: #FFF;
+}
+
+.sb-row.even {
+    background-color: #242424; 
+}
+
+.sb-row.odd {
+    background-color: #1E1E1E; 
+}
+
+.sb-row:hover {
+    background-color: #333; 
+}
+
+.sb-body {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.sb-leave {
+    position: fixed; 
+    bottom: 20px; 
+    right: 20px; 
+    z-index: 1000; 
+}
+
+.sb-leave button {
+    background-color: #007bff; 
+    color: white; 
+    border: none; 
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    font-size: 16px; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease; 
+}
+
+.sb-leave button:hover {
+    background-color: #0056b3; 
+}
+
+.gold-class .sb-cell {
+    color: rgb(216, 190, 37);
+    font-weight: bold; 
+}
+
+
+

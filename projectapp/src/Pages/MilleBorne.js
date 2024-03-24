@@ -360,7 +360,7 @@ const JeuBataille = () => {
             })
 
             socket.on("resolveRoundAsk", () => {
-                setShowAll(true)
+                setShowAll(true);
                 setTimeout(() => {
                     socket.emit("resolveRound", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"));
                     console.log("resolve round")
@@ -425,6 +425,7 @@ const JeuBataille = () => {
                 console.log("reset")
                 setAllCardPlayed([]);
                 setCanPlay(true);
+                setShowAll(false);
             })
         }
 

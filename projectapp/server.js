@@ -38,6 +38,7 @@ const {
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
+const { getAllScores,changeScoreBoard } = require("./JS_CustomLib/P_db.js");
 const { read } = require('fs');
 
 
@@ -512,6 +513,16 @@ io.on('connection', (socket) => {
 
       let winner = game.findGameWinner();
       if(winner){
+        winner.forEach((player) => {
+
+          get_user_info(player).then((res) => {
+
+            changeDataBase('nbWin', res.nbWin + 1, player);
+            changeScoreBoard('bataille-ouverte', player);
+
+          });
+
+        });
         game.status = STATUS.ENDED;
         socket.emit("fin", winner)
       }
@@ -542,6 +553,7 @@ io.on('connection', (socket) => {
     game.restartRound();
     io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
     io.to(serverId).emit("canPlay?", true);
+    io.to(serverId).emit("reset");
   })
 
 
@@ -846,6 +858,13 @@ io.on('connection', (socket) => {
 
     if (game.state == "FIN") {
       io.to(data.serverId).emit("MB_FIN", player.name);
+
+      get_user_info(player).then((res) => {
+
+        changeDataBase('nbWin', res.nbWin + 1, player);
+        changeScoreBoard('mille-bornes', player);
+
+      });
     }
 
     player.deck.splice(player.deck.indexOf(card), 1)
@@ -1122,6 +1141,11 @@ io.on('connection', (socket) => {
 
   });
 
+  socket.on('askScoreboard', () => {
+    getAllScores().then((res) => {
+        socket.emit('scoreboard', res);
+      });
+  });
 
 });
 

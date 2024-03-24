@@ -376,7 +376,7 @@ const JeuBataille = () => {
             });
 
             socket.on("resolveDrawAfter", () => {
-                console.log("resolveDrawAfter")
+                setShowAll(true);
                 setTimeout(() => {
                     socket.emit("resolveDraw", sessionStorage.getItem("serverConnected"));
                     console.log("bizzare mon nigga");

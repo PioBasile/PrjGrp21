@@ -1,49 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react';
-import socket from '../socketG';
 import { useNavigate } from 'react-router-dom';
-import './CSS/MilleBorne.css'
+import './CSS/jeuBataille.css';
+import socket from '../socketG';
+import './CSS/emotes/toyota.mp4';
 
 
-const MilleBorne = () => {
+const JeuBataille = () => {
 
-
-    let allCard = []
-
-    const cartes = ["crash", "empty", "flat", "limit", "stop", "repair", "gas", "spare", "unlimited", "roll", 'tanker', 'sealant', 'emergency', 'ace', 25, 50, 75, 100, 200, 'back'];
-
-    for (let carte of cartes) {
-        const cheminImage = require(`./CSS/svgs/MilleBornes-card-SVG/MB-${carte}.svg`);
-        allCard.push(cheminImage);
-    }
-
-    const navigate = useNavigate();
-
+    const [playerCards, setPlayerCards] = useState([]);
+    const [selectedCard, setSelectedCard] = useState({ symbole: 'mathis', number: '1000', power: -1 });
+    const [opponents, setOpponents] = useState([]);
+    const [scoreboard, setScore] = useState({});
+    const [showAll, setShowAll] = useState(false);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-    const [isPopUp, setIsPopUp] = useState(false);
-    const [playerList, setPlayerList] = useState([]);
-    const [deck, setDeck] = useState([]);
-    const [myTurn, setMyTurn] = useState(false);
-    const [myPoints, setMyPoints] = useState(0);
-    const [bonus, setBonus] = useState(["None"]);
-    const [state, setState] = useState("roll");
-    const [isLimited, setIsLimited] = useState(false)
-    //const [color, setColor] = useState("");
-    const [middleCard, setMiddleCard] = useState("roll");
-    const [currentCard, setCurrentCard] = useState("");
-    const [nbCards, setNbCards] = useState(0);
-    const [test, setTest] = useState("");
-    const [isVisible, setIsVisible] = useState(false);
-    const [showInfo, setShowInfo] = useState(false);
+    const navigate = useNavigate();
+    const emoteBubbleRef = useRef(null);
+    const [showEmotes, setShowEmotes] = useState(false);
 
-    const [saveName, setSaveName] = useState("");
-    const [isSave, setIsSave] = useState(false);
+    const [allCardPlayed, setAllCardPlayed] = useState([]);
+    const [canPlay, setCanPlay] = useState(true);
+
     const [playerNameEmote, setPlayerNameEmote] = useState("");
     const [EmoteToShow, setEmoteToShow] = useState("");
     const emoteRef = useRef(null); // Référence à la div de l'emote
-    const [showEmotes, setShowEmotes] = useState(false);
+    const [saveName, setSaveName] = useState("");
+    const [isSave, setIsSave] = useState(false);
     const [owner, setOwner] = useState("");
 
+    const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/blue.png")
+
+
+    //----------------------EMOTES---------------------
     const toyota = require("./CSS/emotes/toyota.mp4");
     const BOING = require("./CSS/emotes/BOING.mp4");
     const Hampter = require("./CSS/emotes/hampter.mp4");
@@ -94,9 +82,8 @@ const MilleBorne = () => {
 
     const handleVideoEnd = () => {
         if (emoteRef.current) {
-            emoteRef.current.hidden = true; // Cache la div en ajustant l'attribut `hidden`
+            emoteRef.current.style.display = 'none';
         }
-
     };
 
     function playEmote(emoteUrl) {
@@ -114,207 +101,62 @@ const MilleBorne = () => {
         return false;
     }
 
+    //----------------------FONCTION PR LES IMAGES DE CARTES---------------------
 
-    const getCard = (card) => {
-        return cartes.indexOf(card);
+    function cardSymbTranslate(symbole) {
+        switch (symbole) {
+            case "Carreau":
+                return "clubs";
+            case "Pique":
+                return "spades";
+            case "Coeur":
+                return "hearts";
+            case "Trefle":
+                return "diamonds";
+            default:
+                return symbole;
+        }
     }
 
-    const toggleInfo = () => {
-        setShowInfo(prevShowInfo => !prevShowInfo);
-    };
+    function cardNumbTranslateSup10(number) {
+        switch (number) {
+            case "V":
+                return "jack";
+            case "Reine":
+                return "queen";
+            case "Roi":
+                return "king";
+            case "As":
+                return "ace";
+            default:
+                return -1;
+        }
+    }
+
+
+    function getCardImage(card) {
+        const numeros = ['2', '3', '4', '5', '6', '7', '8', '9', '10'];
+        const translateSymbol = cardSymbTranslate(card.symbole);
+        if (numeros.includes(card.number)) {
+            const chemin = require(`./CSS/pics/PNG-cards-1.3/${card.number}_of_${translateSymbol}.png`);
+            return chemin;
+        }
+        else if (card.number !== "As") {
+            const translateNumber = cardNumbTranslateSup10(card.number);
+            const chemin = require(`./CSS/pics/PNG-cards-1.3/${translateNumber}_of_${translateSymbol}2.png`);
+            return chemin;
+        }
+        else {
+            const chemin = require(`./CSS/pics/PNG-cards-1.3/ace_of_${translateSymbol}.png`);
+            return chemin;
+        }
+    }
+
+    //----------------------CHAT---------------------
 
     const sendMessage = () => {
         socket.emit('sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
         setMessage('');
-    }
-
-    useEffect(() => {
-
-        let mounted = true;
-        let failed = false;
-
-        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
-            navigate("/login-signup");
-            failed = true;
-        }
-        if (mounted && !failed) {
-
-            socket.emit('join', sessionStorage.getItem('serverConnected'));
-            socket.emit("MB-whatMyInfo", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-            socket.emit("MB-whatMyOpponent", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-            socket.emit("MB-nbCard", sessionStorage.getItem("serverConnected"));
-            socket.emit("whatTheOrder", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-            socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"));
-            socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
-            socket.emit("whaIsOwner", sessionStorage.getItem("serverConnected"));
-        }
-
-        return () => {
-            mounted = false;
-        }
-    }, [navigate, state, test])
-
-
-    useEffect(() => {
-
-        let mounted = true;
-        let failed = false;
-
-        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
-            navigate("/login-signup");
-            failed = true;
-        }
-        if (mounted && !failed) {
-
-            socket.on("getUpdate", () => {
-                socket.emit("MB-whatMyOpponent", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-                socket.emit("MB-whatMyState", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-                socket.emit("MB-nbCard", sessionStorage.getItem("serverConnected"));
-                socket.emit("whatMyTurn", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-            });
-            socket.on("MB-opponent", (oppoList) => {
-                setPlayerList(oppoList);
-            });
-            socket.on('MB-playerInfo', (data) => {
-                setDeck(data.deck);
-                setMyPoints(data.nbPoints);
-                setBonus(data.bonus);
-                setState(data.state);
-                setIsLimited(data.isLimited)
-                console.log(isLimited)
-                //setColor(data.color);
-            });
-            socket.on("chooseVictim", () => {
-                setIsPopUp(true);
-            });
-            socket.on("updateMiddleCard", (data) => {
-                setMiddleCard(data.card);
-            });
-            socket.on("MB-getNbCards", (deckLength) => {
-                setNbCards(deckLength);
-            });
-            socket.on("myTurn", (bool) => {
-                setMyTurn(bool);
-            });
-            socket.on("newState", (newState) => {
-                setState(newState);
-                setTest(newState)
-            });
-            socket.on('MB_FIN', (winner) => {
-
-                sessionStorage.setItem('winners', winner);
-                navigate("/winner");
-
-
-            });
-            socket.on("attacked", (playerAttacked) => {
-                if (playerAttacked === sessionStorage.getItem("name")) {
-                    setIsVisible(true);
-                }
-            });
-
-            socket.on("getMessage", (msgList) => {
-
-                setMessages(msgList);
-            })
-
-            socket.on("emote", (emote, opponentName) => {
-
-                let video = 0;
-                videos.forEach((videos) => {
-
-                    if (videos.id === emote) {
-                        video = videos;
-                    }
-
-                });
-                if (video === 0) {
-                    return;
-                }
-
-                console.log(video, opponentName);
-
-                setEmoteToShow(video.videoUrl);
-                setPlayerNameEmote(opponentName);
-            });
-
-            socket.on("owner", (owner) => {
-                setOwner(owner)
-            })
-
-
-        }
-        return () => {
-            mounted = false;
-            socket.off('getUpdate');
-            socket.off('MB-opponent');
-            socket.off('MB-playerInfo');
-            socket.off('chooseVictim');
-            socket.off('updateMiddleCard');
-            socket.off('newState');
-            socket.off('MB-getNbCards');
-            socket.off('myTurn');
-            socket.off('MB_FIN');
-            socket.off('attacked');
-            socket.off('MB-getMessage');
-            socket.off("emote");
-            socket.off("owner");
-        }
-    }, [navigate, state, test, isLimited]);
-
-
-    const Popup = () => {
-        useEffect(() => {
-            const timer = setTimeout(() => {
-                setIsVisible(false);
-            }, 3000);
-
-            return () => clearTimeout(timer);
-        }, []);
-
-        return (
-            <div>
-                <div className={`popup red ${isVisible ? 'visible' : ''} `}>
-                    <p>VOUS AVEZ ÉTÉ ATTAQUÉ </p>
-                </div>
-
-            </div>
-        );
-    };
-
-    const playCard = (card) => {
-        setCurrentCard(card);
-        socket.emit("MB-playCard", ({ card: card, name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") }))
-        socket.emit("MB-whatMyOpponent", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-    }
-
-
-    const attaqued = (playerAttacked) => {
-        let current_player = sessionStorage.getItem("name")
-        socket.emit("victim", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected"), playerAttackedName: playerAttacked, card: currentCard });
-        socket.emit("MB-whatMyOpponent", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-        setMessages([...messages, `${current_player} attaque le joueur ${playerAttacked} `]);
-        setIsPopUp(false);
-    }
-
-    const fermerPopup = () => {
-        setIsPopUp(false);
-        socket.emit("throwCard", ({ card: currentCard, serverId: sessionStorage.getItem("serverConnected") }));
-    }
-
-    const leave = () => {
-        socket.emit("MB-leaveGame", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
-        socket.emit('leave', sessionStorage.getItem('serverConnected'));
-        navigate('/BrowserManager');
-    }
-
-    const saveGame = () => {
-        setIsSave(false);
-        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), saveName, sessionStorage.getItem("name"))
-    }
-
-    const openSavePopUp = () => {
-        setIsSave(true);
     }
 
     function YourComponent() {
@@ -364,6 +206,7 @@ const MilleBorne = () => {
 
 
             };
+
         }, []);
 
         return (
@@ -372,205 +215,404 @@ const MilleBorne = () => {
     }
 
 
+    //----------------------LEAVE GAME---------------------
+
+    function leaveGame() {
+        socket.emit('leaveGame', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+        socket.emit('leave', sessionStorage.getItem('serverConnected'));
+        navigate('/BrowserManager');
+    };
+
+    const saveGame = () => {
+        setIsSave(false);
+        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), saveName, sessionStorage.getItem("name"))
+    }
+
+    const openSavePopUp = () => {
+        setIsSave(true);
+    }
+
+
+    //----------------------SORT CARDS---------------------
+    function sortCards(deck) {
+        let grp1 = [];
+        let grp2 = [];
+        let grp3 = [];
+        let grp4 = [];
+
+        deck.forEach((card) => {
+
+            card.symbole = card.symbole.charAt(0).toUpperCase() + card.symbole.slice(1);
+            card.number = card.number.charAt(0).toUpperCase() + card.number.slice(1);
+
+
+            if (card.symbole === "Trefle") {
+                grp1.push(card);
+            } else if (card.symbole === "Carreau") {
+                grp2.push(card);
+            } else if (card.symbole === "Coeur") {
+                grp3.push(card);
+            } else if (card.symbole === "Pique") {
+                grp4.push(card);
+            }
+
+        });
+
+        const sortByPower = (a, b) => {
+            return a.power - b.power;
+        };
+
+        // Tri par symbole de carte
+        const sortGroupBySymbol = (group) => {
+            return group.sort(sortByPower);
+        };
+
+
+        grp1 = sortGroupBySymbol(grp1);
+        grp2 = sortGroupBySymbol(grp2);
+        grp3 = sortGroupBySymbol(grp3);
+        grp4 = sortGroupBySymbol(grp4);
+
+
+        deck = grp1.concat(grp2, grp3, grp4);
+
+
+        setPlayerCards(deck);
+    }
+
+    //----------------------SELECT CARD---------------------<
+
+    const selectCardClick = (card) => {
+        setSelectedCard(card);
+        socket.emit("playCard", sessionStorage.getItem("serverConnected"), card, sessionStorage.getItem("name"));
+    };
+
+    //----------------------USE EFFECT---------------------
+
+    useEffect(() => {
+
+        let mounted = true;
+        let failed = false;
+
+        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
+            navigate("/login-signup");
+            failed = true;
+        }
+        if (mounted && !failed) {
+
+            // GESTION stabilité de la connection
+            socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
+
+
+            socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+            socket.emit('join', sessionStorage.getItem('serverConnected'));
+            socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
+            socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
+            socket.emit("whaIsOwner", sessionStorage.getItem("serverConnected"));
+            socket.emit("loadCardsPlayed",sessionStorage.getItem("serverConnected"));
+
+        }
+        return () => {
+            mounted = false;
+        }
+
+    }, [navigate]);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (emoteBubbleRef.current && !emoteBubbleRef.current.contains(event.target)) {
+                setShowEmotes(false);
+            }
+        };
+
+        if (showEmotes) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showEmotes]);
+
+    useEffect(() => {
+
+        let mounted = true;
+        if (mounted) {
+
+            socket.on("owner", (ownerFromServer) => {
+                console.log("owner")
+                console.log(owner)
+                setOwner(ownerFromServer)
+            })
+
+            socket.on("Deck", (deck) => {
+                sortCards(deck);
+            });
+
+            socket.on("canPlay?", (bool) => {
+                setCanPlay(bool)
+            })
+
+            socket.on("yourDeck", () => {
+                socket.emit("whatMyDeck", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"))
+            })
+
+            socket.on("resolveRoundAsk", () => {
+                setShowAll(true)
+                setTimeout(() => {
+                    socket.emit("resolveRound", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"));
+                    console.log("resolve round")
+                }, "3000");
+            });
+
+            socket.on("resolveDrawAsk", () => {
+                console.log("resolveDrawAsk")
+                setTimeout(() => {
+                    socket.emit("resolveDrawFirstPart", sessionStorage.getItem("serverConnected"));
+                    console.log("ntm si c ca");
+                }, "3000");
+            });
+
+            socket.on("resolveDrawAfter", () => {
+                console.log("resolveDrawAfter")
+                setTimeout(() => {
+                    socket.emit("resolveDraw", sessionStorage.getItem("serverConnected"));
+                    console.log("bizzare mon nigga");
+                }, '3000');
+            });
+
+            socket.on("fin", (winner) =>{
+
+                sessionStorage.setItem("winner", winner);
+                navigate("/winner");
+
+            })
+
+            socket.on("getMessage", (msgList) => {
+                setMessages(msgList);
+            })
+
+            socket.on("roundCardsPlayed", (cardPlayedList) => {
+                console.log(selectCardClick)
+                setAllCardPlayed(Object.values(cardPlayedList));
+                console.log("roundCardsPlayed", allCardPlayed);
+
+            })
+
+            socket.on("emote", (emote, opponentName) => {
+
+                let video = 0;
+                videos.forEach((videos) => {
+
+                    if (videos.id === emote) {
+                        video = videos;
+                    }
+
+                });
+                if (video === 0) {
+                    return;
+                }
+
+                console.log(video, opponentName);
+
+                setEmoteToShow(video.videoUrl);
+                setPlayerNameEmote(opponentName);
+            });
+
+            socket.on("reset", () => {
+                console.log("reset")
+                setAllCardPlayed([]);
+                setCanPlay(true);
+            })
+        }
+
+
+
+        return () => {
+            mounted = false;
+            socket.off("Deck");
+            socket.off("owner");
+            socket.off("emote");
+            socket.off("canPlay?");
+            socket.off("yourDeck");
+            socket.off('getMessage');
+            socket.off("resolveDrawAsk");
+            socket.off("resolveRoundAsk");
+            socket.off("resolveDrawAfter");
+            socket.off("roundCardsPlayed");
+            socket.off("reset")
+            socket.off("fin")
+        };
+    }, []);
+
+    const handleSaveNameChange = (e) => {
+        const inputValue = e.target.value;
+        // Supprimer les caractères non autorisés en utilisant une expression régulière
+        const filteredValue = inputValue.replace(/[^a-zA-Z0-9]/g, '');
+        // Mettre à jour le state avec la valeur filtrée
+        setSaveName(filteredValue);
+    };
+
+
+
+
+    //----------------------RETURN---------------------
     return (
-        <div className='MB-container'>
+        <div className="bo-game-container">
 
             {isSave && (
                 <div className='savePopUp'>
                     <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
-                    <input className="inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
+                    <input className="inputPopup" type="text" placeholder='save Name' value={saveName} onChange={handleSaveNameChange} />
                     <div className="saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
                 </div>
             )}
 
-            {isVisible && <Popup />}
-
             <YourComponent></YourComponent>
 
-            <div className='MB-adversaire-container-upper-bandeau'>
-                <div className='exitAndSave-container'>
-                    <div className='MB-exit-button' onClick={() => leave()}> LEAVE</div>
-                    {owner === sessionStorage.getItem("name") && <div className='MB-exit-button' onClick={() => openSavePopUp()}> SAVE</div>}
-                    <div className="MB-exit-button" onClick={toggleEmotes}>EMOTES</div>
-                </div>
-
-                {showEmotes && (
-                    <div className='bo-player-emote-container'>
-                        <div className="bo-player-emote" >
-                            <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
-                        </div>
-                    </div>
-                )}
-
-                <div className='MB-info-button' onClick={toggleInfo}>INFO</div>
-                {showInfo && (
-                    <div className='MB-info-content'>
-                        <p>
-                            <strong>Mille Borne</strong> <br /> <br />
-                            <strong> Description</strong>
-                            <p>
-                                Le jeu comprend 106 cartes. Les joueurs doivent accumuler des bornes. Il faut aller jusqu'à 1 000 bornes exactement pour que la partie se termine. Le jeu comporte donc des cartes représentant :
-                                les distances parcourues ;
-                                les attaques, c'est-à-dire des aléas de la route (accidents, crevaisons, pannes...), et la signalisation routière (limitation de vitesse, feux) qui permettent de freiner ou stopper son adversaire ;
-                                les parades, qui permettent de contrer l'effet des attaques ;
-                                les bottes, qui sont des protections contre une attaque spécifique, au nombre de quatre.
-                                La liberté du joueur est surtout dans la décision d'appliquer des obstacles à l'adversaire avec le risque, si celui-ci possède la protection spéciale, qu'il marque 300 points supplémentaires comme « coup fourré ».
-                                Bien sûr, ce risque augmente au cours du jeu au fur et à mesure que plus de cartes sont piochées.
-                                Le jeu se joue sur table, avec une pioche et une défausse centrale.
-                                Chaque joueur a devant lui ces cartes de distance, visible de tous, ainsi que sa
-                                pile de jeu, sur laquelle sont empilées au fur et à mesure les cartes d'attaque et de
-                                parade. Chaque joueur doit commencer par poser un feu vert pour pouvoir rouler et poser
-                                des cartes de distance. A son tour, un joueur joue une carte (ou en défausse une, s'il ne
-                                peut rien jouer), puis en re-pioche une, de manière à toujours en avoir 6 en main.
-                                Les kilomètres, parades et bottes sont jouées pour soi, les attaques sont jouées chez les adversaires pour les ralentir
-                                voire les arrêter.
-                            </p> <br /> <br /> <br />
-
-                            <strong> Attaque </strong>
-                            <p>
-                                Il y a cinq attaques différentes : l'accident, la crevaison, la panne d'essence, la limite de vitesse et le feu rouge.
-                                L'accident, la crevaison et la panne d'essence immobilisent le véhicule : le joueur à qui on pose une de ces attaques ne peut plus poser aucune carte étape.
-                                Pour redémarrer, le joueur doit jouer la parade correspondant
-                                à l'attaque, puis jouer un feu vert pour repartir et pouvoir recommencer à rouler.
-                                Le feu rouge empêche également de continuer à avancer (on ne peut plus poser de cartes étapes), mais il se pare simplement avec un feu vert.
-                                La limite de vitesse est une attaque qui peut se superposer aux autres. Elle n'empêche pas d'avancer, mais elle oblige le joueur à ne poser que des cartes de 25 ou 50km, ce qui ralentit beaucoup le jeu.
-                                On peut avoir une limitation de vitesse même en étant à l'arrêt. Elle se pare simplement avec une fin de limite de vitesse.
-                            </p> <br /> <br /> <br />
-
-                            <strong> Parade </strong>
-                            <p>
-                                Il y a cinq parades différentes, qui correspondent chacune à une attaque (respectivement) : les réparations, l'essence, la roue de secours, la fin de limite de vitesse et le feu vert.
-                                Ces cartes sont les plus utiles à conserver en main, afin de pouvoir parer rapidement une attaque et repartir. On ne peut jouer la parade que sur l'attaque qui lui correspond, et en réponse
-                                à cette attaque (on ne peut pas se prémunir d'un éventuel accident en jouant une réparation en avance).
-                                Le feu vert est la carte la plus disponible (14 exemplaires) et la plus importante du jeu. En effet, non seulement les joueurs doivent en jouer un au début de la partie pour commencer à rouler,
-                                mais ils doivent aussi en jouer un après une réparation, une essence ou une roue de secours pour pouvoir repartir
-                            </p> <br /> <br /> <br />
-
-                            <strong> Botte </strong>
-                            <p> Les bottes sont des cartes spéciales, qui permettent de se prémunir contre un type d'attaque. Lors qu'un joueur a une botte devant lui, il est impossible de lui mettre l'attaque parée par cette botte.
-                                Cette carte est permanente, et un joueur peut avoir plusieurs bottes.
-                                <ul>L'as du volant ne peut pas avoir d'accident. </ul>
-                                <ul>Le camion-citerne ne peut pas tomber en panne d'essence. </ul>
-                                <ul>L'increvable ne peut pas crever. </ul>
-                                <ul>Le véhicule prioritaire ne peut pas avoir de limite de vitesse ou de feu rouge. Par ailleurs, le véhicule prioritaire n'a pas besoin de feu vert pour redémarrer après un accident, une panne ou une crevaison,
-                                    ni en début de partie avant de poser sa première borne. </ul>
-                                Il est possible de jouer une botte dès qu'on l'a en main, pour s'éviter des attaques futures. Mais il est aussi possible de la conserver en main. Dans ce cas, au moment où le joueur se fait attaquer par une carte
-                                qu'il peut botter (on lui met une crevaison alors qu'il a l'increvable en main, par ex.), il s'agit d'un « coup fourré »
-                                (qui vaut 300 points). Le joueur attaqué annonce le coup fourré à haute voix et joue immédiatement sa botte. L'attaque jouée est défaussée, le joueur venant de faire le coup fourré pioche une carte.
-                                Le joueur ayant posé l'attaque termine son tour et pioche sa carte, et c'est au tour du joueur suivant, dans l'ordre normal de jeu.
-                            </p>
-                        </p>
-                    </div>
-                )}
-
-            </div>
-
-
-            <div className='middleCard-container'>
-                <div className='la-ou-on-pose-les-cartes-tmtc'>
-                    <img alt='' src={allCard[getCard(middleCard)]} className="carte-milieu"></img>
-                </div>
-
-                <div className='pioche-container'>
-                    <div className='pioche'>{nbCards}
-                        <div className='MB-pioche-petit'>cartes</div>
-                        <div className='MB-pioche-petit'>restantes</div>
-                    </div>
-                </div>
-
-                {playerList.map((player, index) => (
-                    <div className={`MB-adversaire-container MB-p${index + 1}  ${player.myTurn ? "myTurn" : ""}`} key={index}>
-                        <div className='MB-adversaire-card'>
-                            <div className={`MB-adversaire ${player.color}`}>
-                                <div className='MB-player-name'>{player.name}</div>
-                            </div>
-                            <div className='info-container'>
-                                <div>Nombre de points : {player.nbPoints}</div>
-                                <br></br>
-                                <div>Bonus : {player.bonus.join(', ')}</div>
-                            </div>
-                        </div>
-                        <div className='MB-advers-card-container'>
-                            <div className='card'>
-                                <img alt='' src={allCard[getCard(player.state)]} className="glow card" />
-                            </div>
-                            <div className='card'>
-                                <img alt='' src={player.isLimited ? allCard[getCard("limit")] : allCard[getCard("unlimited")]} className="glow card"></img>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-
-            <div className='MB-card-holder-container'>
-                <div className={`me-container ${myTurn ? "myTurn" : ""}`}>
-                    <div className='state-container'>
-                        <div className={`my-card ${"red"}`}>
-                            <div className='MB-player-name'> {sessionStorage.getItem("name")}</div>
-                            <div className='info-container'>
-                                <div className='MB-nbPoints'>Nombre de points : {myPoints}</div>
-                                <br></br>
-                                <div>Bonus : {bonus.join(', ')}</div>
-                                <br></br>
-                            </div>
-                        </div>
-                        <div className='card own'>
-                            <img alt='' src={allCard[getCard(state)]} className='card own'></img>
-                        </div>
-                        <div className='card own'>
-                            <img alt='' src={isLimited ? allCard[getCard("limit")] : allCard[getCard("unlimited")]} className='card own'></img>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div className='MB-card-holder'>
-                    {deck.map((carte) => (
-
-                        <img alt='' src={allCard[getCard(carte)]} className="player-card" onClick={() => myTurn ? playCard(carte) : null}></img>
-                    )
-                    )}
-                </div>
-
-                <div className="chat-container MB-chat" id='chatContainer'>
-                    <div className='message-container MB-message-container' >
-                        {messages.map((msg, index) => (
-                            <p key={index}>{msg}</p>)
-                        )}
-                        <input
-                            id="inputChat"
-                            className='inputMessage'
-                            type="text"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Type message..."
-                        />
-                    </div>
-
-                </div>
-            </div>
-
-
-            {isPopUp && (
-                <div className='MB-popup-container'>
-                    <div className='MB-popup'>
-                        {playerList.map((player, _) => (
-                            <div className={`adversaire-card-selection ${player.state === "roll" ? player.color : "gris"}`} onClick={() => attaqued(player.name)}>
-                                <div className='MB-player-name'>{player.name}</div>
-                            </div>
-                        ))}
-                        <button className='btn-close' onClick={() => fermerPopup()}></button>
+            {/*Ur emote*/}
+            {showEnemyEmote(sessionStorage.getItem("name")) && (
+                <div className='bo-player-emote-container' ref={emoteRef}>
+                    <div className="bo-player-emote" >
+                        <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
                     </div>
                 </div>
             )}
+
+
+            {/*Opponent player*/}
+            <div className="bo-opponent-players">
+                {/* Joueurs en haut */}
+                {opponents.slice(0, 5).map((opponent, index) => (
+                    <div key={index} className="bo-opponent bo-top-opponent">
+                        <strong>{opponent.name}</strong>
+                        Cartes: {opponent.deck.length} <br />
+                        Score : {scoreboard[opponent.name]}
+                        {showEnemyEmote(opponent.name) && (
+                            <div className='bo-enem-emote-top' ref={emoteRef}>
+                                <div className="bo-emote-enemy">
+                                    {console.log(EmoteToShow)}
+                                    <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                ))}
+
+                {/* Joueurs à gauche */}
+                {opponents.slice(5, 7).map((opponent, index) => (
+                    <div key={index} className="bo-opponent bo-left-opponent">
+                        <strong>{opponent.name}</strong>
+                        Cartes: {opponent.deck.length} <br />
+                        Score : {scoreboard[opponent.name]}
+                        {showEnemyEmote(opponent.name) && (
+                            <div className='bo-enem-emote-left' ref={emoteRef}>
+                                <div className="bo-emote-enemy" >
+                                    {console.log(EmoteToShow)}
+                                    <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                ))}
+
+                {/* Joueurs à droite */}
+                {opponents.slice(7, 9).map((opponent, index) => (
+                    <div key={index} className="bo-opponent bo-right-opponent">
+                        <strong>{opponent.name}</strong>
+                        Cartes: {opponent.deck.length} <br />
+                        Score : {scoreboard[opponent.name]}
+                        {showEnemyEmote(opponent.name) && (
+                            <div className='bo-enem-emote-right' ref={emoteRef}>
+                                <div className="bo-emote-enemy" >
+                                    {console.log(EmoteToShow)}
+                                    <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                ))}
+
+            </div>
+
+            {/*les cartes du joueur*/}
+            <div className="bo-player-cards-holder">
+                <div className="bo-user-info-container">
+                    <div className="bo-user-info">
+                        Mon Score : {scoreboard[sessionStorage.getItem("name")]}
+                    </div>
+                    <div className="bo-user-info">
+                        Nombre de cartes : {playerCards.length}
+                    </div>
+                </div>
+                <div className="bo-player-cards">
+                    {playerCards.map((card, index) => (
+                        <div key={index} className={"bo-card"} onClick={() => !canPlay ? null : selectCardClick(card)} >
+                            {/* {card.symbole} <br />
+                            {card.number}*/}
+                            <img src={getCardImage(card)} alt="Carte" />
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/*les cartes selectionnées*/}
+            <div className="bo-selected-cards">
+                <div className={"bo-selected-card"}>
+                    {
+                        allCardPlayed.map((card, index) => (
+                            // <img alt='r' src={(selectedCards.length !== 0 || inDraw) && !isDraw ? getCardImage(card) : backCardsImageTest} />
+                            <img alt='r' src={ ((selectedCard.power === card.power && selectedCard.symbole === card.symbole) || showAll) ? getCardImage(card) : backCardsImageTest} />
+                            
+                            
+                        ))
+                    }
+                </div>
+            </div>
+
+            {owner === sessionStorage.getItem("name") && 
+                <button className="bo-save-button" onClick={() => openSavePopUp()}>Save</button>
+            }
+            
+            <button className="bo-leave-button" onClick={() => leaveGame()}>Leave Game</button>
+
+            <div className="bo-emote-container">
+                <button className="bo-emote-button" onClick={toggleEmotes}>Emotes</button>
+                {showEmotes && (
+                    <div className="bo-emote-bubble" ref={emoteBubbleRef}>
+                        <div className="bo-emote-list">
+                            {videos.map((emote, index) => (
+                                <div key={index} className="bo-emote" onClick={() => playEmote(emote)}>
+                                    <video src={emote.videoUrl} />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <div className="chat-container" id='chatContainer'>
+                <div className='message-container bo-message-container' >
+                    {messages.map((msg, index) => (
+                        <p key={index}>{msg}</p>)
+                    )}
+                    <input
+                        id="inputChat"
+                        className='inputMessage'
+                        type="text"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Type message..."
+                    />
+                </div>
+
+            </div>
+
         </div>
-    )
-}
 
+    );
+};
 
-export default MilleBorne;
-
-
-
+export default JeuBataille;

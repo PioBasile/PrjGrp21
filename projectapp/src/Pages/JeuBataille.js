@@ -6,7 +6,7 @@ import './CSS/emotes/toyota.mp4';
 
 
 const JeuBataille = () => {
-
+    const SERVER_ID = sessionStorage.getItem("serverConnected")
     const [playerCards, setPlayerCards] = useState([]);
     const [selectedCard, setSelectedCard] = useState({ symbole: 'mathis', number: '1000', power: -1 });
     const [opponents, setOpponents] = useState([]);
@@ -15,15 +15,15 @@ const JeuBataille = () => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const navigate = useNavigate();
+    const [allCardPlayed, setAllCardPlayed] = useState([]);
+    
     const emoteBubbleRef = useRef(null);
     const [showEmotes, setShowEmotes] = useState(false);
-
-    const [allCardPlayed, setAllCardPlayed] = useState([]);
     const [canPlay, setCanPlay] = useState(true);
-
     const [playerNameEmote, setPlayerNameEmote] = useState("");
     const [EmoteToShow, setEmoteToShow] = useState("");
     const emoteRef = useRef(null); // Référence à la div de l'emote
+
     const [saveName, setSaveName] = useState("");
     const [isSave, setIsSave] = useState(false);
     const [owner, setOwner] = useState("");
@@ -83,6 +83,8 @@ const JeuBataille = () => {
     const handleVideoEnd = () => {
         if (emoteRef.current) {
             emoteRef.current.style.display = 'none';
+            // setShowEmotes(false);
+            setPlayerNameEmote("")
         }
     };
 
@@ -91,7 +93,8 @@ const JeuBataille = () => {
     }
 
     const toggleEmotes = () => {
-        setShowEmotes(!showEmotes);
+        if(showEmotes) setShowEmotes(false);
+        else setShowEmotes(true)
     };
 
     function showEnemyEmote(opponentName) {
@@ -321,6 +324,7 @@ const JeuBataille = () => {
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (emoteBubbleRef.current && !emoteBubbleRef.current.contains(event.target)) {
+                socket.emit("endEmote", SERVER_ID);
                 setShowEmotes(false);
             }
         };
@@ -342,8 +346,6 @@ const JeuBataille = () => {
         if (mounted) {
 
             socket.on("owner", (ownerFromServer) => {
-                console.log("owner")
-                console.log(owner)
                 setOwner(ownerFromServer)
             })
 
@@ -441,6 +443,10 @@ const JeuBataille = () => {
                 setAllCardPlayed([]);
                 setCanPlay(true);
             })
+
+            socket.on("endEmoteToAll",() => {
+                setPlayerNameEmote("");
+            })
         }
 
 
@@ -457,8 +463,9 @@ const JeuBataille = () => {
             socket.off("resolveRoundAsk");
             socket.off("resolveDrawAfter");
             socket.off("roundCardsPlayed");
-            socket.off("reset")
-            socket.off("fin")
+            socket.off("reset");
+            socket.off("endEmoteToAll")
+            socket.off("fin");
         };
     }, []);
 

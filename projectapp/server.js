@@ -483,6 +483,10 @@ io.on('connection', (socket) => {
     io.to(data.serverId).emit("emote", data.emote, data.playerName);
   })
 
+  socket.on("endEmote", (serverId) => {
+    io.to(serverId).emit("endEmoteToAll")
+  })
+
   socket.on('askGameInfo', (GameID) => {
 
     game = findGame(GameID, BatailGames);
@@ -1095,12 +1099,7 @@ io.on('connection', (socket) => {
   })
 
 
-  socket.on("sendEmoteToLobby", (data) => {
-    game = findGame(data.serverId, BatailGames);
-    emote = data.emote
 
-    io.to(data.serverId).emit("emote", emote, data.playerName)
-  })
 
 
   function readSaveDir() {

@@ -98,7 +98,7 @@ const Roulette = () => {
 
     const leave = () => {
         navigate('/BrowserManager');
-    };
+    }
         
     
 
@@ -291,7 +291,7 @@ const Roulette = () => {
             <YourComponent></YourComponent>
             
             <div className="ro-leave">
-                <button className="ro-bye-button" onClick={() => leave()}> Leave </button>
+                <button className="ro-bye-button" onClick={leave}> Leave </button>
             </div>
             
             <div className='rouletteGameContainer' >

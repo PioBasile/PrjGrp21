@@ -1,6 +1,8 @@
 projectapp/node_modules/
 projectapp/build
 projectapp/users.db
+projectapp/baseDeDonne/scoreboard.db
+projectapp/baseDeDonne/users.db
 projectapp/src/Pages/CSS/svgs/cartes6
 projectapp/src/Pages/CSS/svgs/MilleBornes-card-SVG
 projectapp/*.db

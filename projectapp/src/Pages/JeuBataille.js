@@ -6,7 +6,7 @@ import './CSS/emotes/toyota.mp4';
 
 
 const JeuBataille = () => {
-
+    const SERVER_ID = sessionStorage.getItem("serverConnected")
     const [playerCards, setPlayerCards] = useState([]);
     const [selectedCard, setSelectedCard] = useState({ symbole: 'mathis', number: '1000', power: -1 });
     const [opponents, setOpponents] = useState([]);
@@ -324,7 +324,8 @@ const JeuBataille = () => {
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (emoteBubbleRef.current && !emoteBubbleRef.current.contains(event.target)) {
-                socket.emit("endEmote")
+                socket.emit("endEmote", SERVER_ID);
+                setShowEmotes(false);
             }
         };
 
@@ -444,7 +445,6 @@ const JeuBataille = () => {
             })
 
             socket.on("endEmoteToAll",() => {
-                setShowEmotes(false);
                 setPlayerNameEmote("");
             })
         }

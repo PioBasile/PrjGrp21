@@ -38,7 +38,7 @@ const {
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
-const { getAllScores,changeScoreBoard } = require("./JS_CustomLib/P_db.js");
+const { getAllScores,changeScoreBoard,changeMoney } = require("./JS_CustomLib/P_db.js");
 const { read } = require('fs');
 const { basename } = require('node:path/win32');
 
@@ -85,6 +85,7 @@ const updateWins = async () => {
       console.log(res.argent);
       console.log(win);
       await changeDataBase("argent", res.argent + win["won"], win["name"]);
+      await changeMoney(win["name"], win["won"]);
     } catch (error) {
       console.error("Erreur lors de la mise à jour des gains :", error);
     }
@@ -142,6 +143,7 @@ io.on('connection', (socket) => {
       get_user_info(nom).then((res) => {
 
         changeDataBase("argent", res.argent - betAmmount, nom);
+        changeMoney(nom, -betAmmount);
         socket.emit("VoilaTesSousMonSauce", res.argent - betAmmount);
 
       });
@@ -531,6 +533,7 @@ io.on('connection', (socket) => {
             changeDataBase('nbWin', res.nbWin + 1, player);
             changeScoreBoard('bataille-ouverte', player);
             changeDataBase('argent', res.argent + 100, player.name);
+            changeMoney(player.name, 100);
           });
 
         });
@@ -607,6 +610,8 @@ io.on('connection', (socket) => {
           changeDataBase('nbWin', res.nbWin + 1, player);
           changeScoreBoard('bataille-ouverte', player);
           changeDataBase('argent', res.argent + 100, player.name);
+          changeMoney(player.name, 100);
+
         });
 
       });
@@ -893,8 +898,10 @@ io.on('connection', (socket) => {
 
         changeDataBase('nbWin', res.nbWin + 1, player.name);
         changeDataBase('nbWin', res.argent + 100, player.name);
-
+        
         changeScoreBoard('mille-bornes', player.name);
+        changeMoney(player.name, 100);
+
 
       });
     }

@@ -371,7 +371,7 @@ const JeuBataille = () => {
                 setScore(game.scoreboard);
                 setOpponents(plist);
 
-            });g
+            });
 
 
             socket.on("yourDeck", () => {

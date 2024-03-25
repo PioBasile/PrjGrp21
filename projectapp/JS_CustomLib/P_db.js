@@ -93,10 +93,19 @@ const changeScoreBoard = (jeu, nom) => {
     scoreboardDb.run(sqlUpdate, [nom], function(err) {
         if (err) {
             console.error(err.message);
-        } else {
-            console.log(`Mise à jour réussie pour ${nom} dans le jeu ${jeu}.`);
         }
     });
 }
 
-module.exports = {getAllScores,changeScoreBoard };
+const changeMoney = (nom, argent) => {
+    const sqlUpdateMoney = `UPDATE scoreboard SET argent = argent + ? WHERE nom = ?`;
+    
+    scoreboardDb.run(sqlUpdateMoney, [argent, nom], function(err) {
+        if (err) {
+            console.error(err.message);
+        }
+    });
+}
+
+
+module.exports = {getAllScores,changeScoreBoard,changeMoney };

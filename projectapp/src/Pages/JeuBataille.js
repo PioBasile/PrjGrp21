@@ -355,6 +355,25 @@ const JeuBataille = () => {
                 setCanPlay(bool)
             })
 
+            socket.on("getInfo", (game) => {
+                let plist = [];
+                if (game.playerList.length <= 1) {
+                    sessionStorage.setItem('winners', sessionStorage.getItem('name'));
+                    navigate("/winner");
+                }
+                game.playerList.forEach((player) => {
+
+                    if (player.name !== sessionStorage.getItem("name")) {
+                        plist.push(player);
+                    }
+
+                });
+                setScore(game.scoreboard);
+                setOpponents(plist);
+
+            });g
+
+
             socket.on("yourDeck", () => {
                 socket.emit("whatMyDeck", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"))
             })
@@ -394,10 +413,7 @@ const JeuBataille = () => {
             })
 
             socket.on("roundCardsPlayed", (cardPlayedList) => {
-                console.log(selectCardClick)
                 setAllCardPlayed(Object.values(cardPlayedList));
-                console.log("roundCardsPlayed", allCardPlayed);
-
             })
 
             socket.on("emote", (emote, opponentName) => {

@@ -40,6 +40,7 @@ const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
 const { getAllScores,changeScoreBoard } = require("./JS_CustomLib/P_db.js");
 const { read } = require('fs');
+const { basename } = require('node:path/win32');
 
 
 
@@ -472,6 +473,7 @@ io.on('connection', (socket) => {
 
   });
 
+
   socket.on("sendEmoteToLobby", (data) => {
     // game = findGame(data.serverId, BatailGames);
     // emote = data.emote;
@@ -504,7 +506,7 @@ io.on('connection', (socket) => {
       player.removeCard(card);
     }
     game.cardPlayedInRound[player.name] = card;
-    socket.emit("yourDeck");
+    io.to(serverId).emit("yourDeck");
     io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
     if (game.allPlayerPlayed()) {
       console.log("all played");
@@ -542,7 +544,7 @@ io.on('connection', (socket) => {
     else {
       console.log("not all played");
       player.removeCard(card);
-      socket.emit("yourDeck");
+      io.to(serverId).emit("yourDeck");
     }
   })
 
@@ -558,7 +560,7 @@ io.on('connection', (socket) => {
     let allCardPlayed = Object.values(game.cardPlayedInRound);
     let winner = game.findWinner(game.playerList);
     winner.deck = [...winner.deck, ...allCardPlayed];
-    socket.emit("yourDeck", winner.deck);
+    io.to(serverId).emit("yourDeck");
     game.restartRound();
     io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
     io.to(serverId).emit("canPlay?", true);

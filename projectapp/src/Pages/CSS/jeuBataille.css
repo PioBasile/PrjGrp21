@@ -24,6 +24,8 @@
     align-items: center; /* Centre le contenu verticalement */
     overflow: auto;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
+    scrollbar-width: thin;
+
 }
 
 .bo-save-button, .bo-leave-button {
@@ -234,7 +236,7 @@
 .bo-user-info-container {
     display: flex;
     position: absolute;
-    bottom: 130px;
+    bottom: 140px;
     left: 10%;
 }
 
@@ -278,12 +280,6 @@
     border-radius: 4px;
 }
 
-.bo-message-container {
-    position: fixed;
-    right: 0;
-    bottom:22vh;
-    max-height: 50vh;
-}
 
 /* Styles pour le conteneur principal des émoticônes */
 .bo-emote-container {
@@ -401,4 +397,39 @@
     border-bottom: 0;
     margin-left: -15px;
     margin-bottom: -15px;
+}
+
+.chat-container {
+    z-index: 1;
+    position: fixed;
+    border-radius: 100px;
+    bottom: 5vh;
+    border-radius: 15px;
+    min-height: 20vh;
+    max-height: 20vh;
+}
+
+.bo-message-container {
+    overflow-wrap: break-word;
+    max-width: 20vw;
+    border-radius: 20px; 
+    position: fixed;
+    right: 0;
+    bottom:31vh;
+    max-height: 50vh;  
+}
+
+
+
+.inputMessage {
+    position: sticky;
+    width: 100%;
+    border: none;
+    z-index: 1;
+    bottom: 0;
+    border-radius: 20px;
+}
+
+#chatContainer {
+    transition: opacity 0.5s, transform 0.5s;
 }

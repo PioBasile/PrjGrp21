@@ -87,7 +87,6 @@ function LobbyGuard(io,lobbyList,validCookies){
 
                 if(!ownerFound && lobby.playerList[0] != [][0]){
                     lobby.owner = lobby.playerList[0].username;
-                    console.log(io);
                     io.to(lobby.id).emit("yourInfoBebs", {serverName:lobby.serverName, nbPlayerMax:lobby.nbPlayerMax, password:lobby.password, gameType:lobby.gameType, owner:lobby.owner, timer:lobby.tbt});
                 }
         }

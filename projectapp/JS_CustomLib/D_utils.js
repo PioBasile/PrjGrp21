@@ -194,11 +194,11 @@ class Bataille {
   allPlayerPlayed() {
     for (let player of this.playerList) {
       if (player.selected == null) {
-        console.log("false")
+
         return false
       }
     }
-    console.log("true")
+
     return true
   }
 
@@ -245,7 +245,6 @@ class Bataille {
           winner = player;
         }
       }
-      console.log("winnir",winner)
       return winner;
     }
     else {
@@ -1159,7 +1158,6 @@ class MilleBorne {
 
       if (player.myTurn) {
         if (index !== list.length - 1) {
-          console.log(index);
           list[index + 1].myTurn = true;
           list[index].myTurn = false;
           return true;

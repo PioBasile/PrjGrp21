@@ -98,7 +98,9 @@ const Roulette = () => {
 
     const leave = () => {
         navigate('/BrowserManager');
-    }
+    };
+        
+    
 
     const sendMessage = () => {
         socket.emit('rlt-sendMessage', { name: sessionStorage.getItem("name"), msg: message});

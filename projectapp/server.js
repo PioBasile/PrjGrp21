@@ -35,10 +35,11 @@ const {
   GameState,
   SavedLobby
 } = require("./JS_CustomLib/D_utils.js");
+
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
-const { getAllScores,changeScoreBoard } = require("./JS_CustomLib/P_db.js");
+const { getAllScores,changeScoreBoard,changeMoney } = require("./JS_CustomLib/P_db.js");
 const { read } = require('fs');
 const { basename } = require('node:path/win32');
 
@@ -82,9 +83,8 @@ const updateWins = async () => {
   for (const win of RouletteInstance.wins) {
     try {
       const res = await get_user_info(win["name"]);
-      console.log(res.argent);
-      console.log(win);
       await changeDataBase("argent", res.argent + win["won"], win["name"]);
+      await changeMoney(win["name"], win["won"]);
     } catch (error) {
       console.error("Erreur lors de la mise à jour des gains :", error);
     }
@@ -142,6 +142,7 @@ io.on('connection', (socket) => {
       get_user_info(nom).then((res) => {
 
         changeDataBase("argent", res.argent - betAmmount, nom);
+        changeMoney(nom, -betAmmount);
         socket.emit("VoilaTesSousMonSauce", res.argent - betAmmount);
 
       });
@@ -154,7 +155,7 @@ io.on('connection', (socket) => {
 
     }
 
-    console.log(RouletteInstance.bets);
+
     io.emit("bets", RouletteInstance.bets);
 
 
@@ -368,7 +369,6 @@ io.on('connection', (socket) => {
     let owner = lobby.owner;
     let plist = [];
 
-    console.log(lobby.gameType);
 
     lobby.playerList.forEach((player) => {
 
@@ -446,7 +446,6 @@ io.on('connection', (socket) => {
     for(let player of plist){
 
       get_user_info(player.name).then((res) => {
-        console.log(res);
 
         changeDataBase('nbWin', res.nbGames + 1, player);
 
@@ -501,27 +500,22 @@ io.on('connection', (socket) => {
     let game = findGame(serverId, BatailGames)
     let player = findPlayer(playerName, game.playerList);
     if(game.cardPlayedInRound.hasOwnProperty(playerName)){
-      console.log("switch");
       player.switchCard(card);
     }
     else {
       player.selected = card;
-      console.log("not switch");
       player.removeCard(card);
     }
     game.cardPlayedInRound[player.name] = card;
     io.to(serverId).emit("yourDeck");
     io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
     if (game.allPlayerPlayed()) {
-      console.log("all played");
       if (game.isADraw()) {
-        console.log("draw")
         socket.emit("resolveDrawAsk");
         io.to(serverId).emit("canPlay?", false);
       }
 
       else {
-        console.log("not draw")
         socket.emit("resolveRoundAsk");
         io.to(serverId).emit("canPlay?", false);
       }
@@ -535,6 +529,7 @@ io.on('connection', (socket) => {
             changeDataBase('nbWin', res.nbWin + 1, player);
             changeScoreBoard('bataille-ouverte', player);
             changeDataBase('argent', res.argent + 100, player.name);
+            changeMoney(player.name, 100);
           });
 
         });
@@ -546,7 +541,6 @@ io.on('connection', (socket) => {
       }
     }
     else {
-      console.log("not all played");
       player.removeCard(card);
       io.to(serverId).emit("yourDeck");
     }
@@ -558,8 +552,7 @@ io.on('connection', (socket) => {
     io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
   })
 
-  socket.on("resolveRound", (serverId, niggerName) => {
-    console.log("lets resolve this round", niggerName);
+  socket.on("resolveRound", (serverId,_) => {
     let game = findGame(serverId, BatailGames);
     let allCardPlayed = Object.values(game.cardPlayedInRound);
     let winner = game.findWinner(game.playerList);
@@ -611,6 +604,8 @@ io.on('connection', (socket) => {
           changeDataBase('nbWin', res.nbWin + 1, player);
           changeScoreBoard('bataille-ouverte', player);
           changeDataBase('argent', res.argent + 100, player.name);
+          changeMoney(player.name, 100);
+
         });
 
       });
@@ -831,9 +826,6 @@ io.on('connection', (socket) => {
       game.playerList[0].myTurn = true;
     }
 
-    else {
-      console.log("a player is already playing");
-    }
 
     socket.emit("myTurn", player.myTurn);
   })
@@ -892,13 +884,19 @@ io.on('connection', (socket) => {
 
     if (game.state == "FIN") {
       io.to(data.serverId).emit("MB_FIN", player.name);
+      
+      if(game.playerList.length == 1){
+        player = game.playerList[0]
+      }
 
       get_user_info(player.name).then((res) => {
 
         changeDataBase('nbWin', res.nbWin + 1, player.name);
         changeDataBase('nbWin', res.argent + 100, player.name);
-
+        
         changeScoreBoard('mille-bornes', player.name);
+        changeMoney(player.name, 100);
+
 
       });
     }
@@ -943,9 +941,7 @@ io.on('connection', (socket) => {
         io.to(data.serverId).emit("updateMiddleCard", ({ card: card }));
       }
 
-      else {
-        console.log("can't attack this noob BOZO");
-      }
+
     }
     else {
       throw new Error("le joueuer attaquÃ© n'existe pas big noob");
@@ -1111,7 +1107,6 @@ io.on('connection', (socket) => {
   }
 
   socket.on("saveGame", (serverId, saveName, playerName) => {
-    const dossier = "./saves/"
     let lobby = findLobby(serverId, lobbyList);
     if (lobby.owner == playerName) {
       if (lobby.gameType == "batailleOuverte") {
@@ -1134,7 +1129,6 @@ io.on('connection', (socket) => {
 
       fs.writeFile(`saves/${playerName}_${saveName}_${lobby.gameType}.json`, gameSave, (err) => {
         if (err) throw err;
-        console.log("fichier créer gg")
       });
 
       readSaveDir();
@@ -1149,13 +1143,10 @@ io.on('connection', (socket) => {
 
 
   socket.on("deleteFile", (fileName) => {
-    console.log(fileName)
     fs.unlink(`saves/${fileName}.json`, (err) => {
       if (err) {
-        console.log("ce fichier existe pas");
         return
       }
-      console.log("file deleted")
       readSaveDir()
     })
 
@@ -1166,7 +1157,6 @@ io.on('connection', (socket) => {
     if (data.player_name == "" || validCookies[data.player_name] == "no") { return; }
 
     if (validCookies[data.player_name] != data.cookie) {
-      console.log("test");
       socket.emit("sentinel_auth_error");
       validCookies[data.player_name] = "no";
     }

@@ -5,7 +5,7 @@ const sqlite3 = require('sqlite3').verbose();
 let scoreboardDb = new sqlite3.Database('./baseDeDonne/scoreboard.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
         console.error(err.message);
-    } 
+    }
 });
 
 // Création de la table scoreboard
@@ -18,7 +18,7 @@ scoreboardDb.run(`CREATE TABLE IF NOT EXISTS scoreboard (
     );`, (err) => {
     if (err) {
         console.error(err.message);
-    } 
+    }
 });
 
 // Connexion à users.db
@@ -44,14 +44,14 @@ function getUsers() {
 
 //SELF EXPLANATORY
 function transferUsersToScoreboard(users) {
-    users.forEach(user => {    
+    users.forEach(user => {
         const sqlInsertOrUpdate = `
             INSERT INTO scoreboard ("nom", "bataille-ouverte", "six-qui-prend", "mille-bornes","argent")
             VALUES (?, 0, 0, 0, ?)
             ON CONFLICT(nom) 
             DO UPDATE SET argent = excluded.argent;`;
 
-        scoreboardDb.run(sqlInsertOrUpdate, [user.nom, user.argent], function(err) {
+        scoreboardDb.run(sqlInsertOrUpdate, [user.nom, user.argent], function (err) {
             if (err) {
                 console.error(`Erreur lors de l'insertion/mise à jour de ${user.nom}: ${err.message}`);
             }
@@ -71,7 +71,7 @@ function getAllScores() {
                 return;
             }
             const result = rows.reduce((acc, row) => {
-                acc[row.nom] = [row.bataille, row.sqp, row.mb ,row.argent];
+                acc[row.nom] = [row.bataille, row.sqp, row.mb, row.argent];
                 return acc;
             }, {});
             resolve(result);
@@ -87,16 +87,25 @@ const changeScoreBoard = (jeu, nom) => {
         console.error("Nom de jeu invalide.");
         return;
     }
-        
+
     const sqlUpdate = `UPDATE scoreboard SET "${jeu}" = "${jeu}" + 1 WHERE nom = ?`;
-    
-    scoreboardDb.run(sqlUpdate, [nom], function(err) {
+
+    scoreboardDb.run(sqlUpdate, [nom], function (err) {
         if (err) {
             console.error(err.message);
-        } else {
-            console.log(`Mise à jour réussie pour ${nom} dans le jeu ${jeu}.`);
         }
     });
 }
 
-module.exports = {getAllScores,changeScoreBoard };
+const changeMoney = (nom, argent) => {
+    const sqlUpdateMoney = `UPDATE scoreboard SET argent = argent + ? WHERE nom = ?`;
+
+    scoreboardDb.run(sqlUpdateMoney, [argent, nom], function (err) {
+        if (err) {
+            console.error(err.message);
+        }
+    });
+}
+
+
+module.exports = { getAllScores, changeScoreBoard, changeMoney };

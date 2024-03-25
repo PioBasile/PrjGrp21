@@ -40,6 +40,7 @@ const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
 const { getAllScores,changeScoreBoard } = require("./JS_CustomLib/P_db.js");
 const { read } = require('fs');
+const { basename } = require('node:path/win32');
 
 
 
@@ -393,9 +394,6 @@ io.on('connection', (socket) => {
 
       nGame = new SixQuiPrend(lobby.serverName, lobbyID, owner, plist, 10, lobby.moneyBet);
 
-      console.log("GAME DATA OF SQP CLASS !!!!!!!!!!!!")
-      console.log(nGame);
-
       const lobbyNotChanged = Object.assign({}, lobby);
       nGame.lobbyLinked = lobbyNotChanged;
 
@@ -413,12 +411,14 @@ io.on('connection', (socket) => {
         let newMB_player = new MB_Player(player.name, player.cookie, color[index]);
         mbPlist.push(newMB_player);
       })
-
+      plist  = mbPlist;
       nGame = new MilleBorne(lobbyID, owner, mbPlist);
 
       const lobbyNotChanged = Object.assign({}, lobby);
 
       nGame.lobbyLinked = lobbyNotChanged;
+
+
 
       MilleBornesGames.push(nGame);
     }
@@ -443,6 +443,16 @@ io.on('connection', (socket) => {
       nGame.recreate(lobby.gameLinked);
     }
 
+    for(let player of plist){
+
+      get_user_info(player.name).then((res) => {
+        console.log(res);
+
+        changeDataBase('nbWin', res.nbGames + 1, player);
+
+      });
+
+    }
   });
 
 
@@ -462,6 +472,7 @@ io.on('connection', (socket) => {
     socket.emit('Deck', player.deck);
 
   });
+
 
   socket.on("sendEmoteToLobby", (data) => {
     // game = findGame(data.serverId, BatailGames);
@@ -495,7 +506,7 @@ io.on('connection', (socket) => {
       player.removeCard(card);
     }
     game.cardPlayedInRound[player.name] = card;
-    socket.emit("yourDeck");
+    io.to(serverId).emit("yourDeck");
     io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
     if (game.allPlayerPlayed()) {
       console.log("all played");
@@ -511,20 +522,20 @@ io.on('connection', (socket) => {
         io.to(serverId).emit("canPlay?", false);
       }
 
-      let winner = game.findGameWinner();
-      if(winner){
-        winner.forEach((player) => {
+      let winners = game.findGameWinner();
+      if(winners){
+        winners.forEach((player) => {
 
-          get_user_info(player).then((res) => {
+          get_user_info(player.name).then((res) => {
 
             changeDataBase('nbWin', res.nbWin + 1, player);
             changeScoreBoard('bataille-ouverte', player);
-
+            changeDataBase('argent', res.argent + 100, player.name);
           });
 
         });
         game.status = STATUS.ENDED;
-        socket.emit("fin", winner)
+        socket.emit("fin", winners)
       }
       else {
         game.currentTurn += 1
@@ -533,7 +544,7 @@ io.on('connection', (socket) => {
     else {
       console.log("not all played");
       player.removeCard(card);
-      socket.emit("yourDeck");
+      io.to(serverId).emit("yourDeck");
     }
   })
 
@@ -549,7 +560,7 @@ io.on('connection', (socket) => {
     let allCardPlayed = Object.values(game.cardPlayedInRound);
     let winner = game.findWinner(game.playerList);
     winner.deck = [...winner.deck, ...allCardPlayed];
-    socket.emit("yourDeck", winner.deck);
+    io.to(serverId).emit("yourDeck");
     game.restartRound();
     io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
     io.to(serverId).emit("canPlay?", true);
@@ -583,7 +594,26 @@ io.on('connection', (socket) => {
   })
 
 
+  socket.on("BTL-leaveGame",(playerName,serverId) => {
+    let game = findGame(serverId, BatailGames);
+    let player = findPlayer(playerName, game.playerList);
+    game.removePlayer(player)
+    let winners = game.findGameWinner();
+    if(winners){
+      winners.forEach((player) => {
 
+        get_user_info(player).then((res) => {
+
+          changeDataBase('nbWin', res.nbWin + 1, player);
+          changeScoreBoard('bataille-ouverte', player);
+          changeDataBase('argent', res.argent + 100, player.name);
+        });
+
+      });
+      game.status = STATUS.ENDED;
+      io.to(serverId).emit("fin", winners);
+    }
+  })
 
   // SIX QUI PREND 
 
@@ -859,10 +889,12 @@ io.on('connection', (socket) => {
     if (game.state == "FIN") {
       io.to(data.serverId).emit("MB_FIN", player.name);
 
-      get_user_info(player).then((res) => {
+      get_user_info(player.name).then((res) => {
 
-        changeDataBase('nbWin', res.nbWin + 1, player);
-        changeScoreBoard('mille-bornes', player);
+        changeDataBase('nbWin', res.nbWin + 1, player.name);
+        changeDataBase('nbWin', res.argent + 100, player.name);
+
+        changeScoreBoard('mille-bornes', player.name);
 
       });
     }
@@ -1121,7 +1153,7 @@ io.on('connection', (socket) => {
     console.log(fileName)
     fs.unlink(`saves/${fileName}.json`, (err) => {
       if (err) {
-        console.log("nigga se fichier existe pas");
+        console.log("ce fichier existe pas");
         return
       }
       console.log("file deleted")
@@ -1132,14 +1164,17 @@ io.on('connection', (socket) => {
   // SENTINEL 
   socket.on("player_auth_validity", (data) => {
 
-    if (data.player_name == "") { return; }
+    if (data.player_name == "" || validCookies[data.player_name] == "no") { return; }
 
     if (validCookies[data.player_name] != data.cookie) {
       console.log("test");
       socket.emit("sentinel_auth_error");
+      validCookies[data.player_name] = "no";
     }
 
   });
+
+
 
   socket.on('askScoreboard', () => {
     getAllScores().then((res) => {

@@ -218,7 +218,7 @@ const JeuBataille = () => {
     //----------------------LEAVE GAME---------------------
 
     function leaveGame() {
-        socket.emit('leaveGame', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+        socket.emit('BTL-leaveGame', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
         socket.emit('leave', sessionStorage.getItem('serverConnected'));
         navigate('/BrowserManager');
     };
@@ -355,6 +355,25 @@ const JeuBataille = () => {
                 setCanPlay(bool)
             })
 
+            socket.on("getInfo", (game) => {
+                let plist = [];
+                if (game.playerList.length <= 1) {
+                    sessionStorage.setItem('winners', sessionStorage.getItem('name'));
+                    navigate("/winner");
+                }
+                game.playerList.forEach((player) => {
+
+                    if (player.name !== sessionStorage.getItem("name")) {
+                        plist.push(player);
+                    }
+
+                });
+                setScore(game.scoreboard);
+                setOpponents(plist);
+
+            });g
+
+
             socket.on("yourDeck", () => {
                 socket.emit("whatMyDeck", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"))
             })
@@ -379,13 +398,12 @@ const JeuBataille = () => {
                 setShowAll(true);
                 setTimeout(() => {
                     socket.emit("resolveDraw", sessionStorage.getItem("serverConnected"));
-                    console.log("bizzare mon nigga");
                 }, '3000');
             });
 
             socket.on("fin", (winner) =>{
-
-                sessionStorage.setItem("winner", winner);
+                console.log(winner);
+                sessionStorage.setItem("winners", winner); 
                 navigate("/winner");
 
             })
@@ -395,10 +413,7 @@ const JeuBataille = () => {
             })
 
             socket.on("roundCardsPlayed", (cardPlayedList) => {
-                console.log(selectCardClick)
                 setAllCardPlayed(Object.values(cardPlayedList));
-                console.log("roundCardsPlayed", allCardPlayed);
-
             })
 
             socket.on("emote", (emote, opponentName) => {

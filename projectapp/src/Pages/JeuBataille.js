@@ -539,14 +539,6 @@ const JeuBataille = () => {
 
             {/*les cartes du joueur*/}
             <div className="bo-player-cards-holder">
-                <div className="bo-user-info-container">
-                    <div className="bo-user-info">
-                        Mon Score : {scoreboard[sessionStorage.getItem("name")]}
-                    </div>
-                    <div className="bo-user-info">
-                        Nombre de cartes : {playerCards.length}
-                    </div>
-                </div>
                 <div className="bo-player-cards">
                     {playerCards.map((card, index) => (
                         <div key={index} className={"bo-card"} onClick={() => !canPlay ? null : selectCardClick(card)} >
@@ -557,6 +549,15 @@ const JeuBataille = () => {
                     ))}
                 </div>
             </div>
+
+            <div className="bo-user-info-container">
+                    <div className="bo-user-info">
+                        Mon Score : {scoreboard[sessionStorage.getItem("name")]}
+                    </div>
+                    <div className="bo-user-info">
+                        Nombre de cartes : {playerCards.length}
+                    </div>
+                </div>
 
             {/*les cartes selectionnées*/}
             <div className="bo-selected-cards">

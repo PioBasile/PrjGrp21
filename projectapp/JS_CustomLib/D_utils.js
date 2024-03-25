@@ -1,7 +1,7 @@
-const { rectIntersection } = require("@dnd-kit/core");
-const { emitKeypressEvents } = require("readline");
-const { REPL_MODE_STRICT } = require("repl");
-const { workerData } = require("worker_threads");
+// const { rectIntersection } = require("@dnd-kit/core");
+// const { emitKeypressEvents } = require("readline");
+// const { REPL_MODE_STRICT } = require("repl");
+// const { workerData } = require("worker_threads");
 const { login, changeDataBase, get_user_info, register } = require("./D_db.js");
 
 const makecookie = (length) => {

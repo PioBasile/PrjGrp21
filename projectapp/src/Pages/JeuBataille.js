@@ -218,7 +218,7 @@ const JeuBataille = () => {
     //----------------------LEAVE GAME---------------------
 
     function leaveGame() {
-        socket.emit('leaveGame', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
+        socket.emit('BTL-leaveGame', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
         socket.emit('leave', sessionStorage.getItem('serverConnected'));
         navigate('/BrowserManager');
     };
@@ -379,13 +379,12 @@ const JeuBataille = () => {
                 setShowAll(true);
                 setTimeout(() => {
                     socket.emit("resolveDraw", sessionStorage.getItem("serverConnected"));
-                    console.log("bizzare mon nigga");
                 }, '3000');
             });
 
             socket.on("fin", (winner) =>{
-
-                sessionStorage.setItem("winner", winner);
+                console.log(winner);
+                sessionStorage.setItem("winners", winner); 
                 navigate("/winner");
 
             })

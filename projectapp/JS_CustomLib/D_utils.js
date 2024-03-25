@@ -1,7 +1,3 @@
-const { rectIntersection } = require("@dnd-kit/core");
-const { emitKeypressEvents } = require("readline");
-const { REPL_MODE_STRICT } = require("repl");
-const { workerData } = require("worker_threads");
 const { login, changeDataBase, get_user_info, register } = require("./D_db.js");
 
 const makecookie = (length) => {
@@ -159,25 +155,9 @@ class Bataille {
     this.lobbyLinked = null;
     this.distribuer();
 
-    let index = 0;
-
-    // this.playerList.forEach((player) => {
-
-    //     this.scoreboard[player.name] = 0;
-
-    //     for (let i = 0; i < Math.floor(52 / (this.maxJoueurs)); i++) {
-    //         if (i == 20) { break }
-    //         player.deck.push(this.cartes[index]);
-    //         index++;
-    //     }
-    // });
-
-
     this.currentTurn = 0;
     this.status = STATUS.START;
 
-    this.Rwinner;
-    this.Rdraw;
     this.previousCardsOfDraw = [];
 
   }
@@ -276,8 +256,6 @@ class Bataille {
 
   resolveDrawFirstPart() {
     let playersInDraw = this.playerInDraw();
-    console.log("resolveDrawFirstPart");
-    console.log(playersInDraw);
     this.previousCardsOfDraw = Object.values(this.cardPlayedInRound)
     playersInDraw.forEach(player => {
       let randomId = Math.floor(Math.random() * player.deck.length);
@@ -285,7 +263,6 @@ class Bataille {
       this.cardPlayedInRound[player.name] = card
       player.deck.splice(randomId, 1);
     });
-    console.log(this.cardPlayedInRound);
   }
 
   findPlayerWasInDraw() {
@@ -306,24 +283,30 @@ class Bataille {
   }
 
   isGameEnded() {
-    let nbPlayerAtZeroCard = 0
+    let nbPlayerAtZeroCard = 0;
+
     if (game.maxTurn <= game.currentTurn) {
       return true;
     }
-    for (let player of this.playerList) {
-      if (player.deck.length == 0) {
-        nbPlayerAtZeroCard++
-      }
+    else if(game.playerList.length === 1){
+      return true
     }
-    return nbPlayerAtZeroCard == this.playerList.length - 1;
+    else {
+      for (let player of this.playerList) {
+        if (player.deck.length == 0) {
+          nbPlayerAtZeroCard++
+        }
+      }
+      return nbPlayerAtZeroCard == this.playerList.length - 1;
+    }
   }
 
   findGameWinner() {
     if (this.isGameEnded()) {
       let winners = [this.playerList[0]]
       for (let player of this.playerList) {
-        if(player.deck.length <= winners.deck.length){
-          if(player.deck.length == winners.deck.length){
+        if(player.deck.length <= winners[0].deck.length){
+          if(player.deck.length == winners[0].deck.length){
             winners.push(player)
           }
           else {
@@ -331,32 +314,14 @@ class Bataille {
           }
         }
       } 
-      return winners
+      let winnersWithoutDoublon = winners.filter((elem,index) => winners.indexOf(elem) == index);
+      return winnersWithoutDoublon.map(player => player.name);
     }
     else {
       return false
     }
   }
 
-
-  playCard(player, card) {
-    player.selected = card;
-    this.cardPlayedInRound[player.name] = card;
-    if (this.allPlayerPlayed()) {
-      if (this.isADraw()) {
-        console.log("a drraw")
-        return false;
-      }
-
-      else {
-        let allCardPlayed = Object.values(this.cardPlayedInRound);
-        player.deck = [...player.deck, ...allCardPlayed];
-        return true
-      }
-
-    }
-    this.allCardPlayed = {};
-  }
 
 
   removePlayer(player) {
@@ -1183,31 +1148,6 @@ class MilleBorne {
     }
   }
 
-  playCard(card, player) {
-    if (this.playerList.includes(player)) {
-
-      let playerDeck = player.deck
-      playerDeck.splice(playerDeck.indexOf(card), 1)
-
-      if (!this.cardBonus.includes(card)) { this.cardPlayed.push(card); };
-
-      if (this.cardVitesse.includes(card)) { this.vitesseCard(card, player); }
-
-      else if (this.cardBonus.includes(card)) {
-        player.addBonus(card);
-      }
-
-      else if (this.cardContre.includes(card)) { this.endAttaque(card, player); }
-
-      else {
-        throw new Error("card doesn't exist");
-      }
-    }
-
-    else {
-      throw new Error("player missmatch with playerList");
-    }
-  }
 
 
   MB_giveOrder() {

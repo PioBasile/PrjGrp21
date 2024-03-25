@@ -176,19 +176,75 @@
 }
 
 .spinning {
-    top: 20vh;
+    margin-top: 5vh;
     height: 70vh;
     width: 70vh;
-    border-radius: 100%;
+    border-radius: 50%;
     animation: rotate 6s 1;
 }
 
 .notSpinning {
-    top: 20vh;
+    margin-top: 5vh;
     height: 70vh;
     width: 70vh;
-    border-radius: 100%;
+    border-radius: 50%;
 }
+
+.notSpinning::before {
+    content: '';
+    position: absolute;
+    left: 46.4%;
+    margin-top: 13%;
+    width: 0;
+    height: 0;
+    border-left:  1vw solid transparent; /* Vous pouvez ajuster la largeur du triangle ici */
+    border-right:  1vw solid transparent; /* Vous pouvez ajuster la largeur du triangle ici */
+    border-top: 3vh solid #d2d513; 
+}
+
+.notSpinning::after {
+    content: '';
+    position: absolute;
+    left: 46.4%;
+    margin-top: 13%;
+    width: 0;
+    height: 0;
+    border-left:  1vw solid transparent; /* Vous pouvez ajuster la largeur du triangle ici */
+    border-right:  1vw solid transparent; /* Vous pouvez ajuster la largeur du triangle ici */
+    border-top: 3vh solid #d2d513; 
+}
+
+
+
+.spinning::before {
+    content: '';
+    position: absolute;
+    left: 46.4%;
+    margin-top: 13%;
+    width: 0;
+    height: 0;
+    border-left:  1vw solid transparent; /* Vous pouvez ajuster la largeur du triangle ici */
+    border-right:  1vw solid transparent; /* Vous pouvez ajuster la largeur du triangle ici */
+    border-top: 3vh solid #d2d513; 
+}
+
+
+.spinning::after {
+    content: '';
+    position: absolute;
+    left: 46.4%;
+    margin-top: 13%;
+    width: 0;
+    height: 0;
+    border-left:  1vw solid transparent; /* Vous pouvez ajuster la largeur du triangle ici */
+    border-right:  1vw solid transparent; /* Vous pouvez ajuster la largeur du triangle ici */
+    border-top: 3vh solid #d2d513; 
+}
+
+
+
+
+
 
 @keyframes rotate {
     from {
@@ -299,23 +355,18 @@
 }
 
 
-.vertical-line {
+/* .vertical-line {
     position: relative;
     width: 0;
     height: 0;
     left: 32.7vh;
     top: 10ch;
     border-left: 20px solid transparent;
-    /* Ajustez la taille du triangle en modifiant la valeur de border-left */
     border-right: 20px solid transparent;
-    /* Ajustez la taille du triangle en modifiant la valeur de border-right */
     border-top: 100px solid #000;
-    /* Couleur du triangle (noir dans cet exemple) et hauteur */
     margin-left: 10px;
-    /* Marge Ã  gauche du triangle (ajustez selon vos besoins) */
-    /* Marge à gauche du triangle (ajustez selon vos besoins) */
     z-index: 1;
-}
+} */
 
 .rou-timer {
     position: absolute;

@@ -349,4 +349,5 @@ position: fixed;
 .chat-container {
     transform: translateY(3vh);
     max-height: 100%;
+    max-width: 15%;
 }

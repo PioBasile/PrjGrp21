@@ -905,8 +905,6 @@ io.on('connection', (socket) => {
         
         changeScoreBoard('mille-bornes', player.name);
         changeMoney(player.name, 100);
-
-
       });
     }
 

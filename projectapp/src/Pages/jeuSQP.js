@@ -517,6 +517,7 @@ const SixQuiPrend = () => {
   const openSavePopUp = () => {
     setIsSave(true);
   }
+
   const leave = () => {
     socket.emit("MB-leaveGame", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
     socket.emit('leave', sessionStorage.getItem('serverConnected'));
@@ -551,7 +552,7 @@ const SixQuiPrend = () => {
       <div className='sqp-upperBandeau'>
 
         {owner === sessionStorage.getItem("name") && <div className='save-button' onClick={() => openSavePopUp()}> SAVE</div>}
-        <div className='MB-exit-button' onClick={() => leave()}> QUITTER</div>
+        <div className='MB-exit-button' onClick={leave}> QUITTER</div>
 
         <YourComponent></YourComponent>
 

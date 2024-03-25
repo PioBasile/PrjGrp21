@@ -62,7 +62,11 @@ function transferUsersToScoreboard(users) {
 getUsers().then(transferUsersToScoreboard).catch(console.error);
 
 
-//renvoi un dic de {nom:[bataille,sqp,mb,argent], ... } dans cette ordre
+//renvoi un dic par exepmple :
+//([
+//   { nom: "Joueur 1", scores: [1, 2, 3, 4] },
+//   { nom: "Joueur 2", scores: [4, 3, 2, 1] },
+// ]);   
 function getAllScores() {
     return new Promise((resolve, reject) => {
         scoreboardDb.all('SELECT nom, "bataille-ouverte" AS bataille, "six-qui-prend" AS sqp, "mille-bornes" AS mb, argent FROM scoreboard', [], (err, rows) => {
@@ -70,14 +74,16 @@ function getAllScores() {
                 reject(err);
                 return;
             }
-            const result = rows.reduce((acc, row) => {
-                acc[row.nom] = [row.bataille, row.sqp, row.mb ,row.argent];
-                return acc;
-            }, {});
+            
+            const result = rows.map(row => ({
+                nom: row.nom,
+                scores: [row.bataille, row.sqp, row.mb, row.argent]
+            }));
             resolve(result);
         });
     });
 }
+
 
 //incrementer de +1 le score d'un jeu pour un joueur 
 const changeScoreBoard = (jeu, nom) => {
@@ -97,6 +103,7 @@ const changeScoreBoard = (jeu, nom) => {
     });
 }
 
+//incrementer de +/- l'argent d'un joueur
 const changeMoney = (nom, argent) => {
     const sqlUpdateMoney = `UPDATE scoreboard SET argent = argent + ? WHERE nom = ?`;
     

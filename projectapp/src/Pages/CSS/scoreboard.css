@@ -12,10 +12,6 @@
     scrollbar-color: #555 #2E2E2E; 
 }
 
-  
-
-
-
 .sb-tableau {
     font-family: 'Arial', sans-serif;
     width: 80%; 
@@ -35,6 +31,12 @@
     text-align: center; 
 }
 
+.sb-title{
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+}
+
 .sb-table {
     width: 100%;
     overflow-y: auto; 
@@ -45,6 +47,7 @@
     display: flex;
 }
 
+
 .sb-header-item, .sb-cell {
     flex: 1;
     padding: 12px 20px;
@@ -52,9 +55,24 @@
     color: #DDD; 
 }
 
+.sb-header-item {
+    cursor: pointer; 
+    transition: background-color 0.3s ease; 
+}
+
+.sb-header-item:hover {
+    transition: background-color 0.3s ease; 
+    background-color: #53657e; 
+}
+
 .sb-header {
     background-color: #333; 
     color: #FFF;
+    position: sticky;
+    top: 0; 
+    z-index: 100; 
+
+    
 }
 
 .sb-row.even {
@@ -97,8 +115,8 @@
     background-color: #0056b3; 
 }
 
-.gold-class .sb-cell {
-    color: rgb(216, 190, 37);
+.player-class .sb-cell {
+    color: rgb(37, 109, 216);
     font-weight: bold; 
 }
 

@@ -63,7 +63,7 @@
 }
 
 .numberZero {
-    width: 25.8vw;
+    width: 25.95vw;
     height: 10vh;
     background-color: #31b358;
     border: 3px solid #ccc;
@@ -153,14 +153,14 @@
 
 .textMoney {
     color: black;
-    font-size: 40px;
+    font-size: 40vh;
 }
 
 .moneyContainer {
     position: absolute;
     top: 5%;
     right: 5%;
-    font-size: 100%;
+    font-size: 200%;
     width: 10%;
     height: 10%;
     background-color:  rgb(177,129,141);
@@ -395,14 +395,14 @@
 
 .ro-leave {
     position: fixed;
-    bottom: 20px;
-    left: 20px;
+    bottom: 0;
+    left: 0;
     opacity: 0.5; /* Légère visibilité pour un look discret */
     transition: opacity 0.3s ease; /* Transition douce pour l'opacité */
 }
 
 .ro-leave:hover {
-    opacity: 0.7; /* Augmente l'opacité au survol pour une meilleure visibilité sans attirer trop l'attention */
+    opacity: 0.7;
 }
 
 .ro-bye-button {
@@ -411,9 +411,10 @@
     color: #683232; /* Couleur de texte légère pour un contraste subtil */
     border-radius: 5px; /* Bords arrondis pour un look moderne */
     font-size: 100%; 
-    cursor: pointer; /* Indicateur de clic */
-    width: 4vw;
-    height: 4vh;
+    cursor: pointer; 
+    width: 5vw;
+    height: 5vh;
+    text-align: center;
 }
 
 .ro-bye-button:hover {

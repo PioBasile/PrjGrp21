@@ -477,7 +477,12 @@ const JeuBataille = () => {
         setSaveName(filteredValue);
     };
 
-
+    useEffect(() => {
+        const messageContainer = document.querySelector('.bo-message-container');
+        if (messageContainer) {
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+      }, [messages]); 
 
 
     //----------------------RETURN---------------------

@@ -525,6 +525,14 @@ const SixQuiPrend = () => {
   }
 
 
+  useEffect(() => {
+    const messageContainer = document.querySelector('.sqp-message-container');
+    if (messageContainer) {
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
+  }, [messages]); 
+
+
   return (
 
 
@@ -551,13 +559,7 @@ const SixQuiPrend = () => {
 
       <div className='sqp-upperBandeau'>
 
-        {owner === sessionStorage.getItem("name") && <div className='save-button' onClick={() => openSavePopUp()}> SAVE</div>}
-        <div className='MB-exit-button' onClick={leave}> QUITTER</div>
-
         <YourComponent></YourComponent>
-
-
-
 
         <div className="adverse-players">
           {opponents.map((opponent, index) => (
@@ -572,7 +574,8 @@ const SixQuiPrend = () => {
 
 
       <div className='sqp-gameContainer'>
-
+        
+        {/* Game table section */}
         <div className="rectangle-container">
           <Rectangle></Rectangle>
           <Rectangle1></Rectangle1>
@@ -590,29 +593,35 @@ const SixQuiPrend = () => {
           ))}
         </div>
 
-        {/* Game table section */}
-
       </div>
+
       {/* Joueur cards en bas */}
       <div className='sqp-cardContianer'>
+        
+      <div className='sqp-exit-button' onClick={leave}> QUITTER</div>
+        {owner === sessionStorage.getItem("name") && <div className='sqp-save-button' onClick={() => openSavePopUp()}> SAVE</div>}
 
-        <div className='timer'>
-          <p>{seconds}</p>
+        <div className='sqp-timer'>
+          <p>{seconds}s left</p>
         </div>
-        <div className={(myTurnP2 || !allPlayerSelected) ? 'card-holder' : 'card-holderNYT'} >
+        <div className={(myTurnP2 || !allPlayerSelected) ? 'sqp-card-holder' : 'sqp-card-holderNYT'} >
           <div className={"notYourTurn-cards"} >
             {playerCards.map((card) => (
+              <div className="sqp-card">
               <Carte
                 key={card.number}
                 card={card}
               ></Carte>
+            </div>
             ))}
           </div>
         </div>
-        {/* Scoreboard on the side */}
+
+        
         <div className={`scoreboard ${isVisible ? 'visible' : ''}`}>
-          <div className="scoreboard-tab">Scoreboard</div>
+          <div className="scoreboard-tab">Press Tab _ Scores</div>
           <div className="scoreboard-content">
+            <strong>Your</strong> score: {score} <br />
             {opponents.map((opponent, index) => (
               <div key={index}>
                 <strong>{opponent.nom}</strong>'s
@@ -626,7 +635,7 @@ const SixQuiPrend = () => {
 
 
       <div className="chat-container" id='chatContainer'>
-        <div className='message-container bo-message-container' >
+        <div className='message-container sqp-message-container' >
           {messages.map((msg, index) => (
             <p key={index}>{msg}</p>)
           )}

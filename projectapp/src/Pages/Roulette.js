@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Roulette = () => {
     const navigate = useNavigate();
-    const [timer,setTimer] = useState(-1);
+    const [timer, setTimer] = useState(-1);
     const coin = require('./CSS/pics/coin.webp')
     const [isSpinning, setIsSpinning] = useState(false);
     const [afficherPopup, setAfficherPopup] = useState(false);
@@ -28,8 +28,8 @@ const Roulette = () => {
     const roulette = require("./CSS/pics/roulette.jpg");
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
+    const [isCo, setIsCo] = useState("chat");
     // eslint-disable-next-line
-    const [serverMessage, setServerMessage] = useState([]);
 
 
 
@@ -74,6 +74,25 @@ const Roulette = () => {
 
     }
 
+    function convertBetValues(betValues) {
+        const conversionRules = {
+            37: 'first twelve',
+            38: 'sec twelve',
+            39: 'thd twelve',
+            40: 'EVEN',
+            41: 'ODD',
+            42: 'RED',
+            43: 'BLACK',
+            44: '1to18',
+            45: '19to36'
+        };
+    
+        return betValues.map(value => {
+            return conversionRules[value] || value;
+        });
+    }
+    
+
 
     const handleSubmit = () => {
 
@@ -97,39 +116,44 @@ const Roulette = () => {
     }
 
     const leave = () => {
+        socket.emit("leave");
         navigate('/BrowserManager');
+        setIsCo(true);
     }
-        
-    
+
+
 
     const sendMessage = () => {
-        socket.emit('rlt-sendMessage', { name: sessionStorage.getItem("name"), msg: message});
+        socket.emit('rlt-sendMessage', { name: sessionStorage.getItem("name"), msg: message });
         setMessage('');
     }
 
     useEffect(() => {
 
         // GESTION stabilité de la connection
-        socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"));
+        socket.emit("rouletteConnection");
         socket.emit("getServ");
         socket.emit("ArgentViteBatard", sessionStorage.getItem('name'));
         socket.emit("rlt-loadTheChat", sessionStorage.getItem("serverConnected"))
-
     }, [])
 
 
     useEffect(() => {
 
-        socket.on("bets" ,(betList) => {
+
+        socket.on("bets", (betList) => {
             let bets = betList.map(bet => bet.betPos);
-            setValueBet(bets);
+            setValueBet(convertBetValues(bets));
+            console.log(valueBet);
         })
+
 
 
         socket.on('spinwheel', (resy) => {
 
-            handleSpin(resy);
-
+            if (sessionStorage.getItem("location") === "/roulette") {
+                handleSpin(resy);
+            }
         });
 
         socket.on("tropsTard", () => {
@@ -169,14 +193,8 @@ const Roulette = () => {
 
         if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
 
-        socket.on("deco", (name) => {
-
-            navigate("/login-signup");
-
-        });
 
         socket.on("rlt-getMessage", (msgList) => {
-            console.log(msgList);
             setMessages(msgList);
         })
 
@@ -187,11 +205,14 @@ const Roulette = () => {
     const handleSpin = (randomResult) => {
         setResult(randomResult);
 
-        let randomDeg = getPositionInRoulette(randomResult) + 1080
-        var spinningElem = document.getElementById('spinning');
+        if (sessionStorage.getItem("location") === "/roulette") {
 
-        spinningElem.style.transform = 'rotate(' + randomDeg + 'deg';
+            let randomDeg = getPositionInRoulette(randomResult) + 1080
 
+            var spinningElem = document.getElementById('spinning');
+
+            spinningElem.style.transform = 'rotate(' + randomDeg + 'deg';
+        }
         // setMoneyWin(0);
         setIsSpinning(true);
     }
@@ -200,6 +221,7 @@ const Roulette = () => {
 
         setIsSpinning(false);
         setIsVisible(true);
+        setValueBet([])
         setTimeout(() => {
             setIsVisible(false);
             socket.emit("ArgentViteBatard", sessionStorage.getItem('name'));
@@ -227,24 +249,7 @@ const Roulette = () => {
 
     //permet de recuperer l'élement cliqué et de savoir si oui ou non on est en train d'écrire dans le chat ou faire d'autres actions sur le jeu {
 
-    document.addEventListener('DOMContentLoaded', function () {
 
-        let chatContainer = document.getElementById("chatContainer");
-        function getElementId(event) {
-
-            var clickedElementId = event.target.id;
-            if (clickedElementId === "inputChat") {
-                chatContainer.style.opacity = 1;
-            }
-            else {
-                chatContainer.style.opacity = 0.33
-
-            }
-            return clickedElementId;
-        }
-
-        document.addEventListener('click', getElementId);
-    });
 
     function YourComponent() {
         useEffect(() => {
@@ -283,17 +288,20 @@ const Roulette = () => {
         );
     }
 
+    const convert = (valeur) => {
+
+    }
+
     return (
 
         <div className='roulette'>
             <button className='rou-timer'> vous avez encore {timer}s pour bet </button>
-            
+
             <YourComponent></YourComponent>
-            
-            <div className="ro-leave">
-                <button className="ro-bye-button" onClick={leave}> Leave </button>
-            </div>
-            
+
+            <div className="ro-bye-button" onClick={leave}> Leave </div>
+
+
             <div className='rouletteGameContainer' >
                 {!isSpinning && (<Popup />)}
                 <div className='rouletteContainer' >

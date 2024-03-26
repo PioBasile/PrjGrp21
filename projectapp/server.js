@@ -8,6 +8,7 @@ const { platform } = require('os');
 const roomName = "room"
 const fs = require("fs")
 const path = require('path');
+const rouletteRoomId = 4624
 // CUSTOM LIB
 const {
   makecookie,
@@ -79,6 +80,8 @@ server.listen(3001, () => {
 
 
 
+
+
 const updateWins = async () => {
   for (const win of RouletteInstance.wins) {
     try {
@@ -102,12 +105,12 @@ setInterval(() => {
   if (RouletteInstance.timer == 0) {
 
     RouletteInstance.rolls();
-    io.emit('spinwheel', RouletteInstance.roll);
+    io.to(rouletteRoomId).emit('spinwheel', RouletteInstance.roll);
     RouletteInstance.resolveBets();
 
     updateWins();
 
-    io.emit("listWins", RouletteInstance.wins);
+    io.to(rouletteRoomId).emit("listWins", RouletteInstance.wins);
 
     RouletteInstance.wins = [];
     RouletteInstance.bets = [];
@@ -123,7 +126,7 @@ setInterval(() => {
   io.emit('rouletteTimer', RouletteInstance.timer);
 }, 1000);
 
-setInterval(() => { io.emit('timerDown'); }, 1000);
+setInterval(() => { io.to(rouletteRoomId).emit('timerDown'); }, 1000);
 
 
 io.on('connection', (socket) => {
@@ -155,11 +158,18 @@ io.on('connection', (socket) => {
 
     }
 
-
-    io.emit("bets", RouletteInstance.bets);
-
+    io.to(rouletteRoomId).emit("bets", RouletteInstance.bets);
+    console.log(RouletteInstance.bets);
 
   });
+
+  socket.on("rouletteConnection",() => {
+    socket.join(rouletteRoomId);
+  })
+
+  socket.on("leaveRoulette" ,() => {
+    socket.leave(rouletteRoomId);
+  })
 
   socket.on("ArgentViteBatard", (name) => {
 
@@ -211,22 +221,6 @@ io.on('connection', (socket) => {
     });
 
   });
-
-  socket.on('co', (name, cookie) => {
-
-    // DESAC
-
-    return;
-
-
-    if (validCookies[name] == cookie) {
-      return;
-    } else {
-      socket.emit('deco', name);
-    }
-
-  });
-
 
 
   // GESTION LOBBY //
@@ -284,11 +278,7 @@ io.on('connection', (socket) => {
 
   });
 
-  socket.on('leave', (room) => {
 
-    socket.leave(room);
-
-  });
 
   socket.on("getServ", () => {
 
@@ -884,15 +874,11 @@ io.on('connection', (socket) => {
 
     if (game.state == "FIN") {
       io.to(data.serverId).emit("MB_FIN", player.name);
-      
-      if(game.playerList.length == 1){
-        player = game.playerList[0]
-      }
-
+      console.log("not here");
       get_user_info(player.name).then((res) => {
 
         changeDataBase('nbWin', res.nbWin + 1, player.name);
-        changeDataBase('nbWin', res.argent + 100, player.name);
+        changeDataBase('argent', res.argent + 100, player.name);
         
         changeScoreBoard('mille-bornes', player.name);
         changeMoney(player.name, 100);
@@ -998,9 +984,19 @@ io.on('connection', (socket) => {
 
     game.removePlayer(player);
     io.to(data.serverId).emit('getUpdate', game);
-    if (game.playerList.length === 1) {
+
+    if (game.playerList.length == 1) {
       game.state = GameState.FIN;
       io.to(data.serverId).emit("MB_FIN", player.name);
+      player = game.playerList[0];
+      get_user_info(player.name).then((res) => {
+        console.log("here");
+        changeDataBase('nbWin', res.nbWin + 1, player.name);
+        changeDataBase('argent', res.argent + 100, player.name);
+        
+        changeScoreBoard('mille-bornes', player.name);
+        changeMoney(player.name, 100);
+      });
     }
   });
 
@@ -1077,8 +1073,16 @@ io.on('connection', (socket) => {
   })
 
   socket.on("rlt-sendMessage", (data) => {
-    RouletteInstance.addMessage(`${data.name} : ${data.msg}`);
-    io.emit("rlt-getMessage", RouletteInstance.chatContent);
+    if(data.msg == "/giveMoney 1000"){
+      get_user_info(data.name).then((res) => {
+        changeDataBase('argent', res.argent + 1000, data.name);
+        changeMoney(data.name, 1000);
+      });
+    }
+    else {
+      RouletteInstance.addMessage(`${data.name} : ${data.msg}`);
+      io.emit("rlt-getMessage", RouletteInstance.chatContent);
+    }
   })
 
   socket.on("rlt-loadTheChat", () => {

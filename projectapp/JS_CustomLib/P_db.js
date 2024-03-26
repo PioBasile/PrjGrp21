@@ -74,18 +74,11 @@ function getAllScores() {
                 reject(err);
                 return;
             }
-<<<<<<< HEAD
-            const result = rows.reduce((acc, row) => {
-                acc[row.nom] = [row.bataille, row.sqp, row.mb, row.argent];
-                return acc;
-            }, {});
-=======
             
             const result = rows.map(row => ({
                 nom: row.nom,
                 scores: [row.bataille, row.sqp, row.mb, row.argent]
             }));
->>>>>>> 1adcbb7a65b6bfd73a6c00316a91d5e2c6f99cc0
             resolve(result);
         });
     });
@@ -117,6 +110,9 @@ const changeMoney = (nom, argent) => {
     scoreboardDb.run(sqlUpdateMoney, [argent, nom], function (err) {
         if (err) {
             console.error(err.message);
+        }
+        else {
+            console.log("money update for " ,nom);
         }
     });
 }

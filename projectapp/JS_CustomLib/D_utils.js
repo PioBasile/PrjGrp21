@@ -191,6 +191,15 @@ class Bataille {
     })
   }
 
+  changeScoreBoard(name) {
+    if(this.scoreboard.hasOwnProperty(name)){
+      this.scoreboard[name] += 1;
+    }
+    else {
+      this.scoreboard[name] = 1;
+    }
+  }
+
   allPlayerPlayed() {
     for (let player of this.playerList) {
       if (player.selected == null) {
@@ -314,6 +323,7 @@ class Bataille {
         }
       } 
       let winnersWithoutDoublon = winners.filter((elem,index) => winners.indexOf(elem) == index);
+      console.log(winnersWithoutDoublon.map(player => player.name));
       return winnersWithoutDoublon.map(player => player.name);
     }
     else {

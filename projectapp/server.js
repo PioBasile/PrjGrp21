@@ -402,13 +402,11 @@ io.on('connection', (socket) => {
         mbPlist.push(newMB_player);
       })
       plist  = mbPlist;
-      nGame = new MilleBorne(lobbyID, owner, mbPlist);
+      nGame = new MilleBorne(lobbyID, owner, mbPlist, lobby.moneyBet);
 
       const lobbyNotChanged = Object.assign({}, lobby);
 
       nGame.lobbyLinked = lobbyNotChanged;
-
-
 
       MilleBornesGames.push(nGame);
     }
@@ -512,14 +510,15 @@ io.on('connection', (socket) => {
 
       let winners = game.findGameWinner();
       if(winners){
-        winners.forEach((player) => {
+        let moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length);
+        console.log("MONEYWIN 510", moneyWin);
+        winners.forEach((name) => {
+          get_user_info(name).then((res) => {
 
-          get_user_info(player.name).then((res) => {
-
-            changeDataBase('nbWin', res.nbWin + 1, player);
-            changeScoreBoard('bataille-ouverte', player);
-            changeDataBase('argent', res.argent + 100, player.name);
-            changeMoney(player.name, 100);
+            changeDataBase('nbWin', res.nbWin + 1, name);
+            changeScoreBoard('bataille-ouverte', name);
+            changeDataBase('argent', res.argent + 100 + moneyWin, name);
+            changeMoney(name, 100 + moneyWin);
           });
 
         });
@@ -547,11 +546,14 @@ io.on('connection', (socket) => {
     let allCardPlayed = Object.values(game.cardPlayedInRound);
     let winner = game.findWinner(game.playerList);
     winner.deck = [...winner.deck, ...allCardPlayed];
+    game.changeScoreBoard(winner.name);
     io.to(serverId).emit("yourDeck");
     game.restartRound();
+    io.to(serverId).emit("getInfo", game);
     io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
     io.to(serverId).emit("canPlay?", true);
     io.to(serverId).emit("reset");
+    io.to(serverId).emit("roundWinner", winner.name);
   })
 
 
@@ -567,11 +569,13 @@ io.on('connection', (socket) => {
     let game = findGame(serverId, BatailGames);
     let playersInDraw = game.findPlayerWasInDraw()
     let winner = game.findWinner(playersInDraw);
-
+    game.changeScoreBoard(winner.name);
     game.resolveDraw(winner);
     io.to(serverId).emit("yourDeck");
     game.restartRound();
+    io.to(serverId).emit("getInfo", game);
     io.to(serverId).emit("reset")
+    io.to(serverId).emit("roundWinner", winner.name);
   })
 
   socket.on("whatMyDeck", (serverId, playerName) => {
@@ -587,14 +591,16 @@ io.on('connection', (socket) => {
     game.removePlayer(player)
     let winners = game.findGameWinner();
     if(winners){
-      winners.forEach((player) => {
+      let moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length)
+      console.log("MONEYWIN" + moneyWin);
+      console.log("MONEYWIN 600", moneyWin);
+      winners.forEach((name) => {
+        get_user_info(name).then((res) => {
 
-        get_user_info(player).then((res) => {
-
-          changeDataBase('nbWin', res.nbWin + 1, player);
-          changeScoreBoard('bataille-ouverte', player);
-          changeDataBase('argent', res.argent + 100, player.name);
-          changeMoney(player.name, 100);
+          changeDataBase('nbWin', res.nbWin + 1, name);
+          changeScoreBoard('bataille-ouverte', name);
+          changeDataBase('argent', res.argent + 100 + moneyWin, name);
+          changeMoney(name, 100 + moneyWin);
 
         });
 
@@ -734,6 +740,16 @@ io.on('connection', (socket) => {
 
       if (game.status == STATUS.ENDED) {
 
+        let moneyWin = Math.round(game.moneyBet * game.maxPlayers / winners.length)
+        get_user_info(player).then((res) => {
+
+          changeDataBase('nbWin', res.nbWin + 1, player);
+          changeScoreBoard('bataille-ouverte', player);
+          changeDataBase('argent', res.argent + 100 + moneyWin, player.name);
+          changeMoney(player.name, 100 + moneyWin);
+
+        });
+
         io.to(gameID).emit('FIN', game.winner);
         return;
       }
@@ -782,6 +798,7 @@ io.on('connection', (socket) => {
     io.to(serverId).emit("playerWhosPlaying", playerName);
   })
 
+  
 
 
 
@@ -875,14 +892,16 @@ io.on('connection', (socket) => {
     if (game.state == "FIN") {
       io.to(data.serverId).emit("MB_FIN", player.name);
       console.log("not here");
+      let moneyWin = Math.round(game.moneyBet * game.maxPlayers)
       get_user_info(player.name).then((res) => {
 
         changeDataBase('nbWin', res.nbWin + 1, player.name);
-        changeDataBase('argent', res.argent + 100, player.name);
+        changeDataBase('argent', res.argent + 100 + moneyWin, player.name);
         
         changeScoreBoard('mille-bornes', player.name);
-        changeMoney(player.name, 100);
+        changeMoney(player.name, 100 + moneyWin);
       });
+
     }
 
     player.deck.splice(player.deck.indexOf(card), 1)

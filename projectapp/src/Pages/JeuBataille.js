@@ -27,9 +27,10 @@ const JeuBataille = () => {
     const [saveName, setSaveName] = useState("");
     const [isSave, setIsSave] = useState(false);
     const [owner, setOwner] = useState("");
-
     const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/blue.png")
-
+    
+    const [isVisible, setIsVisible] = useState(false);
+    const [roundWinner, setRoundWinner] = useState("");
 
     //----------------------EMOTES---------------------
     const toyota = require("./CSS/emotes/toyota.mp4");
@@ -442,10 +443,16 @@ const JeuBataille = () => {
                 console.log("reset")
                 setAllCardPlayed([]);
                 setCanPlay(true);
+                setShowAll(false);
             })
 
             socket.on("endEmoteToAll",() => {
                 setPlayerNameEmote("");
+            })
+
+            socket.on("roundWinner", (winnerName) => {
+                setRoundWinner(winnerName);
+                setIsVisible(true);
             })
         }
 
@@ -477,6 +484,25 @@ const JeuBataille = () => {
         setSaveName(filteredValue);
     };
 
+    const Popup = () => {
+        useEffect(() => {
+            const timer = setTimeout(() => {
+                setIsVisible(false);
+                setRoundWinner("");
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }, []);
+
+        return (
+            <div>
+                <div className={`popup ${isVisible ? 'visible' : ''} `}>
+                    <p>{`${roundWinner} a gagné la manche`}</p>
+                </div>
+
+            </div>
+        );
+    };
 
 
 
@@ -494,7 +520,8 @@ const JeuBataille = () => {
 
             <YourComponent></YourComponent>
 
-            {/*Ur emote*/}
+            {isVisible && <Popup />}
+
             {showEnemyEmote(sessionStorage.getItem("name")) && (
                 <div className='bo-player-emote-container' ref={emoteRef}>
                     <div className="bo-player-emote" >

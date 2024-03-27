@@ -338,7 +338,7 @@ io.on('connection', (socket) => {
 
   socket.on("lobbyInfo_UwU", (serverId) => {
     let lobby = findLobby(serverId, lobbyList);
-    io.to(serverId).emit("yourInfoBebs", { serverName: lobby.serverName, nbPlayerMax: lobby.nbPlayerMax, password: lobby.password, gameType: lobby.gameType, owner: lobby.owner, timer: lobby.tbt });
+    io.to(serverId).emit("yourInfoBebs", { serverName: lobby.serverName, nbPlayerMax: lobby.nbPlayerMax, password: lobby.password, gameType: lobby.gameType, owner: lobby.owner, timer: lobby.tbt, moneyBet:lobby.moneyBet });
   })
 
   socket.on('askStat', (name) => {
@@ -382,7 +382,7 @@ io.on('connection', (socket) => {
 
     if (lobby.gameType == "sqp") {
 
-      nGame = new SixQuiPrend(lobby.serverName, lobbyID, owner, plist, 10, lobby.moneyBet);
+      nGame = new SixQuiPrend(lobby.serverName, lobbyID, owner, plist, 10, lobby.moneyBet,lobby.nbPlayerMax);
 
       const lobbyNotChanged = Object.assign({}, lobby);
       nGame.lobbyLinked = lobbyNotChanged;
@@ -402,7 +402,7 @@ io.on('connection', (socket) => {
         mbPlist.push(newMB_player);
       })
       plist = mbPlist;
-      nGame = new MilleBorne(lobbyID, owner, mbPlist, lobby.moneyBet);
+      nGame = new MilleBorne(lobbyID, owner, mbPlist, lobby.moneyBet, lobby.nbPlayerMax);
 
       const lobbyNotChanged = Object.assign({}, lobby);
 
@@ -436,7 +436,7 @@ io.on('connection', (socket) => {
         changeMoney(player.name, -lobby.moneyBet); // on leur enleve leur thune dés qu'ils entrent dans la game
         changeDataBase('nbWin', res.nbGames + 1, player.name);
         changeDataBase('argent', res.argent - lobby.moneyBet, player.name);
-        console.log("RES FOREACH",res)
+        console.log("RES FOREACH", res)
       });
 
     }
@@ -611,6 +611,10 @@ io.on('connection', (socket) => {
       });
       game.status = STATUS.ENDED;
       io.to(serverId).emit("fin", winners);
+    }
+
+    else {
+      io.to(serverId).emit("getInfo", game);
     }
   })
 
@@ -802,8 +806,26 @@ io.on('connection', (socket) => {
     io.to(serverId).emit("playerWhosPlaying", playerName);
   })
 
+  socket.on("SQP-leaveGame", (playerName, serverId) => {
+    let game = findGame(serverId, TaureauGames);
+    let player = findPlayer(playerName, game.player_list);
+    game.removePlayer(player)
+    let winner = game.player_list[0];
+    if(game.player_list.length == 1){  
+      if (winner) {
+        var moneyWin = Math.round(game.moneyBet * game.maxPlayer);
+          get_user_info(winner.name).then((res) => {
+            changeDataBase('nbWin', res.nbWin + 1, winner.name);
+            changeScoreBoard('six-qui-prend', winner.name);
+            changeDataBase('argent', res.argent + 100 + moneyWin, winner.name);
+            changeMoney(winner.name, 100 + moneyWin);
+          });
+        game.status = STATUS.ENDED;
+        io.to(serverId).emit('FIN', winner);
+      }
+    }
 
-
+  })
 
 
   // MILLE BORNE BY xX_PROGRAMER69_Xx
@@ -1198,9 +1220,9 @@ io.on('connection', (socket) => {
         }
 
         let jsonData = JSON.parse(data);
-        if(gif.price < playerMoney){  
+        if (gif.price < playerMoney) {
           if (jsonData.hasOwnProperty(playerName)) {
-            if(!jsonData[playerName].includes(gif.id)){
+            if (!jsonData[playerName].includes(gif.id)) {
               jsonData[playerName].push(gif.id);
             }
             else {
@@ -1230,7 +1252,7 @@ io.on('connection', (socket) => {
             console.log("erreur d'écriture");
             return 0;
           }
-  
+
           console.log("écriture succesfull");
         });
       });

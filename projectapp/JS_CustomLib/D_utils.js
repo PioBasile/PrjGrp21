@@ -192,7 +192,7 @@ class Bataille {
   }
 
   changeScoreBoard(name) {
-    if(this.scoreboard.hasOwnProperty(name)){
+    if (this.scoreboard.hasOwnProperty(name)) {
       this.scoreboard[name] += 1;
     }
     else {
@@ -222,21 +222,21 @@ class Bataille {
   playerInDraw() {
     let playersInDraw = []
     for (let i = 0; i < this.playerList.length; i++) {
-      for (let j = i+1; j < this.playerList.length; j++) {
+      for (let j = i + 1; j < this.playerList.length; j++) {
         if (this.playerList[i].selected.power == this.playerList[j].selected.power) {
           playersInDraw.push(this.playerList[i], this.playerList[j]);
         }
       }
     }
-    return playersInDraw.filter((elem,index) => playersInDraw.indexOf(elem) == index); 
+    return playersInDraw.filter((elem, index) => playersInDraw.indexOf(elem) == index);
   }
 
   isADraw() {
-    let maxCard =  Math.max(...this.playerList.map((player) => player.selected.power));
+    let maxCard = Math.max(...this.playerList.map((player) => player.selected.power));
     for (let i = 0; i < this.playerList.length; i++) {
       for (let j = i + 1; j < this.playerList.length; j++) {
         if (this.playerList[i].selected.power == this.playerList[j].selected.power) {
-          if(this.playerList[i].selected.power >= maxCard){
+          if (this.playerList[i].selected.power >= maxCard) {
             return true
           }
           return false
@@ -286,7 +286,7 @@ class Bataille {
   resolveDraw(winner) {
 
     let cardWin = Object.values(this.cardPlayedInRound);
-    winner.deck = [...winner.deck, ...cardWin,...this.previousCardsOfDraw];
+    winner.deck = [...winner.deck, ...cardWin, ...this.previousCardsOfDraw];
 
   }
 
@@ -296,7 +296,7 @@ class Bataille {
     if (game.maxTurn <= game.currentTurn) {
       return true;
     }
-    else if(game.playerList.length === 1){
+    else if (game.playerList.length === 1) {
       return true
     }
     else {
@@ -313,16 +313,16 @@ class Bataille {
     if (this.isGameEnded()) {
       let winners = [this.playerList[0]]
       for (let player of this.playerList) {
-        if(player.deck.length <= winners[0].deck.length){
-          if(player.deck.length == winners[0].deck.length){
+        if (player.deck.length <= winners[0].deck.length) {
+          if (player.deck.length == winners[0].deck.length) {
             winners.push(player)
           }
           else {
             winners = [player]
           }
         }
-      } 
-      let winnersWithoutDoublon = winners.filter((elem,index) => winners.indexOf(elem) == index);
+      }
+      let winnersWithoutDoublon = winners.filter((elem, index) => winners.indexOf(elem) == index);
       console.log(winnersWithoutDoublon.map(player => player.name));
       return winnersWithoutDoublon.map(player => player.name);
     }
@@ -510,8 +510,9 @@ function generate6Cartes() {
 
 class SixQuiPrend {
 
-  constructor(gameName, id_partie, owner, player_list, chrono, moneyBet) {
+  constructor(gameName, id_partie, owner, player_list, chrono, moneyBet, maxPlayer) {
     this.gameName = gameName;
+    this.maxPlayer = maxPlayer;
     this.identifiant_partie = id_partie;
     this.owner = owner;
     this.player_list = player_list;
@@ -531,6 +532,12 @@ class SixQuiPrend {
     this.lobbyLinked = null;
 
     this.chatContent = ["use <global> to talk to everyone"];
+  }
+
+  removePlayer(player) {
+
+    let playerI = findRemovePlayer(player, this.player_list);
+    this.player_list.splice(playerI, 1);
   }
 
   gagnant() {
@@ -921,10 +928,11 @@ const GameState = {
 
 class MilleBorne {
 
-  constructor(identifiant_partie, owner, playerList, moneyBet) {
+  constructor(identifiant_partie, owner, playerList, moneyBet, maxPlayer) {
     this.identifiant_partie = identifiant_partie;
     this.owner = owner;
     this.playerList = playerList;
+    this.maxPlayer = maxPlayer;
     this.order = [];
     this.cardPlayed = [];
     this.cartesAttaque = ["crash", "empty", "flat", "limit", "stop"]

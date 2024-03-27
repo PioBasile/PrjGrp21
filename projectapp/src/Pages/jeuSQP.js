@@ -516,7 +516,7 @@ const SixQuiPrend = () => {
   }
 
   const leave = () => {
-    socket.emit("MB-leaveGame", { name: sessionStorage.getItem("name"), serverId: sessionStorage.getItem("serverConnected") });
+    socket.emit("SQP-leaveGame", sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected") );
     socket.emit('leave', sessionStorage.getItem('serverConnected'));
     navigate('/BrowserManager');
   }

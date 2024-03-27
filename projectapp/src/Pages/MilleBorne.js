@@ -371,6 +371,13 @@ const MilleBorne = () => {
         );
     }
 
+    useEffect(() => {
+        const messageContainer = document.querySelector('.MB-message-container');
+        if (messageContainer) {
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+    }, [messages]);
+
 
     return (
         <div className='MB-container'>

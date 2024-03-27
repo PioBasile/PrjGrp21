@@ -645,7 +645,6 @@ const SixQuiPrend = () => {
             placeholder="Type message..."
           />
         </div>
-
       </div>
     </div>
   );

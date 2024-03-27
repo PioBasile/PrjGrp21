@@ -144,12 +144,12 @@ const JeuBataille = () => {
 
     function YourComponent() {
         useEffect(() => {
-            let chatContainer = document.getElementById("chatContainer");
+            let chatContainer = document.getElementById("bo-chatContainer");
             if (chatContainer == null) { return 0; }
 
             function getElementId(event) {
                 var clickedElementId = event.target.id;
-                if (clickedElementId === "inputChat") {
+                if (clickedElementId === "bo-inputChat") {
                     chatContainer.style.opacity = 1;
                 } else {
                     chatContainer.style.opacity = 0.33;
@@ -166,7 +166,7 @@ const JeuBataille = () => {
             try {
 
                 document.addEventListener('click', getElementId);
-                document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
+                document.getElementById("bo-inputChat").addEventListener('keydown', sendMessageOnEnter);
 
             } catch (err) {
 
@@ -179,7 +179,7 @@ const JeuBataille = () => {
                 try {
 
                     document.removeEventListener('click', getElementId);
-                    document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+                    document.getElementById("bo-inputChat").removeEventListener('keydown', sendMessageOnEnter);
 
                 } catch (err) {
 
@@ -370,6 +370,7 @@ const JeuBataille = () => {
             });
 
             socket.on("resolveDrawAsk", () => {
+                setShowAll(true);
                 console.log("resolveDrawAsk")
                 setTimeout(() => {
                     socket.emit("resolveDrawFirstPart", sessionStorage.getItem("serverConnected"));
@@ -436,13 +437,16 @@ const JeuBataille = () => {
             })
 
             socket.on("yourEmotes", (emotesList) => {
-                console.log(emotesList);
-                const videoFilter = videos.filter(video => {
-                    return emotesList.some(video2 => video2 === video.id);
-                });
-                console.log(videos);
-                setVideos(videoFilter);
-                console.log(videos);
+                if(emotesList != null){
+                    const videoFilter = videos.filter(video => {
+                        return emotesList.some(video2 => video2 === video.id);
+                        
+                    });
+                    setVideos(videoFilter);
+                }
+                else{
+                    setVideos([]);
+                }
                 // setMyEmotes(listOfEmote);
             })
         }
@@ -640,14 +644,14 @@ const JeuBataille = () => {
                 )}
             </div>
 
-            <div className="chat-container" id='chatContainer'>
-                <div className='message-container bo-message-container' >
+            <div className="bo-chat-container" id='bo-chatContainer'>
+                <div className='bo-message-container' >
                     {messages.map((msg, index) => (
                         <p key={index}>{msg}</p>)
                     )}
                     <input
-                        id="inputChat"
-                        className='inputMessage'
+                        id="bo-inputChat"
+                        className='bo-inputMessage'
                         type="text"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}

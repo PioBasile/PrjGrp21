@@ -26,14 +26,13 @@ const NewLobby = () => {
     const navigate = useNavigate();
     const [clobby, setLobby] = useState({ playerList: [] });
 
+    //ceci sont des phrase connu sur les reseaux que nous mettons sous forme de citation
     const quotes = [
         "At the end of the day, it's the friends we made along the way",
         "Gambling is not an addiction - OBAMA",
-        "If a girl leaves you for another there is always her mother",
         "I'd rather have 1 medkit thant 10 bandages",
         "We will never ask you your Credit Card",
         "Liberté égalité Renault Coupé",
-        "If she say your a looser you shall pick up her mother",
         "Pro Tips 1 : Always All-in ",
         "Pro Tips 2 : Don't forget to breath",
         "Pro Tips 3 : Don't loose",
@@ -53,6 +52,7 @@ const NewLobby = () => {
         "Never back down never what ??",
         "NEVER GIVE UP !",
         "Maurice La Malice",
+        "OUI OUI BAGUETTE",
     ];
 
     const generateQuote = () => {

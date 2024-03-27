@@ -10,8 +10,7 @@ const ItemShop = () => {
     const [itemsPerPage] = useState(6);
     const [money, setMoney] = useState('0');
     const navigate = useNavigate();
-    const [myEmotes, setMyEmotes] = useState([]);
-
+    const [myEmotes, setMyEmotes] = useState([-1]);
 
     // --------------------------------- GIFS -----------------------------------
 
@@ -141,11 +140,11 @@ const ItemShop = () => {
             socket.off("stats");
             socket.off("alreadyGot");
             socket.off("noMoneyToBuyWompWomp");
+            socket.off("yourEmotes")
         }
     }, []);
 
     const canBuy = (gifId) => {
-        console.log(myEmotes);
         for (let emoteID of myEmotes) {
             if (gifId === emoteID) {
                 return true;

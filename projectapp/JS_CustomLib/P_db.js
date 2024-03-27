@@ -111,9 +111,6 @@ const changeMoney = (nom, argent) => {
         if (err) {
             console.error(err.message);
         }
-        else {
-            console.log("money update for " ,nom);
-        }
     });
 }
 

@@ -399,37 +399,40 @@
     margin-bottom: -15px;
 }
 
-.chat-container {
-    z-index: 1;
+.bo-chat-container {
+    z-index: 1000; /* Assure que le chat reste au-dessus des autres éléments */
     position: fixed;
-    border-radius: 100px;
-    bottom: 5vh;
-    border-radius: 15px;
-    min-height: 20vh;
-    max-height: 20vh;
+    bottom: 22.5vh; /* Espacement depuis le bas */
+    right: 1vw; /* Espacement depuis la droite */
+    border-radius: 7px;
+    max-height: 30vh; /* Hauteur maximale ajustée */
+    width: 17vw; /* Largeur basée sur la largeur de la fenêtre */
+    background-color: rgba(255, 255, 255, 0.95); /* Légère transparence */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre douce pour la profondeur */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
 }
 
 .bo-message-container {
-    overflow-wrap: break-word;
-    max-width: 20vw;
-    border-radius: 20px; 
-    position: fixed;
-    right: 0;
-    bottom:12vh;
-    max-height: 50vh;  
+    overflow-y: auto;
+    max-height: 25vh; /* Hauteur ajustée pour laisser plus d'espace aux messages */
+    padding: 10px; /* Espacement interne pour les messages */
+    background-color: rgba(240, 240, 240, 0.8); /* Légère distinction du fond */
 }
 
-
-
-.inputMessage {
-    position: sticky;
-    width: 100%;
-    border: none;
-    z-index: 1;
-    bottom: 0;
-    border-radius: 20px;
+.bo-inputMessage {
+    width: calc(100% - 20px); /* Ajuste la largeur pour prendre en compte le padding */
+    margin: 10px; /* Marge autour de l'input */
+    border: 1px solid #ccc; /* Bordure discrète */
+    border-radius: 20px; /* Bordures arrondies */
+    padding: 10px; /* Padding généreux pour l'aisance de la frappe */
+    box-sizing: border-box;
+    background-color: #fff; /* Fond blanc pour l'input */
+    color: #333; /* Couleur de texte sombre pour le contraste */
 }
 
-#chatContainer {
-    transition: opacity 0.5s, transform 0.5s;
+#bo-chatContainer {
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }

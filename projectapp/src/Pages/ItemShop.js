@@ -94,7 +94,7 @@ const ItemShop = () => {
         setCurrentPage(prevPage => prevPage - 1);
     };
 
-    // Désactivez le bouton Previous & Next 
+    // Désactivez Previous & Next 
     const lastPage = Math.ceil(gifs.length / itemsPerPage);
 
     //---------------------LEAVE-------------------------
@@ -131,7 +131,11 @@ const ItemShop = () => {
         })
 
         socket.on("yourEmotes", (emoteList) => {
+<<<<<<< HEAD
             if(emoteList !== null){
+=======
+            if (emoteList != null) {
+>>>>>>> 6dd251f74be12f47db10bad5df558785d222bca9
                 setMyEmotes(emoteList);
             }
         })

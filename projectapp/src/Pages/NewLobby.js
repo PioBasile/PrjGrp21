@@ -26,13 +26,15 @@ const NewLobby = () => {
     const navigate = useNavigate();
     const [clobby, setLobby] = useState({ playerList: [] });
 
+    // --------------------------------- QUOTES -----------------------------------
+
     const quotes = [
         "At the end of the day, it's the friends we made along the way",
-        "Gambling is not an addiction - OBAMA",
+        "Gambling is not an addiction ~ Obama (maybe)",
         "If a girl leaves you for another there is always her mother",
         "I'd rather have 1 medkit thant 10 bandages",
-        "We will never ask you your Credit Card",
-        "Liberté égalité Renault Coupé",
+        "We will never ask for your Credit Card information",
+        "Liberté, égalité, Renault Coupé",
         "If she say your a looser you shall pick up her mother",
         "Pro Tips 1 : Always All-in ",
         "Pro Tips 2 : Don't forget to breath",
@@ -44,15 +46,27 @@ const NewLobby = () => {
         "Pro Tips 8 : OUI-OUI est un garçon ?",
         "Pro Tips 9 : Oh la qui voit la inspecteur gadget",
         "Pro Tips 10 : Si tu perds Thomas Le Train te suivras !",
-        "Send you credit card to this number : 0658073801",
+        "Pro Tips 11 : always go all in on black",
+        "Pro Tips 12 : never trust a fart",
+        "Send you credit card info to this number : 0658073801",
         "Pickachu will always choose you ",
         "This is pay to win",
         "Always emote when your friend loose",
-        "don't forget, jfk was shot by the cia",
+        "Don't forget to drink water",
         "FREE V-BUCKS",
         "Never back down never what ??",
         "NEVER GIVE UP !",
+        "NEVER SURRENDER",
         "Maurice La Malice",
+        "Reality is an illusion, the universe is a hologram, buy gold, bye!",
+        "Pro Tips 13: In case of fire, git commit, git push, then leave building",
+        "Pro Tips 14: Remember, the snooze button is a trap",
+        "Pro Tips 15 : Remember, it’s only a game, until you win.",
+        "Si la vie te donne des citrons, fais-en une tarte. Tout le monde aime la tarte.",
+        "L’argent ne fait pas le bonheur, mais il est plus confortable de pleurer dans une Mercedes que sur un vélo.",
+        "L’alcool tue lentement. On s’en fout. On n’est pas pressés.",
+        "L'alcool tue, pas le gambling, va au casino.",
+        "Pro Tip 16 : La patience est une vertu... surtout quand ton Wi-Fi est lent."
     ];
 
     const generateQuote = () => {
@@ -61,6 +75,7 @@ const NewLobby = () => {
         return randomQuote;
     }
 
+    // --------------------------------- FUNCTIONS -----------------------------------
 
     function leaveGame() {
         socket.emit('leaveGame', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));

@@ -16,70 +16,49 @@ const JeuBataille = () => {
     const [messages, setMessages] = useState([]);
     const navigate = useNavigate();
     const [allCardPlayed, setAllCardPlayed] = useState([]);
-    
+
     const emoteBubbleRef = useRef(null);
     const [showEmotes, setShowEmotes] = useState(false);
     const [canPlay, setCanPlay] = useState(true);
     const [playerNameEmote, setPlayerNameEmote] = useState("");
     const [EmoteToShow, setEmoteToShow] = useState("");
     const emoteRef = useRef(null); // Référence à la div de l'emote
+    const [myEmotes, setMyEmotes] = useState([]);
 
     const [saveName, setSaveName] = useState("");
     const [isSave, setIsSave] = useState(false);
     const [owner, setOwner] = useState("");
     const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/blue.png")
-    
+
     const [isVisible, setIsVisible] = useState(false);
     const [roundWinner, setRoundWinner] = useState("");
 
     //----------------------EMOTES---------------------
-    const toyota = require("./CSS/emotes/toyota.mp4");
-    const BOING = require("./CSS/emotes/BOING.mp4");
-    const Hampter = require("./CSS/emotes/hampter.mp4");
-    const MissInput = require("./CSS/emotes/MissInput.mp4");
-    const PutinMewing = require("./CSS/emotes/PutinMEWING.mp4");
-    const KillurSelf = require("./CSS/emotes/KillUrSelf.mp4");
-    const horse = require("./CSS/emotes/horse.mp4");
-    const bookies = require("./CSS/emotes/bookies.mp4");
-    const holy = require("./CSS/emotes/holy.mp4");
-    const freddy = require("./CSS/emotes/freddy.mp4");
-    const NuhUh = require("./CSS/emotes/NuhUh.mp4");
-    const hellnaw = require("./CSS/emotes/hellnaw.mp4");
-    const hogRider = require("./CSS/emotes/hogRider.mp4");
-    const josh = require("./CSS/emotes/josh.mp4");
-    const quandale = require("./CSS/emotes/quandale.mp4");
-    const mao = require("./CSS/emotes/mao.mp4");
-    const bible = require("./CSS/emotes/bible.mp4");
-    const spiderman = require("./CSS/emotes/spiderman.mp4");
-    const goku = require("./CSS/emotes/goku.mp4");
-    const gatorade = require("./CSS/emotes/gatorade.mp4");
-    const dj = require("./CSS/emotes/dj.mp4");
-    const jumpascare = require("./CSS/emotes/jumpascare.mp4");
 
-    const videos = [
-        { id: 1, videoUrl: toyota },
-        { id: 2, videoUrl: BOING },
-        { id: 3, videoUrl: Hampter },
-        { id: 4, videoUrl: MissInput },
-        { id: 5, videoUrl: PutinMewing },
-        { id: 6, videoUrl: KillurSelf },
-        { id: 7, videoUrl: horse },
-        { id: 8, videoUrl: bookies },
-        { id: 9, videoUrl: holy },
-        { id: 10, videoUrl: freddy },
-        { id: 11, videoUrl: NuhUh },
-        { id: 12, videoUrl: hellnaw },
-        { id: 13, videoUrl: hogRider },
-        { id: 14, videoUrl: josh },
-        { id: 15, videoUrl: quandale },
-        { id: 16, videoUrl: mao },
-        { id: 17, videoUrl: bible },
-        { id: 18, videoUrl: spiderman },
-        { id: 19, videoUrl: goku },
-        { id: 20, videoUrl: gatorade },
-        { id: 21, videoUrl: dj },
-        { id: 22, videoUrl: jumpascare },
-    ];
+    const [videos, setVideos] =  useState([
+        { id: 1, videoUrl: require("./CSS/emotes/toyota.mp4") },
+        { id: 2, videoUrl: require("./CSS/emotes/BOING.mp4") },
+        { id: 3, videoUrl: require("./CSS/emotes/hampter.mp4") },
+        { id: 4, videoUrl: require("./CSS/emotes/MissInput.mp4") },
+        { id: 5, videoUrl: require("./CSS/emotes/PutinMEWING.mp4") },
+        { id: 6, videoUrl: require("./CSS/emotes/KillUrSelf.mp4") },
+        { id: 7, videoUrl: require("./CSS/emotes/horse.mp4") },
+        { id: 8, videoUrl: require("./CSS/emotes/holy.mp4") },
+        { id: 9, videoUrl: require("./CSS/emotes/holy.mp4") },
+        { id: 10, videoUrl: require("./CSS/emotes/freddy.mp4") },
+        { id: 11, videoUrl: require("./CSS/emotes/NuhUh.mp4") },
+        { id: 12, videoUrl: require("./CSS/emotes/hellnaw.mp4") },
+        { id: 13, videoUrl: require("./CSS/emotes/hogRider.mp4") },
+        { id: 14, videoUrl: require("./CSS/emotes/josh.mp4") },
+        { id: 15, videoUrl: require("./CSS/emotes/quandale.mp4") },
+        { id: 16, videoUrl: require("./CSS/emotes/mao.mp4") },
+        { id: 17, videoUrl: require("./CSS/emotes/bible.mp4") },
+        { id: 18, videoUrl: require("./CSS/emotes/spiderman.mp4") },
+        { id: 19, videoUrl: require("./CSS/emotes/goku.mp4") },
+        { id: 20, videoUrl: require("./CSS/emotes/gatorade.mp4") },
+        { id: 21, videoUrl: require("./CSS/emotes/dj.mp4") },
+        { id: 22, videoUrl: require("./CSS/emotes/jumpascare.mp4") },
+    ]);
 
     const handleVideoEnd = () => {
         if (emoteRef.current) {
@@ -94,7 +73,7 @@ const JeuBataille = () => {
     }
 
     const toggleEmotes = () => {
-        if(showEmotes) setShowEmotes(false);
+        if (showEmotes) setShowEmotes(false);
         else setShowEmotes(true)
     };
 
@@ -313,7 +292,8 @@ const JeuBataille = () => {
             socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
             socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
             socket.emit("whaIsOwner", sessionStorage.getItem("serverConnected"));
-            socket.emit("loadCardsPlayed",sessionStorage.getItem("serverConnected"));
+            socket.emit("loadCardsPlayed", sessionStorage.getItem("serverConnected"));
+            socket.emit("whatsMyEmotes", sessionStorage.getItem("name"));
 
         }
         return () => {
@@ -404,9 +384,9 @@ const JeuBataille = () => {
                 }, '3000');
             });
 
-            socket.on("fin", (winner) =>{
+            socket.on("fin", (winner) => {
                 console.log(winner);
-                sessionStorage.setItem("winners", winner); 
+                sessionStorage.setItem("winners", winner);
                 navigate("/winner");
 
             })
@@ -446,13 +426,24 @@ const JeuBataille = () => {
                 setShowAll(false);
             })
 
-            socket.on("endEmoteToAll",() => {
+            socket.on("endEmoteToAll", () => {
                 setPlayerNameEmote("");
             })
 
             socket.on("roundWinner", (winnerName) => {
                 setRoundWinner(winnerName);
                 setIsVisible(true);
+            })
+
+            socket.on("yourEmotes", (emotesList) => {
+                console.log(emotesList);
+                const videoFilter = videos.filter(video => {
+                    return emotesList.some(video2 => video2 === video.id);
+                });
+                console.log(videos);
+                setVideos(videoFilter);
+                console.log(videos);
+                // setMyEmotes(listOfEmote);
             })
         }
 
@@ -509,7 +500,7 @@ const JeuBataille = () => {
         if (messageContainer) {
             messageContainer.scrollTop = messageContainer.scrollHeight;
         }
-      }, [messages]); 
+    }, [messages]);
 
 
     //----------------------RETURN---------------------
@@ -606,13 +597,13 @@ const JeuBataille = () => {
             </div>
 
             <div className="bo-user-info-container">
-                    <div className="bo-user-info">
-                        Mon Score : {scoreboard[sessionStorage.getItem("name")]}
-                    </div>
-                    <div className="bo-user-info">
-                        Nombre de cartes : {playerCards.length}
-                    </div>
+                <div className="bo-user-info">
+                    Mon Score : {scoreboard[sessionStorage.getItem("name")]}
                 </div>
+                <div className="bo-user-info">
+                    Nombre de cartes : {playerCards.length}
+                </div>
+            </div>
 
             {/*les cartes selectionnées*/}
             <div className="bo-selected-cards">
@@ -620,18 +611,18 @@ const JeuBataille = () => {
                     {
                         allCardPlayed.map((card, index) => (
                             // <img alt='r' src={(selectedCards.length !== 0 || inDraw) && !isDraw ? getCardImage(card) : backCardsImageTest} />
-                            <img alt='r' src={ ((selectedCard.power === card.power && selectedCard.symbole === card.symbole) || showAll) ? getCardImage(card) : backCardsImageTest} />
-                            
-                            
+                            <img alt='r' src={((selectedCard.power === card.power && selectedCard.symbole === card.symbole) || showAll) ? getCardImage(card) : backCardsImageTest} />
+
+
                         ))
                     }
                 </div>
             </div>
 
-            {owner === sessionStorage.getItem("name") && 
+            {owner === sessionStorage.getItem("name") &&
                 <button className="bo-save-button" onClick={() => openSavePopUp()}>Save</button>
             }
-            
+
             <button className="bo-leave-button" onClick={() => leaveGame()}>Leave Game</button>
 
             <div className="bo-emote-container">

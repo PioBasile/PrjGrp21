@@ -180,8 +180,22 @@ const NewBrowserManager = () => {
                 ))}
             </div>
         )
-
     }
+
+    const canJoin = (lobby) => {
+        if(lobby.moneyBet > money ){
+            alert("Vous n'avez pas assez d'argent pour rejoindre cette partie")
+            return false
+        }
+        else if(whatToLoad(lobby) === "FULL"){
+            alert("La partie est déjà pleine")
+            return false
+        }
+        else {
+            return true
+        }
+    }
+
 
     return (
         <div className='BM-container'>
@@ -270,7 +284,7 @@ const NewBrowserManager = () => {
                 <h2 className='MB-h2'> SERVER LIST</h2>
                 {mesLobby.map((lobby, _) => (
 
-                    <div className='BM-server' onClick={() => whatToLoad(lobby) === "FULL" ? null : handleClick(lobby.id, lobby)}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)}
+                    <div className='BM-server' onClick={() => !canJoin(lobby) ? null : handleClick(lobby.id, lobby)}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)} {lobby.moneyBet ? lobby.moneyBet+"$" : ""}
                         {lobby.isPrivate && <input id={`gamePassWord` + lobby.id} type="password" className="BM-input-server" placeholder='Mot de passe...' value={gamePassword} onChange={(e) => {
                             setGamePassword(e.target.value);
                         }}></input>}

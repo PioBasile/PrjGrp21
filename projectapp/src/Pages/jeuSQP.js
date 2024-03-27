@@ -453,11 +453,8 @@ const SixQuiPrend = () => {
 
   const saveGame = () => {
     setIsSave(false);
-    socket.emit("saveGame", sessionStorage.getItem("serverConnected"), saveName)
+    socket.emit("saveGame", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"),saveName)
   }
-
-
-
 
   function YourComponent() {
     useEffect(() => {

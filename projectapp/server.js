@@ -40,7 +40,7 @@ const {
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
-const { getAllScores,changeScoreBoard,changeMoney } = require("./JS_CustomLib/P_db.js");
+const { getAllScores, changeScoreBoard, changeMoney } = require("./JS_CustomLib/P_db.js");
 const { read } = require('fs');
 const { basename } = require('node:path/win32');
 
@@ -163,11 +163,11 @@ io.on('connection', (socket) => {
 
   });
 
-  socket.on("rouletteConnection",() => {
+  socket.on("rouletteConnection", () => {
     socket.join(rouletteRoomId);
   })
 
-  socket.on("leaveRoulette" ,() => {
+  socket.on("leaveRoulette", () => {
     socket.leave(rouletteRoomId);
   })
 
@@ -401,7 +401,7 @@ io.on('connection', (socket) => {
         let newMB_player = new MB_Player(player.name, player.cookie, color[index]);
         mbPlist.push(newMB_player);
       })
-      plist  = mbPlist;
+      plist = mbPlist;
       nGame = new MilleBorne(lobbyID, owner, mbPlist, lobby.moneyBet);
 
       const lobbyNotChanged = Object.assign({}, lobby);
@@ -431,12 +431,13 @@ io.on('connection', (socket) => {
       nGame.recreate(lobby.gameLinked);
     }
 
-    for(let player of plist){
+    for (let player of plist) {
 
       get_user_info(player.name).then((res) => {
 
-        changeDataBase('nbWin', res.nbGames + 1, player);
-
+        changeMoney(player.name, -lobby.moneyBet); // on leur enleve leur thune dés qu'ils entrent dans la game
+        changeDataBase('nbWin', res.nbGames + 1, player.name);
+        changeDataBase('argent', res.argent - lobby.moneybet, player.name);
       });
 
     }
@@ -487,7 +488,7 @@ io.on('connection', (socket) => {
   socket.on("playCard", (serverId, card, playerName) => {
     let game = findGame(serverId, BatailGames)
     let player = findPlayer(playerName, game.playerList);
-    if(game.cardPlayedInRound.hasOwnProperty(playerName)){
+    if (game.cardPlayedInRound.hasOwnProperty(playerName)) {
       player.switchCard(card);
     }
     else {
@@ -509,7 +510,7 @@ io.on('connection', (socket) => {
       }
 
       let winners = game.findGameWinner();
-      if(winners){
+      if (winners) {
         let moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length);
         console.log("MONEYWIN 510", moneyWin);
         winners.forEach((name) => {
@@ -541,7 +542,7 @@ io.on('connection', (socket) => {
     io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
   })
 
-  socket.on("resolveRound", (serverId,_) => {
+  socket.on("resolveRound", (serverId, _) => {
     let game = findGame(serverId, BatailGames);
     let allCardPlayed = Object.values(game.cardPlayedInRound);
     let winner = game.findWinner(game.playerList);
@@ -585,14 +586,17 @@ io.on('connection', (socket) => {
   })
 
 
-  socket.on("BTL-leaveGame",(playerName,serverId) => {
+  socket.on("BTL-leaveGame", (playerName, serverId) => {
     let game = findGame(serverId, BatailGames);
     let player = findPlayer(playerName, game.playerList);
     game.removePlayer(player)
     let winners = game.findGameWinner();
-    if(winners){
-      let moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length)
-      console.log("MONEYWIN" + moneyWin);
+    if (winners) {
+      if (winners.length != 0) {
+        console.log("maxjoeurs", game.maxJoueurs)
+        console.log("moneybet", game.moneyBet)
+        var moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length)
+      }
       console.log("MONEYWIN 600", moneyWin);
       winners.forEach((name) => {
         get_user_info(name).then((res) => {
@@ -798,7 +802,7 @@ io.on('connection', (socket) => {
     io.to(serverId).emit("playerWhosPlaying", playerName);
   })
 
-  
+
 
 
 
@@ -897,7 +901,7 @@ io.on('connection', (socket) => {
 
         changeDataBase('nbWin', res.nbWin + 1, player.name);
         changeDataBase('argent', res.argent + 100 + moneyWin, player.name);
-        
+
         changeScoreBoard('mille-bornes', player.name);
         changeMoney(player.name, 100 + moneyWin);
       });
@@ -1012,7 +1016,7 @@ io.on('connection', (socket) => {
         console.log("here");
         changeDataBase('nbWin', res.nbWin + 1, player.name);
         changeDataBase('argent', res.argent + 100, player.name);
-        
+
         changeScoreBoard('mille-bornes', player.name);
         changeMoney(player.name, 100);
       });
@@ -1092,7 +1096,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on("rlt-sendMessage", (data) => {
-    if(data.msg == "/giveMoney 1000"){
+    if (data.msg == "/giveMoney 1000") {
       get_user_info(data.name).then((res) => {
         changeDataBase('argent', res.argent + 1000, data.name);
         changeMoney(data.name, 1000);
@@ -1129,33 +1133,33 @@ io.on('connection', (socket) => {
 
   socket.on("saveGame", (serverId, saveName, playerName) => {
     let lobby = findLobby(serverId, lobbyList);
-    if (lobby.owner == playerName) {
-      if (lobby.gameType == "batailleOuverte") {
-        game = findGame(serverId, BatailGames);
-      }
-      else if (lobby.gameType == "sqp") {
-        game = findGame(serverId, TaureauGames);
-      }
-      else if (lobby.gameType == "mb") {
-        game = findGame(serverId, MilleBornesGames)
-      }
-      else {
-        throw new Error("aucun jeu connu sous ce nom: ", lobby.gameType);
-      }
-
-      game.serverName = saveName;
-      game.lobbyLinked["serverName"] = saveName;
-
-      const gameSave = JSON.stringify(game);
-
-      fs.writeFile(`saves/${playerName}_${saveName}_${lobby.gameType}.json`, gameSave, (err) => {
-        if (err) throw err;
-      });
-
-      readSaveDir();
-
+    console.log(lobby.gameType);
+    if (lobby.gameType == "batailleOuverte") {
+      console.log("here1")
+      game = findGame(serverId, BatailGames);
     }
-    else return 0;
+    else if (lobby.gameType == "sqp") {
+      console.log("lets save a game qsp");
+      game = findGame(serverId, TaureauGames);
+    }
+    else if (lobby.gameType == "mb") {
+      console.log("herer2")
+      game = findGame(serverId, MilleBornesGames)
+    }
+    else {
+      throw new Error("aucun jeu connu sous ce nom: ", lobby.gameType);
+    }
+
+    game.serverName = saveName;
+    game.lobbyLinked["serverName"] = saveName;
+
+    const gameSave = JSON.stringify(game);
+
+    fs.writeFile(`saves/${playerName}_${saveName}_${lobby.gameType}.json`, gameSave, (err) => {
+      if (err) throw err;
+    });
+
+    readSaveDir();
   })
 
   socket.on("whatGameSaved", () => {
@@ -1185,11 +1189,78 @@ io.on('connection', (socket) => {
   });
 
 
+  socket.on("buyAGif", (playerName, gif, playerMoney) => {
+    if (playerName) {
+      fs.readFile('EmotePlayer/EmotesPlayer.json', "utf8", (err, data) => {
+        if (err) {
+          console.log("erreur de lecture")
+          return 0;
+        }
+        console.log("data",data);
+        let jsonData = JSON.parse(data);
+        if(gif.price < playerMoney){  
+          if (jsonData.hasOwnProperty(playerName)) {
+            if(!jsonData[playerName].includes(gif.id)){
+              jsonData[playerName].push(gif.id);
+            }
+            else {
+              socket.emit("alreadyGot");
+              return;
+            }
+
+          }
+          else {
+            jsonData[playerName] = [gif.id];
+          }
+
+          get_user_info(playerName).then((res) => {
+            changeDataBase('argent', res.argent - gif.price, playerName);
+            changeMoney(playerName, -gif.price);
+            socket.emit("stats", res);
+          });
+          
+          socket.emit("yourEmotes", jsonData[playerName])
+        }
+        else {
+          socket.emit("noMoneyToBuyWompWomp")
+        }
+
+        fs.writeFile("EmotePlayer/EmotesPlayer.json", JSON.stringify(jsonData), "utf8", (err) => {
+          if (err) {
+            console.log("erreur d'écriture");
+            return 0;
+          }
+  
+          console.log("écriture succesfull");
+        });
+      });
+
+    }
+    else {
+      throw new Error("playername is " + playerName)
+    }
+  });
+
+
+  socket.on("whatsMyEmotes", (playerName) => {
+
+    fs.readFile("EmotePlayer/EmotesPlayer.json", "utf8", (err, data) => {
+      if (err) {
+        console.log("erreur de lecture")
+        return 0;
+      }
+      let jsonData = JSON.parse(data);
+      let playerEmotes = jsonData[playerName];
+      console.log("PLAYER EMOTE !!")
+      console.log(playerEmotes);
+      socket.emit("yourEmotes", playerEmotes);
+    })
+  })
 
   socket.on('askScoreboard', () => {
     getAllScores().then((res) => {
-        socket.emit('scoreboard', res);
-      });
+      socket.emit('scoreboard', res);
+    });
   });
 
 });

@@ -40,6 +40,16 @@
     align-items: center;
 }
 
+.bought {
+    border: none;
+    border-radius: 10px;
+    padding: 1vh;
+    padding-left: 2vh;
+    padding-right: 2vh;
+    font-size: 2vh;
+    background-color: rgb(17, 104, 42);
+}
+
 .is-item {
     border-radius: 10px; /* Arrondi les images */
     overflow: hidden; /* Assure que les images arrondies ne dépassent pas */

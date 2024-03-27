@@ -432,15 +432,15 @@ io.on('connection', (socket) => {
     }
 
     for (let player of plist) {
-
       get_user_info(player.name).then((res) => {
-
         changeMoney(player.name, -lobby.moneyBet); // on leur enleve leur thune dés qu'ils entrent dans la game
         changeDataBase('nbWin', res.nbGames + 1, player.name);
-        changeDataBase('argent', res.argent - lobby.moneybet, player.name);
+        changeDataBase('argent', res.argent - lobby.moneyBet, player.name);
+        console.log("RES FOREACH",res)
       });
 
     }
+
   });
 
 
@@ -514,8 +514,8 @@ io.on('connection', (socket) => {
         let moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length);
         console.log("MONEYWIN 510", moneyWin);
         winners.forEach((name) => {
+          console.log("WHAT WRONG WITH U")
           get_user_info(name).then((res) => {
-
             changeDataBase('nbWin', res.nbWin + 1, name);
             changeScoreBoard('bataille-ouverte', name);
             changeDataBase('argent', res.argent + 100 + moneyWin, name);
@@ -597,15 +597,15 @@ io.on('connection', (socket) => {
         console.log("moneybet", game.moneyBet)
         var moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length)
       }
+
       console.log("MONEYWIN 600", moneyWin);
+
       winners.forEach((name) => {
         get_user_info(name).then((res) => {
-
           changeDataBase('nbWin', res.nbWin + 1, name);
           changeScoreBoard('bataille-ouverte', name);
           changeDataBase('argent', res.argent + 100 + moneyWin, name);
           changeMoney(name, 100 + moneyWin);
-
         });
 
       });
@@ -1196,7 +1196,7 @@ io.on('connection', (socket) => {
           console.log("erreur de lecture")
           return 0;
         }
-        console.log("data",data);
+
         let jsonData = JSON.parse(data);
         if(gif.price < playerMoney){  
           if (jsonData.hasOwnProperty(playerName)) {
@@ -1218,7 +1218,7 @@ io.on('connection', (socket) => {
             changeMoney(playerName, -gif.price);
             socket.emit("stats", res);
           });
-          
+
           socket.emit("yourEmotes", jsonData[playerName])
         }
         else {

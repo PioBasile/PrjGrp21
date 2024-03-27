@@ -35,7 +35,7 @@ const JeuBataille = () => {
 
     //----------------------EMOTES---------------------
 
-    const [videos, setVideos] =  useState([
+    const [videos, setVideos] = useState([
         { id: 1, videoUrl: require("./CSS/emotes/toyota.mp4") },
         { id: 2, videoUrl: require("./CSS/emotes/BOING.mp4") },
         { id: 3, videoUrl: require("./CSS/emotes/hampter.mp4") },
@@ -63,7 +63,6 @@ const JeuBataille = () => {
     const handleVideoEnd = () => {
         if (emoteRef.current) {
             emoteRef.current.style.display = 'none';
-            // setShowEmotes(false);
             setPlayerNameEmote("")
         }
     };
@@ -370,6 +369,7 @@ const JeuBataille = () => {
             });
 
             socket.on("resolveDrawAsk", () => {
+                setShowAll(true);
                 console.log("resolveDrawAsk")
                 setTimeout(() => {
                     socket.emit("resolveDrawFirstPart", sessionStorage.getItem("serverConnected"));
@@ -378,7 +378,6 @@ const JeuBataille = () => {
             });
 
             socket.on("resolveDrawAfter", () => {
-                setShowAll(true);
                 setTimeout(() => {
                     socket.emit("resolveDraw", sessionStorage.getItem("serverConnected"));
                 }, '3000');
@@ -437,13 +436,15 @@ const JeuBataille = () => {
 
             socket.on("yourEmotes", (emotesList) => {
                 console.log(emotesList);
-                const videoFilter = videos.filter(video => {
-                    return emotesList.some(video2 => video2 === video.id);
-                });
-                console.log(videos);
-                setVideos(videoFilter);
-                console.log(videos);
-                // setMyEmotes(listOfEmote);
+                if (emotesList !== null) {
+                    const videoFilter = videos.filter(video => {
+                        return emotesList.some(video2 => video2 === video.id);
+                    });
+                    setVideos(videoFilter);
+                }
+                else {
+                    setVideos([])
+                }
             })
         }
 
@@ -469,9 +470,7 @@ const JeuBataille = () => {
 
     const handleSaveNameChange = (e) => {
         const inputValue = e.target.value;
-        // Supprimer les caractères non autorisés en utilisant une expression régulière
         const filteredValue = inputValue.replace(/[^a-zA-Z0-9]/g, '');
-        // Mettre à jour le state avec la valeur filtrée
         setSaveName(filteredValue);
     };
 

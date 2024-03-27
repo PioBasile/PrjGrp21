@@ -131,11 +131,7 @@ const ItemShop = () => {
         })
 
         socket.on("yourEmotes", (emoteList) => {
-<<<<<<< HEAD
-            if(emoteList !== null){
-=======
             if (emoteList != null) {
->>>>>>> 6dd251f74be12f47db10bad5df558785d222bca9
                 setMyEmotes(emoteList);
             }
         })

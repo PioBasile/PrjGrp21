@@ -435,18 +435,6 @@ const JeuBataille = () => {
             })
 
             socket.on("yourEmotes", (emotesList) => {
-<<<<<<< HEAD
-                console.log(emotesList);
-                if (emotesList !== null) {
-                    const videoFilter = videos.filter(video => {
-                        return emotesList.some(video2 => video2 === video.id);
-                    });
-                    setVideos(videoFilter);
-                }
-                else {
-                    setVideos([])
-                }
-=======
                 if(emotesList != null){
                     const videoFilter = videos.filter(video => {
                         return emotesList.some(video2 => video2 === video.id);
@@ -458,7 +446,6 @@ const JeuBataille = () => {
                     setVideos([]);
                 }
                 // setMyEmotes(listOfEmote);
->>>>>>> 6dd251f74be12f47db10bad5df558785d222bca9
             })
         }
 

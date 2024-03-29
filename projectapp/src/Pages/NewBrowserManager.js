@@ -232,7 +232,7 @@ const NewBrowserManager = () => {
 
             <div className='BM-acttion-container'>
                 <div className='BM-upperBandeau'>
-                    <h2 className='MB-h2'> CREER UN SERVER</h2>
+                    <h2 className='MB-h2'> CREER UN SERVEUR</h2>
                 </div>
 
 
@@ -259,7 +259,7 @@ const NewBrowserManager = () => {
                             <option value="batailleOuverte">Bataille Ouverte</option>
                             <option value="sqp">Six qui prend</option>
                             <option value="mb">Mille Bornes</option>
-                            <option value="rd">Random</option>
+                            <option value="rd">Aléatoire</option>
                         </select>
                         <div className="select-arrow"></div>
                     </div>
@@ -271,7 +271,7 @@ const NewBrowserManager = () => {
 
                         <div className='bigReadyButton BM' onClick={showSavedGames}> Partie Enregistrer </div>
 
-                        <button onClick={handleSave} className="bigReadyButton BM">Crée</button>
+                        <button onClick={handleSave} className="bigReadyButton BM">CRÉER</button>
                     </div>
                 </div>
 

@@ -511,7 +511,7 @@ const JeuBataille = () => {
                 <div className='savePopUp'>
                     <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
                     <input className="inputPopup" type="text" placeholder='save Name' value={saveName} onChange={handleSaveNameChange} />
-                    <div className="saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
+                    <div className="saveButtonPopUp" onClick={() => saveGame()}>Sauvergarder</div>
                 </div>
             )}
 
@@ -620,10 +620,10 @@ const JeuBataille = () => {
             </div>
 
             {owner === sessionStorage.getItem("name") &&
-                <button className="bo-save-button" onClick={() => openSavePopUp()}>Save</button>
+                <button className="bo-save-button" onClick={() => openSavePopUp()}>Sauvergarder</button>
             }
 
-            <button className="bo-leave-button" onClick={() => leaveGame()}>Leave Game</button>
+            <button className="bo-leave-button" onClick={() => leaveGame()}>QUITTER</button>
 
             <div className="bo-emote-container">
                 <button className="bo-emote-button" onClick={toggleEmotes}>Emotes</button>

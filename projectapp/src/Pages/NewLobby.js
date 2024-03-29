@@ -243,7 +243,7 @@ const NewLobby = () => {
                                 </tr>
                                 <tr>
                                     <td className="table-title">Argent Parié :</td>
-                                    <td className="table-info">{moneyBet}$</td>
+                                    <td className="table-info">{!moneyBet  ? "0" : moneyBet}$</td>
                                     <td className="table-title">Phrase du jour :</td>
                                     <td className="table-info">{generateQuote()}</td>
                                 </tr>
@@ -251,8 +251,8 @@ const NewLobby = () => {
                         </table>
                     </div>
                     <div className='bigReadyButton-container'>
-                        <div className='bigReadyButton' onClick={handleReadyClick}>{!isReady ? "READY" : "UNREADY"} </div>
-                        {clobby.owner === sessionStorage.getItem("name") && <div className='bigReadyButton' onClick={handleStart}>START </div>}
+                        <div className='bigReadyButton' onClick={handleReadyClick}>{!isReady ? "PRÊT" : "PAS PRÊT"} </div>
+                        {clobby.owner === sessionStorage.getItem("name") && <div className='bigReadyButton' onClick={handleStart}>COMMENCER </div>}
                     </div>
                 </div>
             </div>

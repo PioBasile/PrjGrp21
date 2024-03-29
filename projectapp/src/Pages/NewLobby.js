@@ -31,11 +31,11 @@ const NewLobby = () => {
     const quotes = [
         "At the end of the day, it's the friends we made along the way",
         "Gambling is not an addiction ~ Obama (maybe)",
-        "If a girl leaves you for another there is always her mother",
+        //"If a girl leaves you for another there is always her mother",
         "I'd rather have 1 medkit thant 10 bandages",
         "We will never ask for your Credit Card information",
         "Liberté, égalité, Renault Coupé",
-        "If she say your a looser you shall pick up her mother",
+        //"If she say your a looser you shall pick up her mother",
         "Pro Tips 1 : Always All-in ",
         "Pro Tips 2 : Don't forget to breath",
         "Pro Tips 3 : Don't loose",

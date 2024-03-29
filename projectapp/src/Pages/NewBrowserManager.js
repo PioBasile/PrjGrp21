@@ -203,7 +203,7 @@ const NewBrowserManager = () => {
 
                 <h2 className='MB-h2 MB-profil-H2'> PROFIL </h2>
                 <div className='BM-info-profil hide'>
-                    <div className='info-text'> PLAYERNAME : {sessionStorage.getItem("name")}</div>
+                    <div className='info-text'> Nom : {sessionStorage.getItem("name")}</div>
                 </div>
                 <div className='BM-info-profil hide'>
                     Parties Jouées : {nbGame}
@@ -212,7 +212,7 @@ const NewBrowserManager = () => {
                     Parties Gagnées : {nbWin}
                 </div>
                 <div className='BM-info-profil hide'>
-                    ARGENT  : {money}$
+                    Argent  : {money}$
                 </div>
 
                 <div className='BM-info-profil hide'>
@@ -226,13 +226,13 @@ const NewBrowserManager = () => {
                     SCOREBOARD
                 </div>
                 <div className='BM-info-profil hide itemShop' onClick={goToItemShop}>
-                    ITEM SHOP
+                    Magasin d'emotes
                 </div>
             </div>
 
             <div className='BM-acttion-container'>
                 <div className='BM-upperBandeau'>
-                    <h2 className='MB-h2'> CREER LE SERVER</h2>
+                    <h2 className='MB-h2'> CREER UN SERVER</h2>
                 </div>
 
 
@@ -242,8 +242,8 @@ const NewBrowserManager = () => {
                     <input type="text" id="BM-serverName" className="BM-input" placeholder='Server name...' value={serverName} onChange={(e) => { setServerName(e.target.value); }} ></input>
 
                     <div className='checkbox-container'>
-                        <div className='checkbox' onClick={handlePrivate}>Private Sever ?</div>
-                        <div className='checkbox' onClick={handleBet}>Want to Bet ?</div>
+                        <div className='checkbox' onClick={handlePrivate}>Serveur privé</div>
+                        <div className='checkbox' onClick={handleBet}>Miser de l'argent</div>
                     </div>
 
                     {isPrivate && <input type="password" id="BM-password" className="BM-input" placeholder='Password...' value={password} onChange={(e) => setPassword(e.target.value)}></input>}
@@ -267,11 +267,11 @@ const NewBrowserManager = () => {
                 <div className='NB-underBandeau'>
                     <div className='bigReadyButton-container BM'>
 
-                        <button className='bigReadyButton BM red' onClick={leave}> LEAVE </button>
+                        <button className='bigReadyButton BM red' onClick={leave}> Quiter </button>
 
-                        <div className='bigReadyButton BM' onClick={showSavedGames}> GAME SAVED </div>
+                        <div className='bigReadyButton BM' onClick={showSavedGames}> Partie Enregistrer </div>
 
-                        <button onClick={handleSave} className="bigReadyButton BM">CRÉER</button>
+                        <button onClick={handleSave} className="bigReadyButton BM">Crée</button>
                     </div>
                 </div>
 
@@ -281,7 +281,7 @@ const NewBrowserManager = () => {
 
             <div className='BM-serverList-container'>
 
-                <h2 className='MB-h2'> SERVER LIST</h2>
+                <h2 className='MB-h2'>Liste des serveurs</h2>
                 {mesLobby.map((lobby, _) => (
 
                     <div className='BM-server' onClick={() => !canJoin(lobby) ? null : handleClick(lobby.id, lobby)}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)} {lobby.moneyBet ? lobby.moneyBet+"$" : ""}

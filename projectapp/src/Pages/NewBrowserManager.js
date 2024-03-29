@@ -226,7 +226,7 @@ const NewBrowserManager = () => {
                     SCOREBOARD
                 </div>
                 <div className='BM-info-profil hide itemShop' onClick={goToItemShop}>
-                    Magasin d'emotes
+                    Magasin
                 </div>
             </div>
 

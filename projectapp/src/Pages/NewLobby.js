@@ -5,6 +5,8 @@ import socket from '../socketG';
 
 const NewLobby = () => {
 
+    
+
     socket.emit('join', sessionStorage.getItem('serverConnected'));
     sessionStorage.setItem('loaded', false);
 
@@ -18,7 +20,7 @@ const NewLobby = () => {
     const [moneyBet, setMoneyBet] = useState(0);
     const [timer, setTimer] = useState(0)
     const [isReady, setIsReady] = useState(false);
-
+    const [quoteOfTheDay, setQuoteOfTheDay] = useState("");
 
     const [allReady, setAllReady] = useState(false)
     const [timeBetweenTurn, setTimeBetweenTurn] = useState(30);
@@ -26,16 +28,14 @@ const NewLobby = () => {
     const navigate = useNavigate();
     const [clobby, setLobby] = useState({ playerList: [] });
 
-    // --------------------------------- QUOTES -----------------------------------
-
     const quotes = [
         "At the end of the day, it's the friends we made along the way",
         "Gambling is not an addiction ~ Obama (maybe)",
-        "If a girl leaves you for another there is always her mother",
+        //"If a girl leaves you for another there is always her mother",
         "I'd rather have 1 medkit thant 10 bandages",
         "We will never ask for your Credit Card information",
         "Liberté, égalité, Renault Coupé",
-        "If she say your a looser you shall pick up her mother",
+        //"If she say your a looser you shall pick up her mother",
         "Pro Tips 1 : Always All-in ",
         "Pro Tips 2 : Don't forget to breath",
         "Pro Tips 3 : Don't loose",
@@ -58,6 +58,7 @@ const NewLobby = () => {
         "NEVER GIVE UP !",
         "NEVER SURRENDER",
         "Maurice La Malice",
+        "OUI OUI BAGUETTE",
         "Reality is an illusion, the universe is a hologram, buy gold, bye!",
         "Pro Tips 13: In case of fire, git commit, git push, then leave building",
         "Pro Tips 14: Remember, the snooze button is a trap",
@@ -66,7 +67,8 @@ const NewLobby = () => {
         "L’argent ne fait pas le bonheur, mais il est plus confortable de pleurer dans une Mercedes que sur un vélo.",
         "L’alcool tue lentement. On s’en fout. On n’est pas pressés.",
         "L'alcool tue, pas le gambling, va au casino.",
-        "Pro Tip 16 : La patience est une vertu... surtout quand ton Wi-Fi est lent."
+        "Pro Tip 16 : La patience est une vertu... surtout quand ton Wi-Fi est lent.",
+        "Pro tips 17 : Toujours demander à chat GPT - Pio"
     ];
 
     const generateQuote = () => {
@@ -75,6 +77,13 @@ const NewLobby = () => {
         return randomQuote;
     }
 
+
+    useEffect(() => {
+
+        const theQuote = generateQuote();
+        setQuoteOfTheDay(theQuote);
+        
+    }, []);
     // --------------------------------- FUNCTIONS -----------------------------------
 
     function leaveGame() {
@@ -243,16 +252,16 @@ const NewLobby = () => {
                                 </tr>
                                 <tr>
                                     <td className="table-title">Argent Parié :</td>
-                                    <td className="table-info">{moneyBet}$</td>
+                                    <td className="table-info">{!moneyBet  ? "0" : moneyBet}$</td>
                                     <td className="table-title">Phrase du jour :</td>
-                                    <td className="table-info">{generateQuote()}</td>
+                                    <td className="table-info">{quoteOfTheDay}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div className='bigReadyButton-container'>
-                        <div className='bigReadyButton' onClick={handleReadyClick}>{!isReady ? "READY" : "UNREADY"} </div>
-                        {clobby.owner === sessionStorage.getItem("name") && <div className='bigReadyButton' onClick={handleStart}>START </div>}
+                        <div className='bigReadyButton' onClick={handleReadyClick}>{!isReady ? "PRÊT" : "PAS PRÊT"} </div>
+                        {clobby.owner === sessionStorage.getItem("name") && <div className='bigReadyButton' onClick={handleStart}>COMMENCER </div>}
                     </div>
                 </div>
             </div>

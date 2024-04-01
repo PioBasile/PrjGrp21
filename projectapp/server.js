@@ -508,7 +508,7 @@ io.on('connection', (socket) => {
         socket.emit("resolveRoundAsk");
         io.to(serverId).emit("canPlay?", false);
       }
-
+      io.to(serverId).emit("showAll?");
       let winners = game.findGameWinner();
       if (winners) {
         let moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length);

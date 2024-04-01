@@ -267,7 +267,7 @@ const NewBrowserManager = () => {
                 <div className='NB-underBandeau'>
                     <div className='bigReadyButton-container BM'>
 
-                        <button className='bigReadyButton BM red' onClick={leave}> Quiter </button>
+                        <button className='bigReadyButton BM red' onClick={leave}> Quitter </button>
 
                         <div className='bigReadyButton BM' onClick={showSavedGames}> Partie Enregistrer </div>
 

@@ -35,6 +35,7 @@ const MilleBorne = () => {
     const [test, setTest] = useState("");
     const [isVisible, setIsVisible] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
+    const [color, setColor] = useState("");
 
     const [saveName, setSaveName] = useState("");
     const [isSave, setIsSave] = useState(false);
@@ -147,6 +148,7 @@ const MilleBorne = () => {
             socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"));
             socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
             socket.emit("whaIsOwner", sessionStorage.getItem("serverConnected"));
+            socket.emit("whatMyColor", sessionStorage.getItem("serverConnceted"), sessionStorage.getItem("name"));
         }
 
         return () => {
@@ -242,6 +244,9 @@ const MilleBorne = () => {
                 setOwner(owner)
             })
 
+            socket.on("yourColor", (myColor) => {
+                setColor(myColor);
+            })
 
         }
         return () => {
@@ -514,7 +519,7 @@ const MilleBorne = () => {
             <div className='MB-card-holder-container'>
                 <div className={`me-container ${myTurn ? "myTurn" : ""}`}>
                     <div className='state-container'>
-                        <div className={`my-card ${"red"}`}>
+                        <div className={`my-card ${color}`}>
                             <div className='MB-player-name'> {sessionStorage.getItem("name")}</div>
                             <div className='info-container'>
                                 <div>Nombre de points : {myPoints}</div>

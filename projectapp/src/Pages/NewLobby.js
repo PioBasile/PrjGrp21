@@ -5,6 +5,8 @@ import socket from '../socketG';
 
 const NewLobby = () => {
 
+    
+
     socket.emit('join', sessionStorage.getItem('serverConnected'));
     sessionStorage.setItem('loaded', false);
 
@@ -18,15 +20,13 @@ const NewLobby = () => {
     const [moneyBet, setMoneyBet] = useState(0);
     const [timer, setTimer] = useState(0)
     const [isReady, setIsReady] = useState(false);
-
+    const [quoteOfTheDay, setQuoteOfTheDay] = useState("");
 
     const [allReady, setAllReady] = useState(false)
     const [timeBetweenTurn, setTimeBetweenTurn] = useState(30);
     const [roundsMax, setRoundsMax] = useState(20);
     const navigate = useNavigate();
     const [clobby, setLobby] = useState({ playerList: [] });
-
-    // --------------------------------- QUOTES -----------------------------------
 
     const quotes = [
         "At the end of the day, it's the friends we made along the way",
@@ -58,6 +58,7 @@ const NewLobby = () => {
         "NEVER GIVE UP !",
         "NEVER SURRENDER",
         "Maurice La Malice",
+        "OUI OUI BAGUETTE",
         "Reality is an illusion, the universe is a hologram, buy gold, bye!",
         "Pro Tips 13: In case of fire, git commit, git push, then leave building",
         "Pro Tips 14: Remember, the snooze button is a trap",
@@ -66,7 +67,8 @@ const NewLobby = () => {
         "L’argent ne fait pas le bonheur, mais il est plus confortable de pleurer dans une Mercedes que sur un vélo.",
         "L’alcool tue lentement. On s’en fout. On n’est pas pressés.",
         "L'alcool tue, pas le gambling, va au casino.",
-        "Pro Tip 16 : La patience est une vertu... surtout quand ton Wi-Fi est lent."
+        "Pro Tip 16 : La patience est une vertu... surtout quand ton Wi-Fi est lent.",
+        "Pro tips 17 : Toujours demander à chat GPT - Pio"
     ];
 
     const generateQuote = () => {
@@ -75,6 +77,13 @@ const NewLobby = () => {
         return randomQuote;
     }
 
+
+    useEffect(() => {
+
+        const theQuote = generateQuote();
+        setQuoteOfTheDay(theQuote);
+        
+    }, []);
     // --------------------------------- FUNCTIONS -----------------------------------
 
     function leaveGame() {
@@ -245,7 +254,7 @@ const NewLobby = () => {
                                     <td className="table-title">Argent Parié :</td>
                                     <td className="table-info">{!moneyBet  ? "0" : moneyBet}$</td>
                                     <td className="table-title">Phrase du jour :</td>
-                                    <td className="table-info">{generateQuote()}</td>
+                                    <td className="table-info">{quoteOfTheDay}</td>
                                 </tr>
                             </tbody>
                         </table>

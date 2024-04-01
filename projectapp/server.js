@@ -37,12 +37,12 @@ const {
   SavedLobby
 } = require("./JS_CustomLib/D_utils.js");
 
+
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
 const { getAllScores, changeScoreBoard, changeMoney } = require("./JS_CustomLib/P_db.js");
-const { read } = require('fs');
-const { basename } = require('node:path/win32');
+const { emit } = require('process');
 
 
 
@@ -65,6 +65,7 @@ let BatailGames = [];
 let TaureauGames = [];
 let MilleBornesGames = [];
 let lobbyList = [];
+let PresidentGames = [];
 let lobbyIndex = 1;
 let RouletteInstance = new Roulette();
 let isPaused = false;
@@ -338,7 +339,7 @@ io.on('connection', (socket) => {
 
   socket.on("lobbyInfo_UwU", (serverId) => {
     let lobby = findLobby(serverId, lobbyList);
-    io.to(serverId).emit("yourInfoBebs", { serverName: lobby.serverName, nbPlayerMax: lobby.nbPlayerMax, password: lobby.password, gameType: lobby.gameType, owner: lobby.owner, timer: lobby.tbt, moneyBet:lobby.moneyBet });
+    io.to(serverId).emit("yourInfoBebs", { serverName: lobby.serverName, nbPlayerMax: lobby.nbPlayerMax, password: lobby.password, gameType: lobby.gameType, owner: lobby.owner, timer: lobby.tbt, moneyBet: lobby.moneyBet });
   })
 
   socket.on('askStat', (name) => {
@@ -382,7 +383,7 @@ io.on('connection', (socket) => {
 
     if (lobby.gameType == "sqp") {
 
-      nGame = new SixQuiPrend(lobby.serverName, lobbyID, owner, plist, 10, lobby.moneyBet,lobby.nbPlayerMax);
+      nGame = new SixQuiPrend(lobby.serverName, lobbyID, owner, plist, 10, lobby.moneyBet, lobby.nbPlayerMax);
 
       const lobbyNotChanged = Object.assign({}, lobby);
       nGame.lobbyLinked = lobbyNotChanged;
@@ -411,7 +412,14 @@ io.on('connection', (socket) => {
       MilleBornesGames.push(nGame);
     }
 
-    //HERE
+    // else if (lobby.gameType == "president") {
+    //   nGame = new President(lobbyID, lobby.nbPlayerMax, -1, owner, plist, lobby.moneyBet);
+
+    //   const lobbyNotChanged = Object.assign({}, lobby);
+    //   nGame.lobbyLinked = lobbyNotChanged;
+
+    //   PresidentGames.push(nGame);
+    // }
 
 
     else {
@@ -499,6 +507,7 @@ io.on('connection', (socket) => {
     io.to(serverId).emit("yourDeck");
     io.to(serverId).emit("roundCardsPlayed", game.cardPlayedInRound);
     if (game.allPlayerPlayed()) {
+      
       if (game.isADraw()) {
         socket.emit("resolveDrawAsk");
         io.to(serverId).emit("canPlay?", false);
@@ -508,11 +517,10 @@ io.on('connection', (socket) => {
         socket.emit("resolveRoundAsk");
         io.to(serverId).emit("canPlay?", false);
       }
-
+      io.to(serverId).emit("showAll?");
       let winners = game.findGameWinner();
       if (winners) {
         let moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length);
-        console.log("MONEYWIN 510", moneyWin);
         winners.forEach((name) => {
           console.log("WHAT WRONG WITH U")
           get_user_info(name).then((res) => {
@@ -585,7 +593,11 @@ io.on('connection', (socket) => {
     socket.emit("Deck", player.deck);
   })
 
+  socket.on("showAllAsk", (serverId) => {
 
+    io.to(serverId).emit("showAll");
+  })
+  
   socket.on("BTL-leaveGame", (playerName, serverId) => {
     let game = findGame(serverId, BatailGames);
     let player = findPlayer(playerName, game.playerList);
@@ -811,15 +823,15 @@ io.on('connection', (socket) => {
     let player = findPlayer(playerName, game.player_list);
     game.removePlayer(player)
     let winner = game.player_list[0];
-    if(game.player_list.length == 1){  
+    if (game.player_list.length == 1) {
       if (winner) {
         var moneyWin = Math.round(game.moneyBet * game.maxPlayer);
-          get_user_info(winner.name).then((res) => {
-            changeDataBase('nbWin', res.nbWin + 1, winner.name);
-            changeScoreBoard('six-qui-prend', winner.name);
-            changeDataBase('argent', res.argent + 100 + moneyWin, winner.name);
-            changeMoney(winner.name, 100 + moneyWin);
-          });
+        get_user_info(winner.name).then((res) => {
+          changeDataBase('nbWin', res.nbWin + 1, winner.name);
+          changeScoreBoard('six-qui-prend', winner.name);
+          changeDataBase('argent', res.argent + 100 + moneyWin, winner.name);
+          changeMoney(winner.name, 100 + moneyWin);
+        });
         game.status = STATUS.ENDED;
         io.to(serverId).emit('FIN', winner);
       }
@@ -1015,6 +1027,12 @@ io.on('connection', (socket) => {
     }
 
     socket.emit("myTurn", player.myTurn);
+  })
+
+  socket.on("whatMyColor", (serverId, name) => {
+    game = findGame(serverId, MilleBornesGames);
+    player = findPlayer(name, game.playerList);
+    socket.emit("yourColor", player.color)
   })
 
   socket.on('MB-leaveGame', (data) => {
@@ -1285,7 +1303,92 @@ io.on('connection', (socket) => {
     });
   });
 
+
+  // //President Game
+  // socket.on("P-whatCardPlayed", (serverId) => {
+  //   let game = findGame(serverId, PresidentGames);
+  //   if(game.cardPlayed.length > 1){
+  //     socket.emit("P-cardPlayed", game.cardPlayed[game.cardPlayed.length - 1]);
+  //     return;
+  //   }
+
+  //   socket.emit("P-cardPlayed", "");
+  
+  // })
+  
+  // socket.on("P-whatMyDeck", (serverId, playerName) => {
+  //   let game = findGame(serverId, PresidentGames);
+  //   let player = findPlayer(game, playerName);
+  //   socket.emit("yourDeck", player.deck);
+  // })
+
+  // socket.on("P-whatMyOpponent", (serverId, playerName) => {
+  //   let game = findGame(serverId, PresidentGames);
+  //   let opponents = game.findOpponent(playerName);
+  //   socket.emit("yourOpponents", opponents);
+  // })
+
+  // socket.on("P-whatMyTurn",  (serverId, playerName) => {
+  //   let game = findGame(serverId, MilleBornesGames);
+  //   let player = findPlayer(playerName, game.playerList);
+
+  //   if (game.anyonePlayed()) {
+  //     game.playerList[0].myTurn = true;
+  //   }
+
+  //   socket.emit("myTurn", player.myTurn);
+  // })
+
+  // socket.on("P-playCard", (serverId, playerName, card) => {
+  //   let game = findGame(serverId, PresidentGames);
+  //   let player = findPlayer(game, playerName);
+    
+  //   if(game.playForced){
+  //     if(card == game.cardPlayed[game.cardPlayed.length - 1]){
+  //       player.deck.splice(player.deck.indexOf(card), 1);
+  //       game.cardPlayed.push(card);
+  //       game.canPlay(card);
+  //     }
+  //   }
+
+  //   else {
+  //     if(card >= game.cardPlayed[game.cardPlayed.length - 1] ){
+  //       player.deck.splice(player.deck.indexOf(card), 1);
+  //       game.cardPlayed.push(card);
+  //       game.canPlay(card);
+  //     }
+  //   }
+
+  //   if(game.isCarre(card)){
+  //     game.resetRound()
+  //     return;
+  //   }
+
+  //   if(card.power == 15){
+  //     io.to(serverId).emit("showRestart");
+  //     return;
+  //   }
+
+  //   io.to(serverId).emit("askTurnInfo")
+
+  // })
+  
+  
+  // socket.on("showRestart", (serverId) =>{
+  //   //il reprend la main et rejoue
+  //   let game = findGame(serverId, PresidentGames);
+  //   game.resetRound();
+  //   io.to(serverId).emit("P-cardPlayed", game.cardPlayed);
+  // })
+
+  // socket.on("askTurnInfo", (serverId, playerName) => {
+  //   let game = findGame(serverId, PresidentGames);
+  //   let player = findPlayer(game, playerName);
+  //   socket.emit("myTurn", player.myTurn);
+  // })
+
 });
+
 
 
 

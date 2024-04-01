@@ -259,7 +259,7 @@ const NewBrowserManager = () => {
                             <option value="batailleOuverte">Bataille Ouverte</option>
                             <option value="sqp">Six qui prend</option>
                             <option value="mb">Mille Bornes</option>
-                            <option value="rd">Aléatoire</option>
+                            <option value="president">Président</option>
                         </select>
                         <div className="select-arrow"></div>
                     </div>
@@ -269,9 +269,9 @@ const NewBrowserManager = () => {
 
                         <button className='bigReadyButton BM red' onClick={leave}> Quitter </button>
 
-                        <div className='bigReadyButton BM' onClick={showSavedGames}> Partie Enregistrer </div>
+                        <div className='bigReadyButton BM' onClick={showSavedGames}> Parties Enregistrées </div>
 
-                        <button onClick={handleSave} className="bigReadyButton BM">CRÉER</button>
+                        <button onClick={handleSave} className="bigReadyButton BM">Créer</button>
                     </div>
                 </div>
 

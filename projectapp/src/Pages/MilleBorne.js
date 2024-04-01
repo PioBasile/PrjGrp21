@@ -386,7 +386,7 @@ const MilleBorne = () => {
                 <div className='savePopUp'>
                     <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
                     <input className="inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
-                    <div className="saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
+                    <div className="saveButtonPopUp" onClick={() => saveGame()}>Sauvergarder</div>
                 </div>
             )}
 
@@ -396,8 +396,8 @@ const MilleBorne = () => {
 
             <div className='MB-adversaire-container-upper-bandeau'>
                 <div className='exitAndSave-container'>
-                    <div className='MB-exit-button' onClick={() => leave()}> LEAVE</div>
-                    {owner === sessionStorage.getItem("name") && <div className='MB-exit-button' onClick={() => openSavePopUp()}> SAVE</div>}
+                    <div className='MB-exit-button' onClick={() => leave()}> QUITTER</div>
+                    {owner === sessionStorage.getItem("name") && <div className='MB-exit-button' onClick={() => openSavePopUp()}> Sauvergarder</div>}
                 </div>
 
                 {showEnemyEmote(sessionStorage.getItem("name")) && (
@@ -408,7 +408,7 @@ const MilleBorne = () => {
                     </div>
                 )}
 
-                <div className='MB-info-button' onClick={toggleInfo}>INFO</div>
+                <div className='MB-info-button' onClick={toggleInfo}>Information</div>
                 {showInfo && (
                     <div className='MB-info-content'>
                         <p>

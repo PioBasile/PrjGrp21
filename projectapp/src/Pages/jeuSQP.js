@@ -542,7 +542,7 @@ const SixQuiPrend = () => {
         <div className='savePopUp'>
           <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
           <input className="inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
-          <div className="saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
+          <div className="saveButtonPopUp" onClick={() => saveGame()}>Sauvergarder</div>
         </div>
       )}
 
@@ -562,7 +562,7 @@ const SixQuiPrend = () => {
           {opponents.map((opponent, index) => (
             <div key={index} className={`opponent-six ${playerPlaying !== opponent.nom ? "" : "hisTurn"}`}>
               <strong>{opponent.nom}</strong> <br />
-              Cards: {opponent.deck} <br />
+              Cartes: {opponent.deck} <br />
             </div>
           ))}
         </div>
@@ -596,10 +596,10 @@ const SixQuiPrend = () => {
       <div className='sqp-cardContianer'>
         
       <div className='sqp-exit-button' onClick={leave}> QUITTER</div>
-        {owner === sessionStorage.getItem("name") && <div className='sqp-save-button' onClick={() => openSavePopUp()}> SAVE</div>}
+        {owner === sessionStorage.getItem("name") && <div className='sqp-save-button' onClick={() => openSavePopUp()}> Sauvergarder</div>}
 
         <div className='sqp-timer'>
-          <p>{seconds}s left</p>
+          <p>Encore {seconds}s </p>
         </div>
         <div className={(myTurnP2 || !allPlayerSelected) ? 'sqp-card-holder' : 'sqp-card-holderNYT'} >
           <div className={"notYourTurn-cards"} >
@@ -616,9 +616,9 @@ const SixQuiPrend = () => {
 
         
         <div className={`scoreboard ${isVisible ? 'visible' : ''}`}>
-          <div className="scoreboard-tab">Press Tab _ Scores</div>
+          <div className="scoreboard-tab">Appuez sur Tab</div>
           <div className="scoreboard-content">
-            <strong>Your</strong> score: {score} <br />
+            <strong>Votre</strong> score: {score} <br />
             {opponents.map((opponent, index) => (
               <div key={index}>
                 <strong>{opponent.nom}</strong>'s

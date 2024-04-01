@@ -66,11 +66,11 @@ const LoginSignup = () => {
                 </div>
             </div>
             <div className="login-container">
-                <div className='lo-si'> <h1>Login or Signup</h1></div>
-                {isWrong && <div className='wrongStuff'>Incorrect login or password please try again !</div>}
+                <div className='lo-si'> <h1>Connection ou Inscription</h1></div>
+                {isWrong && <div className='wrongStuff'>Nom d'utiliseur ou mot de passe incorrecte !</div>}
                 <input
                     type="text"
-                    placeholder="Username"
+                    placeholder="Nom d'utilisateur"
                     id="username"
                     className="input-button"
                     value={username}
@@ -78,7 +78,7 @@ const LoginSignup = () => {
                 />
                 <input
                     type="password"
-                    placeholder="Password"
+                    placeholder="Mot de passe"
                     id="loginPassword"
                     className="input-button"
                     value={password}
@@ -95,7 +95,7 @@ const LoginSignup = () => {
                         onMouseOut={e => e.target.style.backgroundColor = '#0066cc'}
                         onClick={login}
                     >
-                        Login
+                        Connection
                     </button>
 
                     <button
@@ -105,7 +105,7 @@ const LoginSignup = () => {
                         onMouseOut={e => e.target.style.backgroundColor = '#0066cc'}
                         onClick={register}
                     >
-                        Signup
+                        Inscription
                     </button>
                 </div>
             </div>

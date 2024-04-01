@@ -149,7 +149,7 @@ class Bataille {
     this.scoreboard = {};
     this.cartes = this.generateCartes();
     this.moneyBet = moneyBet;
-    this.chatContent = ["use <global> to talk to everyone"];
+    this.chatContent = ["utilisez <global> pour parler a tout le monde"];
     this.cardPlayedInRound = {};
     this.cardPlayed = [];
     this.lobbyLinked = null;
@@ -531,7 +531,7 @@ class SixQuiPrend {
 
     this.lobbyLinked = null;
 
-    this.chatContent = ["use <global> to talk to everyone"];
+    this.chatContent = ["utilisez <global> pour parler a tout le monde"];
   }
 
   removePlayer(player) {
@@ -942,7 +942,7 @@ class MilleBorne {
     this.deck = this.construireJeu();
     this.state = GameState.EN_COURS;
     this.distribuer();
-    this.chatContent = ["use <global> to talk to everyone"];
+    this.chatContent = ["utilisez <global> pour parler a tout le monde"];
     this.moneyBet = moneyBet;
     this.lobbyLinked = null;
   }

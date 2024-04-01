@@ -5,6 +5,8 @@ import socket from '../socketG';
 
 const NewLobby = () => {
 
+    
+
     socket.emit('join', sessionStorage.getItem('serverConnected'));
     sessionStorage.setItem('loaded', false);
 
@@ -18,7 +20,7 @@ const NewLobby = () => {
     const [moneyBet, setMoneyBet] = useState(0);
     const [timer, setTimer] = useState(0)
     const [isReady, setIsReady] = useState(false);
-
+    const [quoteOfTheDay, setQuoteOfTheDay] = useState("");
 
     const [allReady, setAllReady] = useState(false)
     const [timeBetweenTurn, setTimeBetweenTurn] = useState(30);
@@ -75,6 +77,13 @@ const NewLobby = () => {
         return randomQuote;
     }
 
+
+    useEffect(() => {
+
+        const theQuote = generateQuote();
+        setQuoteOfTheDay(theQuote);
+        
+    }, []);
     // --------------------------------- FUNCTIONS -----------------------------------
 
     function leaveGame() {
@@ -245,7 +254,7 @@ const NewLobby = () => {
                                     <td className="table-title">Argent Parié :</td>
                                     <td className="table-info">{!moneyBet  ? "0" : moneyBet}$</td>
                                     <td className="table-title">Phrase du jour :</td>
-                                    <td className="table-info">{generateQuote()}</td>
+                                    <td className="table-info">{quoteOfTheDay}</td>
                                 </tr>
                             </tbody>
                         </table>

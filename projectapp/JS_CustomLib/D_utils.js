@@ -355,7 +355,6 @@ class Bataille {
 
     for (let player of gameData["playerList"]) {
       let newPlayer = new Player(player["name"], player["cookie"])
-      newPlayer.out = player["out"]
       newPlayer.deck = player["deck"]
       newPlayer.selected = player["selected"]
 
@@ -375,7 +374,6 @@ class Player {
 
   constructor(username, cookie) {
 
-    this.out = false;
     this.name = username;
     this.deck = [];
     this.selected = null;
@@ -1187,8 +1185,6 @@ class MilleBorne {
         }
       }
     }
-
-    // list[0].myTurn = true;
     return false;
   }
 

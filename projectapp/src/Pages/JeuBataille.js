@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './CSS/jeuBataille.css';
 import socket from '../socketG';
 import './CSS/emotes/toyota.mp4';
+import { on } from 'events';
 
 
 const JeuBataille = () => {
@@ -361,21 +362,22 @@ const JeuBataille = () => {
             })
 
             socket.on("resolveRoundAsk", () => {
-                setShowAll(true)
+                socket.emit("showAllAsk",sessionStorage.getItem("serverConnected"))
                 setTimeout(() => {
                     socket.emit("resolveRound", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"));
-                    console.log("resolve round")
                 }, "3000");
             });
 
             socket.on("resolveDrawAsk", () => {
-                setShowAll(true);
-                console.log("resolveDrawAsk")
+                socket.emit("showAllAsk",sessionStorage.getItem("serverConnected"))
                 setTimeout(() => {
                     socket.emit("resolveDrawFirstPart", sessionStorage.getItem("serverConnected"));
-                    console.log("ntm si c ca");
                 }, "3000");
             });
+
+            socket.on("showAll", () => {
+                setShowAll(true);
+            })
 
             socket.on("resolveDrawAfter", () => {
                 setTimeout(() => {
@@ -466,6 +468,7 @@ const JeuBataille = () => {
             socket.off("reset");
             socket.off("endEmoteToAll")
             socket.off("fin");
+            socket.off("showAll");
         };
     }, []);
 
@@ -480,7 +483,7 @@ const JeuBataille = () => {
             const timer = setTimeout(() => {
                 setIsVisible(false);
                 setRoundWinner("");
-            }, 3000);
+            }, 2000);
 
             return () => clearTimeout(timer);
         }, []);
@@ -511,7 +514,7 @@ const JeuBataille = () => {
                 <div className='savePopUp'>
                     <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
                     <input className="inputPopup" type="text" placeholder='save Name' value={saveName} onChange={handleSaveNameChange} />
-                    <div className="saveButtonPopUp" onClick={() => saveGame()}>SAVE</div>
+                    <div className="saveButtonPopUp" onClick={() => saveGame()}>Sauvergarder</div>
                 </div>
             )}
 
@@ -620,10 +623,10 @@ const JeuBataille = () => {
             </div>
 
             {owner === sessionStorage.getItem("name") &&
-                <button className="bo-save-button" onClick={() => openSavePopUp()}>Save</button>
+                <button className="bo-save-button" onClick={() => openSavePopUp()}>Sauvergarder</button>
             }
 
-            <button className="bo-leave-button" onClick={() => leaveGame()}>Leave Game</button>
+            <button className="bo-leave-button" onClick={() => leaveGame()}>QUITTER</button>
 
             <div className="bo-emote-container">
                 <button className="bo-emote-button" onClick={toggleEmotes}>Emotes</button>

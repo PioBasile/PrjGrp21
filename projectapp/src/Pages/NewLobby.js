@@ -29,11 +29,11 @@ const NewLobby = () => {
     const quotes = [
         "At the end of the day, it's the friends we made along the way",
         "Gambling is not an addiction ~ Obama (maybe)",
-        "If a girl leaves you for another there is always her mother",
+        //"If a girl leaves you for another there is always her mother",
         "I'd rather have 1 medkit thant 10 bandages",
         "We will never ask for your Credit Card information",
         "Liberté, égalité, Renault Coupé",
-        "If she say your a looser you shall pick up her mother",
+        //"If she say your a looser you shall pick up her mother",
         "Pro Tips 1 : Always All-in ",
         "Pro Tips 2 : Don't forget to breath",
         "Pro Tips 3 : Don't loose",
@@ -214,45 +214,45 @@ const NewLobby = () => {
             <div className='UBwithUnderBandeau'>
 
                 <div className='NB-upperBandeau'>
-                    <div className='leaveLobbyButton' onClick={() => leaveGame()}>LEAVE</div>
+                    <div className='leaveLobbyButton' onClick={() => leaveGame()}>QUITER</div>
                     <div className='gameNameType'>{gameName} ({gameType})</div>
                     <div></div>
                 </div>
                 <div className='NB-underBandeau'>
-                    <div className='waitingPlayerTitle animated-ellipsis'> {` ${!allReady ? "WAITING FOR PLAYERS" : "GAME STARTING "}`}</div>
+                    <div className='waitingPlayerTitle animated-ellipsis'> {` ${!allReady ? "EN ATTENTE DES AUTRES JOUEURS" : "DEBUT DE LA PARTIE "}`}</div>
                     <div className='gameStat'>
                         <table>
                             <tbody>
                                 <tr>
-                                    <td className="table-title">Owner :</td>
+                                    <td className="table-title">Propriétaire :</td>
                                     <td className="table-info">{owner}</td>
-                                    <td className="table-title">maxPlayer :</td>
+                                    <td className="table-title">Maximum de joueurs :</td>
                                     <td className="table-info">{maxPlayers}</td>
                                 </tr>
                                 <tr>
-                                    <td className="table-title">gameName :</td>
+                                    <td className="table-title">Nom de la partie :</td>
                                     <td className="table-info">{gameName}</td>
-                                    <td className="table-title">gameType :</td>
+                                    <td className="table-title">Type de jeu :</td>
                                     <td className="table-info">{gameType}</td>
                                 </tr>
                                 <tr>
-                                    <td className="table-title">password :</td>
+                                    <td className="table-title">Mot de pass :</td>
                                     <td className="table-info">{password ? password : "None"}</td>
-                                    <td className="table-title">Timer :</td>
+                                    <td className="table-title">Temps entre les tours :</td>
                                     <td className="table-info">{timer}</td>
                                 </tr>
                                 <tr>
                                     <td className="table-title">Argent Parié :</td>
-                                    <td className="table-info">{moneyBet}$</td>
-                                    <td className="table-title">Quote</td>
+                                    <td className="table-info">{!moneyBet  ? "0" : moneyBet}$</td>
+                                    <td className="table-title">Phrase du jour :</td>
                                     <td className="table-info">{generateQuote()}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div className='bigReadyButton-container'>
-                        <div className='bigReadyButton' onClick={handleReadyClick}>{!isReady ? "READY" : "UNREADY"} </div>
-                        {clobby.owner === sessionStorage.getItem("name") && <div className='bigReadyButton' onClick={handleStart}>START </div>}
+                        <div className='bigReadyButton' onClick={handleReadyClick}>{!isReady ? "PRÊT" : "PAS PRÊT"} </div>
+                        {clobby.owner === sessionStorage.getItem("name") && <div className='bigReadyButton' onClick={handleStart}>COMMENCER </div>}
                     </div>
                 </div>
             </div>
@@ -264,7 +264,7 @@ const NewLobby = () => {
                             <div className='playerInfoContainer'>
                                 <div className='playerInfo'>{player.username + "   |   " + (player.isReady ? "Pret" : "Pas pret")} </div>
                                 <div></div>
-                                {clobby.owner === sessionStorage.getItem("name") && <div className='kickButton' onClick={() => handleKickPlayer(index)} disabled={player.username === sessionStorage.getItem('name') || clobby.owner !== sessionStorage.getItem('name')}>KICK</div>}
+                                {clobby.owner === sessionStorage.getItem("name") && <div className='kickButton' onClick={() => handleKickPlayer(index)} disabled={player.username === sessionStorage.getItem('name') || clobby.owner !== sessionStorage.getItem('name')}>EXPULSER</div>}
                             </div>
                         </div>
                     ))

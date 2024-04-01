@@ -37,10 +37,6 @@ const {
   SavedLobby
 } = require("./JS_CustomLib/D_utils.js");
 
-const {
-  PresidentPlayer,
-  President
-} = require("./JS_CustomLib/F_President_Utils");
 
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");

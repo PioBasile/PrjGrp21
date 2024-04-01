@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import './CSS/jeuBataille.css';
 import socket from '../socketG';
 import './CSS/emotes/toyota.mp4';
-import { on } from 'events';
 
 
 const JeuBataille = () => {

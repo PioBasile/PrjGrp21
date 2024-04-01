@@ -330,7 +330,10 @@ const JeuBataille = () => {
 
             socket.on("owner", (ownerFromServer) => {
                 setOwner(ownerFromServer)
-            })
+            });
+            socket.on("showAll", () => {
+                setShowAll(true);
+            });
 
             socket.on("Deck", (deck) => {
                 sortCards(deck);
@@ -468,9 +471,9 @@ const JeuBataille = () => {
             socket.off("resolveDrawAfter");
             socket.off("roundCardsPlayed");
             socket.off("reset");
-            socket.off("endEmoteToAll")
+            socket.off("endEmoteToAll");
             socket.off("fin");
-            socket.off("showAll");
+            socket.on("showAll");
         };
     }, []);
 

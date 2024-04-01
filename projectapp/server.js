@@ -37,10 +37,6 @@ const {
   SavedLobby
 } = require("./JS_CustomLib/D_utils.js");
 
-const {
-  PresidentPlayer,
-  President
-} = require("./JS_CustomLib/F_President_Utils");
 
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");
@@ -521,10 +517,7 @@ io.on('connection', (socket) => {
         socket.emit("resolveRoundAsk");
         io.to(serverId).emit("canPlay?", false);
       }
-
-
-      io.to(serverId).emit("showAll");
-
+      io.to(serverId).emit("showAll?");
       let winners = game.findGameWinner();
       if (winners) {
         let moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length);

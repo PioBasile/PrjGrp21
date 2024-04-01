@@ -259,7 +259,7 @@ const NewBrowserManager = () => {
                             <option value="batailleOuverte">Bataille Ouverte</option>
                             <option value="sqp">Six qui prend</option>
                             <option value="mb">Mille Bornes</option>
-                            <option value="rd">Aléatoire</option>
+                            <option value="president">Président</option>
                         </select>
                         <div className="select-arrow"></div>
                     </div>

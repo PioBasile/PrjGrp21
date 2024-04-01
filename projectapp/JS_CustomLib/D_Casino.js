@@ -32,7 +32,7 @@ class Roulette{
   rolls(){
 
     this.lastRolls.push(this.roll);
-    this.roll = Math.floor(Math.random() *  37);
+    this.roll = 20;
 
   }
 

@@ -6,7 +6,10 @@ import './CSS/emotes/toyota.mp4';
 
 
 const JeuBataille = () => {
-    const SERVER_ID = sessionStorage.getItem("serverConnected")
+    
+    const SERVER_ID = sessionStorage.getItem("serverConnected");
+    const PLAYER_NAME = sessionStorage.getItem("name");
+
     const [playerCards, setPlayerCards] = useState([]);
     const [selectedCard, setSelectedCard] = useState({ symbole: 'mathis', number: '1000', power: -1 });
     const [opponents, setOpponents] = useState([]);
@@ -68,7 +71,7 @@ const JeuBataille = () => {
     };
 
     function playEmote(emoteUrl) {
-        socket.emit('sendEmoteToLobby', { emote: emoteUrl.id, playerName: sessionStorage.getItem('name'), serverId: sessionStorage.getItem('serverConnected') });
+        socket.emit('sendEmoteToLobby', { emote: emoteUrl.id, playerName: PLAYER_NAME, serverId: SERVER_ID });
     }
 
     const toggleEmotes = () => {
@@ -137,7 +140,7 @@ const JeuBataille = () => {
     //----------------------CHAT---------------------
 
     const sendMessage = () => {
-        socket.emit('sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
+        socket.emit('sendMessage', { name:PLAYER_NAME, msg: message, serverId: SERVER_ID });
         setMessage('');
     }
 
@@ -200,14 +203,14 @@ const JeuBataille = () => {
     //----------------------LEAVE GAME---------------------
 
     function leaveGame() {
-        socket.emit('BTL-leaveGame', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
-        socket.emit('leave', sessionStorage.getItem('serverConnected'));
+        socket.emit('BTL-leaveGame', PLAYER_NAME, SERVER_ID);
+        socket.emit('leave', SERVER_ID);
         navigate('/BrowserManager');
     };
 
     const saveGame = () => {
         setIsSave(false);
-        socket.emit("saveGame", sessionStorage.getItem("serverConnected"), saveName, sessionStorage.getItem("name"))
+        socket.emit("saveGame", SERVER_ID, saveName,PLAYER_NAME)
     }
 
     const openSavePopUp = () => {
@@ -266,7 +269,7 @@ const JeuBataille = () => {
 
     const selectCardClick = (card) => {
         setSelectedCard(card);
-        socket.emit("playCard", sessionStorage.getItem("serverConnected"), card, sessionStorage.getItem("name"));
+        socket.emit("playCard", SERVER_ID, card,PLAYER_NAME);
     };
 
     //----------------------USE EFFECT---------------------
@@ -276,23 +279,23 @@ const JeuBataille = () => {
         let mounted = true;
         let failed = false;
 
-        if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
+        if (PLAYER_NAME == null || SERVER_ID == null) {
             navigate("/login-signup");
             failed = true;
         }
         if (mounted && !failed) {
 
             // GESTION stabilité de la connection
-            socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
+            socket.emit("co",PLAYER_NAME, sessionStorage.getItem("connection_cookie"))
 
 
-            socket.emit('WhatIsMyDeck', sessionStorage.getItem('name'), sessionStorage.getItem('serverConnected'));
-            socket.emit('join', sessionStorage.getItem('serverConnected'));
-            socket.emit('askGameInfo', sessionStorage.getItem('serverConnected'));
-            socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
-            socket.emit("whaIsOwner", sessionStorage.getItem("serverConnected"));
-            socket.emit("loadCardsPlayed", sessionStorage.getItem("serverConnected"));
-            socket.emit("whatsMyEmotes", sessionStorage.getItem("name"));
+            socket.emit('WhatIsMyDeck', PLAYER_NAME, SERVER_ID);
+            socket.emit('join', SERVER_ID);
+            socket.emit('askGameInfo', SERVER_ID);
+            socket.emit("loadTheChat", SERVER_ID);
+            socket.emit("whaIsOwner", SERVER_ID);
+            socket.emit("loadCardsPlayed", SERVER_ID);
+            socket.emit("whatsMyEmotes",PLAYER_NAME);
 
         }
         return () => {
@@ -343,12 +346,12 @@ const JeuBataille = () => {
             socket.on("getInfo", (game) => {
                 let plist = [];
                 if (game.playerList.length <= 1) {
-                    sessionStorage.setItem('winners', sessionStorage.getItem('name'));
+                    sessionStorage.setItem('winners', PLAYER_NAME);
                     navigate("/winner");
                 }
                 game.playerList.forEach((player) => {
 
-                    if (player.name !== sessionStorage.getItem("name")) {
+                    if (player.name !==PLAYER_NAME) {
                         plist.push(player);
                     }
 
@@ -360,20 +363,20 @@ const JeuBataille = () => {
 
 
             socket.on("yourDeck", () => {
-                socket.emit("whatMyDeck", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"))
+                socket.emit("whatMyDeck", SERVER_ID,PLAYER_NAME)
             })
 
             socket.on("resolveRoundAsk", () => {
-                socket.emit("showAllAsk",sessionStorage.getItem("serverConnected"))
+                socket.emit("showAllAsk",SERVER_ID)
                 setTimeout(() => {
-                    socket.emit("resolveRound", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"));
+                    socket.emit("resolveRound", SERVER_ID,PLAYER_NAME);
                 }, "3000");
             });
 
             socket.on("resolveDrawAsk", () => {
-                socket.emit("showAllAsk",sessionStorage.getItem("serverConnected"))
+                socket.emit("showAllAsk",SERVER_ID)
                 setTimeout(() => {
-                    socket.emit("resolveDrawFirstPart", sessionStorage.getItem("serverConnected"));
+                    socket.emit("resolveDrawFirstPart", SERVER_ID);
                 }, "3000");
             });
 
@@ -383,7 +386,7 @@ const JeuBataille = () => {
 
             socket.on("resolveDrawAfter", () => {
                 setTimeout(() => {
-                    socket.emit("resolveDraw", sessionStorage.getItem("serverConnected"));
+                    socket.emit("resolveDraw", SERVER_ID);
                 }, '3000');
             });
 
@@ -624,7 +627,7 @@ const JeuBataille = () => {
                 </div>
             </div>
 
-            {owner === sessionStorage.getItem("name") &&
+            {owner ===PLAYER_NAME &&
                 <button className="bo-save-button" onClick={() => openSavePopUp()}>Sauvergarder</button>
             }
 

@@ -1385,7 +1385,7 @@ class BlackJack {
 
   findStatus() {
 
-    for(let player of this.playerList){
+    for(let player of this.playerLigst){
       if(player.bets.length === 0){
         return "bet";
       }

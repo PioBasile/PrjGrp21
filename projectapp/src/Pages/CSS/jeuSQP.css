@@ -450,3 +450,120 @@ img {
 .chat-container {
     transform: translateY(110%);
 }
+
+.sqp-emote-container {
+    position: fixed;
+    left: 4%;
+    bottom: 5vh;
+}
+
+.sqp-emote-button {
+    height: 6vh;
+    width: 6vw;
+    margin-left: 200%;
+    background-color: #1e4065;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sqp-emote-bubble {
+    left: 10%;
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 0; /* Alignez la bulle d'émoticônes tout à gauche */
+    width: 300px; /* Augmentez la largeur de la bulle d'émoticônes */
+    background-color: rgb(144, 129, 129);
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 1;
+    white-space: nowrap; /* Empêchez le texte de se retourner à la ligne */
+    overflow-x: auto; /* Ajoutez une barre de défilement horizontale si nécessaire */
+}
+
+.sqp-emote-list {
+    display: flex;
+    justify-content: flex-start;
+    overflow-x: auto; 
+}
+
+.sqp-emote {
+    margin: 5px;
+    cursor: pointer;
+}
+
+.sqp-emote video {
+    width: 60px;
+    height: 60px;
+    border-color: red;
+}
+
+.sqp-emote-enemy video{
+    margin-top: 2px;
+    width: 75px;
+    height: 75px;
+    border-color: red;
+}
+
+.sqp-enem-emote-top::after {
+    content: '';
+    position: absolute;
+    bottom: 115%; /* Positionner la queue en haut de la bulle */
+    left: 50%;
+    width: 0;
+    height: 0;
+    border: 15px solid transparent;
+    border-bottom-color: rgb(68, 102, 176); /* La couleur doit maintenant être appliquée à border-bottom-color */
+    border-top: 0;
+    margin-left: -15px;
+    margin-bottom: -15px;
+}
+
+
+.hide-emote {
+    display: none;
+}
+
+
+.sqp-player-emote-container {
+    right: 16.5%;
+    position: fixed;
+    bottom: 7%;
+    width: 150px; 
+    height: 100px; 
+    background-color: rgb(87, 123, 202);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    border-color: rgb(50, 71, 111);
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    align-content: center;
+}
+
+.sqp-player-emote {
+    margin: 5px;
+}
+
+.sqp-player-emote video {
+    width: 95px;
+    height: 95px;
+}
+
+/* Pseudo-élément pour la queue de la bulle */
+.sqp-player-emote-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border: 15px solid transparent;
+    border-top-color: rgb(87, 123, 202);
+    border-bottom: 0;
+    margin-left: -15px;
+    margin-bottom: -15px;
+}

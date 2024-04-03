@@ -139,6 +139,7 @@
     bottom: 1;
     position: fixed;
     left: 50%;
+    width: 50%;
     transform: translateX(-50%); /* Centre l'élément horizontalement */
     display: flex;
     justify-content: center;
@@ -150,8 +151,6 @@
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), rgb(60, 255, 0) 0px 0px 100px; /* Fusion des deux déclarations box-shadow en une seule */
 }
-
-
 
 
 .card:hover {
@@ -172,6 +171,12 @@
 }
 
 .sqp-card-holderNYT {
+    width: max-content;
+    bottom: 1;
+    position: fixed;
+    left: 50%;
+    width: 50%;
+    transform: translateX(-50%); /* Centre l'élément horizontalement */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -180,8 +185,7 @@
     max-height: 100%;
     border: 1px solid #ccc;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    box-shadow: rgb(255, 0, 0, 1) 0px 0px 100px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), rgb(213, 40, 40) 0px 0px 100px;
 }
 
 .notYourTurn-cards {

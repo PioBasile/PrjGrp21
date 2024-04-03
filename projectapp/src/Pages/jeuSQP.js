@@ -365,9 +365,7 @@ const SixQuiPrend = () => {
       });
 
       socket.on('timerDown', () => {
-
-
-
+        
         setSeconds(prevSeconds => {
           if (prevSeconds === 0 || !myTurn) {
             if (myTurn && !selected) {

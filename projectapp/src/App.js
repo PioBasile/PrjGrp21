@@ -99,7 +99,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/start" replace />} />
                 <Route path="/mb" element={<MilleBorne></MilleBorne>}/>
                 <Route path="/BrowserManager" element={<NewBrowserManager></NewBrowserManager>}/>
-                <Route path="/blackJack" element={<BlackJack></BlackJack>}/>
+                <Route path="/blackjack" element={<BlackJack></BlackJack>}/>
                 <Route path="/itemshop" element={<ItemShop></ItemShop>}/>
                 <Route path="/casino" element={<Casino></Casino>}/>
                 <Route path="/scoreboard" element={<Scoreboard></Scoreboard>}/>

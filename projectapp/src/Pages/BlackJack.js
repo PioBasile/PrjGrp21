@@ -145,7 +145,7 @@ const BlackJack = () => {
         );
     }
 
-    const handlePioche = () => {    
+    const handlePioche = () => {
         socket.emit("hit", sessionStorage.getItem("serverConnected"), MY_DECK);
     }
 
@@ -161,7 +161,7 @@ const BlackJack = () => {
 
 
     const handleDoubler = () => {
-        alert("doubler");
+        socket.emit("double", SERVER_ID, MY_DECK)
     }
 
     const handleRester = () => {
@@ -190,6 +190,16 @@ const BlackJack = () => {
         setDeckSelected(deckName);
     }
 
+    const divide = () => {
+        let montant = Math.floor(betAmount / 2);
+        setBetAmount(montant)
+    }
+
+    const timesTwo = () => {
+        let montant = betAmount * 2;
+        setBetAmount(montant)
+    }
+
 
 
     useEffect(() => {
@@ -203,8 +213,11 @@ const BlackJack = () => {
         }
         if (mounted && !failed) {
             socket.emit('join', SERVER_ID);
-            socket.emit("BJ-whatsMyDeck", SERVER_ID, NAME);
+
+
             socket.emit("BJ-allDeckInfo", SERVER_ID);
+
+
             socket.emit("BJ-whatMyMoney", NAME);
             socket.emit("whatDealerCards", SERVER_ID);
             socket.emit("BJ-whatMyTurn", SERVER_ID, NAME);
@@ -237,36 +250,38 @@ const BlackJack = () => {
 
             socket.on("dealerCards", (dealerCards) => {
                 if (dealerCards.length > 2) {
-                    setFirstPart(false)
-                    setTimeout(() => {
-
-                        let lastCard = dealerCards[dealerCards.length - 1];
-                        setDealerDeck([...dealerDeck, lastCard]);
-
-                    }, "2000")
-                }
-
-                else {
+                    setFirstPart(false);
+                    let index = 2; // Commencer à partir de l'index 2 pour ajouter les nouvelles cartes
+                    let intervalId = setInterval(() => {
+                        if (index < dealerCards.length) {
+                            setDealerDeck(prevDeck => [...prevDeck, dealerCards[index]]);
+                            index++;
+                        } else {
+                            clearInterval(intervalId); // Arrêter l'intervalle une fois que toutes les cartes ont été ajoutées
+                        }
+                    }, 2000);
+                } else {
                     console.log(dealerCards);
-                    setDealerDeck(dealerCards)
+                    setDealerDeck(dealerCards);
                 }
+            });
 
-            })
+
 
             socket.on("BJ-myTurn", (bool) => {
 
                 setMyTurn(bool);
             })
 
-            socket.on("gameSatus", (part) => {
+            socket.on("gameStatus", (part) => {
                 //bet or action
 
-                if(part === "bet") {
+                if (part === "bet") {
                     setMyTurn(false);
                     setCanBet(true);
                 }
 
-                else if(part === "action") {
+                else if (part === "action") {
                     setCanBet(false);
                 }
 
@@ -304,11 +319,11 @@ const BlackJack = () => {
             </div>
 
             <div className='dealerCard-container'>
-                DEALER ({calculPoints(firstPart ? dealerDeck : dealerDeck)})
+                DEALER ({!canBet ? calculPoints(dealerDeck) : "?"})
                 <div className='dealerCard'>
                     {dealerDeck.map((card, index) => (
                         <div className='card'>
-                            <img alt='r' src={getCardImage(card)} />
+                            <img src={!canBet ? getCardImage(card) : backCardsImageTest} className={"card"}></img>
                         </div>
                     ))}
                 </div>
@@ -319,14 +334,14 @@ const BlackJack = () => {
                 {allDecks.map((player, index) => (
                     <div onClick={() => handleSelectDeck(player.name)} index={index} className={`cardHolder-bj ${player.myTurn ? "myTurn" : ""} `} >
 
-                        <div> {player.name} ({calculPoints(player.deck)})</div>
+                        <div> {player.name} ({!canBet ? calculPoints(player.deck) : "?"})</div>
 
                         <div className={`deck-bj `}>
 
                             {/* remplacer le .map par la liste des cartes du joueurs */}
                             {player.deck.map((card, index) => (
                                 <div className={`card card${index + 1}`}>
-                                    <img src={getCardImage(card)} className={"card"}></img>
+                                    <img src={!canBet ? getCardImage(card) : backCardsImageTest} className={"card"}></img>
                                 </div>
 
 
@@ -368,18 +383,18 @@ const BlackJack = () => {
                         <div className='action-button-bj' onClick={myTurn && !canBet ? handleRester : null} >Rester</div>
                     </div>
                     <div >
-                        <div className='action-button-bj' onClick={myTurn  && !canBet ? handleDoubler : null}>Doubler</div>
-                        <div className='action-button-bj' onClick={myTurn  && !canBet ? handleSplitter : null}>Splitter</div>
+                        <div className='action-button-bj' onClick={myTurn && !canBet ? handleDoubler : null}>Doubler</div>
+                        <div className='action-button-bj' onClick={myTurn && !canBet ? handleSplitter : null}>Splitter</div>
                     </div>
                 </div>
                 <div className='bet-container'>
                     <div className='inputBet-container'>
                         <input type="text" className='input bj' value={betAmount} onChange={(e) => { setBetAmount(e.target.value); }}></input>
                         <div className='changeBetValue'>
-                            <div className='divise2'>1/2</div>
+                            <div className='divise2' onClick={() => divide()}>1/2</div>
                             <div className='slash'>|</div>
-                            <div className='times2'>2x</div>
-                        </div>
+                            <div className='times2' onClick={() => timesTwo()}>2x</div>
+                        </div> 
                     </div>
 
                     <div className='bet-giveup-container'>

@@ -1259,8 +1259,9 @@ class BlackJackPlayer extends Player {
   }
 
 }
-
-
+/////////////////////////////////////////////////////////////////////////
+///////////////////////////BLACKJACK////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 
 
 
@@ -1274,35 +1275,30 @@ class BlackJack {
     this.cartes = generateCartes();
     this.dealerCards = []
     this.chatContent = ["utilisez <global> pour parler a tout le monde"];
+    shuffle(this.cartes);
     this.distribuer();
     this.generateDealerCards();
 
   }
 
+
+
   distribuer() {
-    this.playerList.forEach((player, index) => {
+    this.playerList.forEach((player, _) => {
       for (let i = 0; i < 2; i++) {
-        let randomId = Math.floor(Math.random() * this.cartes.length)
-        let randomCard = this.cartes[randomId];
-        this.cartes.splice(randomId, 1);
-        player.deck.push(randomCard);
+        let card = this.cartes[i];
+        this.cartes.splice(i, 1);
+        player.deck.push(card);
       }
     })
   }
 
   generateDealerCards() {
 
-    let randomId = Math.floor(Math.random() * this.cartes.length)
-    let randomCard = this.cartes[randomId];
-    this.cartes.splice(randomId, 1);
-    this.dealerCards.push(randomCard);
+    let card = this.cartes[0];
+    this.cartes.splice(0, 1);
+    this.dealerCards.push(card);
 
-  }
-
-  removeCard(card) {
-
-    let icard = findCard(card, this.deck);
-    this.deck.splice(icard, 1);
   }
 
 
@@ -1348,6 +1344,8 @@ class BlackJack {
 
   }
 
+  
+
   dealerHit() {
     let randomId = Math.floor(Math.random() * this.cartes.length);
     let newCard = this.cartes[randomId]
@@ -1363,35 +1361,36 @@ class BlackJack {
 
     for (let carte of cartes) {
       if (carte.power >= 11 && carte.power <= 13) {
-        points += 10; // Les figures (Valet, Dame, Roi) valent 10 points
+        points += 10;
       }
       else if (carte.power === 1) {
-        points += 11; // Les As valent initialement 11 points
-        nombreAs++; // Compteur d'As
+        points += 11;
+        nombreAs++;
       }
       else {
-        points += carte.power; // Autres cartes valent leur valeur numérique
+        points += carte.power;
       }
     }
 
-    // Ajuster la valeur des As si nécessaire
     while (nombreAs > 0 && points > 21) {
-      points -= 10; // Si le total dépasse 21, convertir un As de 11 points en 1 point
-      nombreAs--; // Décrémenter le compteur d'As
+      points -= 10;
+      nombreAs--;
     }
 
     return points;
   }
 
-  findStatus() {
 
-    for(let player of this.playerLigst){
-      if(player.bets.length === 0){
+
+  findStatus() {
+    for (let player of this.playerList) {
+      if (player.bets.length === 0) {
         return "bet";
       }
     }
     return "action"
   }
+
 
   restartRound() {
     for (let player of this.playerList) {
@@ -1399,10 +1398,11 @@ class BlackJack {
       player.bets = [];
       player.myTurn = false;
     }
-    this.dealerCards = []
+    this.dealerCards = [];
+    this.cartes = shuffle(generateCartes());;
     this.playerList[this.playerList.length - 1].myTurn = true;
-    this.distribuer()
-    this.generateDealerCards()
+    this.distribuer();
+    this.generateDealerCards();
   }
 
 }

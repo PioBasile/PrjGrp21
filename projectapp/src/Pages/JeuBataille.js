@@ -26,7 +26,6 @@ const JeuBataille = () => {
     const [playerNameEmote, setPlayerNameEmote] = useState("");
     const [EmoteToShow, setEmoteToShow] = useState("");
     const emoteRef = useRef(null); // Référence à la div de l'emote
-    const [myEmotes, setMyEmotes] = useState([]);
 
     const [saveName, setSaveName] = useState("");
     const [isSave, setIsSave] = useState(false);
@@ -140,7 +139,7 @@ const JeuBataille = () => {
         else {
             const chemin = require(`./CSS/pics/PNG-cards-1.3/ace_of_${translateSymbol}.png`);
             return chemin;
-        }
+        } 
     }
 
     //----------------------CHAT---------------------
@@ -296,7 +295,7 @@ const JeuBataille = () => {
 
 
             socket.emit('WhatIsMyDeck', PLAYER_NAME, SERVER_ID);
-            socket.emit('join', SERVER_ID);
+            socket.emit('join', SERVER_ID); 
             socket.emit('askGameInfo', SERVER_ID);
             socket.emit("loadTheChat", SERVER_ID);
             socket.emit("whaIsOwner", SERVER_ID);
@@ -308,7 +307,7 @@ const JeuBataille = () => {
             mounted = false;
         }
 
-    }, [navigate]);
+    }, [navigate , PLAYER_NAME, SERVER_ID]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -327,7 +326,7 @@ const JeuBataille = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [showEmotes]);
+    }, [showEmotes , SERVER_ID, emoteBubbleRef]);
 
     useEffect(() => {
 
@@ -382,7 +381,7 @@ const JeuBataille = () => {
             socket.on("resolveDrawAsk", () => {
                 socket.emit("showAllAsk",SERVER_ID)
                 setTimeout(() => {
-                    socket.emit("resolveDrawFirstPart", SERVER_ID);
+                    socket.emit("resolveDrawFirstPart", SERVER_ID,PLAYER_NAME);
                 }, "3000");
             });
 
@@ -481,9 +480,9 @@ const JeuBataille = () => {
             socket.off("fin");
             socket.on("showAll");
         };
-    }, []);
+    }, [PLAYER_NAME, SERVER_ID, videos, emoteBubbleRef, showEmotes,navigate]);
 
-    const handleSaveNameChange = (e) => {
+    const handleSaveNameChange = (e) => { 
         const inputValue = e.target.value;
         const filteredValue = inputValue.replace(/[^a-zA-Z0-9]/g, '');
         setSaveName(filteredValue);

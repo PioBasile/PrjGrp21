@@ -78,12 +78,6 @@ const MilleBorne = () => {
 
     ]);
 
-    const handleVideoEnd = () => {
-        if (emoteRef.current) {
-            emoteRef.current.style.display = 'none';
-            setPlayerNameEmote("")
-        }
-    };
 
     function playEmote(emoteUrl) {
         socket.emit('sendEmoteToLobby', { emote: emoteUrl.id, playerName: sessionStorage.getItem('name'), serverId: sessionStorage.getItem('serverConnected') });
@@ -93,13 +87,7 @@ const MilleBorne = () => {
         setShowEmotes(!showEmotes);
     };
 
-    function showEnemyEmote(opponentName) {
-        if (opponentName === playerNameEmote) {
-            return true;
-        }
-        return false;
-    }
-
+   
 
     const getCard = (card) => {
         return cartes.indexOf(card);
@@ -147,10 +135,10 @@ const MilleBorne = () => {
     useEffect(() => {
 
         let mounted = true;
-        let failed = false;
+        let failed = false; 
 
         if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
-            navigate("/login-signup");
+            navigate("/login-signup" );
             failed = true;
         }
         if (mounted && !failed) {
@@ -272,7 +260,7 @@ const MilleBorne = () => {
             socket.off("yourEmotes");
             socket.off("endEmoteToAll");
         }
-    }, [navigate, state, test, isLimited]);
+    }, [navigate, state, test, isLimited, videos, playerNameEmote, EmoteToShow, showEmotes, owner, color]);
 
 
     const Popup = () => {

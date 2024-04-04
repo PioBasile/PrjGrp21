@@ -1,5 +1,4 @@
-const { fireEvent } = require("@testing-library/react");
-const { useFetcher } = require("react-router-dom");
+
 const { login, changeDataBase, get_user_info, register } = require("./D_db.js");
 
 const makecookie = (length) => {

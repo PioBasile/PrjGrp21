@@ -491,7 +491,7 @@ io.on('connection', (socket) => {
   socket.on("sendEmoteToLobby", (data) => {
     // game = findGame(data.serverId, BatailGames);
     // emote = data.emote;
-
+    console.log(io.sockets.adapter.rooms.get(data.serverId));
     io.to(data.serverId).emit("emote", data.emote, data.playerName);
   })
 

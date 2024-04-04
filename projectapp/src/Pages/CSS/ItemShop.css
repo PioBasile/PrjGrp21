@@ -92,6 +92,7 @@
 }
 
 .is-buy-button {
+    cursor: pointer;
     padding: 8px 16px; /* Ajustement de la taille du bouton */
     background-color: #007bff;
     color: white;

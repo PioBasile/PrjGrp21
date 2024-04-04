@@ -77,12 +77,12 @@ const SixQuiPrend = () => {
     { id: 22, videoUrl: require("./CSS/emotes/jumpascare.mp4") },
 ]);
 
-  const handleVideoEnd = () => {
-    if (emoteRef.current) {
-      emoteRef.current.hidden = true; // Cache la div en ajustant l'attribut `hidden`
-    }
-
-  };
+const handleVideoEnd = () => {
+  if (emoteRef.current) {
+      emoteRef.current.style.display = 'none';
+      setPlayerNameEmote("")
+  }
+};
 
   function playEmote(emoteUrl) {
     socket.emit('sendEmoteToLobby', { emote: emoteUrl.id, playerName: sessionStorage.getItem('name'), serverId: sessionStorage.getItem('serverConnected') });
@@ -258,7 +258,7 @@ const SixQuiPrend = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
         if (emoteBubbleRef.current && !emoteBubbleRef.current.contains(event.target)) {
-            socket.emit("endEmote", SERVER_ID);
+            // socket.emit("endEmote", SERVER_ID);
             setShowEmotes(false);
         }
     };
@@ -381,39 +381,23 @@ const SixQuiPrend = () => {
         });
       });
 
-      socket.on("yourEmotes", (emotesList) => {
-        if(emotesList != null){
-            const videoFilter = videos.filter(video => {
-                return emotesList.some(video2 => video2 === video.id);
-                
-            });
-            setVideos(videoFilter);
+
+      socket.on("emote", (emote, opponentName) => {
+
+        let video = 0;
+        videos.forEach((videos) => {
+
+            if (videos.id === emote) {
+                video = videos;
+            }
+
+        });
+        if (video === 0) {
+            return;
         }
-        else{
-            setVideos([]);
-        }
-        // setMyEmotes(listOfEmote);
-    })
 
-
-    socket.on("emote", (emote, opponentName) => {
-
-      let video = 0;
-      videos.forEach((videos) => {
-
-          if (videos.id === emote) {
-              video = videos;
-          }
-
-      });
-      if (video === 0) {
-          return;
-      }
-
-      console.log(video, opponentName);
-
-      setEmoteToShow(video.videoUrl);
-      setPlayerNameEmote(opponentName);
+        setEmoteToShow(video.videoUrl);
+        setPlayerNameEmote(opponentName);
     });
 
     socket.on("endEmoteToAll", () => {
@@ -431,7 +415,6 @@ const SixQuiPrend = () => {
       else{
           setVideos([]);
       }
-      // setMyEmotes(listOfEmote);
     })
 
     socket.on("getMessage", (msgList) => {
@@ -588,15 +571,6 @@ const SixQuiPrend = () => {
             <div key={index} className={`opponent-six ${playerPlaying !== opponent.nom ? "" : "hisTurn"}`}>
               <strong>{opponent.nom}</strong> <br />
               Cartes: {opponent.deck} <br />
-            
-              {showEnemyEmote(opponent.name) && (
-                <div className='sqp-player-emote-container' ref={emoteRef}>
-                  <div className="sqp-player-emote">
-                    <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
-                  </div>
-                  {opponent.name}
-                </div>
-              )}
             </div>
           ))}
         </div>
@@ -639,7 +613,7 @@ const SixQuiPrend = () => {
                         <div className="sqp-emote-list">
                             {videos.map((emote, index) => (
                                 <div key={index} className="sqp-emote" onClick={() => playEmote(emote)}>
-                                    <video src={emote.videoUrl} />
+                                    <video src={emote.videoUrl}  />
                                 </div>
                             ))}
                         </div>
@@ -647,14 +621,18 @@ const SixQuiPrend = () => {
                 )}
           </div>
 
-          {showEnemyEmote(sessionStorage.getItem("name")) && (
-                <div className='sqp-player-emote-container' ref={emoteRef}>
-                    <div className="sqp-player-emote" >
-                        <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
-                    </div>
-                    {sessionStorage.getItem("name")}
+          <div className="sqp-emote-display-container">
+            <h2 className="sqp-emote-display-title">Dernière Emote Jouée est de </h2>
+            <div className='sqp-player-emote-container' ref={emoteRef}>
+                <div className="sqp-emoteplayer-name">{playerNameEmote} :</div>
+                <div className="sqp-player-emote">
+                    <video src={EmoteToShow} autoPlay />
                 </div>
-          )}
+            </div>
+          </div>
+
+
+    
 
 
         <div className='sqp-timer'>

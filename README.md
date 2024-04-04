@@ -1,8 +1,35 @@
 # **Projet Programmation - Groupe 21**
 
-Ce README fournit des instructions d'installation et d'utilisation pour le projet "Projet Programmation" développé par le groupe 21. 
+## Description du Projet
 
-## Premier Installation
+Ce projet a été conçu et développé en réponse à la demande de nos enseignants. Il inclut les caractéristiques et fonctionnalités suivantes :
+
+### Jeux Disponibles
+
+- **Bataille Ouverte**
+- **Six Qui Prend**
+- **Jeu au choix** : Mille Borne
+
+### Fonctionnalités
+
+- **Système de Chat et Sauvegarde** : Permet aux joueurs de communiquer entre eux et de sauvegarder leur progression dans le jeu.
+- **Multijoueur dans la Même Room** : Les joueurs peuvent se réunir et jouer dans la même salle virtuelle.
+- **Scoreboard** : Un tableau des scores pour suivre les performances des joueurs.
+
+## Améliorations et Ajouts
+
+Afin d'enrichir l'expérience utilisateur, notre équipe a décidé d'ajouter de nouvelles fonctionnalités au projet initial :
+
+- **Système d'Argent Virtuel** : Les joueurs peuvent maintenant gagner ou perdre de l'argent virtuel à travers les différents jeux.
+- **Roulette** : Une nouvelle manière de jouer avec l'argent virtuel, offrant aux joueurs la possibilité de multiplier leurs gains ou de tout perdre.
+- **Boutique d'Items** : Utilisez l'argent virtuel gagné pour acheter des emotes uniques qui peuvent être utilisées dans les jeux et sont visibles par les autres joueurs.
+- **Blackjack** : Nous avons ajouté un quatrième jeu, le blackjack, pour offrir encore plus de diversité dans les options de jeu disponibles. Et une autre façon de depenser son argent
+
+## Installation
+
+Cette partie du README fournit des instructions d'installation et d'utilisation pour le projet. 
+
+### Premier Installation
 Pour installer la premier fois le projet, suivez ces étapes :
 
 1. Clonez ce dépôt sur votre machine locale :
@@ -21,7 +48,7 @@ cd BUILD\(\ FICHIER\ D\'INSTALLATION\ RAPIDE\ \)
 ```
 
 
-## Pour Executer Sous Windows
+### Pour Executer Sous Windows
 Apres la premier installation,
 pour les utilisateurs de Windows, procédez comme suit : <br>
 Accordez l'accès au fichier "WindowsInstall" en cliquant dessus avec le bouton droit de la souris, puis en sélectionnant "Exécuter en tant qu'administrateur".
@@ -30,7 +57,7 @@ Exécutez le fichier "WindowsInstall".
 
 Répétez les mêmes étapes pour le fichier "WindowsQuickStart", qui va lancer le projet + vscode + 2 terminal, un pour le serveur et le second pour react.
 
-## Pour Executer Sous Linux
+### Pour Executer Sous Linux
 Pour les utilisateurs de Linux, suivez les étapes ci-dessous :
 
 Accordez l'accès au fichier "LinuxInstall" en utilisant la commande chmod :

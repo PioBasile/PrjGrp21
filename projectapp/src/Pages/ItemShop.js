@@ -36,6 +36,12 @@ const ItemShop = () => {
     const gatorade = require("./CSS/emotes/gatorade.mp4");
     const dj = require("./CSS/emotes/dj.mp4");
     const jumpascare = require("./CSS/emotes/jumpascare.mp4");
+    const godofwar = require("./CSS/emotes/godofwar.mp4");
+    const honoredone = require("./CSS/emotes/honoredone.mp4");
+    const imfinished = require("./CSS/emotes/imfinished.mp4");
+    const navire = require("./CSS/emotes/navire.mp4");
+    const waaa = require("./CSS/emotes/waaaa.mp4");
+    const sunshine = require("./CSS/emotes/uaremysunshine.mp4");
 
 
     const gifs = [
@@ -61,6 +67,13 @@ const ItemShop = () => {
         { id: 20, name: 'gatorade   ', price: 100, location: gatorade },
         { id: 21, name: 'dj         ', price: 100, location: dj },
         { id: 22, name: 'jumpascare ', price: 100, location: jumpascare },
+        { id: 23, name: 'godofwar   ', price: 100, location: godofwar },
+        { id: 24, name: 'honoredone ', price: 100, location: honoredone },
+        { id: 25, name: 'imfinished ', price: 100, location: imfinished },
+        { id: 26, name: 'navire     ', price: 100, location: navire },
+        { id: 27, name: 'waaa       ', price: 100, location: waaa },
+        { id: 28, name: 'sunshine   ', price: 100, location: sunshine},
+
     ]
 
     const handleVideoClick = (event) => {
@@ -180,7 +193,7 @@ const ItemShop = () => {
                                 <video src={gif.location} alt={gif.name} onClick={handleVideoClick} onEnded={handleVideoEnd} />
                             </div>
                             <div className="separator-line"></div>
-                            <button className={!canBuy(gif.id) ? `is-buy-button` : 'bought'} onClick={() => buyItem(gif)}> {!canBuy(gif.id) ? `Acheter` : 'V'} </button>
+                            <button className={!canBuy(gif.id) ? `is-buy-button` : 'bought'} onClick={() => buyItem(gif)}> {!canBuy(gif.id) ? `Acheter` : '✓'} </button>
                         </div>
 
                     </div>

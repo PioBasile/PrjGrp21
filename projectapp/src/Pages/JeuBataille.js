@@ -61,6 +61,12 @@ const JeuBataille = () => {
         { id: 20, videoUrl: require("./CSS/emotes/gatorade.mp4") },
         { id: 21, videoUrl: require("./CSS/emotes/dj.mp4") },
         { id: 22, videoUrl: require("./CSS/emotes/jumpascare.mp4") },
+        { id: 23, videoUrl: require("./CSS/emotes/godofwar.mp4") },
+        { id: 24, videoUrl: require("./CSS/emotes/honoredone.mp4") },
+        { id: 25, videoUrl: require("./CSS/emotes/imfinished.mp4") },
+        { id: 26, videoUrl: require("./CSS/emotes/navire.mp4") },
+        { id: 27, videoUrl: require("./CSS/emotes/waaaa.mp4") },
+        { id: 28, videoUrl: require("./CSS/emotes/uaremysunshine.mp4") },
     ]);
 
     const handleVideoEnd = () => {

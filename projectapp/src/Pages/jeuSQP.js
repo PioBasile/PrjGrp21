@@ -33,6 +33,7 @@ const SixQuiPrend = () => {
   const [score, setScore] = useState(0);
   const [opponents, setOpponents] = useState([]);
   const [visibleCard, setVisibleCard] = useState("");
+  const SERVER_ID = sessionStorage.getItem("serverConnected")
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -48,61 +49,46 @@ const SixQuiPrend = () => {
   const [EmoteToShow, setEmoteToShow] = useState("");
   const emoteRef = useRef(null); // Référence à la div de l'emote
   const [showEmotes, setShowEmotes] = useState(false);
+  const emoteBubbleRef = useRef(null);
 
-  const toyota = require("./CSS/emotes/toyota.mp4");
-  const BOING = require("./CSS/emotes/BOING.mp4");
-  const Hampter = require("./CSS/emotes/hampter.mp4");
-  const MissInput = require("./CSS/emotes/MissInput.mp4");
-  const PutinMewing = require("./CSS/emotes/PutinMEWING.mp4");
-  const KillurSelf = require("./CSS/emotes/KillUrSelf.mp4");
-  const horse = require("./CSS/emotes/horse.mp4");
-  const bookies = require("./CSS/emotes/bookies.mp4");
-  const holy = require("./CSS/emotes/holy.mp4");
-  const freddy = require("./CSS/emotes/freddy.mp4");
-  const NuhUh = require("./CSS/emotes/NuhUh.mp4");
-  const hellnaw = require("./CSS/emotes/hellnaw.mp4");
-  const hogRider = require("./CSS/emotes/hogRider.mp4");
-  const josh = require("./CSS/emotes/josh.mp4");
-  const quandale = require("./CSS/emotes/quandale.mp4");
-  const mao = require("./CSS/emotes/mao.mp4");
-  const bible = require("./CSS/emotes/bible.mp4");
-  const spiderman = require("./CSS/emotes/spiderman.mp4");
-  const goku = require("./CSS/emotes/goku.mp4");
-  const gatorade = require("./CSS/emotes/gatorade.mp4");
-  const dj = require("./CSS/emotes/dj.mp4");
-  const jumpascare = require("./CSS/emotes/jumpascare.mp4");
 
-  const videos = [
-    { id: 1, videoUrl: toyota },
-    { id: 2, videoUrl: BOING },
-    { id: 3, videoUrl: Hampter },
-    { id: 4, videoUrl: MissInput },
-    { id: 5, videoUrl: PutinMewing },
-    { id: 6, videoUrl: KillurSelf },
-    { id: 7, videoUrl: horse },
-    { id: 8, videoUrl: bookies },
-    { id: 9, videoUrl: holy },
-    { id: 10, videoUrl: freddy },
-    { id: 11, videoUrl: NuhUh },
-    { id: 12, videoUrl: hellnaw },
-    { id: 13, videoUrl: hogRider },
-    { id: 14, videoUrl: josh },
-    { id: 15, videoUrl: quandale },
-    { id: 16, videoUrl: mao },
-    { id: 17, videoUrl: bible },
-    { id: 18, videoUrl: spiderman },
-    { id: 19, videoUrl: goku },
-    { id: 20, videoUrl: gatorade },
-    { id: 21, videoUrl: dj },
-    { id: 22, videoUrl: jumpascare },
-  ];
+  const [videos, setVideos] = useState([
+    { id: 1, videoUrl: require("./CSS/emotes/toyota.mp4") },
+    { id: 2, videoUrl: require("./CSS/emotes/BOING.mp4") },
+    { id: 3, videoUrl: require("./CSS/emotes/hampter.mp4") },
+    { id: 4, videoUrl: require("./CSS/emotes/MissInput.mp4") },
+    { id: 5, videoUrl: require("./CSS/emotes/PutinMEWING.mp4") },
+    { id: 6, videoUrl: require("./CSS/emotes/KillUrSelf.mp4") },
+    { id: 7, videoUrl: require("./CSS/emotes/horse.mp4") },
+    { id: 8, videoUrl: require("./CSS/emotes/holy.mp4") },
+    { id: 9, videoUrl: require("./CSS/emotes/holy.mp4") },
+    { id: 10, videoUrl: require("./CSS/emotes/freddy.mp4") },
+    { id: 11, videoUrl: require("./CSS/emotes/NuhUh.mp4") },
+    { id: 12, videoUrl: require("./CSS/emotes/hellnaw.mp4") },
+    { id: 13, videoUrl: require("./CSS/emotes/hogRider.mp4") },
+    { id: 14, videoUrl: require("./CSS/emotes/josh.mp4") },
+    { id: 15, videoUrl: require("./CSS/emotes/quandale.mp4") },
+    { id: 16, videoUrl: require("./CSS/emotes/mao.mp4") },
+    { id: 17, videoUrl: require("./CSS/emotes/bible.mp4") },
+    { id: 18, videoUrl: require("./CSS/emotes/spiderman.mp4") },
+    { id: 19, videoUrl: require("./CSS/emotes/goku.mp4") },
+    { id: 20, videoUrl: require("./CSS/emotes/gatorade.mp4") },
+    { id: 21, videoUrl: require("./CSS/emotes/dj.mp4") },
+    { id: 22, videoUrl: require("./CSS/emotes/jumpascare.mp4") },
+    { id: 23, videoUrl: require("./CSS/emotes/godofwar.mp4") },
+    { id: 24, videoUrl: require("./CSS/emotes/honoredone.mp4") },
+    { id: 25, videoUrl: require("./CSS/emotes/imfinished.mp4") },
+    { id: 26, videoUrl: require("./CSS/emotes/navire.mp4") },
+    { id: 27, videoUrl: require("./CSS/emotes/waaaa.mp4") },
+    { id: 28, videoUrl: require("./CSS/emotes/uaremysunshine.mp4") },
+]);
 
-  const handleVideoEnd = () => {
-    if (emoteRef.current) {
-      emoteRef.current.hidden = true; // Cache la div en ajustant l'attribut `hidden`
-    }
-
-  };
+const handleVideoEnd = () => {
+  if (emoteRef.current) {
+      emoteRef.current.style.display = 'none';
+      setPlayerNameEmote("")
+  }
+};
 
   function playEmote(emoteUrl) {
     socket.emit('sendEmoteToLobby', { emote: emoteUrl.id, playerName: sessionStorage.getItem('name'), serverId: sessionStorage.getItem('serverConnected') });
@@ -266,12 +252,33 @@ const SixQuiPrend = () => {
       socket.emit("co", sessionStorage.getItem("name"), sessionStorage.getItem("connection_cookie"))
       socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
       socket.emit("whaIsOwner", sessionStorage.getItem("serverConnected"));
+      socket.emit("whatsMyEmotes", sessionStorage.getItem("name"));
+
     }
 
     return () => {
       mounted = false;
     }
   }, [navigate])
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+        if (emoteBubbleRef.current && !emoteBubbleRef.current.contains(event.target)) {
+            // socket.emit("endEmote", SERVER_ID);
+            setShowEmotes(false);
+        }
+    };
+
+    if (showEmotes) {
+        document.addEventListener('mousedown', handleClickOutside);
+    } else {
+        document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+    };
+}, [showEmotes]);
 
 
   useEffect(() => {
@@ -365,9 +372,7 @@ const SixQuiPrend = () => {
       });
 
       socket.on('timerDown', () => {
-
-        console.log(seconds);
-
+        
         setSeconds(prevSeconds => {
           if (prevSeconds === 0 || !myTurn) {
             if (myTurn && !selected) {
@@ -388,24 +393,39 @@ const SixQuiPrend = () => {
         let video = 0;
         videos.forEach((videos) => {
 
-          if (videos.id === emote) {
-            video = videos;
-          }
+            if (videos.id === emote) {
+                video = videos;
+            }
 
         });
         if (video === 0) {
-          return;
+            return;
         }
-
-
 
         setEmoteToShow(video.videoUrl);
         setPlayerNameEmote(opponentName);
-      });
+    });
 
-      socket.on("getMessage", (msgList) => {
+    socket.on("endEmoteToAll", () => {
+      setPlayerNameEmote("");
+    })
+
+    socket.on("yourEmotes", (emotesList) => {
+      if(emotesList != null){
+          const videoFilter = videos.filter(video => {
+              return emotesList.some(video2 => video2 === video.id);
+              
+          });
+          setVideos(videoFilter);
+      }
+      else{
+          setVideos([]);
+      }
+    })
+
+    socket.on("getMessage", (msgList) => {
         setMessages(msgList);
-      })
+    })
 
       socket.on("playerWhosPlaying", (playerName) => {
 
@@ -430,6 +450,7 @@ const SixQuiPrend = () => {
       socket.off('nextPlayer');
       socket.off("getMessage")
       socket.off("emote");
+      socket.off("endEmoteToAll");
     };
   }, [isVisible, navigate, myTurn, selected]);
 
@@ -546,14 +567,7 @@ const SixQuiPrend = () => {
         </div>
       )}
 
-      {showEnemyEmote(sessionStorage.getItem("name")) && (
-        <div className='bo-player-emote-container'>
-          <div className="bo-player-emote" >
-            <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
-          </div>
-        </div>
-      )}
-
+    
       <div className='sqp-upperBandeau'>
 
         <YourComponent></YourComponent>
@@ -597,6 +611,35 @@ const SixQuiPrend = () => {
         
       <div className='sqp-exit-button' onClick={leave}> QUITTER</div>
         {owner === sessionStorage.getItem("name") && <div className='sqp-save-button' onClick={() => openSavePopUp()}> Sauvergarder</div>}
+        
+        <div className="sqp-emote-container">
+                <button className="sqp-emote-button" onClick={toggleEmotes}>Emotes</button>
+                {showEmotes && (
+                    <div className="sqp-emote-bubble" ref={emoteBubbleRef}>
+                        <div className="sqp-emote-list">
+                            {videos.map((emote, index) => (
+                                <div key={index} className="sqp-emote" onClick={() => playEmote(emote)}>
+                                    <video src={emote.videoUrl}  />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+          </div>
+
+          <div className="sqp-emote-display-container">
+            <h2 className="sqp-emote-display-title">Dernière Emote Jouée est de </h2>
+            <div className='sqp-player-emote-container' ref={emoteRef}>
+                <div className="sqp-emoteplayer-name">{playerNameEmote} :</div>
+                <div className="sqp-player-emote">
+                    <video src={EmoteToShow} autoPlay />
+                </div>
+            </div>
+          </div>
+
+
+    
+
 
         <div className='sqp-timer'>
           <p>Encore {seconds}s </p>

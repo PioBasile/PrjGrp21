@@ -1,3 +1,5 @@
+const { fireEvent } = require("@testing-library/react");
+const { useFetcher } = require("react-router-dom");
 const { login, changeDataBase, get_user_info, register } = require("./D_db.js");
 
 const makecookie = (length) => {
@@ -378,7 +380,6 @@ class Player {
     this.deck = [];
     this.selected = null;
     this.cookie = cookie;
-
 
     // pour le 6 qui prend 
     this.score = 0;
@@ -1211,6 +1212,292 @@ class MilleBorne {
 }
 
 
+
+
+class BlackJackPlayer extends Player {
+  constructor(username, cookie) {
+    super(username, cookie);
+
+    this.myTurn = false;
+    this.bets = [];
+    this.splittedDeck = [];
+    this.hasSplitted = false;
+    this.win = false;
+  }
+
+  newBet(amountBet, deckName) {
+    let existingBetIndex = this.bets.findIndex(bet => bet[deckName]);
+    if (existingBetIndex !== -1) {
+      this.bets[existingBetIndex][deckName] += amountBet;
+    } else {
+      let newBet = {};
+      newBet[deckName] = amountBet;
+      this.bets.push(newBet);
+      console.log("newbet WTF")
+      console.log(newBet);
+    }
+  }
+
+  sumPoint() {
+    let points = 0;
+    let nombreAs = 0;
+
+    for (let carte of this.deck) {
+      if (carte.power >= 11 && carte.power <= 13) {
+        points += 10;
+      }
+      else if (carte.power === 14) {
+        points += 11;
+        nombreAs++;
+      }
+      else {
+        points += carte.power;
+      }
+    }
+
+    while (nombreAs > 0 && points > 21) {
+      points -= 10;
+      nombreAs--;
+    }
+
+    return points;
+  }
+
+  split() {
+    let cardSplitted = this.deck[1]
+    this.deck.splice(1, 1);
+    this.splittedDeck.push(cardSplitted);
+    this.hasSplitted = true;
+    this.onSplittedDeck = false;
+  }
+}
+
+
+/////////////////////////////////////////////////////////////////////////
+///////////////////////////BLACKJACK////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+
+
+class BlackJack {
+
+  constructor(idPart, maxJ, Owner, playerL) {
+    this.identifiant_partie = idPart;
+    this.maxJoueurs = maxJ;
+    this.owner = Owner;
+    this.playerList = playerL;
+    this.cartes = generateCartes();
+    this.dealerCards = []
+    this.chatContent = ["utilisez <global> pour parler a tout le monde"];
+    shuffle(this.cartes);
+    this.distribuer();
+    this.generateDealerCards();
+
+  }
+
+
+
+  distribuer() {
+    this.playerList.forEach((player, _) => {
+      for (let i = 0; i < 2; i++) {
+        let card = this.cartes[i];
+        this.cartes.splice(i, 1);
+        player.deck.push(card);
+      }
+    })
+  }
+
+  generateDealerCards() {
+
+    let card = this.cartes[0];
+    this.cartes.splice(0, 1);
+    this.dealerCards.push(card);
+
+  }
+
+
+  nextPlayer() {
+
+    let list = this.playerList;
+
+    for (let index = 0; index < list.length; index++) {
+      const player = list[index];
+
+      if (player.myTurn) {
+        if (index !== list.length - 1) {
+          list[index + 1].myTurn = true;
+          list[index].myTurn = false;
+          return true;
+        }
+        else {
+          list[list.length - 1].myTurn = false
+          return false;
+        }
+      }
+    }
+    return false;
+  }
+
+  anyonePlayed() {
+    for (let i = 0; i < this.playerList.length; i++) {
+      if (this.playerList[i].myTurn) {
+        return false
+      }
+    }
+    return true;
+  }
+
+
+  hit(playerName) {
+
+    let player = findPlayer(playerName, this.playerList);
+    let newCard = this.cartes[0]
+    this.cartes.splice(0, 1);
+    if (!player.onSplittedDeck) {
+      player.deck.push(newCard);
+    }
+    else {
+      player.splittedDeck.push(newCard);
+    }
+
+  }
+
+
+
+  dealerHit() {
+    let newCard = this.cartes[0]
+    this.cartes.splice(0, 1);
+    this.dealerCards.push(newCard);
+  }
+
+
+  sumPoint() {
+    let points = 0;
+    let nombreAs = 0;
+    for (let carte of this.dealerCards) {
+
+      if (carte.power >= 11 && carte.power <= 13) {
+        points += 10;
+      }
+      else if (carte.power === 14) {
+        points += 11;
+        nombreAs++;
+      }
+      else {
+        points += carte.power;
+      }
+    }
+
+    while (nombreAs > 0 && points > 21) {
+      points -= 10;
+      nombreAs--;
+    }
+
+    return points;
+  }
+
+
+
+  findStatus() {
+    for (let player of this.playerList) {
+      if (player.bets.length === 0) {
+        return "bet";
+      }
+    }
+    return "action"
+  }
+
+
+  restartRound() {
+    for (let player of this.playerList) {
+      player.deck = [];
+      player.bets = [];
+      player.myTurn = false;
+      player.splittedDeck = [];
+    }
+    this.dealerCards = [];
+    this.cartes = shuffle(generateCartes());
+    this.playerList[0].myTurn = true;
+    this.distribuer();
+    this.generateDealerCards();
+  }
+
+
+  findWinner(){
+    let dealerPoints = this.sumPoint();
+    let winnerList = []
+    let notWinnerNotLooser = []
+    if(dealerPoints > 21){
+      for(let player of this.playerList){
+        player.win = true;
+        winnerList.push(player)
+      }
+      return winnerList;
+    }
+
+    for(let player  of this.playerList){
+      let playerPoints = player.sumPoint()
+
+      if(playerPoints <= 21 && playerPoints > dealerPoints){
+        player.win = true
+        winnerList.push(player);
+
+      }
+      else if(playerPoints == dealerPoints){
+        notWinnerNotLooser.push(player);
+      }
+      else {
+        player.win = false;
+      }
+    }
+    return {winners: winnerList, notWinNotLoose: notWinnerNotLooser};
+  }
+
+  calculWin(player, amount){
+    if(player.win){
+      if(player.deck.length == 2 && player.sumPoint() == 21){
+        return amount * 2.5
+      }
+
+      else {
+        return amount * 2
+      }
+    }
+    else return 0
+  } 
+
+  findAllWinBet(player) {
+    let winBets = 0
+    for(let playerIt of this.playerList){
+      for(let bet of playerIt.bets){
+        if(bet.hasOwnProperty(player.name)){
+          winBets += this.calculWin(player,bet[player.name])
+        }
+      }
+    }
+
+    return winBets;
+  }
+
+
+  findWinnerBet(){
+    let winnerList = this.findWinner();
+    let betsWin = []
+    for(let player of this.playerList){
+      for(let bet of player.bets){
+        Object.entries(bet).map(([nom, betAmount]) => {
+          let better = findPlayer(nom, this.playerList);
+          if(winnerList.includes(better)){
+            betsWin.push(bet);
+          }
+        })
+      }
+    }
+    return betsWin;
+  }
+}
+
+
 function getOpponent(plist, current_player) {
   let opponentList = [];
   plist.forEach((player, _) => {
@@ -1246,5 +1533,7 @@ module.exports = {
   getOpponent,
   State,
   GameState,
-  SavedLobby
+  SavedLobby,
+  BlackJack,
+  BlackJackPlayer
 }

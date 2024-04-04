@@ -46,29 +46,6 @@ const MilleBorne = () => {
     const [showEmotes, setShowEmotes] = useState(false);
     const [owner, setOwner] = useState("");
 
-    const toyota = require("./CSS/emotes/toyota.mp4");
-    const BOING = require("./CSS/emotes/BOING.mp4");
-    const Hampter = require("./CSS/emotes/hampter.mp4");
-    const MissInput = require("./CSS/emotes/MissInput.mp4");
-    const PutinMewing = require("./CSS/emotes/PutinMEWING.mp4");
-    const KillurSelf = require("./CSS/emotes/KillUrSelf.mp4");
-    const horse = require("./CSS/emotes/horse.mp4");
-    const bookies = require("./CSS/emotes/bookies.mp4");
-    const holy = require("./CSS/emotes/holy.mp4");
-    const freddy = require("./CSS/emotes/freddy.mp4");
-    const NuhUh = require("./CSS/emotes/NuhUh.mp4");
-    const hellnaw = require("./CSS/emotes/hellnaw.mp4");
-    const hogRider = require("./CSS/emotes/hogRider.mp4");
-    const josh = require("./CSS/emotes/josh.mp4");
-    const quandale = require("./CSS/emotes/quandale.mp4");
-    const mao = require("./CSS/emotes/mao.mp4");
-    const bible = require("./CSS/emotes/bible.mp4");
-    const spiderman = require("./CSS/emotes/spiderman.mp4");
-    const goku = require("./CSS/emotes/goku.mp4");
-    const gatorade = require("./CSS/emotes/gatorade.mp4");
-    const dj = require("./CSS/emotes/dj.mp4");
-    const jumpascare = require("./CSS/emotes/jumpascare.mp4");
-
     const [videos, setVideos] = useState([
         { id: 1, videoUrl: require("./CSS/emotes/toyota.mp4") },
         { id: 2, videoUrl: require("./CSS/emotes/BOING.mp4") },
@@ -92,6 +69,13 @@ const MilleBorne = () => {
         { id: 20, videoUrl: require("./CSS/emotes/gatorade.mp4") },
         { id: 21, videoUrl: require("./CSS/emotes/dj.mp4") },
         { id: 22, videoUrl: require("./CSS/emotes/jumpascare.mp4") },
+        { id: 23, videoUrl: require("./CSS/emotes/godofwar.mp4") },
+        { id: 24, videoUrl: require("./CSS/emotes/honoredone.mp4") },
+        { id: 25, videoUrl: require("./CSS/emotes/imfinished.mp4") },
+        { id: 26, videoUrl: require("./CSS/emotes/navire.mp4") },
+        { id: 27, videoUrl: require("./CSS/emotes/waaaa.mp4") },
+        { id: 28, videoUrl: require("./CSS/emotes/uaremysunshine.mp4") },
+
     ]);
 
     const handleVideoEnd = () => {

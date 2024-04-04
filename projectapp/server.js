@@ -1474,12 +1474,15 @@ io.on('connection', (socket) => {
   })
 
   function dealerPlay(game) {
+    console.log("tu fou quoi a m'appeller la laisse moi dormir conard");
     let sum = game.sumPoint();
     while (sum < 17) {
       game.dealerHit();
       sum = game.sumPoint()
-      io.to(game.identifiant_partie).emit("dealerCards", game.dealerCards);
     }
+    io.to(game.identifiant_partie).emit("dealerCards", game.dealerCards);
+
+    
 
   }
 
@@ -1547,11 +1550,14 @@ io.on('connection', (socket) => {
   socket.on("stay", (serverId, deckName) => {
     let game = findGame(serverId, BlackJackGames)
     let player = findPlayer(deckName, game.playerList);
+
     if (!player.hasSplitted) {
       if (!game.nextPlayer()) {
+        console.log("gere");
         dealerPlay(game)
       };
     }
+
     else {
 
       if (player.onSplittedDeck) {
@@ -1559,7 +1565,7 @@ io.on('connection', (socket) => {
         player.hasSplitted = false;
 
         if (!game.nextPlayer()) {
-          dealerPlay(game)
+          dealerPlay(game);
         };
       }
       else {
@@ -1577,14 +1583,13 @@ io.on('connection', (socket) => {
 
     console.log("double")
     console.log(player.bets);
-
-    player.bets.deckName *= 2;
+    player.bets[deckName] *= 2;
 
     game.hit(deckName)
     afterHit(game, player)
 
-    if(!game.nextPlayer()){
-      dealerPlay()
+    if (!game.nextPlayer()) {
+      dealerPlay(game);
     }
 
     io.to(serverId).emit("BJ-askMyTurn", player.myTurn);
@@ -1601,6 +1606,24 @@ io.on('connection', (socket) => {
     socket.emit("splitted");
     io.to(serverId).emit("allDeck", game.playerList);
   })
+
+  socket.on("resolveMoney", (serverId) => {
+
+    // let game = findGame(serverId, BlackJackGames);
+    // let winnersAndNot = game.findWinner();
+    // let winnerList = winnersAndNot.winners;
+    // let notWinnerNotLooser = winnersAndNot.notWinNotLoose;
+    let winnerBetList = findWinnerBet();
+
+    console.log("winnerList")
+    console.log(winnerBetList);
+    
+    // for(let winner of winnerList){
+    //   let moneyWin = game.findAllWinBet(winner)
+    //   console.log(moneyWin);
+    // }
+    
+  }) 
 
 });
 

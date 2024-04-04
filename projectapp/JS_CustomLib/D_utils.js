@@ -1,5 +1,3 @@
-const { fireEvent } = require("@testing-library/react");
-const { useFetcher } = require("react-router-dom");
 const { login, changeDataBase, get_user_info, register } = require("./D_db.js");
 
 const makecookie = (length) => {
@@ -295,10 +293,10 @@ class Bataille {
   isGameEnded() {
     let nbPlayerAtZeroCard = 0;
 
-    if (game.maxTurn <= game.currentTurn) {
+    if (this.maxTurn <= this.currentTurn) {
       return true;
     }
-    else if (game.playerList.length === 1) {
+    else if (this.playerList.length === 1) {
       return true
     }
     else {
@@ -1263,6 +1261,31 @@ class BlackJackPlayer extends Player {
     return points;
   }
 
+  sumPointSplitted() {
+    let points = 0;
+    let nombreAs = 0;
+
+    for (let carte of this.splittedDeck) {
+      if (carte.power >= 11 && carte.power <= 13) {
+        points += 10;
+      }
+      else if (carte.power === 14) {
+        points += 11;
+        nombreAs++;
+      }
+      else {
+        points += carte.power;
+      }
+    }
+
+    while (nombreAs > 0 && points > 21) {
+      points -= 10;
+      nombreAs--;
+    }
+
+    return points;
+  }
+
   split() {
     let cardSplitted = this.deck[1]
     this.deck.splice(1, 1);
@@ -1278,6 +1301,30 @@ class BlackJackPlayer extends Player {
 /////////////////////////////////////////////////////////////////////////
 
 
+function sumPoint(deck) {
+  let points = 0;
+  let nombreAs = 0;
+  for (let carte of deck) {
+
+    if (carte.power >= 11 && carte.power <= 13) {
+      points += 10;
+    }
+    else if (carte.power === 14) {
+      points += 11;
+      nombreAs++;
+    }
+    else {
+      points += carte.power;
+    }
+  }
+
+  while (nombreAs > 0 && points > 21) {
+    points -= 10;
+    nombreAs--;
+  }
+
+  return points;
+}
 
 class BlackJack {
 
@@ -1423,71 +1470,73 @@ class BlackJack {
   }
 
 
-  findWinner(){
+  findWinner() {
     let dealerPoints = this.sumPoint();
     let winnerList = []
     let notWinnerNotLooser = []
-    if(dealerPoints > 21){
-      for(let player of this.playerList){
-        player.win = true;
-        winnerList.push(player)
+    if (dealerPoints > 21) {
+      for (let player of this.playerList) {
+        winnerList.push(player);
       }
       return winnerList;
     }
 
-    for(let player  of this.playerList){
+    for (let player of this.playerList) {
       let playerPoints = player.sumPoint()
 
-      if(playerPoints <= 21 && playerPoints > dealerPoints){
-        player.win = true
+      if (playerPoints <= 21 && playerPoints > dealerPoints) {
         winnerList.push(player);
 
       }
-      else if(playerPoints == dealerPoints){
+      else if (playerPoints == dealerPoints) {
         notWinnerNotLooser.push(player);
       }
-      else {
-        player.win = false;
-      }
+
     }
-    return {winners: winnerList, notWinNotLoose: notWinnerNotLooser};
+    return winnerList;
   }
 
-  calculWin(player, amount){
-    if(player.win){
-      if(player.deck.length == 2 && player.sumPoint() == 21){
-        return amount * 2.5
-      }
+  calculMultiplicateur(deck) {
+    let totalPoint = sumPoint(deck);
+    let totalCroupier = this.sumPoint()
 
-      else {
-        return amount * 2
-      }
-    }
-    else return 0
-  } 
-
-  findAllWinBet(player) {
-    let winBets = 0
-    for(let playerIt of this.playerList){
-      for(let bet of playerIt.bets){
-        if(bet.hasOwnProperty(player.name)){
-          winBets += this.calculWin(player,bet[player.name])
-        }
-      }
+    if (deck.length == 2 && totalPoint == 21) {
+      return 2.5;
     }
 
-    return winBets;
+    if (totalPoint > 21) {
+      return 0;
+    }
+
+    if (totalCroupier > 21) {
+      return 2
+    }
+
+    if (totalCroupier == 21 && this.dealerCards.length == 2) {
+      return 0
+    }
+
+    if (totalCroupier == totalPoint) {
+      return 1;
+    }
+
+    if (totalCroupier < totalPoint) {
+      return 2;
+    }
+
   }
 
-
-  findWinnerBet(){
-    let winnerList = this.findWinner();
+  findWinnerBet() {
+    let winnerList = this.findWinner()
     let betsWin = []
-    for(let player of this.playerList){
-      for(let bet of player.bets){
+    for (let player of this.playerList) {
+      for (let bet of player.bets) {
         Object.entries(bet).map(([nom, betAmount]) => {
           let better = findPlayer(nom, this.playerList);
-          if(winnerList.includes(better)){
+          if (winnerList.includes(better)) {
+            let multiplicateur = this.calculMultiplicateur(player.deck)
+            bet["mult"] = multiplicateur
+            console.log(bet)
             betsWin.push(bet);
           }
         })

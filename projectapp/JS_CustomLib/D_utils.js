@@ -1218,6 +1218,9 @@ class BlackJackPlayer extends Player {
 
     this.myTurn = false;
     this.bets = [];
+    this.splittedDeck = [];
+    this.hasSplitted = false;
+    this.currentDeck = this.deck;
   }
 
   newBet(amountBet, deckName) {
@@ -1234,31 +1237,38 @@ class BlackJackPlayer extends Player {
   sumPoint() {
     let points = 0;
     let nombreAs = 0;
-    let cartes = this.deck;
 
     for (let carte of cartes) {
       if (carte.power >= 11 && carte.power <= 13) {
-        points += 10; // Les figures (Valet, Dame, Roi) valent 10 points
+        points += 10;
       }
-      else if (carte.power === 1) {
-        points += 11; // Les As valent initialement 11 points
-        nombreAs++; // Compteur d'As
+      else if (carte.power === 14) {
+        points += 11;
+        nombreAs++;
       }
       else {
-        points += carte.power; // Autres cartes valent leur valeur numérique
+        points += carte.power;
       }
     }
 
-    // Ajuster la valeur des As si nécessaire
     while (nombreAs > 0 && points > 21) {
-      points -= 10; // Si le total dépasse 21, convertir un As de 11 points en 1 point
-      nombreAs--; // Décrémenter le compteur d'As
+      points -= 10;
+      nombreAs--;
     }
 
     return points;
   }
 
+  split() {
+    let cardSplitted = this.deck[1]
+    this.deck.splice(1, 1);
+    this.splittedDeck.push(cardSplitted);
+    this.hasSplitted = true;
+    this.onSplittedDeck = false;
+  }
 }
+
+
 /////////////////////////////////////////////////////////////////////////
 ///////////////////////////BLACKJACK////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -1335,21 +1345,24 @@ class BlackJack {
 
 
   hit(playerName) {
-    let player = findPlayer(playerName, this.playerList);
-    let randomId = Math.floor(Math.random() * this.cartes.length);
-    let newCard = this.cartes[randomId]
-    this.cartes.splice(randomId, 1);
-    player.deck.push(newCard);
 
+    let player = findPlayer(playerName, this.playerList);
+    let newCard = this.cartes[0]
+    this.cartes.splice(0, 1);
+    if (!player.onSplittedDeck) {
+      player.deck.push(newCard);
+    }
+    else {
+      player.splittedDeck.push(newCard);
+    }
 
   }
 
-  
+
 
   dealerHit() {
-    let randomId = Math.floor(Math.random() * this.cartes.length);
-    let newCard = this.cartes[randomId]
-    this.cartes.splice(randomId, 1);
+    let newCard = this.cartes[0]
+    this.cartes.splice(0, 1);
     this.dealerCards.push(newCard);
   }
 
@@ -1357,13 +1370,12 @@ class BlackJack {
   sumPoint() {
     let points = 0;
     let nombreAs = 0;
-    let cartes = this.dealerCards;
 
     for (let carte of cartes) {
       if (carte.power >= 11 && carte.power <= 13) {
         points += 10;
       }
-      else if (carte.power === 1) {
+      else if (carte.power === 14) {
         points += 11;
         nombreAs++;
       }
@@ -1397,13 +1409,15 @@ class BlackJack {
       player.deck = [];
       player.bets = [];
       player.myTurn = false;
+      player.splittedDeck = [];
     }
     this.dealerCards = [];
-    this.cartes = shuffle(generateCartes());;
-    this.playerList[this.playerList.length - 1].myTurn = true;
+    this.cartes = shuffle(generateCartes());
+    this.playerList[0].myTurn = true;
     this.distribuer();
     this.generateDealerCards();
   }
+
 
 }
 

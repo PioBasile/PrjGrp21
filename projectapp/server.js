@@ -1438,8 +1438,8 @@ io.on('connection', (socket) => {
     let player = findPlayer(playerName, game.playerList);
 
     if (game.anyonePlayed()) {
-      for(player of game.playerList){
-        if(player.sumPoint() == 21 && player.deck.length == 2){
+      for (player of game.playerList) {
+        if (player.sumPoint() == 21 && player.deck.length == 2) {
           //blackJack methode
           player.myTurn = false;
         }
@@ -1449,7 +1449,7 @@ io.on('connection', (socket) => {
         }
       }
 
-      if(game.anyonePlayed()){
+      if (game.anyonePlayed()) {
         //si personne ne peut jouer alors tous les joueurs sont en blackJack 
         //et donc le dealer joue meme si les chances qu'il blackJack sont de 0 on sait jamais
         dealerPlay();
@@ -1481,13 +1481,11 @@ io.on('connection', (socket) => {
       io.to(game.identifiant_partie).emit("dealerCards", game.dealerCards);
     }
 
-
-    //attribuer l'argent at the end of the day inshallah
   }
 
   // évite les répétition dans le code et fait toutes les vérification apres l'action hit 
   // passe au joueur d'apres et si c'est le dernier dit au dealer de jouer
-  
+
   function afterHit(game, player) {
 
     const playerPoints = player.sumPoint();
@@ -1518,21 +1516,57 @@ io.on('connection', (socket) => {
     let game = findGame(serverId, BlackJackGames);
     let player = findPlayer(deckName, game.playerList);
 
-    game.hit(deckName);
+    if (!player.hasSplitted) {
 
-    afterHit(game, player);
+      game.hit(deckName);
+      afterHit(game, player);
+    }
+
+    else {
+
+      game.hit(deckName);
+      let sumPoint = player.sumPoint();
+      if (sumPoint >= 21) {
+        if (player.onSplittedDeck) {
+          player.hasSplitted = false;
+          if (!game.nextPlayer()) {
+            dealerPlay(game)
+          };
+        }
+        else {
+          player.onSplittedDeck = true;
+        }
+      }
+    }
 
     io.to(serverId).emit("BJ-askMyTurn");
     io.to(serverId).emit("allDeck", game.playerList);
   })
 
 
-  socket.on("stay", (serverId) => {
+  socket.on("stay", (serverId, deckName) => {
     let game = findGame(serverId, BlackJackGames)
+    let player = findPlayer(deckName, game.playerList);
+    if (!player.hasSplitted) {
+      if (!game.nextPlayer()) {
+        dealerPlay(game)
+      };
+    }
+    else {
 
-    if (!game.nextPlayer()) {
-      dealerPlay(game)
-    };
+      if (player.onSplittedDeck) {
+
+        player.hasSplitted = false;
+
+        if (!game.nextPlayer()) {
+          dealerPlay(game)
+        };
+      }
+      else {
+        player.onSplittedDeck = true
+      }
+
+    }
     io.to(serverId).emit("BJ-askMyTurn")
     io.to(serverId).emit("allDeck", game.playerList);
   })
@@ -1541,16 +1575,31 @@ io.on('connection', (socket) => {
     let game = findGame(serverId, BlackJackGames);
     let player = findPlayer(deckName, game.playerList)
 
+    console.log("double")
+    console.log(player.bets);
+
     player.bets.deckName *= 2;
 
     game.hit(deckName)
     afterHit(game, player)
 
-    game.nextPlayer()
+    if(!game.nextPlayer()){
+      dealerPlay()
+    }
 
     io.to(serverId).emit("BJ-askMyTurn", player.myTurn);
     io.to(serverId).emit("allDeck", game.playerList);
-    
+
+  })
+
+  socket.on("split", (serverId, deckName) => {
+    let game = findGame(serverId, BlackJackGames);
+    let player = findPlayer(deckName, game.playerList)
+
+    player.split();
+
+    socket.emit("splitted");
+    io.to(serverId).emit("allDeck", game.playerList);
   })
 
 });

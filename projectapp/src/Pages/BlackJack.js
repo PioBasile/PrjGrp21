@@ -23,6 +23,7 @@ const BlackJack = () => {
     const [myTurn, setMyTurn] = useState(false);
     const [canBet, setCanBet] = useState(true);
     const [betAmount, setBetAmount] = useState(0);
+    const [hasSplitted, setSplitted] = useState(false);
 
 
     // par default le deck selectionner est le tient logique
@@ -166,11 +167,11 @@ const BlackJack = () => {
 
     const handleRester = () => {
         setMyTurn(false)
-        socket.emit("stay", SERVER_ID);
+        socket.emit("stay", SERVER_ID, MY_DECK);
     }
 
     const handleSplitter = () => {
-        alert("splitter");
+        socket.emit("split", SERVER_ID, MY_DECK);
     }
 
     const handleBet = () => {
@@ -291,6 +292,10 @@ const BlackJack = () => {
                 socket.emit("BJ-whatMyTurn", SERVER_ID, NAME);
             })
 
+            socket.on("splitted", () => {
+                setSplitted(true)
+            })
+
         }
         return () => {
             mounted = false;
@@ -299,6 +304,7 @@ const BlackJack = () => {
             socket.off("dealerCards");
             socket.off("gameSatus");
             socket.off("BJ-askMyTurn");
+            socket.off("splitted")
         }
     })
 
@@ -335,6 +341,7 @@ const BlackJack = () => {
                     <div onClick={() => handleSelectDeck(player.name)} index={index} className={`cardHolder-bj ${player.myTurn ? "myTurn" : ""} `} >
 
                         <div> {player.name} ({!canBet ? calculPoints(player.deck) : "?"})</div>
+                        { player.splittedDeck.length > 0 && <div> {player.name} ({!canBet ? calculPoints(player.splittedDeck) : "?"})</div>}
 
                         <div className={`deck-bj `}>
 
@@ -349,16 +356,15 @@ const BlackJack = () => {
                         </div>
 
                         <div className={`deck-bj deck2`}>
-
                             {/* remplacer le .map par la liste correspondant aux cartes apres un split */}
-                            {/* {player.deck.map((card, index) => (
+                            {player.splittedDeck.map((card, index) => (
                                 <div>
                                     <div className={`card card${index + 1}`}>
                                         <img src={getCardImage(card)} className={"card"}></img>
                                     </div>
 
                                 </div>
-                            ))} */}
+                            ))}
                         </div>
                         {/* mettre le userName ici avec ses points */}
                         <div className='userName'></div>

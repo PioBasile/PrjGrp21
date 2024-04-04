@@ -127,7 +127,7 @@ setInterval(() => {
   io.emit('rouletteTimer', RouletteInstance.timer);
 }, 1000);
 
-setInterval(() => { io.to(rouletteRoomId).emit('timerDown'); }, 1000);
+setInterval(() => { io.emit('timerDown'); }, 1000);
 
 
 io.on('connection', (socket) => {

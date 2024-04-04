@@ -5,7 +5,6 @@ import stars from './CSS/vids/stars.mp4';
 import { useNavigate } from 'react-router-dom';
 
 const ItemShop = () => {
-    const NAME = sessionStorage.getItem("name")
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(6);
     const [money, setMoney] = useState('0');
@@ -14,7 +13,7 @@ const ItemShop = () => {
 
     // --------------------------------- GIFS -----------------------------------
 
-    const toyota = require("./CSS/emotes/toyota.mp4");
+    const toyota = require("./CSS/emotes/toyota.mp4"); 
     const BOING = require("./CSS/emotes/BOING.mp4");
     const Hampter = require("./CSS/emotes/hampter.mp4");
     const MissInput = require("./CSS/emotes/MissInput.mp4");

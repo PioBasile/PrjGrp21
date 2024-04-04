@@ -20,7 +20,6 @@ const SixQuiPrend = () => {
   const navigate = useNavigate();
   const [seconds, setSeconds] = useState(30);
   //eslint-disable-next-line
-  const [isActive, setIsActive] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [box1Container, setBox1Container] = useState([{ number: 1 }]);
   const [box2Container, setBox2Container] = useState([{ number: 2 }]);
@@ -29,11 +28,10 @@ const SixQuiPrend = () => {
   const [cardInWaiting, setCardInWaiting] = useState([]);
   const [playerCards, setPlayerCards] = useState([]);
   const [selected, setselected] = useState(false);
-  //eslint-disable-next-line
+
   const [score, setScore] = useState(0);
   const [opponents, setOpponents] = useState([]);
   const [visibleCard, setVisibleCard] = useState("");
-  const SERVER_ID = sessionStorage.getItem("serverConnected")
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -83,12 +81,6 @@ const SixQuiPrend = () => {
     { id: 28, videoUrl: require("./CSS/emotes/uaremysunshine.mp4") },
 ]);
 
-const handleVideoEnd = () => {
-  if (emoteRef.current) {
-      emoteRef.current.style.display = 'none';
-      setPlayerNameEmote("")
-  }
-};
 
   function playEmote(emoteUrl) {
     socket.emit('sendEmoteToLobby', { emote: emoteUrl.id, playerName: sessionStorage.getItem('name'), serverId: sessionStorage.getItem('serverConnected') });
@@ -98,12 +90,6 @@ const handleVideoEnd = () => {
     setShowEmotes(!showEmotes);
   };
 
-  function showEnemyEmote(opponentName) {
-    if (opponentName === playerNameEmote) {
-      return true;
-    }
-    return false;
-  }
 
   const selectCardClick = (payload) => {
 
@@ -450,9 +436,9 @@ const handleVideoEnd = () => {
       socket.off('nextPlayer');
       socket.off("getMessage")
       socket.off("emote");
-      socket.off("endEmoteToAll");
+      socket.off("endEmoteToAll"); 
     };
-  }, [isVisible, navigate, myTurn, selected]);
+  }, [isVisible, navigate, myTurn, selected,videos,showEmotes,playerNameEmote,EmoteToShow]);
 
   const handleKeyDown = (e) => {
     if (e.key === "Tab") {

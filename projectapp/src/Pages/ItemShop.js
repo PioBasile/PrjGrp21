@@ -180,7 +180,7 @@ const ItemShop = () => {
                                 <video src={gif.location} alt={gif.name} onClick={handleVideoClick} onEnded={handleVideoEnd} />
                             </div>
                             <div className="separator-line"></div>
-                            <button className={!canBuy(gif.id) ? `is-buy-button` : 'bought'} onClick={() => buyItem(gif)}> {!canBuy(gif.id) ? `Acheter` : 'V'} </button>
+                            <button className={!canBuy(gif.id) ? `is-buy-button` : 'bought'} onClick={() => buyItem(gif)}> {!canBuy(gif.id) ? `Acheter` : '✓'} </button>
                         </div>
 
                     </div>

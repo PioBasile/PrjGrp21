@@ -68,7 +68,6 @@ const NewLobby = () => {
         "L’alcool tue lentement. On s’en fout. On n’est pas pressés.",
         "L'alcool tue, pas le gambling, va au casino.",
         "Pro Tip 16 : La patience est une vertu... surtout quand ton Wi-Fi est lent.",
-        "Pro tips 17 : Toujours demander à chat GPT - Pio"
     ];
 
     const generateQuote = () => {

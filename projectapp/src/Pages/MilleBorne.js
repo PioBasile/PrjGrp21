@@ -18,6 +18,7 @@ const MilleBorne = () => {
 
     const navigate = useNavigate();
 
+    const emoteBubbleRef = useRef(null);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [isPopUp, setIsPopUp] = useState(false);
@@ -68,36 +69,36 @@ const MilleBorne = () => {
     const dj = require("./CSS/emotes/dj.mp4");
     const jumpascare = require("./CSS/emotes/jumpascare.mp4");
 
-    const videos = [
-        { id: 1, videoUrl: toyota },
-        { id: 2, videoUrl: BOING },
-        { id: 3, videoUrl: Hampter },
-        { id: 4, videoUrl: MissInput },
-        { id: 5, videoUrl: PutinMewing },
-        { id: 6, videoUrl: KillurSelf },
-        { id: 7, videoUrl: horse },
-        { id: 8, videoUrl: bookies },
-        { id: 9, videoUrl: holy },
-        { id: 10, videoUrl: freddy },
-        { id: 11, videoUrl: NuhUh },
-        { id: 12, videoUrl: hellnaw },
-        { id: 13, videoUrl: hogRider },
-        { id: 14, videoUrl: josh },
-        { id: 15, videoUrl: quandale },
-        { id: 16, videoUrl: mao },
-        { id: 17, videoUrl: bible },
-        { id: 18, videoUrl: spiderman },
-        { id: 19, videoUrl: goku },
-        { id: 20, videoUrl: gatorade },
-        { id: 21, videoUrl: dj },
-        { id: 22, videoUrl: jumpascare },
-    ];
+    const [videos, setVideos] = useState([
+        { id: 1, videoUrl: require("./CSS/emotes/toyota.mp4") },
+        { id: 2, videoUrl: require("./CSS/emotes/BOING.mp4") },
+        { id: 3, videoUrl: require("./CSS/emotes/hampter.mp4") },
+        { id: 4, videoUrl: require("./CSS/emotes/MissInput.mp4") },
+        { id: 5, videoUrl: require("./CSS/emotes/PutinMEWING.mp4") },
+        { id: 6, videoUrl: require("./CSS/emotes/KillUrSelf.mp4") },
+        { id: 7, videoUrl: require("./CSS/emotes/horse.mp4") },
+        { id: 8, videoUrl: require("./CSS/emotes/holy.mp4") },
+        { id: 9, videoUrl: require("./CSS/emotes/holy.mp4") },
+        { id: 10, videoUrl: require("./CSS/emotes/freddy.mp4") },
+        { id: 11, videoUrl: require("./CSS/emotes/NuhUh.mp4") },
+        { id: 12, videoUrl: require("./CSS/emotes/hellnaw.mp4") },
+        { id: 13, videoUrl: require("./CSS/emotes/hogRider.mp4") },
+        { id: 14, videoUrl: require("./CSS/emotes/josh.mp4") },
+        { id: 15, videoUrl: require("./CSS/emotes/quandale.mp4") },
+        { id: 16, videoUrl: require("./CSS/emotes/mao.mp4") },
+        { id: 17, videoUrl: require("./CSS/emotes/bible.mp4") },
+        { id: 18, videoUrl: require("./CSS/emotes/spiderman.mp4") },
+        { id: 19, videoUrl: require("./CSS/emotes/goku.mp4") },
+        { id: 20, videoUrl: require("./CSS/emotes/gatorade.mp4") },
+        { id: 21, videoUrl: require("./CSS/emotes/dj.mp4") },
+        { id: 22, videoUrl: require("./CSS/emotes/jumpascare.mp4") },
+    ]);
 
     const handleVideoEnd = () => {
         if (emoteRef.current) {
-            emoteRef.current.hidden = true; // Cache la div en ajustant l'attribut `hidden`
+            emoteRef.current.style.display = 'none';
+            setPlayerNameEmote("")
         }
-
     };
 
     function playEmote(emoteUrl) {
@@ -149,6 +150,8 @@ const MilleBorne = () => {
             socket.emit("loadTheChat", sessionStorage.getItem("serverConnected"));
             socket.emit("whaIsOwner", sessionStorage.getItem("serverConnected"));
             socket.emit("whatMyColor", sessionStorage.getItem("serverConnceted"), sessionStorage.getItem("name"));
+            socket.emit("whatsMyEmotes", sessionStorage.getItem("name"));
+
         }
 
         return () => {
@@ -240,6 +243,23 @@ const MilleBorne = () => {
                 setPlayerNameEmote(opponentName);
             });
 
+            socket.on("yourEmotes", (emotesList) => {
+                if(emotesList != null){
+                    const videoFilter = videos.filter(video => {
+                        return emotesList.some(video2 => video2 === video.id);
+                        
+                    });
+                    setVideos(videoFilter);
+                }
+                else{
+                    setVideos([]);
+                }
+            })
+
+            socket.on("endEmoteToAll", () => {
+                setPlayerNameEmote("");
+              })
+
             socket.on("owner", (owner) => {
                 setOwner(owner)
             })
@@ -264,6 +284,9 @@ const MilleBorne = () => {
             socket.off('MB-getMessage');
             socket.off("emote");
             socket.off("owner");
+            socket.off("yourColor");
+            socket.off("yourEmotes");
+            socket.off("endEmoteToAll");
         }
     }, [navigate, state, test, isLimited]);
 
@@ -405,13 +428,6 @@ const MilleBorne = () => {
                     {owner === sessionStorage.getItem("name") && <div className='MB-exit-button' onClick={() => openSavePopUp()}> Sauvergarder</div>}
                 </div>
 
-                {showEnemyEmote(sessionStorage.getItem("name")) && (
-                    <div className='bo-player-emote-container'>
-                        <div className="bo-player-emote" >
-                            <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
-                        </div>
-                    </div>
-                )}
 
                 <div className='MB-info-button' onClick={toggleInfo}>Information</div>
                 {showInfo && (
@@ -564,7 +580,31 @@ const MilleBorne = () => {
 
                 </div>
             </div>
+            
+            <div className="mb-emote-container">
+                <button className="mb-emote-button" onClick={toggleEmotes}>Emotes</button>
+                {showEmotes && (
+                    <div className="mb-emote-bubble" ref={emoteBubbleRef}>
+                        <div className="mb-emote-list">
+                            {videos.map((emote, index) => (
+                                <div key={index} className="mb-emote" onClick={() => playEmote(emote)}>
+                                    <video src={emote.videoUrl}  />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+          </div>
 
+          <div className="mb-emote-display-container">
+            <h2 className="mb-emote-display-title">Dernière Emote Jouée est de </h2>
+            <div className='mb-player-emote-container' ref={emoteRef}>
+                <div className="mb-emoteplayer-name">{playerNameEmote} :</div>
+                <div className="mb-player-emote">
+                    <video src={EmoteToShow} autoPlay />
+                </div>
+            </div>
+          </div>
 
             {isPopUp && (
                 <div className='MB-popup-container'>

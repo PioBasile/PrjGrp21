@@ -287,15 +287,15 @@ const Roulette = () => {
             document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
 
             return () => {
-                try {
 
-                    document.removeEventListener('click', getElementId);
-                    document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+                try{
 
-                } catch (err) {
+                    
+                document.removeEventListener('click', getElementId);
+                document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
 
+                } catch {
                     console.log("meh");
-
                 }
 
             };
@@ -394,7 +394,7 @@ const Roulette = () => {
                                             <input type="number" className='inputMoney' value={montant} onChange={(e) => setMontant(e.target.value)} />
                                         </label>
                                         <button className='button' onClick={handleSubmit}>BET</button>
-                                        <button className='btn-close' onClick={fermerPopup}></button>
+                                        <button className='btn-close' onClick={fermerPopup}>X</button>
                                     </div>
                                 </div>
                             </div>)}

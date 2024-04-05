@@ -1388,6 +1388,7 @@ io.on('connection', (socket) => {
 
     get_user_info(gambler).then((res) => {
       changeDataBase('argent', res.argent - betAmount, gambler);
+      changeMoney(gambler, -betAmount);
     });
 
     let status = game.findStatus()
@@ -1398,7 +1399,7 @@ io.on('connection', (socket) => {
   })
 
   function dealerPlay(game) {
-    let sum = game.sumPoint();
+   
     while (sum < 17) {
       game.dealerHit();
       sum = game.sumPoint()
@@ -1541,12 +1542,14 @@ io.on('connection', (socket) => {
     for (let earn of winnerBetList) {
 
       let moneyWin = earn.amountBet * earn.mult;
+      io.to(serverId).emit("moneyWin", moneyWin, earn.name);
       console.log("name")
       console.log(earn.name);
       get_user_info(earn.name).then((res) => {
         console.log("response");
         console.log(res);
         changeDataBase('argent', res.argent + moneyWin, earn.name);
+        changeMoney(earn.name, moneyWin);
       });
     }
 

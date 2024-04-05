@@ -344,3 +344,38 @@
 #chatContainer {
     transition: opacity 0.5s, transform 0.5s;
 }
+
+.gain-container {
+    overflow-y: auto;
+    width: 15%;
+    height: 13%;
+    position: fixed; /* Reste fixe lors du scroll */
+    top: 50%; /* Position verticale au milieu */
+    right: 0; /* Aligné à droite */
+    transform: translateY(-50%); /* Centrer exactement au milieu verticalement */
+    background-color: #000; /* Fond noir pour le contraste */
+    color: #ffd700; /* Texte doré pour le thème luxe/casino */
+    padding: 10px 20px; /* Espace intérieur pour ne pas coller au bord */
+    border: 2px solid #ffd700; /* Bordure dorée */
+    border-radius: 8px; /* Bordures arrondies pour un look moderne */
+    font-family: 'Arial', sans-serif; /* Police élégante mais lisible */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Ombre portée pour un effet 3D */
+    z-index: 1000; /* S'assure que le texte reste au-dessus des autres éléments */
+  }
+  
+  .moneyWin {
+    animation: fadeIn 2s ease-in-out;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: rgba(255, 215, 0, 0.1); /* Légèrement différent pour distinguer les messages */
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  

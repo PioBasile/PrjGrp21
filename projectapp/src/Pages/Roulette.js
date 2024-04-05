@@ -4,7 +4,7 @@ import './CSS/roulette.css';
 import { useNavigate } from 'react-router-dom';
 
 
-const Roulette = () => {
+const Roulette = () => { 
     const navigate = useNavigate();
     const [timer, setTimer] = useState(-1);
     const coin = require('./CSS/pics/coin.webp')
@@ -28,7 +28,6 @@ const Roulette = () => {
     const roulette = require("./CSS/pics/roulette.jpg");
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-    const [isCo, setIsCo] = useState("chat");
     // eslint-disable-next-line
 
 
@@ -72,6 +71,21 @@ const Roulette = () => {
         setAfficherPopup(true);
 
 
+    }
+
+    const handleSpin = (randomResult) => {
+        setResult(randomResult);
+
+        if (sessionStorage.getItem("location") === "/roulette") {
+
+            let randomDeg = getPositionInRoulette(randomResult) + 1080
+
+            var spinningElem = document.getElementById('spinning');
+
+            spinningElem.style.transform = 'rotate(' + randomDeg + 'deg';
+        }
+        // setMoneyWin(0);
+        setIsSpinning(true);
     }
 
     function convertBetValues(betValues) {
@@ -118,7 +132,6 @@ const Roulette = () => {
     const leave = () => {
         socket.emit("leave");
         navigate('/BrowserManager');
-        setIsCo(true);
     }
 
 
@@ -199,23 +212,9 @@ const Roulette = () => {
         })
 
 
-    }, [])
+    }, [handleSpin,navigate,valueBet])
 
 
-    const handleSpin = (randomResult) => {
-        setResult(randomResult);
-
-        if (sessionStorage.getItem("location") === "/roulette") {
-
-            let randomDeg = getPositionInRoulette(randomResult) + 1080
-
-            var spinningElem = document.getElementById('spinning');
-
-            spinningElem.style.transform = 'rotate(' + randomDeg + 'deg';
-        }
-        // setMoneyWin(0);
-        setIsSpinning(true);
-    }
 
     const resultRoulette = () => {
 
@@ -277,8 +276,8 @@ const Roulette = () => {
             document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
 
             return () => {
-                document.removeEventListener('click', getElementId);
-                document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+                //document.removeEventListener('click', getElementId);
+                //document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
 
             };
         }, [message]);

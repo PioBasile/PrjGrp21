@@ -363,7 +363,7 @@ const SixQuiPrend = () => {
           if (prevSeconds === 0 || !myTurn) {
             if (myTurn && !selected) {
               setselected(true);
-              socket.emit('send6cardphase1', playerCards[Math.floor(Math.random() * playerCards.length)], sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
+                socket.emit('send6cardphase1', playerCards[Math.floor(Math.random() * playerCards.length)], sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
             }
             return 30;
           } else {

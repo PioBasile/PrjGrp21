@@ -6,7 +6,7 @@ import './CSS/emotes/toyota.mp4';
 
 
 const JeuBataille = () => {
-    
+
     const SERVER_ID = sessionStorage.getItem("serverConnected");
     const PLAYER_NAME = sessionStorage.getItem("name");
 
@@ -66,6 +66,37 @@ const JeuBataille = () => {
         { id: 27, videoUrl: require("./CSS/emotes/waaaa.mp4") },
         { id: 28, videoUrl: require("./CSS/emotes/uaremysunshine.mp4") },
     ]);
+
+    const videoToPlay = [
+        { id: 1, videoUrl: require("./CSS/emotes/toyota.mp4") },
+        { id: 2, videoUrl: require("./CSS/emotes/BOING.mp4") },
+        { id: 3, videoUrl: require("./CSS/emotes/hampter.mp4") },
+        { id: 4, videoUrl: require("./CSS/emotes/MissInput.mp4") },
+        { id: 5, videoUrl: require("./CSS/emotes/PutinMEWING.mp4") },
+        { id: 6, videoUrl: require("./CSS/emotes/KillUrSelf.mp4") },
+        { id: 7, videoUrl: require("./CSS/emotes/horse.mp4") },
+        { id: 8, videoUrl: require("./CSS/emotes/holy.mp4") },
+        { id: 9, videoUrl: require("./CSS/emotes/holy.mp4") },
+        { id: 10, videoUrl: require("./CSS/emotes/freddy.mp4") },
+        { id: 11, videoUrl: require("./CSS/emotes/NuhUh.mp4") },
+        { id: 12, videoUrl: require("./CSS/emotes/hellnaw.mp4") },
+        { id: 13, videoUrl: require("./CSS/emotes/hogRider.mp4") },
+        { id: 14, videoUrl: require("./CSS/emotes/josh.mp4") },
+        { id: 15, videoUrl: require("./CSS/emotes/quandale.mp4") },
+        { id: 16, videoUrl: require("./CSS/emotes/mao.mp4") },
+        { id: 17, videoUrl: require("./CSS/emotes/bible.mp4") },
+        { id: 18, videoUrl: require("./CSS/emotes/spiderman.mp4") },
+        { id: 19, videoUrl: require("./CSS/emotes/goku.mp4") },
+        { id: 20, videoUrl: require("./CSS/emotes/gatorade.mp4") },
+        { id: 21, videoUrl: require("./CSS/emotes/dj.mp4") },
+        { id: 22, videoUrl: require("./CSS/emotes/jumpascare.mp4") },
+        { id: 23, videoUrl: require("./CSS/emotes/godofwar.mp4") },
+        { id: 24, videoUrl: require("./CSS/emotes/honoredone.mp4") },
+        { id: 25, videoUrl: require("./CSS/emotes/imfinished.mp4") },
+        { id: 26, videoUrl: require("./CSS/emotes/navire.mp4") },
+        { id: 27, videoUrl: require("./CSS/emotes/waaaa.mp4") },
+        { id: 28, videoUrl: require("./CSS/emotes/uaremysunshine.mp4") },
+    ]
 
     const handleVideoEnd = () => {
         if (emoteRef.current) {
@@ -138,13 +169,13 @@ const JeuBataille = () => {
         else {
             const chemin = require(`./CSS/pics/PNG-cards-1.3/ace_of_${translateSymbol}.png`);
             return chemin;
-        } 
+        }
     }
 
     //----------------------CHAT---------------------
 
     const sendMessage = () => {
-        socket.emit('sendMessage', { name:PLAYER_NAME, msg: message, serverId: SERVER_ID });
+        socket.emit('sendMessage', { name: PLAYER_NAME, msg: message, serverId: SERVER_ID });
         setMessage('');
     }
 
@@ -214,7 +245,7 @@ const JeuBataille = () => {
 
     const saveGame = () => {
         setIsSave(false);
-        socket.emit("saveGame", SERVER_ID, saveName,PLAYER_NAME)
+        socket.emit("saveGame", SERVER_ID, saveName, PLAYER_NAME)
     }
 
     const openSavePopUp = () => {
@@ -273,7 +304,7 @@ const JeuBataille = () => {
 
     const selectCardClick = (card) => {
         setSelectedCard(card);
-        socket.emit("playCard", SERVER_ID, card,PLAYER_NAME);
+        socket.emit("playCard", SERVER_ID, card, PLAYER_NAME);
     };
 
     //----------------------USE EFFECT---------------------
@@ -290,23 +321,23 @@ const JeuBataille = () => {
         if (mounted && !failed) {
 
             // GESTION stabilité de la connection
-            socket.emit("co",PLAYER_NAME, sessionStorage.getItem("connection_cookie"))
+            socket.emit("co", PLAYER_NAME, sessionStorage.getItem("connection_cookie"))
 
 
             socket.emit('WhatIsMyDeck', PLAYER_NAME, SERVER_ID);
-            socket.emit('join', SERVER_ID); 
+            socket.emit('join', SERVER_ID);
             socket.emit('askGameInfo', SERVER_ID);
             socket.emit("loadTheChat", SERVER_ID);
             socket.emit("whaIsOwner", SERVER_ID);
             socket.emit("loadCardsPlayed", SERVER_ID);
-            socket.emit("whatsMyEmotes",PLAYER_NAME);
+            socket.emit("whatsMyEmotes", PLAYER_NAME);
 
         }
         return () => {
             mounted = false;
         }
 
-    }, [navigate , PLAYER_NAME, SERVER_ID]);
+    }, [navigate, PLAYER_NAME, SERVER_ID]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -325,7 +356,7 @@ const JeuBataille = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [showEmotes , SERVER_ID, emoteBubbleRef]);
+    }, [showEmotes, SERVER_ID, emoteBubbleRef]);
 
     useEffect(() => {
 
@@ -355,7 +386,7 @@ const JeuBataille = () => {
                 }
                 game.playerList.forEach((player) => {
 
-                    if (player.name !==PLAYER_NAME) {
+                    if (player.name !== PLAYER_NAME) {
                         plist.push(player);
                     }
 
@@ -367,20 +398,20 @@ const JeuBataille = () => {
 
 
             socket.on("yourDeck", () => {
-                socket.emit("whatMyDeck", SERVER_ID,PLAYER_NAME)
+                socket.emit("whatMyDeck", SERVER_ID, PLAYER_NAME)
             })
 
             socket.on("resolveRoundAsk", () => {
-                socket.emit("showAllAsk",SERVER_ID)
+                socket.emit("showAllAsk", SERVER_ID)
                 setTimeout(() => {
-                    socket.emit("resolveRound", SERVER_ID,PLAYER_NAME);
+                    socket.emit("resolveRound", SERVER_ID, PLAYER_NAME);
                 }, "3000");
             });
 
             socket.on("resolveDrawAsk", () => {
-                socket.emit("showAllAsk",SERVER_ID)
+                socket.emit("showAllAsk", SERVER_ID)
                 setTimeout(() => {
-                    socket.emit("resolveDrawFirstPart", SERVER_ID,PLAYER_NAME);
+                    socket.emit("resolveDrawFirstPart", SERVER_ID, PLAYER_NAME);
                 }, "3000");
             });
 
@@ -412,8 +443,9 @@ const JeuBataille = () => {
             socket.on("emote", (emote, opponentName) => {
 
                 let video = 0;
-                videos.forEach((videos) => {
 
+                videoToPlay.forEach((videos) => {
+                    console.log(videos)
                     if (videos.id === emote) {
                         video = videos;
                     }
@@ -423,7 +455,6 @@ const JeuBataille = () => {
                     return;
                 }
 
-                console.log(video, opponentName);
 
                 setEmoteToShow(video.videoUrl);
                 setPlayerNameEmote(opponentName);
@@ -446,14 +477,14 @@ const JeuBataille = () => {
             })
 
             socket.on("yourEmotes", (emotesList) => {
-                if(emotesList != null){
+                if (emotesList != null) {
                     const videoFilter = videos.filter(video => {
                         return emotesList.some(video2 => video2 === video.id);
-                        
+
                     });
                     setVideos(videoFilter);
                 }
-                else{
+                else {
                     setVideos([]);
                 }
                 // setMyEmotes(listOfEmote);
@@ -479,9 +510,9 @@ const JeuBataille = () => {
             socket.off("fin");
             socket.off("showAll");
         };
-    }, [PLAYER_NAME, SERVER_ID, videos, emoteBubbleRef, showEmotes,navigate]);
+    }, [PLAYER_NAME, SERVER_ID, videos, emoteBubbleRef, showEmotes, navigate]);
 
-    const handleSaveNameChange = (e) => { 
+    const handleSaveNameChange = (e) => {
         const inputValue = e.target.value;
         const filteredValue = inputValue.replace(/[^a-zA-Z0-9]/g, '');
         setSaveName(filteredValue);
@@ -524,12 +555,12 @@ const JeuBataille = () => {
         <div className="bo-game-container">
 
             {isSave && (
-            <div className='savePopUp'>
-                <div className='closeButton' onClick={() => closePopup()}>X</div>
-                <h1 className='titlePopUp'>Entrer le nom de la sauvegarde :</h1>
-                <input className="inputPopup" type="text" placeholder='Nom de la sauvegarde' onChange={(e) => setSaveName(e.target.value)}></input>
-                <div className="saveButtonPopUp" onClick={() => saveGame()}>Sauvegarder</div>
-            </div>
+                <div className='savePopUp'>
+                    <div className='closeButton' onClick={() => closePopup()}>X</div>
+                    <h1 className='titlePopUp'>Entrer le nom de la sauvegarde :</h1>
+                    <input className="inputPopup" type="text" placeholder='Nom de la sauvegarde' onChange={(e) => setSaveName(e.target.value)}></input>
+                    <div className="saveButtonPopUp" onClick={() => saveGame()}>Sauvegarder</div>
+                </div>
             )}
 
             <YourComponent></YourComponent>
@@ -573,7 +604,6 @@ const JeuBataille = () => {
                         {showEnemyEmote(opponent.name) && (
                             <div className='bo-enem-emote-left' ref={emoteRef}>
                                 <div className="bo-emote-enemy" >
-                                    {console.log(EmoteToShow)}
                                     <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
                                 </div>
                             </div>
@@ -590,7 +620,6 @@ const JeuBataille = () => {
                         {showEnemyEmote(opponent.name) && (
                             <div className='bo-enem-emote-right' ref={emoteRef}>
                                 <div className="bo-emote-enemy" >
-                                    {console.log(EmoteToShow)}
                                     <video src={EmoteToShow} autoPlay onEnded={handleVideoEnd} />
                                 </div>
                             </div>
@@ -636,7 +665,7 @@ const JeuBataille = () => {
                 </div>
             </div>
 
-            {owner ===PLAYER_NAME &&
+            {owner === PLAYER_NAME &&
                 <button className="bo-save-button" onClick={() => openSavePopUp()}>Sauvergarder</button>
             }
 

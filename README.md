@@ -8,9 +8,9 @@ Ce projet a été conçu et développé en réponse à la demande de nos enseign
 
 - **Bataille Ouverte**
 - **Six Qui Prend**
-- **Jeu au choix** : Mille Borne
+- **1 Jeu au choix** : Mille Borne
 
-### Fonctionnalités
+### Fonctionnalités Demande
 
 - **Système de Chat et Sauvegarde** : Permet aux joueurs de communiquer entre eux et de sauvegarder leur progression dans le jeu.
 - **Multijoueur dans la Même Room** : Les joueurs peuvent se réunir et jouer dans la même salle virtuelle.
@@ -18,12 +18,15 @@ Ce projet a été conçu et développé en réponse à la demande de nos enseign
 
 ## Améliorations et Ajouts
 
-Afin d'enrichir l'expérience utilisateur, notre équipe a décidé d'ajouter de nouvelles fonctionnalités au projet initial :
+Afin d'enrichir l'expérience utilisateur, notre groupe a décidé d'ajouter de nouvelles fonctionnalités au projet initial :
 
 - **Système d'Argent Virtuel** : Les joueurs peuvent maintenant gagner ou perdre de l'argent virtuel à travers les différents jeux.
 - **Roulette** : Une nouvelle manière de jouer avec l'argent virtuel, offrant aux joueurs la possibilité de multiplier leurs gains ou de tout perdre.
-- **Boutique d'Items** : Utilisez l'argent virtuel gagné pour acheter des emotes uniques qui peuvent être utilisées dans les jeux et sont visibles par les autres joueurs.
-- **Blackjack** : Nous avons ajouté un quatrième jeu, le blackjack, pour offrir encore plus de diversité dans les options de jeu disponibles. Et une autre façon de depenser son argent
+- **Boutique d'Items** : Utilisez l'argent virtuel gagné pour acheter des **emotes** uniques qui peuvent être utilisées dans les jeux et sont visibles par les autres joueurs.
+- **Blackjack** : Nous avons ajouté un quatrième jeu, le blackjack, pour offrir encore plus de diversité dans les options de jeu disponibles. Et une autre façon de depenser son argent. Profitez de parties pouvant accueillir jusqu'à 5 joueurs.
+- **Musique d'Ambiance** : Nous avons introduit une musique de fond pour les jeux de Roulette et de Blackjack afin d'enrichir l'atmosphère et de plonger les joueurs dans une véritable ambiance de casino. Laissez-vous emporter par la musique tout en plaçant vos mises.
+- **Chat Global** : La communication est essentielle, c'est pourquoi nous avons mis en place un chat global. Cette fonctionnalité permet aux joueurs d'envoyer des messages et de communiquer entre eux à travers tous les jeux de notre plateforme, sans limitations.
+    
 
 ## Installation
 

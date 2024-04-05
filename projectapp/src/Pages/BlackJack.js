@@ -138,8 +138,16 @@ const BlackJack = () => {
             document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
 
             return () => {
-                document.removeEventListener('click', getElementId);
-                document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+                try {
+
+                    document.removeEventListener('click', getElementId);
+                    document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+
+                } catch (err) {
+
+                    console.log("meh");
+
+                }
 
             };
         }, [message]);

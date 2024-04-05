@@ -1544,9 +1544,19 @@ io.on('connection', (socket) => {
       if (earn.amountBet != null || earn.mult != null) {
 
         let moneyWin = earn.amountBet * earn.mult;
-        io.to(serverId).emit("moneyWin", moneyWin, earn.name);
-        console.log("name")
-        console.log(earn.name);
+        io.to(serverId).emit("moneyWin", moneyWin, earn.name);  
+        
+        let winMessage = ""
+        if(moneyWin != 0){
+          winMessage = `${earn.name} a gagné ${moneyWin} $`
+        }
+        
+        else {
+          winMessage = `${earn.name} a perdu ${betAmmount} $`
+        }
+
+        game.addMessage(winMessage)
+
         get_user_info(earn.name).then((res) => {
           console.log("response");
           console.log(res);
@@ -1556,6 +1566,7 @@ io.on('connection', (socket) => {
       }
 
       game.restartRound()
+      io.to(serverId).emit("getMessage", game.chatContent);
       io.to(serverId).emit("askMoney");
       io.to(serverId).emit("allDeck", game.playerList)
       io.to(serverId).emit("gameStatus", "bet");

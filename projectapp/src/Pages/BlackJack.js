@@ -138,9 +138,16 @@ const BlackJack = () => {
             document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
 
             return () => {
-                document.removeEventListener('click', getElementId);
-                document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+                try {
 
+                    document.removeEventListener('click', getElementId);
+                    document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+
+                } catch (err) {
+
+                    console.log("meh");
+
+                }
             };
         }, [message]);
 
@@ -154,7 +161,7 @@ const BlackJack = () => {
     }
 
     const sendMessage = () => {
-        socket.emit('sendMessage', { name:NAME, msg: message, serverId: SERVER_ID });
+        socket.emit('sendMessage', { name: NAME, msg: message, serverId: SERVER_ID });
         setMessage('');
     }
 
@@ -313,7 +320,7 @@ const BlackJack = () => {
                 socket.emit("BJ-whatMyMoney", NAME);
             })
 
-            socket.on("moneyWin", (money,who_won) => {
+            socket.on("moneyWin", (money, who_won) => {
                 setMoneyWin(money);
                 setWhoWon(who_won);
             })
@@ -336,7 +343,7 @@ const BlackJack = () => {
             socket.off("moneyWin")
         }
     })
-    
+
     useEffect(() => {
         const messageContainer = document.querySelector('.message-container');
         if (messageContainer) {
@@ -439,7 +446,7 @@ const BlackJack = () => {
                     </div>
                 </div>
             </div>
-            
+
 
             <div className="chat-container" id='chatContainer'>
                 <div className='message-container' >

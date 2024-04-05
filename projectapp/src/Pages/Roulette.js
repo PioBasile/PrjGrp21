@@ -379,7 +379,7 @@ const Roulette = () => {
                                             <input type="number" className='inputMoney' value={montant} onChange={(e) => setMontant(e.target.value)} />
                                         </label>
                                         <button className='button' onClick={handleSubmit}>BET</button>
-                                        <button className='btn-close' onClick={fermerPopup}></button>
+                                        <button className='btn-close' onClick={fermerPopup}>X</button>
                                     </div>
                                 </div>
                             </div>)}

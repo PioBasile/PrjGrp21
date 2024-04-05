@@ -449,7 +449,6 @@ const JeuBataille = () => {
                     if (videos.id === emote) {
                         video = videos;
                     }
-
                 });
                 if (video === 0) {
                     return;

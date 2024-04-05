@@ -26,6 +26,7 @@ const BlackJack = () => {
     const [hasSplitted, setSplitted] = useState(false);
     const [moneyWin, setMoneyWin] = useState(null);
     const [whoWon, setWhoWon] = useState("");
+    const [canSplit, setCanSplit] = useState(false);
     const [audio, setAudio] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
 
@@ -122,7 +123,7 @@ const BlackJack = () => {
                 if (clickedElementId === "inputChat") {
                     chatContainer.style.opacity = 1;
                 } else {
-                    chatContainer.style.opacity = 0.33;
+                    chatContainer.style.opacity = 0.5;
                 }
                 return clickedElementId;
             }
@@ -166,6 +167,7 @@ const BlackJack = () => {
     }
 
     const handleDoubler = () => {
+        setMyTurn(false);
         socket.emit("double", SERVER_ID, MY_DECK)
     }
 
@@ -226,8 +228,7 @@ const BlackJack = () => {
 
 
             socket.emit("BJ-allDeckInfo", SERVER_ID);
-
-
+            socket.emit("canSplit", SERVER_ID, MY_DECK);
             socket.emit("BJ-whatMyMoney", NAME);
             socket.emit("whatDealerCards", SERVER_ID);
             socket.emit("BJ-whatMyTurn", SERVER_ID, NAME);
@@ -262,7 +263,7 @@ const BlackJack = () => {
             })
 
             socket.on("allDeck", (deckInfo) => {
-                console.log(deckInfo);
+                socket.emit("canSplit", SERVER_ID, NAME);
                 setAllDeck(deckInfo);
             })
 
@@ -313,21 +314,21 @@ const BlackJack = () => {
             })
 
             socket.on("splitted", () => {
+                setCanSplit(false);
                 setSplitted(true)
-            })
-
-            socket.on("askMoney", () => {
-                socket.emit("BJ-whatMyMoney", NAME);
-            })
-
-            socket.on("moneyWin", (money, who_won) => {
-                setMoneyWin(money);
-                setWhoWon(who_won);
             })
 
             socket.on("getMessage", (msgList) => {
                 setMessages(msgList);
             });
+
+            socket.on("goSplitIfYouCan", (bool) => {
+                setCanSplit(bool);
+            })
+
+            socket.on("askMoney", () => {
+                socket.emit("BJ-whatMyMoney", NAME);
+            })
 
         }
         return () => {
@@ -341,6 +342,7 @@ const BlackJack = () => {
             socket.off("askMoney")
             socket.off("getMessage")
             socket.off("moneyWin")
+            socket.off("goSplitIfYouCan");
         }
     })
 
@@ -448,12 +450,12 @@ const BlackJack = () => {
             <div className={`action-container ${myTurn ? "myTurn" : ""} `}>
                 <div className='bet-action-container'>
                     <div>
-                        <div className='action-button-bj' onClick={myTurn && !canBet ? handlePioche : null}>Piocher</div>
-                        <div className='action-button-bj' onClick={myTurn && !canBet ? handleRester : null} >Rester</div>
+                        <div className={`action-button-bj ${!canBet && myTurn}`} onClick={myTurn && !canBet ? handlePioche : null}>Piocher</div>
+                        <div className={`action-button-bj ${!canBet && myTurn}`} onClick={myTurn && !canBet ? handleRester : null} >Rester</div>
                     </div>
                     <div >
-                        <div className='action-button-bj' onClick={myTurn && !canBet ? handleDoubler : null}>Doubler</div>
-                        <div className='action-button-bj' onClick={myTurn && !canBet ? handleSplitter : null}>Splitter</div>
+                        <div className={`action-button-bj ${!canBet && myTurn}`} onClick={myTurn && !canBet ? handleDoubler : null}>Doubler</div>
+                        <div className={`action-button-bj ${myTurn && !canBet && canSplit}`} onClick={myTurn && !canBet && canSplit ? handleSplitter : null}>Splitter</div>
                     </div>
                 </div>
                 <div className='bet-container'>
@@ -468,7 +470,7 @@ const BlackJack = () => {
 
                     <div className='bet-giveup-container'>
                         <div className='bet-button-bj' onClick={canBet ? handleBet : null} >BET</div>
-                        <div className='bet-button-bj' onClick={canBet ? handleAllIn : null} >ALL-IN</div>
+                        <div className='allin-button-bj' onClick={canBet ? handleAllIn : null} >ALL-IN</div>
                         <div className='giveup-button-bj' onClick={handleGiveUp}>ABANDONNER</div>
                     </div>
                 </div>

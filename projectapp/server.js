@@ -161,7 +161,6 @@ io.on('connection', (socket) => {
     }
 
     io.to(rouletteRoomId).emit("bets", RouletteInstance.bets);
-    console.log(RouletteInstance.bets);
 
   });
 
@@ -459,7 +458,6 @@ io.on('connection', (socket) => {
         changeMoney(player.name, -lobby.moneyBet); // on leur enleve leur thune dés qu'ils entrent dans la game
         changeDataBase('nbWin', res.nbGames + 1, player.name);
         changeDataBase('argent', res.argent - lobby.moneyBet, player.name);
-        console.log("RES FOREACH", res)
       });
 
     }
@@ -534,7 +532,6 @@ io.on('connection', (socket) => {
       if (winners) {
         let moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length);
         winners.forEach((name) => {
-          console.log("WHAT WRONG WITH U")
           get_user_info(name).then((res) => {
             changeDataBase('nbWin', res.nbWin + 1, name);
             changeScoreBoard('bataille-ouverte', name);
@@ -617,8 +614,6 @@ io.on('connection', (socket) => {
     let winners = game.findGameWinner();
     if (winners) {
       if (winners.length != 0) {
-        console.log("maxjoeurs", game.maxJoueurs)
-        console.log("moneybet", game.moneyBet)
         var moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length)
       }
 
@@ -647,14 +642,14 @@ io.on('connection', (socket) => {
 
 
     game = findGame(gameID, TaureauGames);
-    player = findPlayer(username, game.player_list);
+    player = findPlayer(username, game.playerList);
     if (player == -1) {
       socket.emit("deco");
       return;
     }
 
     let redo = false;
-    game.player_list.forEach((player) => {
+    game.playerList.forEach((player) => {
 
       if (player.deck.length == 0) {
         redo = true;
@@ -666,7 +661,7 @@ io.on('connection', (socket) => {
 
     let oppon6 = []
     let pl;
-    game.player_list.forEach((player) => {
+    game.playerList.forEach((player) => {
 
       pl = { nom: player.name, deck: player.deck.length, score: player.score };
       oppon6.push(pl);
@@ -696,7 +691,7 @@ io.on('connection', (socket) => {
 
 
     game = findGame(gameID, TaureauGames);
-    player = findPlayer(playername, game.player_list);
+    player = findPlayer(playername, game.playerList);
     if (player == -1) {
       socket.emit("deco");
       return;
@@ -740,7 +735,7 @@ io.on('connection', (socket) => {
 
     let oppon6 = []
     let pl;
-    game.player_list.forEach((player) => {
+    game.playerList.forEach((player) => {
 
       pl = { nom: player.name, deck: player.deck.length, score: player.score };
       oppon6.push(pl);
@@ -759,7 +754,7 @@ io.on('connection', (socket) => {
   socket.on('send6cardphase2', (row, playername, gameID) => {
 
     let game = findGame(gameID, TaureauGames);
-    let player = findPlayer(playername, game.player_list);
+    let player = findPlayer(playername, game.playerList);
     if (player == -1) {
       socket.emit("deco");
       return;
@@ -811,7 +806,7 @@ io.on('connection', (socket) => {
 
     let oppon6 = []
     let pl;
-    game.player_list.forEach((player) => {
+    game.playerList.forEach((player) => {
 
       pl = { nom: player.name, deck: player.deck.length, score: player.score };
       oppon6.push(pl);
@@ -832,11 +827,11 @@ io.on('connection', (socket) => {
 
   socket.on("SQP-leaveGame", (playerName, serverId) => {
     let game = findGame(serverId, TaureauGames);
-    let player = findPlayer(playerName, game.player_list);
+    let player = findPlayer(playerName, game.playerList);
     game.removePlayer(player)
-    let winner = game.player_list[0];
+    let winner = game.playerList[0];
 
-    if (game.player_list.length == 1) {
+    if (game.playerList.length == 1) {
       if (winner) {
         var moneyWin = Math.round(game.moneyBet * game.maxPlayer);
         get_user_info(winner.name).then((res) => {
@@ -942,7 +937,6 @@ io.on('connection', (socket) => {
 
     if (game.state == "FIN") {
       io.to(data.serverId).emit("MB_FIN", player.name);
-      console.log("not here");
       let moneyWin = Math.round(game.moneyBet * game.maxPlayers)
       get_user_info(player.name).then((res) => {
 
@@ -1066,7 +1060,7 @@ io.on('connection', (socket) => {
       io.to(data.serverId).emit("MB_FIN", player.name);
       player = game.playerList[0];
       get_user_info(player.name).then((res) => {
-        console.log("here");
+
         changeDataBase('nbWin', res.nbWin + 1, player.name);
         changeDataBase('argent', res.argent + 100, player.name);
 
@@ -1197,9 +1191,8 @@ io.on('connection', (socket) => {
 
   socket.on("saveGame", (serverId, saveName, playerName) => {
     let lobby = findLobby(serverId, lobbyList);
-    console.log(lobby.gameType);
     if (lobby.gameType == "batailleOuverte") {
-      console.log("here1")
+      console.log("lets save some bataille ouverte")
       game = findGame(serverId, BatailGames);
     }
     else if (lobby.gameType == "sqp") {
@@ -1315,8 +1308,6 @@ io.on('connection', (socket) => {
       }
       let jsonData = JSON.parse(data);
       let playerEmotes = jsonData[playerName];
-      console.log("PLAYER EMOTE !!")
-      console.log(playerEmotes);
       socket.emit("yourEmotes", playerEmotes);
     })
   })
@@ -1480,7 +1471,6 @@ io.on('connection', (socket) => {
 
     if (!player.hasSplitted) {
       if (!game.nextPlayer()) {
-        console.log("gere");
         dealerPlay(game)
       };
     }
@@ -1508,12 +1498,13 @@ io.on('connection', (socket) => {
     let game = findGame(serverId, BlackJackGames);
     let player = findPlayer(deckName, game.playerList)
 
-    console.log("double")
-    console.log(player.bets);
-    player.bets[deckName] *= 2;
+    for(let bet of player.bets){
+      if(bet.name == deckName){
+        bet.amountBet *= 2
+      }
+    }
 
     game.hit(deckName)
-    afterHit(game, player)
 
     if (!game.nextPlayer()) {
       dealerPlay(game);
@@ -1522,6 +1513,17 @@ io.on('connection', (socket) => {
     io.to(serverId).emit("BJ-askMyTurn", player.myTurn);
     io.to(serverId).emit("allDeck", game.playerList);
 
+  })
+
+  socket.on("canSplit", (serverId, playerName) => {
+    let game = findGame(serverId, BlackJackGames);
+    let player = findPlayer(playerName, game.playerList);
+    let deck = player.deck
+
+    let canSplit = (deck[0].power == deck[1].power) && deck.length == 2 && !player.hasSplitted;
+
+    socket.emit("goSplitIfYouCan", canSplit);
+    
   })
 
   socket.on("split", (serverId, deckName) => {
@@ -1547,6 +1549,7 @@ io.on('connection', (socket) => {
         io.to(serverId).emit("moneyWin", moneyWin, earn.name);  
         
         let winMessage = ""
+
         if(moneyWin != 0){
           winMessage = `🎉 - ${earn.name} a gagné ${moneyWin} $`
         }
@@ -1558,8 +1561,6 @@ io.on('connection', (socket) => {
         game.addMessage(winMessage)
 
         get_user_info(earn.name).then((res) => {
-          console.log("response");
-          console.log(res);
           changeDataBase('argent', res.argent + moneyWin, earn.name);
           changeMoney(earn.name, moneyWin);
         });

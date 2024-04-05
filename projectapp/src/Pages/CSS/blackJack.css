@@ -184,6 +184,11 @@
     box-shadow: 0 0 15px rgb(33, 32, 32);
 }
 
+.false {   
+    background-color: rgb(71, 49, 49);
+    border: solid 2px rgb(98, 98, 52);   
+}
+
 .action-button-bj:hover {
     background-color: rgb(109, 67, 67);
     cursor: pointer;
@@ -218,13 +223,42 @@
 
 .bet-button-bj {
     background-color: rgb(32, 86, 29);
+    border: solid greenyellow 2px;
     width: 100%;
     max-height: 70px;
     padding-top: 1vh;
     font-size: 27px;
-    color: azure;
+    /* color: azure; */
     text-align: center;
     border-radius: 15px;
+}
+
+.bet-button-bj:hover{
+    box-shadow: rgb(60, 255, 0) 0px 0px 60px;
+}
+
+.allin-button-bj{
+    background-color: yellow;
+    border: solid rgb(220, 185, 29) 3px;
+    color: black;
+
+    width: 100%;
+    max-height: 70px;
+    padding-top: 1vh;
+    margin-left: 10px;
+    font-size: 27px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+
+.allin-button-bj:hover{
+    box-shadow: rgb(246, 255, 0) 0px 0px 60px;
+}
+
+.bet-button-bj.false {
+    background-color: rgb(28, 63, 26);
+    border: solid rgb(84, 116, 38) 2px;
 }
 
 .bet-button-bj:hover {
@@ -238,11 +272,15 @@
     width: 100%;
     padding-top: 1vh;
     font-size: 24px;
-    color: azure;
+    /* color: azure; */
     text-align: center;
     border-radius: 15px;
     margin-left: 0.5vw;
     border: solid 2px yellow;
+}
+
+.giveup-button-bj:hover{
+    box-shadow: rgb(255, 58, 32) 0px 0px 60px;
 }
 
 
@@ -268,8 +306,6 @@
     text-align: center;
     padding-top: 1.4vh;
     padding-left: 1.2vw;
-
-
 }
 
 .divise2 {
@@ -340,6 +376,8 @@
     bottom: 0;
     border-radius: 20px;
 }
+
+
 
 #chatContainer {
     transition: opacity 0.5s, transform 0.5s;

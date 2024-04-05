@@ -323,7 +323,6 @@ class Bataille {
         }
       }
       let winnersWithoutDoublon = winners.filter((elem, index) => winners.indexOf(elem) == index);
-      console.log(winnersWithoutDoublon.map(player => player.name));
       return winnersWithoutDoublon.map(player => player.name);
     }
     else {
@@ -507,12 +506,12 @@ function generate6Cartes() {
 
 class SixQuiPrend {
 
-  constructor(gameName, id_partie, owner, player_list, chrono, moneyBet, maxPlayer) {
+  constructor(gameName, id_partie, owner, playerList, chrono, moneyBet, maxPlayer) {
     this.gameName = gameName;
     this.maxPlayer = maxPlayer;
     this.identifiant_partie = id_partie;
     this.owner = owner;
-    this.player_list = player_list;
+    this.playerList = playerList;
     this.selected_cards = [];
 
     this.mChrono = chrono;
@@ -533,14 +532,14 @@ class SixQuiPrend {
 
   removePlayer(player) {
 
-    let playerI = findRemovePlayer(player, this.player_list);
-    this.player_list.splice(playerI, 1);
-  }
+    let playerI = findRemovePlayer(player, this.playerList);
+    this.playerList.splice(playerI, 1);
+  }j
 
   gagnant() {
     let al = false;
 
-    this.player_list.forEach((elem) => {
+    this.playerList.forEach((elem) => {
 
       if (elem.score >= 20) {
 
@@ -556,9 +555,9 @@ class SixQuiPrend {
 
   Pgagant() {
 
-    let less = this.player_list[0];
+    let less = this.playerList[0];
 
-    this.player_list.forEach((elem) => {
+    this.playerList.forEach((elem) => {
 
       if (elem.score < less.score) {
 
@@ -575,7 +574,7 @@ class SixQuiPrend {
   tousJouer() {
 
     let no = true;
-    this.player_list.forEach((player) => {
+    this.playerList.forEach((player) => {
 
       if (player.selected == null) {
 
@@ -593,7 +592,7 @@ class SixQuiPrend {
 
     let no = true;
 
-    this.player_list.forEach((player) => {
+    this.playerList.forEach((player) => {
 
       if (player.selected != null) {
 
@@ -609,7 +608,7 @@ class SixQuiPrend {
 
   clearP() {
 
-    this.player_list.forEach((player) => {
+    this.playerList.forEach((player) => {
 
       player.selected = null;
 
@@ -622,7 +621,7 @@ class SixQuiPrend {
 
   GiveOrder() {
 
-    const playersCopy = [...this.player_list];
+    const playersCopy = [...this.playerList];
 
     for (let i = 1; i < playersCopy.length; i++) {
       let j = i - 1;
@@ -809,7 +808,7 @@ class SixQuiPrend {
 
 
     let k = 0;
-    this.player_list.forEach((elem) => {
+    this.playerList.forEach((elem) => {
 
       elem.deck = [];
 
@@ -835,7 +834,7 @@ class SixQuiPrend {
 
   recreate(gameData) {
     let newPlayerList = [];
-    for (let player of gameData["player_list"]) {
+    for (let player of gameData["playerList"]) {
       let newPlayer = new Player(player["name"], player["cookie"])
       newPlayer.out = player["out"]
       newPlayer.deck = player["deck"]
@@ -1233,8 +1232,6 @@ class BlackJackPlayer extends Player {
       newBet["amountBet"] = amountBet;
       newBet[deckName] = amountBet;
       this.bets.push(newBet);
-      console.log("newbet WTF")
-      console.log(newBet);
     }
   }
 
@@ -1463,7 +1460,9 @@ class BlackJack {
       player.bets = [];
       player.myTurn = false;
       player.splittedDeck = [];
+      player.hasSplitted = false;
     }
+
     this.dealerCards = [];
     this.cartes = shuffle(generateCartes());
     this.playerList[0].myTurn = true;
@@ -1484,15 +1483,12 @@ class BlackJack {
 
     for (let player of this.playerList) {
       let playerPoints = player.sumPoint()
-      console.log("findWinner<Function> => ", playerPoints)
-      console.log(playerPoints);
       if (playerPoints <= 21 && playerPoints >= dealerPoints) {
         winnerList.push(player);
 
       }
     }
-    console.log("winnerList")
-    console.log(winnerList);
+
     return winnerList;
   }
 
@@ -1543,13 +1539,10 @@ class BlackJack {
         if (winnerList.includes(better)) {
           let multiplicateur = this.calculMultiplicateur(player.deck)
           bet["mult"] = multiplicateur
-          console.log(bet)
           betsWin.push(bet);
         }
       }
     }
-    console.log("les parries gagnat")
-    console.log(betsWin);
     return betsWin;
   }
 

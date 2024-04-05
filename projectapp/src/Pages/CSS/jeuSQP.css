@@ -167,7 +167,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.2); /* Ombre plus douce pour rester cohérent avec le design minimaliste */
 }
 
 .sqp-card-holderNYT {
@@ -392,61 +391,67 @@ img {
 }
 
 
+.closeButton {
+    z-index: 10000;
+    position: absolute; /* Positionnement par rapport au conteneur parent */
+    top: 10px; /* Positionnement en haut à droite */
+    right: 10px;
+    cursor: pointer; /* Indique un élément cliquable */
+    padding: 5px 8px; /* Espacement autour du texte pour faciliter le clic */
+    font-size: 20px; /* Taille suffisamment grande pour être facilement cliquable */
+    color: #ffffff; /* Couleur discrète mais visible */
+}
+
+/* Assurez-vous que le reste de votre CSS est inchangé */
+
+
+/* Style général du pop-up de sauvegarde */
 .savePopUp {
-    z-index: 1;
-    position: fixed;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;  
-    margin: auto;
-    top: 40%;
-    left: 40%;
-    width: 20%;
-    height: 20%;
-    background-color: rgb(30, 109, 32);
-    border-radius: 15px;
-    box-shadow: 0 0 22px rgb(0,0,0, 1);
+    position: fixed; /* Fixe le pop-up au-dessus du contenu de la page */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* Centre le pop-up */
+    width: 90%; /* Adaptabilité à la taille de l'écran */
+    max-width: 400px; /* Largeur maximale pour les grands écrans */
+    padding: 20px;
+    background-color: #263b2e; /* Fond blanc pour la clarté */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre subtile pour le relief */
+    border-radius: 10px; /* Bordures arrondies pour la modernité */
+    z-index: 1000; /* S'assure que le pop-up reste au-dessus des autres éléments */
 }
 
 .titlePopUp {
-    width: 90%;
-    height: 28%;
-    display: flex;
-    margin-top: 10px;
-    justify-content: center;
-    align-items: center;
-    border-radius: 15px;
+    margin: 0 0 20px 0; /* Espacement au-dessus et en dessous du titre */
+    font-size: 18px; /* Taille de police appropriée */
+    text-align: center; /* Centrage du titre */
+    color: #ffffff; /* Couleur de texte sobre */
 }
 
-.inputPopup{
-    width: 90%;
-    height: 25%;
-    border: none;
-    margin-top: 10px;
-    font-size: 3vh;
-    background-color: rgb(204, 208, 208);
-    border-radius: 15px;
-    padding-left: 1vw;
+.inputPopup {
+    width: 100%; /* Utilise toute la largeur disponible */
+    padding: 10px; /* Padding intérieur pour faciliter la saisie */
+    margin-bottom: 20px; /* Espacement avant le bouton */
+    border: 1px solid #ccc; /* Bordure discrète */
+    border-radius: 5px; /* Bordures légèrement arrondies */
+    box-sizing: border-box; /* S'assure que le padding ne change pas la largeur */
 }
 
 .saveButtonPopUp {
-    display: flex;
-    margin-top: 10px;
-    justify-content: center;
-    align-items: center;
-    width: 90%;
-    height: 30%;
-    font-size: 4vh;
-    border-radius: 15px;
-    background-color: rgb(16, 73, 32);
-    border: solid 2px gray;
-    cursor: pointer;
+    display: block; /* Assure que l'élément est traité comme un bloc */
+    width: 100%; /* Largeur totale pour attirer l'attention */
+    padding: 10px 0; /* Padding vertical */
+    background-color: #4CAF50; /* Couleur verte pour l'action de sauvegarde */
+    color: #ffffff; /* Texte blanc pour le contraste */
+    text-align: center; /* Centrage du texte */
+    border-radius: 5px; /* Bordures arrondies */
+    cursor: pointer; /* Indique un élément cliquable */
+    transition: background-color 0.3s; /* Transition douce pour le survol */
 }
 
-.saveButtonPopUp:hover{
-    background-color: rgb(24, 99, 45);
+.saveButtonPopUp:hover {
+    background-color: #45a049; /* Assombrir le bouton au survol pour le feedback */
 }
+
 
 .chat-container {
     transform: translateY(110%);

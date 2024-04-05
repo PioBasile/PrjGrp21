@@ -536,6 +536,10 @@ const SixQuiPrend = () => {
     }
   }, [messages]); 
 
+  function closePopup() {
+    setIsSave(false);
+  }
+
 
   return (
 
@@ -546,11 +550,12 @@ const SixQuiPrend = () => {
       {/* UPPER BANDEAU */}
       <button className="bo-emote-button" onClick={toggleEmotes}>Emotes</button>
       {isSave && (
-        <div className='savePopUp'>
-          <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
-          <input className="inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
-          <div className="saveButtonPopUp" onClick={() => saveGame()}>Sauvergarder</div>
-        </div>
+          <div className='savePopUp'>
+              <div className='closeButton' onClick={() => closePopup()}>X</div>
+              <h1 className='titlePopUp'>Entrer le nom de la sauvegarde :</h1>
+              <input className="inputPopup" type="text" placeholder='Nom de la sauvegarde' onChange={(e) => setSaveName(e.target.value)}></input>
+              <div className="saveButtonPopUp" onClick={() => saveGame()}>Sauvegarder</div>
+          </div>
       )}
 
     

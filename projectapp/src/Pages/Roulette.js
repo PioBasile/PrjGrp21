@@ -287,15 +287,15 @@ const Roulette = () => {
             document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
 
             return () => {
-                try {
 
-                    document.removeEventListener('click', getElementId);
-                    document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+                try{
 
-                } catch (err) {
+                    
+                document.removeEventListener('click', getElementId);
+                document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
 
+                } catch {
                     console.log("meh");
-
                 }
 
             };

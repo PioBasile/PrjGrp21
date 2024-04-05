@@ -27,7 +27,6 @@ const BlackJack = () => {
     const [betAmount, setBetAmount] = useState(0);
     const [hasSplitted, setSplitted] = useState(false);
 
-
     // par default le deck selectionner est le tient logique
     const [deckSelected, setDeckSelected] = useState(NAME);
 
@@ -153,7 +152,7 @@ const BlackJack = () => {
     }
 
     const sendMessage = () => {
-        socket.emit('BJ-sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
+        socket.emit('sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
         setMessage('');
     }
 
@@ -199,6 +198,11 @@ const BlackJack = () => {
     }
 
 
+    const handleAllIn = () => {
+        socket.emit("BJ-bet", SERVER_ID, deckSelected, parseInt(money), NAME);
+    }
+
+
     useEffect(() => {
 
         let mounted = true;
@@ -220,6 +224,7 @@ const BlackJack = () => {
             socket.emit("BJ-whatMyTurn", SERVER_ID, NAME);
             socket.emit("whatsStatus", SERVER_ID)
 
+            socket.emit("loadTheChat", SERVER_ID)
         }
 
         return () => {
@@ -236,7 +241,7 @@ const BlackJack = () => {
 
 
     useEffect(() => {
-        let mounted = true; 
+        let mounted = true;
         let failed = false;
 
         if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
@@ -314,6 +319,10 @@ const BlackJack = () => {
                 socket.emit("BJ-whatMyMoney", NAME);
             })
 
+            socket.on("getMessage", (msgList) => {
+                setMessages(msgList);
+            })
+
         }
         return () => {
             mounted = false;
@@ -322,40 +331,24 @@ const BlackJack = () => {
             socket.off("dealerCards");
             socket.off("gameSatus");
             socket.off("BJ-askMyTurn");
-            socket.off("splitted")
+            socket.off("splitted");
+            socket.off("getMessage");
         }
     })
 
 
-    function ConfirmationDialog() {
-        const handleDelete = () => {
-            const result = window.confirm("VOULEZ-VOUS POUR SUR ALL-IN (t'es gay si tu le fais pas) ?");
-            if (result) {
-                setBetAmount(money);
-                handleBet();
-            } else {
-                console.log("Suppression annulée.");
-            }
-        };
-
-        return (
-
-            <div className='bet-button-bj' onClick={canBet ? handleBet : null} >ALL-IN</div>
-
-        );
-    }
-
-    const leave = () => {
-        navigate('/BrowserManager');
-    }
+    useEffect(() => {
+        const messageContainer = document.querySelector('.message-container');
+        if (messageContainer) {
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+    }, [messages]);
 
     return (
         <div className='black-jack-container'>
             <YourComponent></YourComponent>
             <div className='upper-bandeau'>
-                <div className='leave-game-bj'>
-                    <img src={exitButton} className='leave-game-bj' onClick={leave}></img>
-                </div>
+
 
                 <div className='wallet-container'>
                     <div className='wallet'>${money}</div>
@@ -440,7 +433,7 @@ const BlackJack = () => {
 
                     <div className='bet-giveup-container'>
                         <div className='bet-button-bj' onClick={canBet ? handleBet : null} >BET</div>
-                        <ConfirmationDialog></ConfirmationDialog>
+                        <div className='bet-button-bj' onClick={canBet ? handleAllIn : null} >ALL-IN</div>
                         <div className='giveup-button-bj' onClick={handleGiveUp}>ABANDONNER</div>
                     </div>
                 </div>

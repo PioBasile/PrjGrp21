@@ -15,7 +15,6 @@ import ItemShop from "./Pages/ItemShop.js";
 import Casino from "./Pages/Casino.js";
 import NewLobby from "./Pages/NewLobby.js";
 import Scoreboard from "./Pages/Scoreboard.js";
-import  President  from "./Pages/President";
 import { useNavigate, useLocation  } from 'react-router-dom';
 
 function App() {
@@ -103,7 +102,6 @@ function App() {
                 <Route path="/itemshop" element={<ItemShop></ItemShop>}/>
                 <Route path="/casino" element={<Casino></Casino>}/>
                 <Route path="/scoreboard" element={<Scoreboard></Scoreboard>}/>
-                <Route path="/president" element={<President></President>}/>
             </Routes>
     );
 }

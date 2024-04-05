@@ -1502,26 +1502,32 @@ class BlackJack {
 
     if (deck.length == 2 && totalPoint == 21) {
       return 2.5;
+
+      //blackJack
     }
 
-    if (totalPoint > 21) {
+    else if (totalPoint > 21) {
       return 0;
     }
 
-    if (totalCroupier > 21) {
+    else if (totalCroupier > 21) {
       return 2
     }
 
-    if (totalCroupier == 21 && this.dealerCards.length == 2) {
+    else if (totalCroupier == 21 && this.dealerCards.length == 2) {
       return 0
     }
 
-    if (totalCroupier == totalPoint) {
+    else if (totalCroupier == totalPoint) {
       return 1;
     }
 
-    if (totalCroupier < totalPoint) {
+    else if (totalCroupier < totalPoint) {
       return 2;
+    }
+
+    else {
+      return 0;
     }
 
   }
@@ -1533,7 +1539,6 @@ class BlackJack {
     let betsWin = []
     for (let player of this.playerList) {
       for (let bet of player.bets) {
-        console.log(bet)
         let better = findPlayer(bet.name, this.playerList);
         if (winnerList.includes(better)) {
           let multiplicateur = this.calculMultiplicateur(player.deck)

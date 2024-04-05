@@ -86,12 +86,12 @@ const Roulette = () => {
             44: '1to18',
             45: '19to36'
         };
-    
+
         return betValues.map(value => {
             return conversionRules[value] || value;
         });
     }
-    
+
 
 
     const handleSubmit = () => {
@@ -139,64 +139,76 @@ const Roulette = () => {
 
 
     useEffect(() => {
+        let mounted = true;
+        if (mounted) {
+
+            socket.on("bets", (betList) => {
+                let bets = betList.map(bet => bet.betPos);
+                setValueBet(convertBetValues(bets));
+                console.log(valueBet);
+            })
 
 
-        socket.on("bets", (betList) => {
-            let bets = betList.map(bet => bet.betPos);
-            setValueBet(convertBetValues(bets));
-            console.log(valueBet);
-        })
 
+            socket.on('spinwheel', (resy) => {
+                if (sessionStorage.getItem("location") === "/roulette") {
 
-
-        socket.on('spinwheel', (resy) => {
-
-            if (sessionStorage.getItem("location") === "/roulette") {
-                handleSpin(resy);
-            }
-        });
-
-        socket.on("tropsTard", () => {
-
-            alert("trops tard");
-
-        });
-
-        socket.on("rouletteTimer", (time) => {
-
-            setTimer(time);
-
-        });
-
-        socket.on("VoilaTesSousMonSauce", (argent) => {
-            setMoney(argent);
-        });
-
-        socket.on("listWins", (wins) => {
-
-            let sumWins = 0;
-            wins.forEach((win) => {
-
-                if (win["name"] === sessionStorage.getItem('name')) {
-
-                    sumWins += win["won"];
-
+                    handleSpin(resy);
                 }
+            });
 
-                // AJOUTER chat ici
+            socket.on("tropsTard", () => {
+
+                alert("trops tard");
 
             });
 
-            setMoneyWin(sumWins);
+            socket.on("rouletteTimer", (time) => {
 
-        });
+                setTimer(time);
 
-        if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
+            });
+
+            socket.on("VoilaTesSousMonSauce", (argent) => {
+                setMoney(argent);
+            });
+
+            socket.on("listWins", (wins) => {
+
+                let sumWins = 0;
+                wins.forEach((win) => {
+
+                    if (win["name"] === sessionStorage.getItem('name')) {
+
+                        sumWins += win["won"];
+
+                    }
+
+                });
+
+                setMoneyWin(sumWins);
+
+            });
+
+            if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
 
 
-        socket.on("rlt-getMessage", (msgList) => {
-            setMessages(msgList);
-        })
+            socket.on("rlt-getMessage", (msgList) => {
+
+                setMessages(msgList);
+            })
+
+        }
+        return () => {
+            mounted = false;
+            socket.off("rlt-getMessage")
+            socket.off("listWins")
+            socket.off("VoilaTesSousMonSauce")
+            socket.off("rouletteTimer")
+            socket.off("tropsTard")
+            socket.off("spinwheel")
+            socket.off("bets")
+        }
 
 
     }, [])
@@ -277,8 +289,8 @@ const Roulette = () => {
             document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
 
             return () => {
-                document.removeEventListener('click', getElementId);
-                document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+                // document.removeEventListener('click', getElementId);
+                // document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
 
             };
         }, [message]);
@@ -288,9 +300,6 @@ const Roulette = () => {
         );
     }
 
-    const convert = (valeur) => {
-
-    }
 
     return (
 

@@ -416,4 +416,33 @@
       opacity: 1;
     }
   }
+
+
+  .bl-music {
+    z-index: 1000; /* Assure que le bouton reste au-dessus des autres éléments */
+    box-sizing: border-box;
+    position: fixed; /* Fixe le bouton dans la fenêtre de visualisation */
+    bottom: 22vh; /* Positionnement en bas à gauche avec un peu d'espace */
+    right: 2%;
+    padding: 10px 20px; /* Espacement intérieur pour rendre le bouton plus grand et plus cliquable */
+    font-size: 16px; /* Taille de la police pour que le texte soit clairement lisible */
+    background-color: #8B0000; /* Un rouge profond pour un look casino luxueux */
+    color: #FFD700; /* Couleur dorée pour le texte, évoquant le luxe */
+    border: none; /* Supprime la bordure par défaut */
+    border-radius: 5px; /* Bordures légèrement arrondies pour un look moderne */
+    cursor: pointer; /* Change le curseur en main pour indiquer qu'il s'agit d'un bouton cliquable */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Ombre portée pour un effet 3D subtil */
+    transition: background-color 0.3s, transform 0.2s; /* Transition pour l'interaction */
+  }
   
+  .bl-music:hover {
+    background-color: #640000; /* Assombrir le bouton au survol pour le feedback */
+    transform: translateY(-2px); /* Effet de léger soulèvement au survol */
+  }
+  
+  .bl-music:active {
+    transform: translateY(1px); /* Simule un effet de pression sur le bouton */
+  }
+  
+
+ 

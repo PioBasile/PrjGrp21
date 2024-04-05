@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { ScrollRestoration, useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import socket from '../socketG';
 import './CSS/blackJack.css'
-
-
-
+import music from './CSS/sounds/music.mp3';
 
 const BlackJack = () => {
     const navigate = useNavigate();
@@ -26,9 +24,11 @@ const BlackJack = () => {
     const [canBet, setCanBet] = useState(true);
     const [betAmount, setBetAmount] = useState(0);
     const [hasSplitted, setSplitted] = useState(false);
-
-
+    const [moneyWin, setMoneyWin] = useState(null);
+    const [whoWon, setWhoWon] = useState("");
     const [canSplit, setCanSplit] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const audioRef = useRef(null);
 
 
     // par default le deck selectionner est le tient logique
@@ -347,6 +347,34 @@ const BlackJack = () => {
     })
 
     useEffect(() => {
+        // Initialisation de l'objet Audio et sauvegarde dans la référence
+        audioRef.current = new Audio(music);
+    
+        // Retiré play() pour éviter la lecture automatique
+        // audioRef.current.play().catch(e => console.error("Erreur de lecture:", e));
+    
+        return () => {
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0; // Réinitialise le temps si le composant est démonté
+            }
+        };
+    }, [music]); 
+
+    const playM = () => {
+        // Vérifiez directement l'objet audio dans audioRef.current
+        if (!audioRef.current) return;
+    
+        if (isPlaying) {
+            audioRef.current.pause();
+        } else {
+            audioRef.current.play().catch((e) => console.error("Erreur lors de la lecture de l'audio:", e));
+        }
+    
+        setIsPlaying(!isPlaying); // Met à jour l'état isPlaying
+    };
+
+    useEffect(() => {
         const messageContainer = document.querySelector('.message-container');
         if (messageContainer) {
             messageContainer.scrollTop = messageContainer.scrollHeight;
@@ -357,6 +385,9 @@ const BlackJack = () => {
     return (
         <div className='black-jack-container'>
             <YourComponent></YourComponent>
+
+            <button className='bl-music' onClick={playM}> {isPlaying ? "Pause Music" : "Play Music"}</button>
+
             <div className='upper-bandeau'>
 
 

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import socket from '../socketG';
 import './CSS/roulette.css';
 import { useNavigate } from 'react-router-dom';
+import music from './CSS/sounds/music.mp3';
 
 
 const Roulette = () => { 
@@ -28,12 +29,41 @@ const Roulette = () => {
     const roulette = require("./CSS/pics/roulette.jpg");
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-    // eslint-disable-next-line
+    const [isPlaying, setIsPlaying] = useState(false);
+    const audioRef = useRef(null);
 
 
 
     const fermerPopup = () => {
         setAfficherPopup(false);
+    };
+
+    useEffect(() => {
+        // Initialisation de l'objet Audio et sauvegarde dans la référence
+        audioRef.current = new Audio(music);
+    
+        // Retiré play() pour éviter la lecture automatique
+        // audioRef.current.play().catch(e => console.error("Erreur de lecture:", e));
+    
+        return () => {
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0; // Réinitialise le temps si le composant est démonté
+            }
+        };
+    }, [music]); 
+
+    const playM = () => {
+        // Vérifiez directement l'objet audio dans audioRef.current
+        if (!audioRef.current) return;
+    
+        if (isPlaying) {
+            audioRef.current.pause();
+        } else {
+            audioRef.current.play().catch((e) => console.error("Erreur lors de la lecture de l'audio:", e));
+        }
+    
+        setIsPlaying(!isPlaying); // Met à jour l'état isPlaying
     };
 
 
@@ -320,6 +350,7 @@ const Roulette = () => {
             <button className='rou-timer'> vous avez encore {timer}s pour bet </button>
 
             <YourComponent></YourComponent>
+            <button className='rou-music' onClick={playM}> {isPlaying ? "Pause Music" : "Play Music"}</button>
 
             <div className="ro-bye-button" onClick={leave}> Leave </div>
 

@@ -32,7 +32,8 @@ class Roulette{
   rolls(){
 
     this.lastRolls.push(this.roll);
-    this.roll = Math.floor(Math.random() * 45)
+    //this.roll = Math.floor(Math.random() * 45)
+    this.roll = 0;
 
   }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { ScrollRestoration, useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import socket from '../socketG';
@@ -27,8 +27,8 @@ const BlackJack = () => {
     const [moneyWin, setMoneyWin] = useState(null);
     const [whoWon, setWhoWon] = useState("");
     const [canSplit, setCanSplit] = useState(false);
-    const [audio, setAudio] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
+    const audioRef = useRef(null);
 
 
     // par default le deck selectionner est le tient logique
@@ -347,27 +347,31 @@ const BlackJack = () => {
     })
 
     useEffect(() => {
-        const musicAudio = new Audio(music);
-        setAudio(musicAudio);
-
+        // Initialisation de l'objet Audio et sauvegarde dans la référence
+        audioRef.current = new Audio(music);
+    
+        // Retiré play() pour éviter la lecture automatique
+        // audioRef.current.play().catch(e => console.error("Erreur de lecture:", e));
+    
         return () => {
-            if (audio) {
-                audio.pause();
-                audio.currentTime = 0; 
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0; // Réinitialise le temps si le composant est démonté
             }
         };
     }, [music]); 
 
     const playM = () => {
-        if (!audio) return; 
-
+        // Vérifiez directement l'objet audio dans audioRef.current
+        if (!audioRef.current) return;
+    
         if (isPlaying) {
-            audio.pause();
+            audioRef.current.pause();
         } else {
-            audio.play().catch((e) => console.error("Erreur lors de la lecture de l'audio:", e));
+            audioRef.current.play().catch((e) => console.error("Erreur lors de la lecture de l'audio:", e));
         }
-
-        setIsPlaying(!isPlaying);
+    
+        setIsPlaying(!isPlaying); // Met à jour l'état isPlaying
     };
 
     useEffect(() => {

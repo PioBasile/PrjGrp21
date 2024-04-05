@@ -628,8 +628,6 @@ io.on('connection', (socket) => {
         var moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length)
       }
 
-      console.log("MONEYWIN 600", moneyWin);
-
       winners.forEach((name) => {
         get_user_info(name).then((res) => {
           changeDataBase('nbWin', res.nbWin + 1, name);
@@ -1109,7 +1107,6 @@ io.on('connection', (socket) => {
     if (data.msg) {
       if (!isGlobal(data.msg)) {
         game.addMessage(`<local> ${data.name}: ${data.msg}`);
-        game.addMessage(``);
         io.to(data.serverId).emit("getMessage", game.chatContent);
       }
       else {
@@ -1125,6 +1122,10 @@ io.on('connection', (socket) => {
         for (let sqpGame of TaureauGames) {
           sqpGame.addMessage(`${data.name}: ${data.msg}`)
           io.emit("getMessage", sqpGame.chatContent);
+        }
+        for (let bjGame of BlackJackGames) {
+          bjGame.addMessage(`${data.name}: ${data.msg}`)
+          io.emit("getMessage", bjGame.chatContent);
         }
       }
     }
@@ -1145,6 +1146,9 @@ io.on('connection', (socket) => {
     }
     else if (lobby.gameType == "mb") {
       game = findGame(serverId, MilleBornesGames);
+    }
+    else if ( lobby.gameType == "blackjack"){
+      game = findGame(serverId, BlackJackGames);
     }
     else {
       socket.emit("deco")
@@ -1322,91 +1326,6 @@ io.on('connection', (socket) => {
   });
 
 
-  // //President Game
-  // socket.on("P-whatCardPlayed", (serverId) => {
-  //   let game = findGame(serverId, PresidentGames);
-  //   if(game.cardPlayed.length > 1){
-  //     socket.emit("P-cardPlayed", game.cardPlayed[game.cardPlayed.length - 1]);
-  //     return;
-  //   }
-
-  //   socket.emit("P-cardPlayed", "");
-
-  // })
-
-  // socket.on("P-whatMyDeck", (serverId, playerName) => {
-  //   let game = findGame(serverId, PresidentGames);
-  //   let player = findPlayer(game, playerName);
-  //   socket.emit("yourDeck", player.deck);
-  // })
-
-  // socket.on("P-whatMyOpponent", (serverId, playerName) => {
-  //   let game = findGame(serverId, PresidentGames);
-  //   let opponents = game.findOpponent(playerName);
-  //   socket.emit("yourOpponents", opponents);
-  // })
-
-  // socket.on("P-whatMyTurn",  (serverId, playerName) => {
-  //   let game = findGame(serverId, MilleBornesGames);
-  //   let player = findPlayer(playerName, game.playerList);
-
-  //   if (game.anyonePlayed()) {
-  //     game.playerList[0].myTurn = true;
-  //   }
-
-  //   socket.emit("myTurn", player.myTurn);
-  // })
-
-  // socket.on("P-playCard", (serverId, playerName, card) => {
-  //   let game = findGame(serverId, PresidentGames);
-  //   let player = findPlayer(game, playerName);
-
-  //   if(game.playForced){
-  //     if(card == game.cardPlayed[game.cardPlayed.length - 1]){
-  //       player.deck.splice(player.deck.indexOf(card), 1);
-  //       game.cardPlayed.push(card);
-  //       game.canPlay(card);
-  //     }
-  //   }
-
-  //   else {
-  //     if(card >= game.cardPlayed[game.cardPlayed.length - 1] ){
-  //       player.deck.splice(player.deck.indexOf(card), 1);
-  //       game.cardPlayed.push(card);
-  //       game.canPlay(card);
-  //     }
-  //   }
-
-  //   if(game.isCarre(card)){
-  //     game.resetRound()
-  //     return;
-  //   }
-
-  //   if(card.power == 15){
-  //     io.to(serverId).emit("showRestart");
-  //     return;
-  //   }
-
-  //   io.to(serverId).emit("askTurnInfo")
-
-  // })
-
-
-  // socket.on("showRestart", (serverId) =>{
-  //   //il reprend la main et rejoue
-  //   let game = findGame(serverId, PresidentGames);
-  //   game.resetRound();
-  //   io.to(serverId).emit("P-cardPlayed", game.cardPlayed);
-  // })
-
-  // socket.on("askTurnInfo", (serverId, playerName) => {
-  //   let game = findGame(serverId, PresidentGames);
-  //   let player = findPlayer(game, playerName);
-  //   socket.emit("myTurn", player.myTurn);
-  // })
-
-
-
   socket.on("BJ-allDeckInfo", (serverId) => {
     let game = findGame(serverId, BlackJackGames);
 
@@ -1467,14 +1386,18 @@ io.on('connection', (socket) => {
 
     player.newBet(betAmount, gambler);
 
+    get_user_info(gambler).then((res) => {
+      changeDataBase('argent', res.argent - betAmount, gambler);
+    });
+
     let status = game.findStatus()
+    io.to(serverId).emit("askMoney");
     io.to(serverId).emit("gameStatus", status);
     io.to(serverId).emit("allDeck", game.playerList);
     io.to(serverId).emit("BJ-askMyTurn");
   })
 
   function dealerPlay(game) {
-    console.log("tu fou quoi a m'appeller la laisse moi dormir conard");
     let sum = game.sumPoint();
     while (sum < 17) {
       game.dealerHit();
@@ -1608,7 +1531,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on("resolveMoney", (serverId) => {
-
+    console.log("resolveMoney ")
     let game = findGame(serverId, BlackJackGames);
 
     let winnerBetList = game.findWinnerBet();
@@ -1616,16 +1539,30 @@ io.on('connection', (socket) => {
     console.log(winnerBetList);
 
     for (let earn of winnerBetList) {
-      Object.entries(earn).map(([nom, betAmount]) => {
 
-        let moneyWin = betAmount * earn.mult;
-        console.log("bets")
-        console.log(nom)
-        console.log("=>")
-        console.log(moneyWin)
-
-      })
+      let moneyWin = earn.amountBet * earn.mult;
+      console.log("name")
+      console.log(earn.name);
+      get_user_info(earn.name).then((res) => {
+        console.log("response");
+        console.log(res);
+        changeDataBase('argent', res.argent + moneyWin, earn.name);
+      });
     }
+
+    game.restartRound()
+    io.to(serverId).emit("askMoney");
+    io.to(serverId).emit("allDeck", game.playerList)
+    io.to(serverId).emit("gameStatus", "bet");
+    io.to(serverId).emit("dealerCards", game.dealerCards)
+  })
+
+  socket.on("BJ-leave",(serverId,name) => {
+    let game = findGame(serverId, BlackJackGames);
+    let player = findPlayer(name, game.playerList);
+    game.removePlayer(player)
+
+    io.to(serverId).emit("allDeck", this.playerList);
   })
 });
 

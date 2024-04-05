@@ -339,6 +339,7 @@ io.on('connection', (socket) => {
 
   socket.on("lobbyInfo_UwU", (serverId) => {
     let lobby = findLobby(serverId, lobbyList);
+    // console.log(lobby);lobbyInfo_UwU
     io.to(serverId).emit("yourInfoBebs", { serverName: lobby.serverName, nbPlayerMax: lobby.nbPlayerMax, password: lobby.password, gameType: lobby.gameType, owner: lobby.owner, timer: lobby.tbt, moneyBet: lobby.moneyBet });
   })
 
@@ -647,14 +648,14 @@ io.on('connection', (socket) => {
 
 
     game = findGame(gameID, TaureauGames);
-    player = findPlayer(username, game.player_list);
+    player = findPlayer(username, game.playerList);
     if (player == -1) {
       socket.emit("deco");
       return;
     }
 
     let redo = false;
-    game.player_list.forEach((player) => {
+    game.playerList.forEach((player) => {
 
       if (player.deck.length == 0) {
         redo = true;
@@ -666,7 +667,7 @@ io.on('connection', (socket) => {
 
     let oppon6 = []
     let pl;
-    game.player_list.forEach((player) => {
+    game.playerList.forEach((player) => {
 
       pl = { nom: player.name, deck: player.deck.length, score: player.score };
       oppon6.push(pl);
@@ -696,7 +697,7 @@ io.on('connection', (socket) => {
 
 
     game = findGame(gameID, TaureauGames);
-    player = findPlayer(playername, game.player_list);
+    player = findPlayer(playername, game.playerList);
     if (player == -1) {
       socket.emit("deco");
       return;
@@ -740,7 +741,7 @@ io.on('connection', (socket) => {
 
     let oppon6 = []
     let pl;
-    game.player_list.forEach((player) => {
+    game.playerList.forEach((player) => {
 
       pl = { nom: player.name, deck: player.deck.length, score: player.score };
       oppon6.push(pl);
@@ -759,7 +760,7 @@ io.on('connection', (socket) => {
   socket.on('send6cardphase2', (row, playername, gameID) => {
 
     let game = findGame(gameID, TaureauGames);
-    let player = findPlayer(playername, game.player_list);
+    let player = findPlayer(playername, game.playerList);
     if (player == -1) {
       socket.emit("deco");
       return;
@@ -811,7 +812,7 @@ io.on('connection', (socket) => {
 
     let oppon6 = []
     let pl;
-    game.player_list.forEach((player) => {
+    game.playerList.forEach((player) => {
 
       pl = { nom: player.name, deck: player.deck.length, score: player.score };
       oppon6.push(pl);
@@ -832,11 +833,11 @@ io.on('connection', (socket) => {
 
   socket.on("SQP-leaveGame", (playerName, serverId) => {
     let game = findGame(serverId, TaureauGames);
-    let player = findPlayer(playerName, game.player_list);
+    let player = findPlayer(playerName, game.playerList);
     game.removePlayer(player)
-    let winner = game.player_list[0];
+    let winner = game.playerList[0];
 
-    if (game.player_list.length == 1) {
+    if (game.playerList.length == 1) {
       if (winner) {
         var moneyWin = Math.round(game.moneyBet * game.maxPlayer);
         get_user_info(winner.name).then((res) => {
@@ -1510,7 +1511,8 @@ io.on('connection', (socket) => {
 
     console.log("double")
     console.log(player.bets);
-    player.bets[deckName] *= 2;
+    let betTimeTwo = player.bets.deckName * 2
+    player.bets[deckName] = betTimeTwo;
 
     game.hit(deckName)
     afterHit(game, player)
@@ -1522,6 +1524,17 @@ io.on('connection', (socket) => {
     io.to(serverId).emit("BJ-askMyTurn", player.myTurn);
     io.to(serverId).emit("allDeck", game.playerList);
 
+  })
+
+  socket.on("canSplit", (serverId, playerName) => {
+    let game = findGame(serverId, BlackJackGames);
+    let player = findPlayer(playerName, game.playerList);
+    let deck = player.deck
+
+    let canSplit = (deck[0].power == deck[1].power) && deck.length == 2 && !player.hasSplitted;
+
+    socket.emit("goSplitIfYouCan", canSplit);
+    
   })
 
   socket.on("split", (serverId, deckName) => {
@@ -1547,6 +1560,7 @@ io.on('connection', (socket) => {
         io.to(serverId).emit("moneyWin", moneyWin, earn.name);  
         
         let winMessage = ""
+
         if(moneyWin != 0){
           winMessage = `🎉 - ${earn.name} a gagné ${moneyWin} $`
         }

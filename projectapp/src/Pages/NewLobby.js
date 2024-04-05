@@ -152,11 +152,15 @@ const NewLobby = () => {
                     case "batailleOuverte":
                         setGameType("Bataille Ouverte");
                         break;
+                    case "blackjack":
+                        setGameType("Black-Jack")
                     default:
                         setGameType("unknow");
                         return;
                 }
 
+                console.log(data);
+                
                 setGameName(data.serverName);
                 setMaxPlayers(data.nbPlayerMax);
                 setOwner(data.owner);

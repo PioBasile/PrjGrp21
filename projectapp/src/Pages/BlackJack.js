@@ -26,8 +26,9 @@ const BlackJack = () => {
     const [canBet, setCanBet] = useState(true);
     const [betAmount, setBetAmount] = useState(0);
     const [hasSplitted, setSplitted] = useState(false);
-    const [moneyWin, setMoneyWin] = useState(null);
-    const [whoWon, setWhoWon] = useState("");
+
+
+    const [canSplit, setCanSplit] = useState(false);
 
 
     // par default le deck selectionner est le tient logique
@@ -226,8 +227,9 @@ const BlackJack = () => {
 
 
             socket.emit("BJ-allDeckInfo", SERVER_ID);
-
-
+            if(!canBet){
+                socket.emit("canSplit", (SERVER_ID, MY_DECK));
+            }            
             socket.emit("BJ-whatMyMoney", NAME);
             socket.emit("whatDealerCards", SERVER_ID);
             socket.emit("BJ-whatMyTurn", SERVER_ID, NAME);
@@ -313,21 +315,17 @@ const BlackJack = () => {
             })
 
             socket.on("splitted", () => {
+                setCanSplit(false);
                 setSplitted(true)
-            })
-
-            socket.on("askMoney", () => {
-                socket.emit("BJ-whatMyMoney", NAME);
-            })
-
-            socket.on("moneyWin", (money, who_won) => {
-                setMoneyWin(money);
-                setWhoWon(who_won);
             })
 
             socket.on("getMessage", (msgList) => {
                 setMessages(msgList);
             });
+
+            socket.on("goSplitIfYouCan", (bool) => {
+                setCanSplit(bool);
+            })
 
         }
         return () => {
@@ -341,6 +339,7 @@ const BlackJack = () => {
             socket.off("askMoney")
             socket.off("getMessage")
             socket.off("moneyWin")
+            socket.off("goSplitIfYouCan");
         }
     })
 
@@ -421,12 +420,12 @@ const BlackJack = () => {
             <div className={`action-container ${myTurn ? "myTurn" : ""} `}>
                 <div className='bet-action-container'>
                     <div>
-                        <div className='action-button-bj' onClick={myTurn && !canBet ? handlePioche : null}>Piocher</div>
-                        <div className='action-button-bj' onClick={myTurn && !canBet ? handleRester : null} >Rester</div>
+                        <div className={`action-button-bj ${!canBet && myTurn}`} onClick={myTurn && !canBet ? handlePioche : null}>Piocher</div>
+                        <div className={`action-button-bj ${!canBet && myTurn}`} onClick={myTurn && !canBet ? handleRester : null} >Rester</div>
                     </div>
                     <div >
-                        <div className='action-button-bj' onClick={myTurn && !canBet ? handleDoubler : null}>Doubler</div>
-                        <div className='action-button-bj' onClick={myTurn && !canBet ? handleSplitter : null}>Splitter</div>
+                        <div className={`action-button-bj ${!canBet && myTurn}`} onClick={myTurn && !canBet ? handleDoubler : null}>Doubler</div>
+                        <div className={`action-button-bj ${canSplit || (!canBet && myTurn)}`} onClick={myTurn && !canBet ? handleSplitter : null}>Splitter</div>
                     </div>
                 </div>
                 <div className='bet-container'>
@@ -441,7 +440,7 @@ const BlackJack = () => {
 
                     <div className='bet-giveup-container'>
                         <div className='bet-button-bj' onClick={canBet ? handleBet : null} >BET</div>
-                        <div className='bet-button-bj' onClick={canBet ? handleAllIn : null} >ALL-IN</div>
+                        <div className='allin-button-bj' onClick={canBet ? handleAllIn : null} >ALL-IN</div>
                         <div className='giveup-button-bj' onClick={handleGiveUp}>ABANDONNER</div>
                     </div>
                 </div>

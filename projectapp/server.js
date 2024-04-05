@@ -1548,11 +1548,11 @@ io.on('connection', (socket) => {
         
         let winMessage = ""
         if(moneyWin != 0){
-          winMessage = `${earn.name} a gagné ${moneyWin} $`
+          winMessage = `🎉 - ${earn.name} a gagné ${moneyWin} $`
         }
         
         else {
-          winMessage = `${earn.name} a perdu ${betAmmount} $`
+          winMessage = `🪦 - ${earn.name} a perdu ${earn.amountBet} $`
         }
 
         game.addMessage(winMessage)

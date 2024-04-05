@@ -260,7 +260,7 @@ const NewBrowserManager = () => {
                             <option value="sqp">Six qui prend</option>
                             <option value="mb">Mille Bornes</option>
                             <option value="blackjack">BlackJack</option>
-                        </select>
+                        </select> 
                         <div className="select-arrow"></div>
                     </div>
                 </div>

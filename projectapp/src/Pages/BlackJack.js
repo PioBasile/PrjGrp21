@@ -236,7 +236,7 @@ const BlackJack = () => {
 
 
     useEffect(() => {
-        let mounted = true;
+        let mounted = true; 
         let failed = false;
 
         if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
@@ -345,13 +345,16 @@ const BlackJack = () => {
         );
     }
 
+    const leave = () => {
+        navigate('/BrowserManager');
+    }
 
     return (
         <div className='black-jack-container'>
             <YourComponent></YourComponent>
             <div className='upper-bandeau'>
                 <div className='leave-game-bj'>
-                    <img src={exitButton} className='leave-game-bj'></img>
+                    <img src={exitButton} className='leave-game-bj' onClick={leave}></img>
                 </div>
 
                 <div className='wallet-container'>

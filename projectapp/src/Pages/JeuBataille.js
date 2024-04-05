@@ -478,7 +478,7 @@ const JeuBataille = () => {
             socket.off("reset");
             socket.off("endEmoteToAll");
             socket.off("fin");
-            socket.on("showAll");
+            socket.off("showAll");
         };
     }, [PLAYER_NAME, SERVER_ID, videos, emoteBubbleRef, showEmotes,navigate]);
 

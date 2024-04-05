@@ -154,7 +154,7 @@ const BlackJack = () => {
     }
 
     const sendMessage = () => {
-        socket.emit('BJ-sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
+        socket.emit('sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
         setMessage('');
     }
 
@@ -200,6 +200,11 @@ const BlackJack = () => {
     }
 
 
+    const handleAllIn = () => {
+        socket.emit("BJ-bet", SERVER_ID, deckSelected, parseInt(money), NAME);
+    }
+
+
     useEffect(() => {
 
         let mounted = true;
@@ -221,6 +226,7 @@ const BlackJack = () => {
             socket.emit("BJ-whatMyTurn", SERVER_ID, NAME);
             socket.emit("whatsStatus", SERVER_ID)
 
+            socket.emit("loadTheChat", SERVER_ID)
         }
 
         return () => {
@@ -237,7 +243,7 @@ const BlackJack = () => {
 
 
     useEffect(() => {
-        let mounted = true; 
+        let mounted = true;
         let failed = false;
 
         if (sessionStorage.getItem("name") == null || sessionStorage.getItem("serverConnected") == null) {
@@ -361,9 +367,7 @@ const BlackJack = () => {
         <div className='black-jack-container'>
             <YourComponent></YourComponent>
             <div className='upper-bandeau'>
-                <div className='leave-game-bj'>
-                    <img src={exitButton} className='leave-game-bj' onClick={leave}></img>
-                </div>
+
 
                 <div className='wallet-container'>
                     <div className='wallet'>${money}</div>
@@ -448,7 +452,7 @@ const BlackJack = () => {
 
                     <div className='bet-giveup-container'>
                         <div className='bet-button-bj' onClick={canBet ? handleBet : null} >BET</div>
-                        <ConfirmationDialog></ConfirmationDialog>
+                        <div className='bet-button-bj' onClick={canBet ? handleAllIn : null} >ALL-IN</div>
                         <div className='giveup-button-bj' onClick={handleGiveUp}>ABANDONNER</div>
                     </div>
                 </div>

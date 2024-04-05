@@ -1552,7 +1552,7 @@ io.on('connection', (socket) => {
         }
         
         else {
-          winMessage = `${earn.name} a perdu ${betAmmount} $`
+          winMessage = `${earn.name} a perdu ${earn.betAmmount} $`
         }
 
         game.addMessage(winMessage)

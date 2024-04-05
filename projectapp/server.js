@@ -45,6 +45,7 @@ const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
 const { getAllScores, changeScoreBoard, changeMoney } = require("./JS_CustomLib/P_db.js");
 const { emit } = require('process');
+const { on } = require('events');
 
 
 
@@ -81,9 +82,6 @@ setInterval(() => { Sentinel_Main(io, validCookies, BatailGames, TaureauGames, M
 server.listen(3001, () => {
   console.log("SERVER IS RUNNING");
 })
-
-
-
 
 
 const updateWins = async () => {
@@ -198,7 +196,6 @@ io.on('connection', (socket) => {
   // -------------------------------------------------------- CONNECTION -------------------------------------
 
   socket.on('login', (username, password) => {
-
 
     login(username, password).then((value) => {
       if (value == 1) {
@@ -489,9 +486,6 @@ io.on('connection', (socket) => {
 
 
   socket.on("sendEmoteToLobby", (data) => {
-    // game = findGame(data.serverId, BatailGames);
-    // emote = data.emote;
-    console.log(io.sockets.adapter.rooms.get(data.serverId));
     io.to(data.serverId).emit("emote", data.emote, data.playerName);
   })
 
@@ -764,8 +758,8 @@ io.on('connection', (socket) => {
 
   socket.on('send6cardphase2', (row, playername, gameID) => {
 
-    game = findGame(gameID, TaureauGames);
-    player = findPlayer(playername, game.player_list);
+    let game = findGame(gameID, TaureauGames);
+    let player = findPlayer(playername, game.player_list);
     if (player == -1) {
       socket.emit("deco");
       return;
@@ -775,17 +769,19 @@ io.on('connection', (socket) => {
     if (game.play(parseInt(row))) {
 
       if (game.status == STATUS.ENDED) {
+        if (game.moneyBet && game.maxPlayer) {
 
-        let moneyWin = Math.round(game.moneyBet * game.maxPlayers);
-        get_user_info(player).then((res) => {
+          let moneyWin = Math.round(game.moneyBet * game.maxPlayers);
 
-          changeDataBase('nbWin', res.nbWin + 1, player);
-          changeScoreBoard('bataille-ouverte', player);
-          changeDataBase('argent', res.argent + 100 + moneyWin, player.name);
-          changeMoney(player.name, 100 + moneyWin);
+          get_user_info(player.name).then((res) => {
 
-        });
+            changeDataBase('nbWin', res.nbWin + 1, player.name);
+            changeScoreBoard('bataille-ouverte', player.name);
+            changeDataBase('argent', res.argent + 100 + moneyWin, player.name);
+            changeMoney(player.name, 100 + moneyWin);
 
+          });
+        }
         io.to(gameID).emit('FIN', game.winner);
         return;
       }
@@ -839,6 +835,7 @@ io.on('connection', (socket) => {
     let player = findPlayer(playerName, game.player_list);
     game.removePlayer(player)
     let winner = game.player_list[0];
+
     if (game.player_list.length == 1) {
       if (winner) {
         var moneyWin = Math.round(game.moneyBet * game.maxPlayer);
@@ -1100,6 +1097,11 @@ io.on('connection', (socket) => {
     else if (lobby.gameType == "mb") {
       game = findGame(data.serverId, MilleBornesGames)
     }
+
+    else if (lobby.gameType == "blackjack") {
+      game = findGame(data.serverId, BlackJackGames);
+    }
+
     else {
       throw new Error(" womp womp aucun jeu connu sous ce nom: ", lobby.gameType);
     }
@@ -1116,15 +1118,15 @@ io.on('connection', (socket) => {
           io.emit("getMessage", btlGame.chatContent);
         }
         for (let mbGame of MilleBornesGames) {
-          mbGame.addMessage(`${data.name}: ${data.msg}`)
+          mbGame.addMessage(` 🌐 > ${data.name}: ${data.msg}`)
           io.emit("getMessage", mbGame.chatContent);
         }
         for (let sqpGame of TaureauGames) {
-          sqpGame.addMessage(`${data.name}: ${data.msg}`)
+          sqpGame.addMessage(` 🌐 > ${data.name}: ${data.msg}`)
           io.emit("getMessage", sqpGame.chatContent);
         }
         for (let bjGame of BlackJackGames) {
-          bjGame.addMessage(`${data.name}: ${data.msg}`)
+          bjGame.addMessage(` 🌐 > ${data.name}: ${data.msg}`)
           io.emit("getMessage", bjGame.chatContent);
         }
       }
@@ -1147,7 +1149,7 @@ io.on('connection', (socket) => {
     else if (lobby.gameType == "mb") {
       game = findGame(serverId, MilleBornesGames);
     }
-    else if ( lobby.gameType == "blackjack"){
+    else if (lobby.gameType == "blackjack") {
       game = findGame(serverId, BlackJackGames);
     }
     else {
@@ -1388,6 +1390,7 @@ io.on('connection', (socket) => {
 
     get_user_info(gambler).then((res) => {
       changeDataBase('argent', res.argent - betAmount, gambler);
+      changeMoney(gambler, -betAmount);
     });
 
     let status = game.findStatus()
@@ -1399,6 +1402,7 @@ io.on('connection', (socket) => {
 
   function dealerPlay(game) {
     let sum = game.sumPoint();
+
     while (sum < 17) {
       game.dealerHit();
       sum = game.sumPoint()
@@ -1416,7 +1420,7 @@ io.on('connection', (socket) => {
 
     const playerPoints = player.sumPoint();
 
-    if (playerPoints > 21) {
+    if (playerPoints >= 21) {
       if (!game.nextPlayer()) {
         dealerPlay(game)
       }
@@ -1531,39 +1535,53 @@ io.on('connection', (socket) => {
   })
 
   socket.on("resolveMoney", (serverId) => {
-    console.log("resolveMoney ")
     let game = findGame(serverId, BlackJackGames);
 
     let winnerBetList = game.findWinnerBet();
 
-    console.log(winnerBetList);
-
     for (let earn of winnerBetList) {
 
-      let moneyWin = earn.amountBet * earn.mult;
-      console.log("name")
-      console.log(earn.name);
-      get_user_info(earn.name).then((res) => {
-        console.log("response");
-        console.log(res);
-        changeDataBase('argent', res.argent + moneyWin, earn.name);
-      });
-    }
+      if (earn.amountBet != null || earn.mult != null) {
 
-    game.restartRound()
-    io.to(serverId).emit("askMoney");
-    io.to(serverId).emit("allDeck", game.playerList)
-    io.to(serverId).emit("gameStatus", "bet");
-    io.to(serverId).emit("dealerCards", game.dealerCards)
+        let moneyWin = earn.amountBet * earn.mult;
+        io.to(serverId).emit("moneyWin", moneyWin, earn.name);  
+        
+        let winMessage = ""
+        if(moneyWin != 0){
+          winMessage = `${earn.name} a gagné ${moneyWin} $`
+        }
+        
+        else {
+          winMessage = `${earn.name} a perdu ${betAmmount} $`
+        }
+
+        game.addMessage(winMessage)
+
+        get_user_info(earn.name).then((res) => {
+          console.log("response");
+          console.log(res);
+          changeDataBase('argent', res.argent + moneyWin, earn.name);
+          changeMoney(earn.name, moneyWin);
+        });
+      }
+
+      game.restartRound()
+      io.to(serverId).emit("getMessage", game.chatContent);
+      io.to(serverId).emit("askMoney");
+      io.to(serverId).emit("allDeck", game.playerList)
+      io.to(serverId).emit("gameStatus", "bet");
+      io.to(serverId).emit("dealerCards", game.dealerCards)
+    }
   })
 
-  socket.on("BJ-leave",(serverId,name) => {
+  socket.on("BJ-leave", (serverId, name) => {
     let game = findGame(serverId, BlackJackGames);
     let player = findPlayer(name, game.playerList);
     game.removePlayer(player)
 
     io.to(serverId).emit("allDeck", this.playerList);
   })
+
 });
 
 

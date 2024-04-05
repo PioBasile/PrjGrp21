@@ -363,7 +363,7 @@ const SixQuiPrend = () => {
           if (prevSeconds === 0 || !myTurn) {
             if (myTurn && !selected) {
               setselected(true);
-              socket.emit('send6cardphase1', deckmem[Math.floor(Math.random() * deckmem.length)], sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
+              socket.emit('send6cardphase1', playerCards[Math.floor(Math.random() * playerCards.length)], sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
             }
             return 30;
           } else {
@@ -460,7 +460,7 @@ const SixQuiPrend = () => {
 
   const saveGame = () => {
     setIsSave(false);
-    socket.emit("saveGame", sessionStorage.getItem("serverConnected"), sessionStorage.getItem("name"),saveName)
+    socket.emit("saveGame", sessionStorage.getItem("serverConnected"),saveName, sessionStorage.getItem("name"))
   }
 
   function YourComponent() {
@@ -536,6 +536,10 @@ const SixQuiPrend = () => {
     }
   }, [messages]); 
 
+  function closePopup() {
+    setIsSave(false);
+  }
+
 
   return (
 
@@ -546,11 +550,12 @@ const SixQuiPrend = () => {
       {/* UPPER BANDEAU */}
       <button className="bo-emote-button" onClick={toggleEmotes}>Emotes</button>
       {isSave && (
-        <div className='savePopUp'>
-          <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
-          <input className="inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
-          <div className="saveButtonPopUp" onClick={() => saveGame()}>Sauvergarder</div>
-        </div>
+          <div className='savePopUp'>
+              <div className='closeButton' onClick={() => closePopup()}>X</div>
+              <h1 className='titlePopUp'>Entrer le nom de la sauvegarde :</h1>
+              <input className="inputPopup" type="text" placeholder='Nom de la sauvegarde' onChange={(e) => setSaveName(e.target.value)}></input>
+              <div className="saveButtonPopUp" onClick={() => saveGame()}>Sauvegarder</div>
+          </div>
       )}
 
     

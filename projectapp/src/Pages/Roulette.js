@@ -4,7 +4,7 @@ import './CSS/roulette.css';
 import { useNavigate } from 'react-router-dom';
 
 
-const Roulette = () => {
+const Roulette = () => { 
     const navigate = useNavigate();
     const [timer, setTimer] = useState(-1);
     const coin = require('./CSS/pics/coin.webp')
@@ -28,7 +28,6 @@ const Roulette = () => {
     const roulette = require("./CSS/pics/roulette.jpg");
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-    const [isCo, setIsCo] = useState("chat");
     // eslint-disable-next-line
 
 
@@ -74,6 +73,21 @@ const Roulette = () => {
 
     }
 
+    const handleSpin = (randomResult) => {
+        setResult(randomResult);
+
+        if (sessionStorage.getItem("location") === "/roulette") {
+
+            let randomDeg = getPositionInRoulette(randomResult) + 1080
+
+            var spinningElem = document.getElementById('spinning');
+
+            spinningElem.style.transform = 'rotate(' + randomDeg + 'deg';
+        }
+        // setMoneyWin(0);
+        setIsSpinning(true);
+    }
+
     function convertBetValues(betValues) {
         const conversionRules = {
             37: 'first twelve',
@@ -86,12 +100,12 @@ const Roulette = () => {
             44: '1to18',
             45: '19to36'
         };
-    
+
         return betValues.map(value => {
             return conversionRules[value] || value;
         });
     }
-    
+
 
 
     const handleSubmit = () => {
@@ -118,7 +132,6 @@ const Roulette = () => {
     const leave = () => {
         socket.emit("leave");
         navigate('/BrowserManager');
-        setIsCo(true);
     }
 
 
@@ -139,83 +152,80 @@ const Roulette = () => {
 
 
     useEffect(() => {
+        let mounted = true;
+        if (mounted) {
+
+            socket.on("bets", (betList) => {
+                let bets = betList.map(bet => bet.betPos);
+                setValueBet(convertBetValues(bets));
+                console.log(valueBet);
+            })
 
 
-        socket.on("bets", (betList) => {
-            let bets = betList.map(bet => bet.betPos);
-            setValueBet(convertBetValues(bets));
-            console.log(valueBet);
-        })
 
+            socket.on('spinwheel', (resy) => {
+                if (sessionStorage.getItem("location") === "/roulette") {
 
-
-        socket.on('spinwheel', (resy) => {
-
-            if (sessionStorage.getItem("location") === "/roulette") {
-                handleSpin(resy);
-            }
-        });
-
-        socket.on("tropsTard", () => {
-
-            alert("trops tard");
-
-        });
-
-        socket.on("rouletteTimer", (time) => {
-
-            setTimer(time);
-
-        });
-
-        socket.on("VoilaTesSousMonSauce", (argent) => {
-            setMoney(argent);
-        });
-
-        socket.on("listWins", (wins) => {
-
-            let sumWins = 0;
-            wins.forEach((win) => {
-
-                if (win["name"] === sessionStorage.getItem('name')) {
-
-                    sumWins += win["won"];
-
+                    handleSpin(resy);
                 }
+            });
 
-                // AJOUTER chat ici
+            socket.on("tropsTard", () => {
+
+                alert("trops tard");
 
             });
 
-            setMoneyWin(sumWins);
+            socket.on("rouletteTimer", (time) => {
 
-        });
+                setTimer(time);
 
-        if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
+            });
+
+            socket.on("VoilaTesSousMonSauce", (argent) => {
+                setMoney(argent);
+            });
+
+            socket.on("listWins", (wins) => {
+
+                let sumWins = 0;
+                wins.forEach((win) => {
+
+                    if (win["name"] === sessionStorage.getItem('name')) {
+
+                        sumWins += win["won"];
+
+                    }
+
+                });
+
+                setMoneyWin(sumWins);
+
+            });
+
+            if (sessionStorage.getItem("name") == null) { navigate("/login-signup"); }
 
 
-        socket.on("rlt-getMessage", (msgList) => {
-            setMessages(msgList);
-        })
+            socket.on("rlt-getMessage", (msgList) => {
+
+                setMessages(msgList);
+            })
+
+        }
+        return () => {
+            mounted = false;
+            socket.off("rlt-getMessage")
+            socket.off("listWins")
+            socket.off("VoilaTesSousMonSauce")
+            socket.off("rouletteTimer")
+            socket.off("tropsTard")
+            socket.off("spinwheel")
+            socket.off("bets")
+        }
 
 
     }, [])
 
-
-    const handleSpin = (randomResult) => {
-        setResult(randomResult);
-
-        if (sessionStorage.getItem("location") === "/roulette") {
-
-            let randomDeg = getPositionInRoulette(randomResult) + 1080
-
-            var spinningElem = document.getElementById('spinning');
-
-            spinningElem.style.transform = 'rotate(' + randomDeg + 'deg';
-        }
-        // setMoneyWin(0);
-        setIsSpinning(true);
-    }
 
     const resultRoulette = () => {
 
@@ -296,9 +306,13 @@ const Roulette = () => {
         );
     }
 
-    const convert = (valeur) => {
+    useEffect(() => {
+        const messageContainer = document.querySelector('.message-container');
+        if (messageContainer) {
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+    }, [messages]);
 
-    }
 
     return (
 
@@ -380,7 +394,7 @@ const Roulette = () => {
                                             <input type="number" className='inputMoney' value={montant} onChange={(e) => setMontant(e.target.value)} />
                                         </label>
                                         <button className='button' onClick={handleSubmit}>BET</button>
-                                        <button className='btn-close' onClick={fermerPopup}></button>
+                                        <button className='btn-close' onClick={fermerPopup}>X</button>
                                     </div>
                                 </div>
                             </div>)}

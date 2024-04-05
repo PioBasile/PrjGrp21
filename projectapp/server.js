@@ -1482,7 +1482,7 @@ io.on('connection', (socket) => {
     }
     io.to(game.identifiant_partie).emit("dealerCards", game.dealerCards);
 
-    
+
 
   }
 
@@ -1609,23 +1609,24 @@ io.on('connection', (socket) => {
 
   socket.on("resolveMoney", (serverId) => {
 
-    // let game = findGame(serverId, BlackJackGames);
-    // let winnersAndNot = game.findWinner();
-    // let winnerList = winnersAndNot.winners;
-    // let notWinnerNotLooser = winnersAndNot.notWinNotLoose;
-    let winnerBetList = findWinnerBet();
+    let game = findGame(serverId, BlackJackGames);
 
-    console.log("winnerList")
+    let winnerBetList = game.findWinnerBet();
+
     console.log(winnerBetList);
-    
-    // for(let winner of winnerList){
-    //   let moneyWin = game.findAllWinBet(winner)
-    //   console.log(moneyWin);
-    // }
-    // 
-    //  
-  }) 
 
+    for (let earn of winnerBetList) {
+      Object.entries(earn).map(([nom, betAmount]) => {
+
+        let moneyWin = betAmount * earn.mult;
+        console.log("bets")
+        console.log(nom)
+        console.log("=>")
+        console.log(moneyWin)
+
+      })
+    }
+  })
 });
 
 

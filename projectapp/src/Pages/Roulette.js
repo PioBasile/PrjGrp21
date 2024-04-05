@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import socket from '../socketG';
 import './CSS/roulette.css';
 import { useNavigate } from 'react-router-dom';
+import music from './CSS/sounds/music.mp3';
 
 
 const Roulette = () => { 
@@ -28,13 +29,38 @@ const Roulette = () => {
     const roulette = require("./CSS/pics/roulette.jpg");
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-    // eslint-disable-next-line
-
+    const [audio, setAudio] = useState(null);
+    const [isPlaying, setIsPlaying] = useState(false);
 
 
     const fermerPopup = () => {
         setAfficherPopup(false);
     };
+
+    useEffect(() => {
+        const musicAudio = new Audio(music);
+        setAudio(musicAudio);
+
+        return () => {
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0; 
+            }
+        };
+    }, [music]); 
+
+    const playM = () => {
+        if (!audio) return; 
+
+        if (isPlaying) {
+            audio.pause();
+        } else {
+            audio.play().catch((e) => console.error("Erreur lors de la lecture de l'audio:", e));
+        }
+
+        setIsPlaying(!isPlaying);
+    };
+
 
 
 
@@ -320,6 +346,7 @@ const Roulette = () => {
             <button className='rou-timer'> vous avez encore {timer}s pour bet </button>
 
             <YourComponent></YourComponent>
+            <button className='rou-music' onClick={playM}> {isPlaying ? "Pause Music" : "Play Music"}</button>
 
             <div className="ro-bye-button" onClick={leave}> Leave </div>
 

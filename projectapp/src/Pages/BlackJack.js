@@ -3,9 +3,7 @@ import { ScrollRestoration, useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import socket from '../socketG';
 import './CSS/blackJack.css'
-
-
-
+import music from './CSS/sounds/music.mp3';
 
 const BlackJack = () => {
     const navigate = useNavigate();
@@ -28,6 +26,8 @@ const BlackJack = () => {
     const [hasSplitted, setSplitted] = useState(false);
     const [moneyWin, setMoneyWin] = useState(null);
     const [whoWon, setWhoWon] = useState("");
+    const [audio, setAudio] = useState(null);
+    const [isPlaying, setIsPlaying] = useState(false);
 
 
     // par default le deck selectionner est le tient logique
@@ -345,6 +345,30 @@ const BlackJack = () => {
     })
 
     useEffect(() => {
+        const musicAudio = new Audio(music);
+        setAudio(musicAudio);
+
+        return () => {
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0; 
+            }
+        };
+    }, [music]); 
+
+    const playM = () => {
+        if (!audio) return; 
+
+        if (isPlaying) {
+            audio.pause();
+        } else {
+            audio.play().catch((e) => console.error("Erreur lors de la lecture de l'audio:", e));
+        }
+
+        setIsPlaying(!isPlaying);
+    };
+
+    useEffect(() => {
         const messageContainer = document.querySelector('.message-container');
         if (messageContainer) {
             messageContainer.scrollTop = messageContainer.scrollHeight;
@@ -355,6 +379,9 @@ const BlackJack = () => {
     return (
         <div className='black-jack-container'>
             <YourComponent></YourComponent>
+
+            <button className='bl-music' onClick={playM}> {isPlaying ? "Pause Music" : "Play Music"}</button>
+
             <div className='upper-bandeau'>
 
 

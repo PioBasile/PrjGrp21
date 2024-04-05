@@ -1,25 +1,24 @@
 .victory-container {
     padding: 0;
     margin: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100vw; /* Utilise la largeur complète de la fenêtre d'affichage */
+    height: 100vh; /* Utilise la hauteur complète de la fenêtre d'affichage */
     display: flex;
     justify-content: center; 
     align-items: center; 
     position: relative;
     overflow: hidden;
 }
-
 .victory-text {
-    position: absolute; /* Utilisez absolute pour le positionnement spécifique si le conteneur est flex */
-    width: 100%; /* Prend la pleine largeur pour centrer le texte */
-    text-align: center; /* Centre le texte à l'intérieur de l'élément */
-    font-size: 2em; /* Ajustez la taille de la police selon vos besoins */
+    position: absolute;
+    width: 80vw; /* Adapte la largeur du texte à la largeur de l'écran */
+    text-align: center;
+    font-size: 4vw; /* Adapte la taille de la police à la largeur de l'écran */
     color: white;
     text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.7);
     z-index: 1000;
-    top: 30%; /* Positionne à 50% du haut de l'écran */
-    transform: translateY(-50%); /* Décale l'élément vers le haut de 50% de sa hauteur pour le centrage vertical */
+    top: 30vh; /* Utilise vh pour positionner en fonction de la hauteur de l'écran */
+    transform: translateY(-50%);
     animation: zoomIn 2s ease-in-out forwards, rotate 6s linear infinite; 
 }
 
@@ -33,46 +32,45 @@
       opacity: 1;
     }
 }
-  
+
 .victory-background video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover; /* 'cover' est généralement plus approprié que 'fill' pour maintenir les proportions */
 }
 
 .victory-timer {
-    color: #FFD700; /* Une couleur dorée pour évoquer la victoire */
+    color: #FFD700;
     position: absolute;
-    bottom: 15%; /* Ajusté pour un meilleur espacement avec le bouton */
+    bottom: 10vh; /* Ajuste en fonction de la hauteur de l'écran */
     left: 50%;
     transform: translateX(-50%);
-    font-size: 2em;
-    font-weight: bold; /* Rendre le texte plus impactant */
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Ajouter une ombre pour plus de profondeur */
+    font-size: 3vmin; /* Utilise vmin pour une adaptation cohérente sur les écrans larges et hauts */
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
-
 
 .victory-button {
     position: absolute;
-    bottom: 5%;
+    bottom: 5vh; /* Adapte le positionnement en fonction de la hauteur de l'écran */
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
 }
 
 .victory-button button {
-    font-size: 1.5em;
-    background-color: #28A745; /* Un vert vibrant pour inciter à l'action */
-    color: #ffffff; /* Couleur du texte */
-    border: none; /* Supprimer la bordure par défaut */
-    border-radius: 5px; /* Ajouter des coins arrondis */
-    padding: 10px 20px; /* Ajuster le padding pour un bouton plus grand */
+    font-size: 2vmin; /* Adapte la taille de la police en fonction de la taille de l'écran */
+    background-color: #28A745;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 1vmin 2vmin; /* Adapte le padding en fonction de la taille de l'écran */
     cursor: pointer;
-    transition: background-color 0.3s ease-in-out, transform 0.2s ease; /* Ajouter une transition pour le survol */
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease;
 }
 
 .victory-button button:hover {
-    background-color: #218838; /* Assombrir le bouton au survol */
-    transform: scale(1.05); /* Effet de zoom léger pour indiquer l'interactivité */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Ajouter une ombre pour plus de profondeur */
+    background-color: #218838;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }

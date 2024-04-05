@@ -33,7 +33,7 @@ const BlackJack = () => {
     // par default le deck selectionner est le tient logique
     const [deckSelected, setDeckSelected] = useState(NAME);
 
-    const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/blue.png")
+    const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/red.png")
 
 
     function cardSymbTranslate(symbole) {

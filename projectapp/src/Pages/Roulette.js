@@ -227,21 +227,6 @@ const Roulette = () => {
     }, [])
 
 
-    const handleSpin = (randomResult) => {
-        setResult(randomResult);
-
-        if (sessionStorage.getItem("location") === "/roulette") {
-
-            let randomDeg = getPositionInRoulette(randomResult) + 1080
-
-            var spinningElem = document.getElementById('spinning');
-
-            spinningElem.style.transform = 'rotate(' + randomDeg + 'deg';
-        }
-        // setMoneyWin(0);
-        setIsSpinning(true);
-    }
-
     const resultRoulette = () => {
 
         setIsSpinning(false);

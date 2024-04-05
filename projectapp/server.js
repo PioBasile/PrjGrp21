@@ -1098,7 +1098,7 @@ io.on('connection', (socket) => {
       game = findGame(data.serverId, MilleBornesGames)
     }
 
-    else if(lobby.gameType == "blackjack"){
+    else if (lobby.gameType == "blackjack") {
       game = findGame(data.serverId, BlackJackGames);
     }
 
@@ -1401,7 +1401,8 @@ io.on('connection', (socket) => {
   })
 
   function dealerPlay(game) {
-   
+    let sum = game.sumPoint();
+
     while (sum < 17) {
       game.dealerHit();
       sum = game.sumPoint()
@@ -1542,23 +1543,24 @@ io.on('connection', (socket) => {
 
       if (earn.amountBet != null || earn.mult != null) {
 
-      let moneyWin = earn.amountBet * earn.mult;
-      io.to(serverId).emit("moneyWin", moneyWin, earn.name);
-      console.log("name")
-      console.log(earn.name);
-      get_user_info(earn.name).then((res) => {
-        console.log("response");
-        console.log(res);
-        changeDataBase('argent', res.argent + moneyWin, earn.name);
-        changeMoney(earn.name, moneyWin);
-      });
-    }
+        let moneyWin = earn.amountBet * earn.mult;
+        io.to(serverId).emit("moneyWin", moneyWin, earn.name);
+        console.log("name")
+        console.log(earn.name);
+        get_user_info(earn.name).then((res) => {
+          console.log("response");
+          console.log(res);
+          changeDataBase('argent', res.argent + moneyWin, earn.name);
+          changeMoney(earn.name, moneyWin);
+        });
+      }
 
-    game.restartRound()
-    io.to(serverId).emit("askMoney");
-    io.to(serverId).emit("allDeck", game.playerList)
-    io.to(serverId).emit("gameStatus", "bet");
-    io.to(serverId).emit("dealerCards", game.dealerCards)
+      game.restartRound()
+      io.to(serverId).emit("askMoney");
+      io.to(serverId).emit("allDeck", game.playerList)
+      io.to(serverId).emit("gameStatus", "bet");
+      io.to(serverId).emit("dealerCards", game.dealerCards)
+    }
   })
 
   socket.on("BJ-leave", (serverId, name) => {

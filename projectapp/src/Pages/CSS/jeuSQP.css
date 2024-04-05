@@ -252,7 +252,7 @@ button {
 
 .scoreboard {
     position: fixed;
-    top: 50%;
+    top: 40%;
     right: -250px;
     /* Cache le contenu à l'extérieur de la vue, garde l'onglet visible */
     transform: translateY(-50%);
@@ -521,7 +521,7 @@ img {
 
 .sqp-emote-display-container {
     position: fixed;
-    right: 4%;
+    right: 1%;
     bottom: 22%;
     width: 200px; /* Ajusté pour mieux s'adapter au titre */
     background-color: rgb(67, 103, 182); /* Couleur légèrement ajustée pour le contraste */

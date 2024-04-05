@@ -378,15 +378,21 @@ const MilleBorne = () => {
         }
     }, [messages]);
 
+    function closePopup() {
+        setIsSave(false);
+    }
+    
+
 
     return (
         <div className='MB-container'>
 
             {isSave && (
                 <div className='savePopUp'>
-                    <h1 className='titlePopUp'> Entrer le nom de la save : </h1>
-                    <input className="inputPopup" type="text" placeholder='save Name' onChange={(e) => setSaveName(e.target.value)}></input>
-                    <div className="saveButtonPopUp" onClick={() => saveGame()}>Sauvergarder</div>
+                    <div className='closeButton' onClick={() => closePopup()}>X</div>
+                    <h1 className='titlePopUp'>Entrer le nom de la sauvegarde :</h1>
+                    <input className="inputPopup" type="text" placeholder='Nom de la sauvegarde' onChange={(e) => setSaveName(e.target.value)}></input>
+                    <div className="saveButtonPopUp" onClick={() => saveGame()}>Sauvegarder</div>
                 </div>
             )}
 

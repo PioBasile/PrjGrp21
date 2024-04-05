@@ -287,8 +287,16 @@ const Roulette = () => {
             document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
 
             return () => {
-                // document.removeEventListener('click', getElementId);
-                // document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+                try {
+
+                    document.removeEventListener('click', getElementId);
+                    document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+
+                } catch (err) {
+
+                    console.log("meh");
+
+                }
 
             };
         }, [message]);
@@ -297,6 +305,13 @@ const Roulette = () => {
             <div></div>
         );
     }
+
+    useEffect(() => {
+        const messageContainer = document.querySelector('.message-container');
+        if (messageContainer) {
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+    }, [messages]);
 
 
     return (

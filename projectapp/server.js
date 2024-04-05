@@ -1420,7 +1420,7 @@ io.on('connection', (socket) => {
 
     const playerPoints = player.sumPoint();
 
-    if (playerPoints > 21) {
+    if (playerPoints >= 21) {
       if (!game.nextPlayer()) {
         dealerPlay(game)
       }

@@ -77,9 +77,7 @@ const changeDataBase = (dataToChange, newData, nom) => {
     sqlUpdate, [newData, nom], (function (err) {
       if (err) {
         console.error(err.message);
-      } else {
-        console.log(`Mise à jour réussie pour ${nom}`);
-      }
+      }  
     })
   )
 }

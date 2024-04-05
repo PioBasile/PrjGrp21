@@ -116,7 +116,6 @@ const ItemShop = () => {
     }
 
     const buyItem = (gif) => {
-        console.log("autantqueca");
         socket.emit("buyAGif", sessionStorage.getItem("name"), gif, money);
     }
 

@@ -12,20 +12,16 @@ const BlackJack = () => {
     const MY_DECK = NAME;
     const exitButton = require("./CSS/pics/exit.png");
     const user = require("./CSS/svgs/user.svg")
-    const betBool = useState(true);
     const [allDecks, setAllDeck] = useState([]);
     const [money, setMoney] = useState(0);
     const [dealerDeck, setDealerDeck] = useState([]);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [serverMessage, setServerMessage] = useState([])
-    const [firstPart, setFirstPart] = useState(true);
     const [myTurn, setMyTurn] = useState(false);
     const [canBet, setCanBet] = useState(true);
     const [betAmount, setBetAmount] = useState(0);
     const [hasSplitted, setSplitted] = useState(false);
-    const [moneyWin, setMoneyWin] = useState(null);
-    const [whoWon, setWhoWon] = useState("");
     const [canSplit, setCanSplit] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef(null);
@@ -347,16 +343,14 @@ const BlackJack = () => {
     })
 
     useEffect(() => {
-        // Initialisation de l'objet Audio et sauvegarde dans la référence
         audioRef.current = new Audio(music);
     
-        // Retiré play() pour éviter la lecture automatique
-        // audioRef.current.play().catch(e => console.error("Erreur de lecture:", e));
+        
     
         return () => {
             if (audioRef.current) {
                 audioRef.current.pause();
-                audioRef.current.currentTime = 0; // Réinitialise le temps si le composant est démonté
+                audioRef.current.currentTime = 0;
             }
         };
     }, [music]); 

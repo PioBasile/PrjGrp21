@@ -26,6 +26,9 @@ const BlackJack = () => {
     const [canBet, setCanBet] = useState(true);
     const [betAmount, setBetAmount] = useState(0);
     const [hasSplitted, setSplitted] = useState(false);
+    const [moneyWin, setMoneyWin] = useState(null);
+    const [whoWon, setWhoWon] = useState("");
+
 
     // par default le deck selectionner est le tient logique
     const [deckSelected, setDeckSelected] = useState(NAME);
@@ -62,7 +65,6 @@ const BlackJack = () => {
                 return -1;
         }
     }
-
 
 
 
@@ -136,8 +138,8 @@ const BlackJack = () => {
             document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
 
             return () => {
-                document.removeEventListener('click', getElementId);
-                document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+                //document.removeEventListener('click', getElementId);
+                //document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
 
             };
         }, [message]);
@@ -319,8 +321,9 @@ const BlackJack = () => {
                 socket.emit("BJ-whatMyMoney", NAME);
             })
 
-            socket.on("getMessage", (msgList) => {
-                setMessages(msgList);
+            socket.on("moneyWin", (money,who_won) => {
+                setMoneyWin(money);
+                setWhoWon(who_won);
             })
 
         }
@@ -331,18 +334,34 @@ const BlackJack = () => {
             socket.off("dealerCards");
             socket.off("gameSatus");
             socket.off("BJ-askMyTurn");
-            socket.off("splitted");
-            socket.off("getMessage");
+            socket.off("splitted")
+            socket.off("askMoney")
+            socket.off("moneyWin")
         }
     })
 
 
-    useEffect(() => {
-        const messageContainer = document.querySelector('.message-container');
-        if (messageContainer) {
-            messageContainer.scrollTop = messageContainer.scrollHeight;
-        }
-    }, [messages]);
+    function ConfirmationDialog() {
+        const handleDelete = () => {
+            const result = window.confirm("VOULEZ-VOUS POUR SUR ALL-IN (t'es gay si tu le fais pas) ?");
+            if (result) {
+                setBetAmount(money);
+                handleBet();
+            } else {
+                console.log("Suppression annulée.");
+            }
+        };
+
+        return (
+
+            <div className='bet-button-bj' onClick={canBet ? handleBet : null} >ALL-IN</div>
+
+        );
+    }
+
+    const leave = () => {
+        navigate('/BrowserManager');
+    }
 
     return (
         <div className='black-jack-container'>
@@ -438,6 +457,7 @@ const BlackJack = () => {
                     </div>
                 </div>
             </div>
+            
 
             <div className="chat-container" id='chatContainer'>
                 <div className='message-container' >

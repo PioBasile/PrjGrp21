@@ -261,7 +261,7 @@ const NewBrowserManager = () => {
                             <option value="mb">Mille Bornes</option>
                             <option value="president">Président</option>
                             <option value="blackjack">BlackJack</option>
-                        </select>
+                        </select> 
                         <div className="select-arrow"></div>
                     </div>
                 </div>

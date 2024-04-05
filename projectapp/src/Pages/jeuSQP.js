@@ -361,9 +361,21 @@ const SixQuiPrend = () => {
         
         setSeconds(prevSeconds => {
           if (prevSeconds === 0 || !myTurn) {
+
+            try {
+
+              let t = deckmem.length;
+
+            } catch {
+
+              deckmem = playerCards;
+              console.log(deckmem);
+
+            }
+
             if (myTurn && !selected) {
               setselected(true);
-              socket.emit('send6cardphase1', playerCards[Math.floor(Math.random() * playerCards.length)], sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
+              socket.emit('send6cardphase1', deckmem[Math.floor(Math.random() * deckmem.length)], sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
             }
             return 30;
           } else {

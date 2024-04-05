@@ -1229,6 +1229,8 @@ class BlackJackPlayer extends Player {
       this.bets[existingBetIndex][deckName] += amountBet;
     } else {
       let newBet = {};
+      newBet["name"] = deckName;
+      newBet["amountBet"] = amountBet;
       newBet[deckName] = amountBet;
       this.bets.push(newBet);
       console.log("newbet WTF")
@@ -1473,7 +1475,6 @@ class BlackJack {
   findWinner() {
     let dealerPoints = this.sumPoint();
     let winnerList = []
-    let notWinnerNotLooser = []
     if (dealerPoints > 21) {
       for (let player of this.playerList) {
         winnerList.push(player);
@@ -1483,16 +1484,15 @@ class BlackJack {
 
     for (let player of this.playerList) {
       let playerPoints = player.sumPoint()
-
-      if (playerPoints <= 21 && playerPoints > dealerPoints) {
+      console.log("findWinner<Function> => ", playerPoints)
+      console.log(playerPoints);
+      if (playerPoints <= 21 && playerPoints >= dealerPoints) {
         winnerList.push(player);
 
       }
-      else if (playerPoints == dealerPoints) {
-        notWinnerNotLooser.push(player);
-      }
-
     }
+    console.log("winnerList")
+    console.log(winnerList);
     return winnerList;
   }
 
@@ -1527,23 +1527,39 @@ class BlackJack {
   }
 
   findWinnerBet() {
-    let winnerList = this.findWinner()
+    let winnerList = this.playerList 
+    //test si ne marche pas remettre ca en dessous
+    //let winnerList = this.findWinner();
     let betsWin = []
     for (let player of this.playerList) {
       for (let bet of player.bets) {
-        Object.entries(bet).map(([nom, betAmount]) => {
-          let better = findPlayer(nom, this.playerList);
-          if (winnerList.includes(better)) {
-            let multiplicateur = this.calculMultiplicateur(player.deck)
-            bet["mult"] = multiplicateur
-            console.log(bet)
-            betsWin.push(bet);
-          }
-        })
+        console.log(bet)
+        let better = findPlayer(bet.name, this.playerList);
+        if (winnerList.includes(better)) {
+          let multiplicateur = this.calculMultiplicateur(player.deck)
+          bet["mult"] = multiplicateur
+          console.log(bet)
+          betsWin.push(bet);
+        }
       }
     }
+    console.log("les parries gagnat")
+    console.log(betsWin);
     return betsWin;
   }
+
+  removePlayer(player) {
+
+    let playerI = findRemovePlayer(player, this.playerList);
+    this.playerList.splice(playerI, 1);
+  }
+
+  addMessage(msg) {
+    if (msg != "") {
+      this.chatContent.push(msg);
+    }
+  }
+
 }
 
 

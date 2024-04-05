@@ -259,7 +259,6 @@ const NewBrowserManager = () => {
                             <option value="batailleOuverte">Bataille Ouverte</option>
                             <option value="sqp">Six qui prend</option>
                             <option value="mb">Mille Bornes</option>
-                            <option value="president">Président</option>
                             <option value="blackjack">BlackJack</option>
                         </select>
                         <div className="select-arrow"></div>

@@ -5,6 +5,8 @@ import socket from '../socketG';
 import './CSS/blackJack.css'
 
 
+
+
 const BlackJack = () => {
     const navigate = useNavigate();
     const SERVER_ID = sessionStorage.getItem("serverConnected");
@@ -17,7 +19,7 @@ const BlackJack = () => {
     const [money, setMoney] = useState(0);
     const [dealerDeck, setDealerDeck] = useState([]);
     const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState(["CHAT", "CHAT", "CHAT", "CHAT", "CHAT", "CHAT", "CHAT", "CHAT", "CHAT"]);
+    const [messages, setMessages] = useState([]);
     const [serverMessage, setServerMessage] = useState([])
     const [firstPart, setFirstPart] = useState(true);
     const [myTurn, setMyTurn] = useState(false);
@@ -155,12 +157,6 @@ const BlackJack = () => {
         setMessage('');
     }
 
-
-    const restart = () => {
-        socket.emit("restartRound", SERVER_ID);
-    }
-
-
     const handleDoubler = () => {
         socket.emit("double", SERVER_ID, MY_DECK)
     }
@@ -184,7 +180,8 @@ const BlackJack = () => {
     }
 
     const handleGiveUp = () => {
-        alert("give up")
+        navigate("/BrowserManager")
+        socket.emit("leave",)
     }
 
     const handleSelectDeck = (deckName) => {
@@ -200,7 +197,6 @@ const BlackJack = () => {
         let montant = betAmount * 2;
         setBetAmount(montant)
     }
-
 
 
     useEffect(() => {
@@ -239,7 +235,6 @@ const BlackJack = () => {
     }
 
 
-
     useEffect(() => {
         let mounted = true;
         let failed = false;
@@ -259,7 +254,7 @@ const BlackJack = () => {
             })
 
             socket.on("dealerCards", (dealerCards) => {
-                if (dealerCards.length > 2) {
+                if (dealerCards.length > 1) {
                     let i = 1
                     let promises = [];
                     while (i < dealerCards.length) {
@@ -271,13 +266,19 @@ const BlackJack = () => {
 
                     Promise.all(promises).then(() => {
                         setTimeout(() => {
-                            console.log("caofkoez")
                             socket.emit("resolveMoney", SERVER_ID);
                         }, "2000")
                     });
 
                 } else {
+
                     setDealerDeck(dealerCards);
+
+                    // if (dealerCards.length === 2) {
+                    //     setTimeout(() => {
+                    //         socket.emit("resolveMoney", SERVER_ID);
+                    //     }, "4000")
+                    // }
                 }
             });
 
@@ -309,6 +310,10 @@ const BlackJack = () => {
                 setSplitted(true)
             })
 
+            socket.on("askMoney", () => {
+                socket.emit("BJ-whatMyMoney", NAME);
+            })
+
         }
         return () => {
             mounted = false;
@@ -321,6 +326,24 @@ const BlackJack = () => {
         }
     })
 
+
+    function ConfirmationDialog() {
+        const handleDelete = () => {
+            const result = window.confirm("VOULEZ-VOUS POUR SUR ALL-IN (t'es gay si tu le fais pas) ?");
+            if (result) {
+                setBetAmount(money);
+                handleBet();
+            } else {
+                console.log("Suppression annulée.");
+            }
+        };
+
+        return (
+
+            <div className='bet-button-bj' onClick={canBet ? handleBet : null} >ALL-IN</div>
+
+        );
+    }
 
 
     return (
@@ -383,11 +406,7 @@ const BlackJack = () => {
                         <div className='userName'></div>
                         {player.bets.map((bet, index) => (
                             <div key={index}>
-                                {Object.entries(bet).map(([key, value]) => (
-                                    <div key={key}>
-                                        <p>{key} : {value}$</p>
-                                    </div>
-                                ))}
+                                <p>{bet.name} : {bet.amountBet}$</p>
                             </div>
                         ))}
 
@@ -418,7 +437,7 @@ const BlackJack = () => {
 
                     <div className='bet-giveup-container'>
                         <div className='bet-button-bj' onClick={canBet ? handleBet : null} >BET</div>
-                        <div className='bet-button-bj' onClick={() => restart()} >RESTART</div>
+                        <ConfirmationDialog></ConfirmationDialog>
                         <div className='giveup-button-bj' onClick={handleGiveUp}>ABANDONNER</div>
                     </div>
                 </div>

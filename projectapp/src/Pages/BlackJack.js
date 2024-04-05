@@ -138,8 +138,8 @@ const BlackJack = () => {
             document.getElementById("inputChat").addEventListener('keydown', sendMessageOnEnter);
 
             return () => {
-                //document.removeEventListener('click', getElementId);
-                //document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
+                document.removeEventListener('click', getElementId);
+                document.getElementById("inputChat").removeEventListener('keydown', sendMessageOnEnter);
 
             };
         }, [message]);
@@ -154,7 +154,7 @@ const BlackJack = () => {
     }
 
     const sendMessage = () => {
-        socket.emit('sendMessage', { name: sessionStorage.getItem("name"), msg: message, serverId: sessionStorage.getItem("serverConnected") });
+        socket.emit('sendMessage', { name:NAME, msg: message, serverId: SERVER_ID });
         setMessage('');
     }
 
@@ -225,7 +225,6 @@ const BlackJack = () => {
             socket.emit("whatDealerCards", SERVER_ID);
             socket.emit("BJ-whatMyTurn", SERVER_ID, NAME);
             socket.emit("whatsStatus", SERVER_ID)
-
             socket.emit("loadTheChat", SERVER_ID)
         }
 
@@ -278,14 +277,7 @@ const BlackJack = () => {
                     });
 
                 } else {
-
                     setDealerDeck(dealerCards);
-
-                    // if (dealerCards.length === 2) {
-                    //     setTimeout(() => {
-                    //         socket.emit("resolveMoney", SERVER_ID);
-                    //     }, "4000")
-                    // }
                 }
             });
 
@@ -326,6 +318,10 @@ const BlackJack = () => {
                 setWhoWon(who_won);
             })
 
+            socket.on("getMessage", (msgList) => {
+                setMessages(msgList);
+            });
+
         }
         return () => {
             mounted = false;
@@ -336,32 +332,18 @@ const BlackJack = () => {
             socket.off("BJ-askMyTurn");
             socket.off("splitted")
             socket.off("askMoney")
+            socket.off("getMessage")
             socket.off("moneyWin")
         }
     })
+    
+    useEffect(() => {
+        const messageContainer = document.querySelector('.message-container');
+        if (messageContainer) {
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+    }, [messages]);
 
-
-    function ConfirmationDialog() {
-        const handleDelete = () => {
-            const result = window.confirm("VOULEZ-VOUS POUR SUR ALL-IN (t'es gay si tu le fais pas) ?");
-            if (result) {
-                setBetAmount(money);
-                handleBet();
-            } else {
-                console.log("Suppression annulée.");
-            }
-        };
-
-        return (
-
-            <div className='bet-button-bj' onClick={canBet ? handleBet : null} >ALL-IN</div>
-
-        );
-    }
-
-    const leave = () => {
-        navigate('/BrowserManager');
-    }
 
     return (
         <div className='black-jack-container'>

@@ -123,7 +123,7 @@ const BlackJack = () => {
                 if (clickedElementId === "inputChat") {
                     chatContainer.style.opacity = 1;
                 } else {
-                    chatContainer.style.opacity = 0.33;
+                    chatContainer.style.opacity = 0.5;
                 }
                 return clickedElementId;
             }
@@ -167,6 +167,7 @@ const BlackJack = () => {
     }
 
     const handleDoubler = () => {
+        setMyTurn(false);
         socket.emit("double", SERVER_ID, MY_DECK)
     }
 
@@ -227,9 +228,7 @@ const BlackJack = () => {
 
 
             socket.emit("BJ-allDeckInfo", SERVER_ID);
-            if(!canBet){
-                socket.emit("canSplit", (SERVER_ID, MY_DECK));
-            }            
+            socket.emit("canSplit", SERVER_ID, MY_DECK);
             socket.emit("BJ-whatMyMoney", NAME);
             socket.emit("whatDealerCards", SERVER_ID);
             socket.emit("BJ-whatMyTurn", SERVER_ID, NAME);
@@ -264,7 +263,7 @@ const BlackJack = () => {
             })
 
             socket.on("allDeck", (deckInfo) => {
-                console.log(deckInfo);
+                socket.emit("canSplit", SERVER_ID, NAME);
                 setAllDeck(deckInfo);
             })
 
@@ -325,6 +324,10 @@ const BlackJack = () => {
 
             socket.on("goSplitIfYouCan", (bool) => {
                 setCanSplit(bool);
+            })
+
+            socket.on("askMoney", () => {
+                socket.emit("BJ-whatMyMoney", NAME);
             })
 
         }
@@ -425,7 +428,7 @@ const BlackJack = () => {
                     </div>
                     <div >
                         <div className={`action-button-bj ${!canBet && myTurn}`} onClick={myTurn && !canBet ? handleDoubler : null}>Doubler</div>
-                        <div className={`action-button-bj ${canSplit || (!canBet && myTurn)}`} onClick={myTurn && !canBet ? handleSplitter : null}>Splitter</div>
+                        <div className={`action-button-bj ${myTurn && !canBet && canSplit}`} onClick={myTurn && !canBet && canSplit ? handleSplitter : null}>Splitter</div>
                     </div>
                 </div>
                 <div className='bet-container'>

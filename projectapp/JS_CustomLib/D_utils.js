@@ -323,7 +323,6 @@ class Bataille {
         }
       }
       let winnersWithoutDoublon = winners.filter((elem, index) => winners.indexOf(elem) == index);
-      console.log(winnersWithoutDoublon.map(player => player.name));
       return winnersWithoutDoublon.map(player => player.name);
     }
     else {
@@ -1233,8 +1232,6 @@ class BlackJackPlayer extends Player {
       newBet["amountBet"] = amountBet;
       newBet[deckName] = amountBet;
       this.bets.push(newBet);
-      console.log("newbet WTF")
-      console.log(newBet);
     }
   }
 
@@ -1465,7 +1462,7 @@ class BlackJack {
       player.splittedDeck = [];
       player.hasSplitted = false;
     }
-    
+
     this.dealerCards = [];
     this.cartes = shuffle(generateCartes());
     this.playerList[0].myTurn = true;
@@ -1486,15 +1483,12 @@ class BlackJack {
 
     for (let player of this.playerList) {
       let playerPoints = player.sumPoint()
-      console.log("findWinner<Function> => ", playerPoints)
-      console.log(playerPoints);
       if (playerPoints <= 21 && playerPoints >= dealerPoints) {
         winnerList.push(player);
 
       }
     }
-    console.log("winnerList")
-    console.log(winnerList);
+
     return winnerList;
   }
 
@@ -1545,13 +1539,10 @@ class BlackJack {
         if (winnerList.includes(better)) {
           let multiplicateur = this.calculMultiplicateur(player.deck)
           bet["mult"] = multiplicateur
-          console.log(bet)
           betsWin.push(bet);
         }
       }
     }
-    console.log("les parries gagnat")
-    console.log(betsWin);
     return betsWin;
   }
 

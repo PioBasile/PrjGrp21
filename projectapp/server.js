@@ -161,7 +161,6 @@ io.on('connection', (socket) => {
     }
 
     io.to(rouletteRoomId).emit("bets", RouletteInstance.bets);
-    console.log(RouletteInstance.bets);
 
   });
 
@@ -339,7 +338,6 @@ io.on('connection', (socket) => {
 
   socket.on("lobbyInfo_UwU", (serverId) => {
     let lobby = findLobby(serverId, lobbyList);
-    // console.log(lobby);lobbyInfo_UwU
     io.to(serverId).emit("yourInfoBebs", { serverName: lobby.serverName, nbPlayerMax: lobby.nbPlayerMax, password: lobby.password, gameType: lobby.gameType, owner: lobby.owner, timer: lobby.tbt, moneyBet: lobby.moneyBet });
   })
 
@@ -460,7 +458,6 @@ io.on('connection', (socket) => {
         changeMoney(player.name, -lobby.moneyBet); // on leur enleve leur thune dés qu'ils entrent dans la game
         changeDataBase('nbWin', res.nbGames + 1, player.name);
         changeDataBase('argent', res.argent - lobby.moneyBet, player.name);
-        console.log("RES FOREACH", res)
       });
 
     }
@@ -535,7 +532,6 @@ io.on('connection', (socket) => {
       if (winners) {
         let moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length);
         winners.forEach((name) => {
-          console.log("WHAT WRONG WITH U")
           get_user_info(name).then((res) => {
             changeDataBase('nbWin', res.nbWin + 1, name);
             changeScoreBoard('bataille-ouverte', name);
@@ -618,8 +614,6 @@ io.on('connection', (socket) => {
     let winners = game.findGameWinner();
     if (winners) {
       if (winners.length != 0) {
-        console.log("maxjoeurs", game.maxJoueurs)
-        console.log("moneybet", game.moneyBet)
         var moneyWin = Math.round(game.moneyBet * game.maxJoueurs / winners.length)
       }
 
@@ -943,7 +937,6 @@ io.on('connection', (socket) => {
 
     if (game.state == "FIN") {
       io.to(data.serverId).emit("MB_FIN", player.name);
-      console.log("not here");
       let moneyWin = Math.round(game.moneyBet * game.maxPlayers)
       get_user_info(player.name).then((res) => {
 
@@ -1067,7 +1060,7 @@ io.on('connection', (socket) => {
       io.to(data.serverId).emit("MB_FIN", player.name);
       player = game.playerList[0];
       get_user_info(player.name).then((res) => {
-        console.log("here");
+
         changeDataBase('nbWin', res.nbWin + 1, player.name);
         changeDataBase('argent', res.argent + 100, player.name);
 
@@ -1198,9 +1191,8 @@ io.on('connection', (socket) => {
 
   socket.on("saveGame", (serverId, saveName, playerName) => {
     let lobby = findLobby(serverId, lobbyList);
-    console.log(lobby.gameType);
     if (lobby.gameType == "batailleOuverte") {
-      console.log("here1")
+      console.log("lets save some bataille ouverte")
       game = findGame(serverId, BatailGames);
     }
     else if (lobby.gameType == "sqp") {
@@ -1316,8 +1308,6 @@ io.on('connection', (socket) => {
       }
       let jsonData = JSON.parse(data);
       let playerEmotes = jsonData[playerName];
-      console.log("PLAYER EMOTE !!")
-      console.log(playerEmotes);
       socket.emit("yourEmotes", playerEmotes);
     })
   })
@@ -1481,7 +1471,6 @@ io.on('connection', (socket) => {
 
     if (!player.hasSplitted) {
       if (!game.nextPlayer()) {
-        console.log("gere");
         dealerPlay(game)
       };
     }
@@ -1509,13 +1498,13 @@ io.on('connection', (socket) => {
     let game = findGame(serverId, BlackJackGames);
     let player = findPlayer(deckName, game.playerList)
 
-    console.log("double")
-    console.log(player.bets);
-    let betTimeTwo = player.bets.deckName * 2
-    player.bets[deckName] = betTimeTwo;
+    for(let bet of player.bets){
+      if(bet.name == deckName){
+        bet.amountBet *= 2
+      }
+    }
 
     game.hit(deckName)
-    afterHit(game, player)
 
     if (!game.nextPlayer()) {
       dealerPlay(game);
@@ -1572,8 +1561,6 @@ io.on('connection', (socket) => {
         game.addMessage(winMessage)
 
         get_user_info(earn.name).then((res) => {
-          console.log("response");
-          console.log(res);
           changeDataBase('argent', res.argent + moneyWin, earn.name);
           changeMoney(earn.name, moneyWin);
         });

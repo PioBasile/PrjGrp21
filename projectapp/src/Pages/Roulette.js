@@ -125,8 +125,8 @@ const Roulette = () => {
             39: 'thd twelve',
             40: 'EVEN',
             41: 'ODD',
-            42: 'RED',
-            43: 'BLACK',
+            43: 'RED',
+            42: 'BLACK',
             44: '1to18',
             45: '19to36'
         };

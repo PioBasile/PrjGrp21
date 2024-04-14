@@ -54,7 +54,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://skibidi.igf.cnrs.fr/",
     methods: ["GET", "POST"],
   },
 
@@ -410,15 +410,6 @@ io.on('connection', (socket) => {
 
       MilleBornesGames.push(nGame);
     }
-
-    // else if (lobby.gameType == "president") {
-    //   nGame = new President(lobbyID, lobby.nbPlayerMax, -1, owner, plist, lobby.moneyBet);
-
-    //   const lobbyNotChanged = Object.assign({}, lobby);
-    //   nGame.lobbyLinked = lobbyNotChanged;
-
-    //   PresidentGames.push(nGame);
-    // }
 
     else if (lobby.gameType == "blackjack") {
       let bjList = []
@@ -1361,11 +1352,11 @@ io.on('connection', (socket) => {
         }
       }
 
-      if (game.anyonePlayed()) {
-        //si personne ne peut jouer alors tous les joueurs sont en blackJack 
-        //et donc le dealer joue meme si les chances qu'il blackJack sont de 0 on sait jamais
-        dealerPlay();
-      }
+      // if (game.anyonePlayed()) {
+      //   //si personne ne peut jouer alors tous les joueurs sont en blackJack 
+      //   //et donc le dealer joue meme si les chances qu'il blackJack sont de 0 on sait jamais
+      //   dealerPlay(game);
+      // }
 
       game.playerList[0].myTurn = true;
     }
@@ -1503,7 +1494,7 @@ io.on('connection', (socket) => {
         bet.amountBet *= 2
       }
     }
-
+    
     game.hit(deckName)
 
     if (!game.nextPlayer()) {

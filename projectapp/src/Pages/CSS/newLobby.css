@@ -10,7 +10,7 @@
     width: 66%;
     height: 100%;
     left: 0;
-    background-image: url('pics/9999520.jpg'); 
+    background-image: url('pics/9999520.jpg');
     background-size: cover;
 }
 
@@ -19,7 +19,7 @@
     padding-top: 5vh;
     display: flex;
     justify-content: center;
-    font-size: 5vh;
+    font-size: 100%;
     color: white;
 }
 
@@ -38,7 +38,7 @@
 
 .gameNameType {
     min-width: 30%;
-    font-size: 3vh;
+    font-size: 100%;
     padding-left: 1vw;
     padding-right: 1vw;
     color: #f2f2f2;
@@ -47,7 +47,7 @@
     align-items: center;
     height: 80%;
     background-color: rgb(21, 35, 44);
-    border:solid 2px gray;
+    border: solid 2px gray;
     border-radius: 25px;
 }
 
@@ -91,7 +91,7 @@ td {
 
 th,
 td {
-    font-size: 2vh;
+    font-size: 100%;
     padding: 2vh;
     text-align: left;
 }
@@ -124,7 +124,7 @@ th {
     height: 80%;
     border-radius: 30px;
     border: solid 3px white;
-    font-size: 10vh;
+    font-size: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -134,7 +134,7 @@ th {
     box-shadow: 0 0 25px rgb(0, 0, 0, 0.6)
 }
 
-.bigReadyButton:hover{
+.bigReadyButton:hover {
     background-color: rgb(27, 81, 31);
     cursor: pointer;
 }
@@ -178,19 +178,22 @@ th {
 }
 
 .playerInfo {
-    font-size: 3vh;
+    font-size: 100%;
 }
 
 @keyframes ellipsis {
     0% {
         content: ".";
     }
+
     33% {
         content: "..";
     }
+
     66% {
         content: "...";
     }
+
     100% {
         content: "";
     }
@@ -206,12 +209,94 @@ th {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 3vh;
+    font-size: 100%;
     border: solid 3px gray;
     color: #f2f2f2;
     left: 0;
     width: 15%;
     height: 80%;
-    border-radius: 20px ;
+    border-radius: 20px;
     background-color: red;
+}
+
+@media only screen and (max-width: 768px) {
+    .UBwithUnderBandeau {
+        width: 100%;
+        max-height: 50%;
+    }
+
+    .NB-upperBandeau {
+        max-height: 20%;
+        padding-top: 5%;
+        flex-direction: column;
+    }
+
+    .NB-container {
+        flex-direction: column;
+    }
+
+
+    .gameNameType {
+        min-width: auto;
+        width: 80%;
+        margin-bottom: 5%;
+        font-size: 100%;
+    }
+
+    .NB-playerList {
+        width: 100%;
+        min-height: 50%;
+        height: auto;
+        padding-top: 5%;
+        overflow: auto;
+    }
+
+
+    .playerInList {
+        width: 100%;
+        border-radius: 5px;
+        height: auto;
+        margin-top: 5%;
+    }
+
+    .kickButton {
+        width: 30%;
+        font-size: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .leaveLobbyButton {
+        width: 30%;
+        font-size: 100%;
+        margin-top: 5%;
+    }
+
+    .bigReadyButton-container {
+        margin-top: 10%;
+        height: auto;
+    }
+    
+    .bigReadyButton {
+
+        padding-top: 10%;
+        padding-bottom: 10%;
+        font-size: 100%;
+    }
+
+    .waitingPlayerTitle {
+        font-size: 100%;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+
+    /* Désactiver les règles liées au profil */
+    .gameStat,
+    .table-title,
+    .table-info {
+        display: none;
+    }
+
+
 }

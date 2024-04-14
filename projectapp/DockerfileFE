@@ -1,0 +1,15 @@
+FROM node:latest
+
+RUN apt update && apt upgrade -y
+
+WORKDIR /skibidi
+
+COPY package.json /skibidi/
+
+RUN npm i
+
+COPY . /skibidi/
+
+EXPOSE 3000
+
+ENTRYPOINT [ "npm", "start"]

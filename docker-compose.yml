@@ -1,0 +1,11 @@
+name: "skibidi_project"
+services:
+  backend:
+    image: SkibidiPiorian/skibidiappb:1.0 
+    ports:
+      - 3001:3001
+
+  frontend:
+    image: SkibidiPiorian/skibidiappf:1.0
+    ports:
+      - 3000:3000

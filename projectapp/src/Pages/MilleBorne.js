@@ -46,6 +46,37 @@ const MilleBorne = () => {
     const [showEmotes, setShowEmotes] = useState(false);
     const [owner, setOwner] = useState("");
 
+    const videoToPlay = [
+        { id: 1, videoUrl: require("./CSS/emotes/toyota.mp4") },
+        { id: 2, videoUrl: require("./CSS/emotes/BOING.mp4") },
+        { id: 3, videoUrl: require("./CSS/emotes/hampter.mp4") },
+        { id: 4, videoUrl: require("./CSS/emotes/MissInput.mp4") },
+        { id: 5, videoUrl: require("./CSS/emotes/PutinMEWING.mp4") },
+        { id: 6, videoUrl: require("./CSS/emotes/KillUrSelf.mp4") },
+        { id: 7, videoUrl: require("./CSS/emotes/horse.mp4") },
+        { id: 8, videoUrl: require("./CSS/emotes/holy.mp4") },
+        { id: 9, videoUrl: require("./CSS/emotes/holy.mp4") },
+        { id: 10, videoUrl: require("./CSS/emotes/freddy.mp4") },
+        { id: 11, videoUrl: require("./CSS/emotes/NuhUh.mp4") },
+        { id: 12, videoUrl: require("./CSS/emotes/hellnaw.mp4") },
+        { id: 13, videoUrl: require("./CSS/emotes/hogRider.mp4") },
+        { id: 14, videoUrl: require("./CSS/emotes/josh.mp4") },
+        { id: 15, videoUrl: require("./CSS/emotes/quandale.mp4") },
+        { id: 16, videoUrl: require("./CSS/emotes/mao.mp4") },
+        { id: 17, videoUrl: require("./CSS/emotes/bible.mp4") },
+        { id: 18, videoUrl: require("./CSS/emotes/spiderman.mp4") },
+        { id: 19, videoUrl: require("./CSS/emotes/goku.mp4") },
+        { id: 20, videoUrl: require("./CSS/emotes/gatorade.mp4") },
+        { id: 21, videoUrl: require("./CSS/emotes/dj.mp4") },
+        { id: 22, videoUrl: require("./CSS/emotes/jumpascare.mp4") },
+        { id: 23, videoUrl: require("./CSS/emotes/godofwar.mp4") },
+        { id: 24, videoUrl: require("./CSS/emotes/honoredone.mp4") },
+        { id: 25, videoUrl: require("./CSS/emotes/imfinished.mp4") },
+        { id: 26, videoUrl: require("./CSS/emotes/navire.mp4") },
+        { id: 27, videoUrl: require("./CSS/emotes/waaaa.mp4") },
+        { id: 28, videoUrl: require("./CSS/emotes/uaremysunshine.mp4") },
+    ]
+
     const [videos, setVideos] = useState([
         { id: 1, videoUrl: require("./CSS/emotes/toyota.mp4") },
         { id: 2, videoUrl: require("./CSS/emotes/BOING.mp4") },
@@ -198,7 +229,7 @@ const MilleBorne = () => {
             socket.on("emote", (emote, opponentName) => {
 
                 let video = 0;
-                videos.forEach((videos) => {
+                videoToPlay.forEach((videos) => {
 
                     if (videos.id === emote) {
                         video = videos;

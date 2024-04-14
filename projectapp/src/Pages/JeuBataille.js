@@ -25,13 +25,12 @@ const JeuBataille = () => {
     const [canPlay, setCanPlay] = useState(true);
     const [playerNameEmote, setPlayerNameEmote] = useState("");
     const [EmoteToShow, setEmoteToShow] = useState("");
-    const emoteRef = useRef(null); // Référence à la div de l'emote
+    const emoteRef = useRef(null);
 
     const [saveName, setSaveName] = useState("");
     const [isSave, setIsSave] = useState(false);
     const [owner, setOwner] = useState("");
     const backCardsImageTest = require("./CSS/pics/PNG-cards-1.3/blue.png")
-
     const [isVisible, setIsVisible] = useState(false);
     const [roundWinner, setRoundWinner] = useState("");
 
@@ -450,7 +449,6 @@ const JeuBataille = () => {
                     if (videos.id === emote) {
                         video = videos;
                     }
-
                 });
                 if (video === 0) {
                     return;

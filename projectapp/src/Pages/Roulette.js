@@ -39,22 +39,17 @@ const Roulette = () => {
     };
 
     useEffect(() => {
-        // Initialisation de l'objet Audio et sauvegarde dans la référence
         audioRef.current = new Audio(music);
-    
-        // Retiré play() pour éviter la lecture automatique
-        // audioRef.current.play().catch(e => console.error("Erreur de lecture:", e));
     
         return () => {
             if (audioRef.current) {
                 audioRef.current.pause();
-                audioRef.current.currentTime = 0; // Réinitialise le temps si le composant est démonté
+                audioRef.current.currentTime = 0; 
             }
         };
     }, [music]); 
 
     const playM = () => {
-        // Vérifiez directement l'objet audio dans audioRef.current
         if (!audioRef.current) return;
     
         if (isPlaying) {
@@ -63,7 +58,7 @@ const Roulette = () => {
             audioRef.current.play().catch((e) => console.error("Erreur lors de la lecture de l'audio:", e));
         }
     
-        setIsPlaying(!isPlaying); // Met à jour l'état isPlaying
+        setIsPlaying(!isPlaying); 
     };
 
 

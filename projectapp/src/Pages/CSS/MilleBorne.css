@@ -1,3 +1,4 @@
+
 .MB-container {
     position: relative;
     width: 100vw;
@@ -14,11 +15,13 @@
     display: flex;
     /* justify-content: space-between; */
 }
+
 .exitAndSave-container {
     display: flex;
     flex-direction: column;
 }
-.MB-exit-button{
+
+.MB-exit-button {
     cursor: pointer;
     padding: 2vh;
     color: #e3e3e3;
@@ -26,7 +29,7 @@
     font-size: 3vh;
 }
 
-.MB-exit-button:hover{
+.MB-exit-button:hover {
     border: solid black 2px;
 }
 
@@ -38,7 +41,7 @@
     padding-right: 2vh;
 }
 
-.MB-info-content{
+.MB-info-content {
     justify-content: center;
     text-align: justify;
     padding: 2vh;
@@ -48,11 +51,11 @@
     width: 20vw;
     height: 60vh;
     background-color: rgb(99, 132, 160);
-    right: 1% ;
+    right: 1%;
     top: 7%;
 }
 
-.MB-info-content strong{
+.MB-info-content strong {
     text-align: center;
     font-size: 4vh;
 }
@@ -62,11 +65,11 @@
     font-size: 2.5vh;
 }
 
-.MB-info-content::after{
+.MB-info-content::after {
     content: '';
     position: fixed;
-    top:6%;
-    right:2%;
+    top: 6%;
+    right: 2%;
     width: 0;
     height: 0;
     border: 15px solid transparent;
@@ -76,24 +79,24 @@
     margin-bottom: -15px;
 }
 
-.MB-adversaire-container{
+.MB-adversaire-container {
     width: 15vw;
     display: flex;
     flex-direction: column;
     height: 34vh;
-    background: #e3e3e3; 
+    background: #e3e3e3;
     border-radius: 5px;
     background-color: rgb(53, 67, 73);
 }
 
-.MB-advers-card-container{
+.MB-advers-card-container {
     padding-top: 1vh;
     padding-bottom: 0.5vh;
     display: flex;
     justify-content: center;
 }
 
-.MB-adversaire-card{
+.MB-adversaire-card {
     display: flex;
     flex-direction: column;
     width: 98%;
@@ -112,9 +115,10 @@
     border-radius: 15px;
     width: 90%;
     height: 8vh;
-    background: #f95959; 
+    background: #f95959;
 }
-.MB-player-name{
+
+.MB-player-name {
     display: flex;
     justify-content: center;
     text-align: center;
@@ -131,14 +135,14 @@
     align-items: center;
 
     font-size: 1.7vh;
-    color:aliceblue;
+    color: aliceblue;
 }
 
-.MB-nbPoints{
+.MB-nbPoints {
     margin-bottom: 1vh;
 }
 
-.MB-p1 {    
+.MB-p1 {
     transform: translateY(30vh);
     position: absolute;
 
@@ -173,7 +177,7 @@
 }
 
 .gris:hover {
- box-shadow: none;   
+    box-shadow: none;
 }
 
 .glow {
@@ -199,14 +203,14 @@
     height: 30vh;
 }
 
-.middleCard-container{
+.middleCard-container {
     justify-content: center;
     position: relative;
     display: flex;
     padding-top: 12%;
     width: 100%;
     height: 65%;
-    
+
 }
 
 
@@ -215,25 +219,27 @@
     border: solid rgb(46, 138, 66) 3px;
     margin-right: 2vw;
 }
+
 .pioche-container {
     padding-top: 2.5vh;
     position: relative;
-    height: 30vh;
+    height: 80%;
+    width: 5%;
 }
 
 .pioche {
     background-color: rgb(238, 255, 255);
-    width: 17vh;
-    height: 25vh;
+    width: 100%;
+    height: 100%;
     border-radius: 8px;
-    border : solid 5px green;
+    border: solid 5px green;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     font-size: 5vh;
     font-weight: 700;
-     box-shadow: 15px 15px 0 #035d03;
+    box-shadow: 15px 15px 0 #035d03;
 }
 
 .MB-pioche-petit {
@@ -263,6 +269,7 @@
     margin-bottom: 4vh;
 
 }
+
 .state-container {
     display: flex;
     width: 100%;
@@ -295,7 +302,7 @@
     box-shadow: 0 0 40px rgb(46, 44, 44);
 }
 
-.player:hover{
+.player:hover {
     transform: translateY(-20%);
 }
 
@@ -303,8 +310,8 @@
     max-height: 100vh;
 }
 
-.MB-popup-container{
-position: fixed;
+.MB-popup-container {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -342,7 +349,7 @@ position: fixed;
     padding-top: 10%;
 }
 
-.adversaire-card-selection:hover{
+.adversaire-card-selection:hover {
     box-shadow: 0 0 20px rgb(255, 255, 255);
 }
 
@@ -355,7 +362,7 @@ position: fixed;
 
 .mb-emote-container {
     position: fixed;
-    left:0;
+    left: 0;
     bottom: 20vh;
 }
 
@@ -375,21 +382,25 @@ position: fixed;
     left: 10%;
     position: absolute;
     bottom: calc(100% + 10px);
-    left: 0; /* Alignez la bulle d'émoticônes tout à gauche */
-    width: 300px; /* Augmentez la largeur de la bulle d'émoticônes */
+    left: 0;
+    /* Alignez la bulle d'émoticônes tout à gauche */
+    width: 300px;
+    /* Augmentez la largeur de la bulle d'émoticônes */
     background-color: rgb(144, 129, 129);
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px;
     z-index: 1;
-    white-space: nowrap; /* Empêchez le texte de se retourner à la ligne */
-    overflow-x: auto; /* Ajoutez une barre de défilement horizontale si nécessaire */
+    white-space: nowrap;
+    /* Empêchez le texte de se retourner à la ligne */
+    overflow-x: auto;
+    /* Ajoutez une barre de défilement horizontale si nécessaire */
 }
 
 .mb-emote-list {
     display: flex;
     justify-content: flex-start;
-    overflow-x: auto; 
+    overflow-x: auto;
 }
 
 .mb-emote {
@@ -403,7 +414,7 @@ position: fixed;
     border-color: red;
 }
 
-.mb-emote-enemy video{
+.mb-emote-enemy video {
     margin-top: 2px;
     width: 75px;
     height: 75px;
@@ -418,28 +429,37 @@ position: fixed;
     position: fixed;
     right: 1%;
     bottom: 22%;
-    width: 200px; /* Ajusté pour mieux s'adapter au titre */
-    background-color: rgb(67, 103, 182); /* Couleur légèrement ajustée pour le contraste */
-    border-radius: 8px; /* Coins plus arrondis */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Ombre pour une meilleure distinction */
-    padding: 10px; /* Espacement interne pour le titre et le contenu */
+    width: 200px;
+    /* Ajusté pour mieux s'adapter au titre */
+    background-color: rgb(67, 103, 182);
+    /* Couleur légèrement ajustée pour le contraste */
+    border-radius: 8px;
+    /* Coins plus arrondis */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    /* Ombre pour une meilleure distinction */
+    padding: 10px;
+    /* Espacement interne pour le titre et le contenu */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .mb-emote-display-title {
-    font-size: 14px; /* Taille adaptée au nouveau container */
+    font-size: 14px;
+    /* Taille adaptée au nouveau container */
     color: white;
     text-align: center;
-    margin: 5px 0; /* Ajustement de l'espacement autour du titre */
+    margin: 5px 0;
+    /* Ajustement de l'espacement autour du titre */
 }
 
 .mb-player-emote-container {
-    width: 150px; 
-    height: 100px; 
-    background-color: rgba(87, 123, 202, 0); /* Gardé comme spécifié */
-    border-radius: 2px; /* Gardé comme spécifié */
+    width: 150px;
+    height: 100px;
+    background-color: rgba(87, 123, 202, 0);
+    /* Gardé comme spécifié */
+    border-radius: 2px;
+    /* Gardé comme spécifié */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -457,4 +477,49 @@ position: fixed;
     font-weight: bold;
     margin-bottom: 0px;
     color: white;
+}
+
+@media only screen and (max-width: 768px) {
+    .MB-container {
+        flex-direction: column;
+    }
+
+    .card {
+        height: 100%;
+        width: 100%;
+    }
+
+    .pioche-container {
+        height: 100%;
+        width: 100%;
+    }
+
+
+    .la-ou-on-pose-les-cartes-tmtc {
+        height: 10vh;
+    }
+
+
+}
+
+
+@media only screen and (max-width: 768px) {
+    .mb-emote-bubble,
+    .mb-emote-button,
+    .mb-emote-container,
+    .mb-emote-display-container,
+    .mb-player-emote,
+    .mb-player-emote-container,
+    .mb-emote-display-title,
+    .mb-emote-enemy,
+    .mb-emote-list,
+    .mb-emoteplayer-name,
+    .mb-emote-display-container,
+
+    .pioche-container,
+
+
+    .mb-emote {
+        display: none;
+    }
 }

@@ -172,7 +172,7 @@ const NewBrowserManager = () => {
             <div className='showSaved-container'>
                 {gameSaved.map((game, index) => (
                     <div className='gameSave-container'>
-                        <div className='gameSaved' onClick={() => handleRecreate(game)}> 
+                        <div className='gameSaved' onClick={() => handleRecreate(game)}>
                             {game}
                         </div>
                         <div className='supprSave' onClick={() => deleteFile(game)}>X</div>
@@ -183,11 +183,11 @@ const NewBrowserManager = () => {
     }
 
     const canJoin = (lobby) => {
-        if(lobby.moneyBet > money ){
+        if (lobby.moneyBet > money) {
             alert("Vous n'avez pas assez d'argent pour rejoindre cette partie")
             return false
         }
-        else if(whatToLoad(lobby) === "FULL"){
+        else if (whatToLoad(lobby) === "FULL") {
             alert("La partie est déjà pleine")
             return false
         }
@@ -260,19 +260,17 @@ const NewBrowserManager = () => {
                             <option value="sqp">Six qui prend</option>
                             <option value="mb">Mille Bornes</option>
                             <option value="blackjack">BlackJack</option>
-                        </select> 
+                        </select>
                         <div className="select-arrow"></div>
                     </div>
                 </div>
-                <div className='NB-underBandeau'>
-                    <div className='bigReadyButton-container BM'>
+                <div className='bigReadyButton-container BM'>
 
-                        <button className='bigReadyButton BM red' onClick={leave}> Quitter </button>
+                    <button className='bigReadyButton BM red' onClick={leave}> Quitter </button>
 
-                        <div className='bigReadyButton BM' onClick={showSavedGames}> Parties Enregistrées </div>
+                    <div className='bigReadyButton BM' onClick={showSavedGames}> Parties Enregistrées </div>
 
-                        <button onClick={handleSave} className="bigReadyButton BM">Créer</button>
-                    </div>
+                    <button onClick={handleSave} className="bigReadyButton BM">Créer</button>
                 </div>
 
 
@@ -284,7 +282,7 @@ const NewBrowserManager = () => {
                 <h2 className='MB-h2'>Liste des serveurs</h2>
                 {mesLobby.map((lobby, _) => (
 
-                    <div className='BM-server' onClick={() => !canJoin(lobby) ? null : handleClick(lobby.id, lobby)}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)} {lobby.moneyBet ? lobby.moneyBet+"$" : ""}
+                    <div className='BM-server' onClick={() => !canJoin(lobby) ? null : handleClick(lobby.id, lobby)}>{lobby.serverName} ({lobby.gameType}) {whatToLoad(lobby)} {lobby.moneyBet ? lobby.moneyBet + "$" : ""}
                         {lobby.isPrivate && <input id={`gamePassWord` + lobby.id} type="password" className="BM-input-server" placeholder='Mot de passe...' value={gamePassword} onChange={(e) => {
                             setGamePassword(e.target.value);
                         }}></input>}

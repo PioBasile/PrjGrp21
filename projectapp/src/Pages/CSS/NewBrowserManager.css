@@ -523,18 +523,12 @@
 @media only screen and (max-width: 768px) {
     .BM-container {
         flex-direction: column;
-        height: auto;
     }
-    
-    .BM-profil {
-        width: 0%;
-        height: auto;
-    }
+
     
     .BM-serverList-container {
         position: relative;
         width: 100%;
-        height: auto;
         right: 0;
         left: 0;
         padding-left: 0;
@@ -546,56 +540,10 @@
         width: 100%;
     }
 
-    .MB-profil-H2 {
-        top: 5vh;
-        left: 5vh;
-        transform: rotate(0deg);
-        transition: top 0.5s ease, transform 0.5s ease, display 0.5s ease, align-items 0.5s ease, justify-self 0.5s ease, max-width 0.5s ease;
-        display: flex;
-        align-items: center;
-        justify-self: center;
-        max-width: 100%;
-    }
-
     .checkbox{
         width: 50%;
     }
 
-    .BM-info-profil {
-        width: 0%;
-        top: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: auto;
-        margin-top: 20px;
-    }
-    
-    .BM-info-profil.casino {
-        width: 0%;
-        right: 0;
-        left: auto;
-        padding-left: 5%;
-        padding-right: 5%;
-        height: auto;
-    }
-    
-    .BM-info-profil.scoreboard {
-        width: 0%;
-        left: 0;
-        top: 0;
-        padding-left: 1.5%;
-        height: auto;
-    }
-    
-    .BM-info-profil.itemShop {
-        width: 0%;
-        left: auto;
-        right: 0;
-        top: -30%;
-        padding-left: 6%;
-        height: auto;
-    }
     
     .BM-input-container {
         width: 100%;

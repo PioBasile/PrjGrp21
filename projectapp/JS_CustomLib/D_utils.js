@@ -1,5 +1,7 @@
 const { login, changeDataBase, get_user_info, register } = require("./D_db.js");
 
+
+//DORIAN
 const makecookie = (length) => {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -137,6 +139,8 @@ const STATUS = {
   DRAW: 'd',
   ENDED: "end"
 };
+
+//FLORIAN
 
 class Bataille {
 
@@ -410,7 +414,7 @@ class Bataille_Card {
 
 }
 
-
+//DORIAN
 
 //// LOBBY 
 
@@ -870,7 +874,7 @@ class Player6 {
 }
 
 
-//JEU MILLE BORNE BY xX_PROGRAMMER69_Xx
+//FLORIAN TOUT CE QU'IL YA EN DESSOUS 
 
 class MB_Player {
   constructor(playerName, cookie, color) {
@@ -1219,6 +1223,7 @@ class BlackJackPlayer extends Player {
     this.bets = [];
     this.splittedDeck = [];
     this.hasSplitted = false;
+    this.onSplittedDeck = false;
     this.win = false;
   }
 
@@ -1461,6 +1466,7 @@ class BlackJack {
       player.myTurn = false;
       player.splittedDeck = [];
       player.hasSplitted = false;
+      player.onSplittedDeck = false;
     }
 
     this.dealerCards = [];

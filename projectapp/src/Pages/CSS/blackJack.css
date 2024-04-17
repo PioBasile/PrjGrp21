@@ -66,7 +66,13 @@
     display: flex;
 }
 
+
+.card.bj img {
+    height: 295%;
+}
+
 .card {
+
     background-color: aliceblue;
     border: none;
     box-shadow: none;
@@ -112,7 +118,7 @@
 
 .deck-bj {
     display: grid;
-
+    height: 40%;
     grid-template-columns: repeat(7, 0.3vw);
     grid-gap: 10px;
 }
@@ -131,11 +137,13 @@
     grid-row: 1;
 
 }
+
 .card3 {
     grid-column: 3;
 
     grid-row: 1;
 }
+
 .card4 {
     grid-column: 4;
     grid-row: 1;
@@ -145,6 +153,7 @@
     grid-column: 5;
     grid-row: 1;
 }
+
 .card6 {
     grid-column: 6;
     grid-row: 1;
@@ -165,9 +174,11 @@
     padding-bottom: 2vh;
     padding-left: 1vw;
 }
+
 .bet-action-container.myTurn {
     box-shadow: rgb(60, 255, 0) 0px 0px 60px;
 }
+
 .action-button-bj {
     background-color: rgb(125, 29, 29);
 
@@ -184,9 +195,9 @@
     box-shadow: 0 0 15px rgb(33, 32, 32);
 }
 
-.false {   
+.false {
     background-color: rgb(71, 49, 49);
-    border: solid 2px rgb(98, 98, 52);   
+    border: solid 2px rgb(98, 98, 52);
 }
 
 .action-button-bj:hover {
@@ -233,11 +244,11 @@
     border-radius: 15px;
 }
 
-.bet-button-bj:hover{
+.bet-button-bj:hover {
     box-shadow: rgb(60, 255, 0) 0px 0px 60px;
 }
 
-.allin-button-bj{
+.allin-button-bj {
     background-color: yellow;
     border: solid rgb(220, 185, 29) 3px;
     color: black;
@@ -252,7 +263,7 @@
 }
 
 
-.allin-button-bj:hover{
+.allin-button-bj:hover {
     box-shadow: rgb(246, 255, 0) 0px 0px 60px;
 }
 
@@ -279,7 +290,7 @@
     border: solid 2px yellow;
 }
 
-.giveup-button-bj:hover{
+.giveup-button-bj:hover {
     box-shadow: rgb(255, 58, 32) 0px 0px 60px;
 }
 
@@ -387,62 +398,139 @@
     overflow-y: auto;
     width: 15%;
     height: 13%;
-    position: fixed; /* Reste fixe lors du scroll */
-    top: 50%; /* Position verticale au milieu */
-    right: 0; /* Aligné à droite */
-    transform: translateY(-50%); /* Centrer exactement au milieu verticalement */
-    background-color: #000; /* Fond noir pour le contraste */
-    color: #ffd700; /* Texte doré pour le thème luxe/casino */
-    padding: 10px 20px; /* Espace intérieur pour ne pas coller au bord */
-    border: 2px solid #ffd700; /* Bordure dorée */
-    border-radius: 8px; /* Bordures arrondies pour un look moderne */
-    font-family: 'Arial', sans-serif; /* Police élégante mais lisible */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Ombre portée pour un effet 3D */
-    z-index: 1000; /* S'assure que le texte reste au-dessus des autres éléments */
-  }
-  
-  .moneyWin {
+    position: fixed;
+    /* Reste fixe lors du scroll */
+    top: 50%;
+    /* Position verticale au milieu */
+    right: 0;
+    /* Aligné à droite */
+    transform: translateY(-50%);
+    /* Centrer exactement au milieu verticalement */
+    background-color: #000;
+    /* Fond noir pour le contraste */
+    color: #ffd700;
+    /* Texte doré pour le thème luxe/casino */
+    padding: 10px 20px;
+    /* Espace intérieur pour ne pas coller au bord */
+    border: 2px solid #ffd700;
+    /* Bordure dorée */
+    border-radius: 8px;
+    /* Bordures arrondies pour un look moderne */
+    font-family: 'Arial', sans-serif;
+    /* Police élégante mais lisible */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    /* Ombre portée pour un effet 3D */
+    z-index: 1000;
+    /* S'assure que le texte reste au-dessus des autres éléments */
+}
+
+.moneyWin {
     animation: fadeIn 2s ease-in-out;
     padding: 5px;
     border-radius: 5px;
-    background-color: rgba(255, 215, 0, 0.1); /* Légèrement différent pour distinguer les messages */
-  }
-  
-  @keyframes fadeIn {
+    background-color: rgba(255, 215, 0, 0.1);
+    /* Légèrement différent pour distinguer les messages */
+}
+
+@keyframes fadeIn {
     from {
-      opacity: 0;
+        opacity: 0;
     }
+
     to {
-      opacity: 1;
+        opacity: 1;
     }
-  }
+}
 
 
-  .bl-music {
-    z-index: 1000; /* Assure que le bouton reste au-dessus des autres éléments */
+.bl-music {
+    z-index: 1000;
+    /* Assure que le bouton reste au-dessus des autres éléments */
     box-sizing: border-box;
-    position: fixed; /* Fixe le bouton dans la fenêtre de visualisation */
-    bottom: 22vh; /* Positionnement en bas à gauche avec un peu d'espace */
+    position: fixed;
+    /* Fixe le bouton dans la fenêtre de visualisation */
+    bottom: 22vh;
+    /* Positionnement en bas à gauche avec un peu d'espace */
     right: 2%;
-    padding: 10px 20px; /* Espacement intérieur pour rendre le bouton plus grand et plus cliquable */
-    font-size: 16px; /* Taille de la police pour que le texte soit clairement lisible */
-    background-color: #8B0000; /* Un rouge profond pour un look casino luxueux */
-    color: #FFD700; /* Couleur dorée pour le texte, évoquant le luxe */
-    border: none; /* Supprime la bordure par défaut */
-    border-radius: 5px; /* Bordures légèrement arrondies pour un look moderne */
-    cursor: pointer; /* Change le curseur en main pour indiquer qu'il s'agit d'un bouton cliquable */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Ombre portée pour un effet 3D subtil */
-    transition: background-color 0.3s, transform 0.2s; /* Transition pour l'interaction */
-  }
-  
-  .bl-music:hover {
-    background-color: #640000; /* Assombrir le bouton au survol pour le feedback */
-    transform: translateY(-2px); /* Effet de léger soulèvement au survol */
-  }
-  
-  .bl-music:active {
-    transform: translateY(1px); /* Simule un effet de pression sur le bouton */
-  }
-  
+    padding: 10px 20px;
+    /* Espacement intérieur pour rendre le bouton plus grand et plus cliquable */
+    font-size: 16px;
+    /* Taille de la police pour que le texte soit clairement lisible */
+    background-color: #8B0000;
+    /* Un rouge profond pour un look casino luxueux */
+    color: #FFD700;
+    /* Couleur dorée pour le texte, évoquant le luxe */
+    border: none;
+    /* Supprime la bordure par défaut */
+    border-radius: 5px;
+    /* Bordures légèrement arrondies pour un look moderne */
+    cursor: pointer;
+    /* Change le curseur en main pour indiquer qu'il s'agit d'un bouton cliquable */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    /* Ombre portée pour un effet 3D subtil */
+    transition: background-color 0.3s, transform 0.2s;
+    /* Transition pour l'interaction */
+}
 
- 
+.bl-music:hover {
+    background-color: #640000;
+    /* Assombrir le bouton au survol pour le feedback */
+    transform: translateY(-2px);
+    /* Effet de léger soulèvement au survol */
+}
+
+.bl-music:active {
+    transform: translateY(1px);
+    /* Simule un effet de pression sur le bouton */
+}
+
+@media only screen and (max-width: 768px) {
+    .upper-bandeau {
+        flex-direction: column;
+    }
+
+    .bet-container{
+        background-image: url(pics/redcasinoback.jpg);  
+        background-size: cover ;
+        
+    }
+
+    .action-container{
+        flex-direction: column;
+    }
+
+    .action-button-bj{
+        width: 100%;
+        height: 40%;
+    }
+
+    .cardHolder-bj{
+        height: 80%;
+        width: 80%;
+    }
+
+    img.card {
+        scale: 2;
+    }
+
+    .input.bj{
+        width: 100%;
+    }
+
+    .blackJackCard-container{
+        height: 36%;
+    }
+
+
+    .chat-container,
+    .bl-music{
+        display: none;
+    }
+
+    .two-action-button-container{
+        width: 100%;
+    }
+    
+
+    
+}

@@ -24,7 +24,7 @@ const NewBrowserManager = () => {
     const [nbWin, setNbWin] = useState('0');
     const [roundWin, setRoundWin] = useState('0');
     const [money, setMoney] = useState('0');
-    const [moneyBet, setMoneyBet] = useState(null);
+    const [moneyBet, setMoneyBet] = useState(0);
     const [showSaved, setShowSaved] = useState(false);
 
     const handleClick = (Id, server) => {

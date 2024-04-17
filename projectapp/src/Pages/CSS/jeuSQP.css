@@ -147,6 +147,7 @@
     background-image: url('pics/9999520.jpg');
     margin: 0 auto;
     max-height: 100%;
+    min-height: 15%;
     border: 1px solid #ccc;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), rgb(60, 255, 0) 0px 0px 100px; /* Fusion des deux déclarations box-shadow en une seule */

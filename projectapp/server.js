@@ -39,7 +39,7 @@ const {
   BlackJackPlayer
 } = require("./JS_CustomLib/D_utils.js");
 
-
+//DORIAN
 const { login, changeDataBase, get_user_info, register } = require("./JS_CustomLib/D_db.js");
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
@@ -456,7 +456,7 @@ io.on('connection', (socket) => {
   });
 
 
-  // JEU BATAILLE
+  // JEU BATAILLE FLORIAN
 
   // PHASE 1 : Distribution des cartes a tout les joueurs //
 
@@ -626,7 +626,7 @@ io.on('connection', (socket) => {
     }
   })
 
-  // SIX QUI PREND 
+  // SIX QUI PREND DORIAN
 
 
   socket.on('6update', (username, gameID) => {
@@ -755,18 +755,22 @@ io.on('connection', (socket) => {
     if (game.play(parseInt(row))) {
 
       if (game.status == STATUS.ENDED) {
-        if (game.moneyBet && game.maxPlayer) {
-
-          let moneyWin = Math.round(game.moneyBet * game.maxPlayers);
-
+        if (game.moneyBet >= 0) {
+          let moneyWin = game.moneyBet
+          let winner = game.Pgagnat();
+          let winnerName = winner.name;
+          console.log("AND THE WINNNNER IIIIIIISSS!!!!!!!! ",winnerName)
           get_user_info(player.name).then((res) => {
 
-            changeDataBase('nbWin', res.nbWin + 1, player.name);
-            changeScoreBoard('bataille-ouverte', player.name);
-            changeDataBase('argent', res.argent + 100 + moneyWin, player.name);
+            changeDataBase('nbWin', res.nbWin + 1, winnerName);
+            changeScoreBoard('six-qui-prend', winnerName);
+            changeDataBase('argent', res.argent + 100 + moneyWin,winnerName);
             changeMoney(player.name, 100 + moneyWin);
 
           });
+        }
+        else {
+          console.log("WESH CHELOU DE MALADE MA PUPUCE");
         }
         io.to(gameID).emit('FIN', game.winner);
         return;
@@ -791,9 +795,6 @@ io.on('connection', (socket) => {
       socket.emit('missPlacement');
 
     }
-
-
-
 
     let oppon6 = []
     let pl;
@@ -839,7 +840,8 @@ io.on('connection', (socket) => {
   })
 
 
-  // MILLE BORNE BY xX_PROGRAMER69_Xx
+  // MILLE BORNE BY FLORIAN
+
 
   socket.on("MB-whatMyInfo", (data) => {
 
@@ -929,6 +931,13 @@ io.on('connection', (socket) => {
     if (game.state == "FIN") {
       io.to(data.serverId).emit("MB_FIN", player.name);
       let moneyWin = Math.round(game.moneyBet * game.maxPlayers)
+
+      console.log("game.maxPlayer");
+      console.log(game.maxPlayer);
+
+      console.log("game.moneyBet");
+      console.log(game.moneyBet);
+      
       get_user_info(player.name).then((res) => {
 
         changeDataBase('nbWin', res.nbWin + 1, player.name);
@@ -1061,7 +1070,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  //CHAT FOR ALL !!!!!!! DORIAN STP NE SUPPRIME PAS !!!!!
+  //CHAT FOR ALL !!!!!!! DORIAN STP NE SUPPRIME PAS !!!!! (TOUT CE QU'IL YA EN DESSOUS => FLORIAN)
 
   function isGlobal(msg) {
     let messageGlobalType = "<global>"
@@ -1341,23 +1350,6 @@ io.on('connection', (socket) => {
     let player = findPlayer(playerName, game.playerList);
 
     if (game.anyonePlayed()) {
-      for (player of game.playerList) {
-        if (player.sumPoint() == 21 && player.deck.length == 2) {
-          //blackJack methode
-          player.myTurn = false;
-        }
-        else {
-          player.myTurn = true;
-          return;
-        }
-      }
-
-      // if (game.anyonePlayed()) {
-      //   //si personne ne peut jouer alors tous les joueurs sont en blackJack 
-      //   //et donc le dealer joue meme si les chances qu'il blackJack sont de 0 on sait jamais
-      //   dealerPlay(game);
-      // }
-
       game.playerList[0].myTurn = true;
     }
 
@@ -1436,19 +1428,41 @@ io.on('connection', (socket) => {
 
     else {
 
-      game.hit(deckName);
       let sumPoint = player.sumPoint();
-      if (sumPoint >= 21) {
-        if (player.onSplittedDeck) {
-          player.hasSplitted = false;
-          if (!game.nextPlayer()) {
-            dealerPlay(game)
-          };
+      let sumPointSplitted = player.sumPointSplitted()
+      if(!player.onSplittedDeck){
+        if(sumPoint >= 21){
+          player.onSplittedDeck = true
         }
-        else {
-          player.onSplittedDeck = true;
+        else{
+          game.hit(deckName);
         }
       }
+      else {
+        if(sumPointSplitted >= 21){
+          if(!game.nextPlayer()){
+            dealerPlay(game);
+          }
+        }
+        else {
+          game.hit(deckName);
+        }
+      }
+
+      // game.hit(deckName);
+      // let sumPoint = player.sumPoint();
+      // if (sumPoint >= 21) {
+      //   if (player.onSplittedDeck) {
+      //     player.hasSplitted = false;
+      //     if (!game.nextPlayer()) {
+      //       player.myTurn = false;
+      //       dealerPlay(game)
+      //     };
+      //   }
+      //   else {
+      //     player.onSplittedDeck = true;
+      //   }
+      // }
     }
 
     io.to(serverId).emit("BJ-askMyTurn");
@@ -1457,11 +1471,11 @@ io.on('connection', (socket) => {
 
 
   socket.on("stay", (serverId, deckName) => {
-    let game = findGame(serverId, BlackJackGames)
+    let game = findGame(serverId, BlackJackGames) 
     let player = findPlayer(deckName, game.playerList);
-
     if (!player.hasSplitted) {
       if (!game.nextPlayer()) {
+        player.myTurn = false;
         dealerPlay(game)
       };
     }
@@ -1485,6 +1499,8 @@ io.on('connection', (socket) => {
     io.to(serverId).emit("allDeck", game.playerList);
   })
 
+  //TODO : prendre l'argent deja misé deux fois quand double
+
   socket.on("double", (serverId, deckName) => {
     let game = findGame(serverId, BlackJackGames);
     let player = findPlayer(deckName, game.playerList)
@@ -1492,30 +1508,41 @@ io.on('connection', (socket) => {
     for(let bet of player.bets){
       if(bet.name == deckName){
         bet.amountBet *= 2
+        get_user_info(deckName).then((res) => {
+          changeDataBase('argent', res.argent - bet.amountBet, deckName);
+          changeMoney(deckName, -bet.amountBet);
+        });
       }
     }
     
     game.hit(deckName)
 
     if (!game.nextPlayer()) {
+      player.myTurn = false;
       dealerPlay(game);
     }
 
-    io.to(serverId).emit("BJ-askMyTurn", player.myTurn);
     io.to(serverId).emit("allDeck", game.playerList);
-
+    io.to(serverId).emit("BJ-askMyTurn", player.myTurn);
+    
+    
   })
-
+  
   socket.on("canSplit", (serverId, playerName) => {
     let game = findGame(serverId, BlackJackGames);
     let player = findPlayer(playerName, game.playerList);
     let deck = player.deck
+    let canSplit = false;
+    if(deck.length == 2){
+      canSplit = (deck[0].power == deck[1].power) && deck.length == 2 && !player.hasSplitted;
+    }
 
-    let canSplit = (deck[0].power == deck[1].power) && deck.length == 2 && !player.hasSplitted;
 
     socket.emit("goSplitIfYouCan", canSplit);
     
   })
+
+  //TODO : prendre l'argent deja misé deux fois quand double
 
   socket.on("split", (serverId, deckName) => {
     let game = findGame(serverId, BlackJackGames);
@@ -1576,7 +1603,7 @@ io.on('connection', (socket) => {
 
 });
 
-
+//DORIAN
 
 
 setInterval(() => { Sentinel_Main(io, validCookies, BatailGames, TaureauGames, MilleBornesGames, lobbyList, lobbyIndex) }, 100);

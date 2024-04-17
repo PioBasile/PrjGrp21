@@ -10,8 +10,6 @@ const BlackJack = () => {
     const SERVER_ID = sessionStorage.getItem("serverConnected");
     const NAME = sessionStorage.getItem("name");
     const MY_DECK = NAME;
-    const exitButton = require("./CSS/pics/exit.png");
-    const user = require("./CSS/svgs/user.svg")
     const [allDecks, setAllDeck] = useState([]);
     const [money, setMoney] = useState(0);
     const [dealerDeck, setDealerDeck] = useState([]);
@@ -287,7 +285,7 @@ const BlackJack = () => {
 
 
             socket.on("BJ-myTurn", (bool) => {
-
+                console.log("your turn is" + bool);
                 setMyTurn(bool);
             })
 
@@ -447,11 +445,11 @@ const BlackJack = () => {
             </div>
             <div className={`action-container ${myTurn ? "myTurn" : ""} `}>
                 <div className='bet-action-container'>
-                    <div>
+                    <div className="two-action-button-container">
                         <div className={`action-button-bj ${!canBet && myTurn}`} onClick={myTurn && !canBet ? handlePioche : null}>Piocher</div>
                         <div className={`action-button-bj ${!canBet && myTurn}`} onClick={myTurn && !canBet ? handleRester : null} >Rester</div>
                     </div>
-                    <div >
+                    <div className="two-action-button-container">
                         <div className={`action-button-bj ${!canBet && myTurn}`} onClick={myTurn && !canBet ? handleDoubler : null}>Doubler</div>
                         <div className={`action-button-bj ${myTurn && !canBet && canSplit}`} onClick={myTurn && !canBet && canSplit ? handleSplitter : null}>Splitter</div>
                     </div>

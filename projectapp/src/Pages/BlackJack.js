@@ -184,12 +184,12 @@ const BlackJack = () => {
     }
 
     const handleGiveUp = () => {
+        socket.emit("leaveBJ", SERVER_ID, NAME);
         navigate("/BrowserManager")
-        socket.emit("leave",)
     }
 
     const handleSelectDeck = (deckName) => {
-        setDeckSelected(deckName);
+        setDeckSelected(deckName, NAME);
     }
 
     const divide = () => {

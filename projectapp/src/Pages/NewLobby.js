@@ -112,6 +112,7 @@ const NewLobby = () => {
 
         if (count === clobby.nbPlayerMax && clobby.owner === sessionStorage.getItem('name')) {
             setAllReady(true)
+            socket.emit("dealeteThieGameBozo", sessionStorage.getItem('serverConnected'));
             setTimeout(() => {
                 socket.emit("StartGame", sessionStorage.getItem('serverConnected'));
             }, "3000")

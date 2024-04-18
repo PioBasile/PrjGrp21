@@ -510,6 +510,7 @@
     }
 
     img.card {
+        height: 100%;
         scale: 2;
     }
 

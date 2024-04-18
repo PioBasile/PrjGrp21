@@ -158,6 +158,7 @@ class Bataille {
     this.cardPlayed = [];
     this.lobbyLinked = null;
     this.distribuer();
+    this.hadStart = false;
 
     this.currentTurn = 0;
     this.status = STATUS.START;
@@ -530,6 +531,7 @@ class SixQuiPrend {
     this.moneyBet = moneyBet;
 
     this.lobbyLinked = null;
+    this.hadStart = false;
 
     this.chatContent = ["utilisez <global> pour parler a tout le monde"];
   }
@@ -945,6 +947,7 @@ class MilleBorne {
     this.chatContent = ["utilisez <global> pour parler a tout le monde"];
     this.moneyBet = moneyBet;
     this.lobbyLinked = null;
+    this.hadStart = false;
   }
 
   recreate(gameData) {
@@ -1343,6 +1346,7 @@ class BlackJack {
     shuffle(this.cartes);
     this.distribuer();
     this.generateDealerCards();
+    this.hadStart = false;
 
   }
 
@@ -1552,16 +1556,26 @@ class BlackJack {
     return betsWin;
   }
 
-  removePlayer(player) {
+  // removePlayer(player) {
 
-    let playerI = findRemovePlayer(player, this.playerList);
-    this.playerList.splice(playerI, 1);
-  }
+  //   let playerI = findRemovePlayer(player, this.playerList);
+  //   this.playerList.splice(playerI, 1);
+  // }
 
   addMessage(msg) {
     if (msg != "") {
       this.chatContent.push(msg);
     }
+  }
+  
+  removePlayer(playerName){
+    for(let i = 0; i < this.playerList.length; i++){
+      if(this.playerList[i].name == playerName){
+        this.playerList.splice(i,1);
+        return 1;
+      }
+    }
+    return 0;
   }
 
 }

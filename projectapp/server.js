@@ -46,6 +46,8 @@ const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
 const { getAllScores, changeScoreBoard, changeMoney } = require("./JS_CustomLib/P_db.js");
 const { emit } = require('process');
 const { on } = require('events');
+const { findDOMNode } = require('react-dom');
+const { isBooleanObject } = require('util/types');
 
 
 
@@ -452,6 +454,8 @@ io.on('connection', (socket) => {
       });
 
     }
+
+    nGame.hadStart = true;
 
   });
 
@@ -1551,6 +1555,18 @@ io.on('connection', (socket) => {
     player.split();
 
     socket.emit("splitted");
+    io.to(serverId).emit("allDeck", game.playerList);
+  })
+
+  socket.on("leaveBJ", (serverId, playerName) => {
+    let game = findGame(serverId, BlackJackGames);
+    if(game.removePlayer(playerName)){
+      console.log(playerName+" delete himself from the game");
+    }
+    else {
+      console.log("nuh uh");
+    }
+
     io.to(serverId).emit("allDeck", game.playerList);
   })
 

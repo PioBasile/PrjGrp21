@@ -57,9 +57,9 @@ const NewBrowserManager = () => {
                 //en vrai masterclass jS c'est trop bien comment tout tient sur une ligne a chaque fois
                 //en fait ici je filtre les lobby de type Saved en regardant si elles ont une gameLinked si ils l'ont je filtre les parties ou ton nom
                 //apparait dans la liste des joueurs 
-                //et si c'est pas une game saved bah je l'ajoute pour tout le monde dans la liste des saved
+                //et si c'est -pas une game saved bah je l'ajoute pour tout le monde dans la liste des saved
                 const lobbyListSaved = lobbyList.filter(lobby => lobby.gameLinked !== null);
-                const lobbyCreated = lobbyList.filter(lobby => lobby.gameLinked === null);
+                const lobbyCreated = lobbyList.filter(lobby => lobby.gameLinked === null && lobby.hadStart);
                 let lobbys = lobbyListSaved.filter(lobby => {
                     const playerName = sessionStorage.getItem("name");
                     const playerList = lobby.gameLinked["playerList"].map(player => player.name);

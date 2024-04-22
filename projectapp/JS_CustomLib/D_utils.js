@@ -281,7 +281,9 @@ class Bataille {
   findPlayerWasInDraw() {
     let playersInDrawList = []
     let playersName = Object.keys(this.cardPlayedInRound);
+    console.log(this.cardPlayedInRound);
     for (let playerName of playersName) {
+      this.cardPlayedInRound = {}
       let playerInDraw = findPlayer(playerName, this.playerList)
       playersInDrawList.push(playerInDraw);
     }
@@ -541,7 +543,7 @@ class SixQuiPrend {
 
     let playerI = findRemovePlayer(player, this.playerList);
     this.playerList.splice(playerI, 1);
-  }j
+  } j
 
   gagnant() {
     let al = false;
@@ -625,6 +627,7 @@ class SixQuiPrend {
 
   }
 
+  //TRIE EN FONCTION DE LA CARTE LA PLUS PETITE
 
   GiveOrder() {
 
@@ -656,6 +659,11 @@ class SixQuiPrend {
 
     return this.currentP;
 
+  }
+  
+  isBot(){
+    let botName = ["Mathis", "Michael Jackson", "Chill Luigi" , "Joe Biden", "Donal Trump"]
+    return botName.includes(botName);
   }
 
   play(row) {
@@ -1482,26 +1490,7 @@ class BlackJack {
   }
 
 
-  findWinner() {
-    let dealerPoints = this.sumPoint();
-    let winnerList = []
-    if (dealerPoints > 21) {
-      for (let player of this.playerList) {
-        winnerList.push(player);
-      }
-      return winnerList;
-    }
 
-    for (let player of this.playerList) {
-      let playerPoints = player.sumPoint()
-      if (playerPoints <= 21 && playerPoints >= dealerPoints) {
-        winnerList.push(player);
-
-      }
-    }
-
-    return winnerList;
-  }
 
   calculMultiplicateur(deck) {
     let totalPoint = sumPoint(deck);
@@ -1540,9 +1529,7 @@ class BlackJack {
   }
 
   findWinnerBet() {
-    let winnerList = this.playerList 
-    //test si ne marche pas remettre ca en dessous
-    //let winnerList = this.findWinner();
+    let winnerList = this.playerList
     let betsWin = []
     for (let player of this.playerList) {
       for (let bet of player.bets) {
@@ -1568,11 +1555,11 @@ class BlackJack {
       this.chatContent.push(msg);
     }
   }
-  
-  removePlayer(playerName){
-    for(let i = 0; i < this.playerList.length; i++){
-      if(this.playerList[i].name == playerName){
-        this.playerList.splice(i,1);
+
+  removePlayer(playerName) {
+    for (let i = 0; i < this.playerList.length; i++) {
+      if (this.playerList[i].name == playerName) {
+        this.playerList.splice(i, 1);
         return 1;
       }
     }
@@ -1581,6 +1568,22 @@ class BlackJack {
 
 }
 
+class Bot extends Player {
+  constructor(username, cookie) {
+    super(username, cookie);
+  }
+
+  playCard(){
+    let cardSelected = this.deck[0];
+    this.deck.splice(0,1);
+    return cardSelected;
+  }
+
+  playRow(){
+    let randomRow = Math.floor(Math.random() * 3);
+    return randomRow + 1; // +1 car ca part pas de 0 
+  }
+}
 
 function getOpponent(plist, current_player) {
   let opponentList = [];
@@ -1619,5 +1622,6 @@ module.exports = {
   GameState,
   SavedLobby,
   BlackJack,
-  BlackJackPlayer
+  BlackJackPlayer,
+  Bot
 }

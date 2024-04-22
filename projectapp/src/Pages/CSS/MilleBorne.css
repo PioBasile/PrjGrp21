@@ -223,8 +223,8 @@
 .pioche-container {
     padding-top: 2.5vh;
     position: relative;
-    height: 80%;
-    width: 5%;
+    height: 70%;
+    width: 10%;
 }
 
 .pioche {
@@ -479,47 +479,4 @@
     color: white;
 }
 
-@media only screen and (max-width: 768px) {
-    .MB-container {
-        flex-direction: column;
-    }
 
-    .card {
-        height: 100%;
-        width: 100%;
-    }
-
-    .pioche-container {
-        height: 100%;
-        width: 100%;
-    }
-
-
-    .la-ou-on-pose-les-cartes-tmtc {
-        height: 10vh;
-    }
-
-
-}
-
-
-@media only screen and (max-width: 768px) {
-    .mb-emote-bubble,
-    .mb-emote-button,
-    .mb-emote-container,
-    .mb-emote-display-container,
-    .mb-player-emote,
-    .mb-player-emote-container,
-    .mb-emote-display-title,
-    .mb-emote-enemy,
-    .mb-emote-list,
-    .mb-emoteplayer-name,
-    .mb-emote-display-container,
-
-    .pioche-container,
-
-
-    .mb-emote {
-        display: none;
-    }
-}

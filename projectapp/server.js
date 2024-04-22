@@ -36,7 +36,8 @@ const {
   GameState,
   SavedLobby,
   BlackJack,
-  BlackJackPlayer
+  BlackJackPlayer,
+  Bot
 } = require("./JS_CustomLib/D_utils.js");
 
 //DORIAN
@@ -48,6 +49,7 @@ const { emit } = require('process');
 const { on } = require('events');
 const { findDOMNode } = require('react-dom');
 const { isBooleanObject } = require('util/types');
+const { useFetcher } = require('react-router-dom');
 
 
 
@@ -726,7 +728,23 @@ io.on('connection', (socket) => {
       game.status = STATUS.PHASE_2;
       io.to(gameID).emit('phase2', (false));
       game.GiveOrder();
-      io.to(gameID).emit("nextPlayer", game.nextP());
+
+      let nextPlayer = game.nextP();
+
+      while(nextPlayer.isBot()){
+
+        let bot = findPlayer(nextPlayer.name, game.playerList);
+        let card = bot.playCard();
+        game.selected_cards.push(card)
+
+        let randomRow = bot.playRow();
+        
+        game.play(randomRow);
+
+        nextPlayer = game.nextP();
+      }
+
+      io.to(gameID).emit("nextPlayer", nextPlayer);
 
     }
 
@@ -1239,6 +1257,7 @@ io.on('connection', (socket) => {
     })
 
   })
+  
   // SENTINEL 
   socket.on("player_auth_validity", (data) => {
 
@@ -1619,7 +1638,23 @@ io.on('connection', (socket) => {
     io.to(serverId).emit("allDeck", this.playerList);
   })
 
+  //BOT
+
+  socket.on("newBot", (serverId, username) => {
+
+    let lobby = findLobby(serverId, lobbyList);
+    let bot = new Bot(username, 69);
+
+    lobby.playerList.add(bot);
+    //le faire rejoindre
+
+    io.to(serverId).emit("here", lobby)
+    
+  })
+
+
 });
+
 
 //DORIAN
 

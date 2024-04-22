@@ -27,6 +27,17 @@ const NewLobby = () => {
     const [roundsMax, setRoundsMax] = useState(20);
     const navigate = useNavigate();
     const [clobby, setLobby] = useState({ playerList: [] });
+    const [bots , setBots] = useState(
+        [
+            {imageUrl: require("./CSS/pics/mathis.webp"),id: "Mathis", level : 1,                   geoDash:require("./CSS/pics/Easy.webp")},
+            {imageUrl: require("./CSS/pics/michael-jackson.jpg"),id: "Micheal Jackson", level : 20, geoDash:require("./CSS/pics/Normal.webp")},
+            {imageUrl: require("./CSS/pics/trump (1).jpg"),id: "Donald Trump", level : 530,         geoDash:require("./CSS/pics/Harder.webp")},
+            {imageUrl: require("./CSS/pics/coin.webp") ,id: "Chill Luigi", level : 1069,            geoDash:require("./CSS/pics/Insane.webp")},
+            {imageUrl: require("./CSS/pics/biden (1).jpg"), id: "Joe Biden", level : 9999,          geoDash:require("./CSS/pics/ExtremeDemon.webp")},
+        ]
+    );
+    const [showBots, setShowBots] = useState(false);
+
 
     const quotes = [
         "At the end of the day, it's the friends we made along the way",
@@ -222,14 +233,41 @@ const NewLobby = () => {
 
     }, []);
 
+
+    function ShowBots({ bots, isShowBots }) {
+    
+        const getLevelColor = (level) => {
+            const maxLevel = 5;
+            const hue = 120 - (120 * (level / maxLevel)); // De vert à rouge
+            const saturation = 100; // Saturation complète
+            const lightness = 50; // Luminosité standard
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        };
+        
+        return (
+            <div className='botList'>
+            {bots.map((bot) => (
+                <div key={bot.id} className='botInfo' onClick={() => isShowBots(false)}>
+                    <img src={bot.imageUrl} style={{ width: '50px', height: '50px', marginRight: '10px' }} />
+                    {bot.id} | <span style={{ color: getLevelColor(bot.level) }}> niveau : {bot.level}</span>
+                    <img src={bot.geoDash} style={{ width: '50px', height: '50px', marginLeft: '10px' }} />
+                </div>
+            ))}
+            </div>
+        );
+    }
+
     return (
         <div className='NB-container'>
             <div className='UBwithUnderBandeau'>
 
                 <div className='NB-upperBandeau'>
-                    <div className='leaveLobbyButton' onClick={() => leaveGame()}>QUITER</div>
+                    <div className='leaveLobbyButton' onClick={() => leaveGame()}>QUITTER</div>
                     <div className='gameNameType'>{gameName} ({gameType})</div>
-                    <div></div>
+                    <div className='lobby-bot' onClick={() => showBots === true ? setShowBots(false) : setShowBots(true)}>Ajouter un Bot</div>
+                    <div className='lobby-bot-list'>
+                        {showBots && <ShowBots bots={bots} isShowBots={setShowBots} />}      
+                    </div>         
                 </div>
                 <div className='NB-underBandeau'>
                     <div className='waitingPlayerTitle animated-ellipsis'> {` ${!allReady ? "EN ATTENTE DES AUTRES JOUEURS" : "DEBUT DE LA PARTIE "}`}</div>

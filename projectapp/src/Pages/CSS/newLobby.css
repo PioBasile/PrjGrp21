@@ -244,10 +244,11 @@ th {
     position: absolute;
     display: flex;
     flex-direction: column;
-    z-index: 1000000;
+    z-index: 1;
     padding: 10px;
-    background-color: #f9f9f9;
+    background-color: #202d67;
     border: 1px solid #ccc;
+    border-radius: 15px;
 }
 
 
@@ -257,9 +258,11 @@ th {
     padding: 5px;
     margin: 5px 0;
     cursor: pointer;
-    background-color: white;
-    border: 1px solid #ddd;
+    background-color: rgb(39, 54, 117);
+    border: 2px solid rgb(104, 103, 103);
+    border-radius: 10px;
 }
+
 
 .botInfo img {
     width: 50px;
@@ -270,8 +273,6 @@ th {
 .botInfo img:last-child {
     margin-left: auto; /* Espacement à gauche de la dernière image */
 }
-
-
 
 .star {
     color: lightgray;

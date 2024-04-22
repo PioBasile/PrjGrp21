@@ -294,6 +294,9 @@ io.on('connection', (socket) => {
 
     let clobby = findLobby(lobbyID, lobbyList);
     socket.emit('here', clobby);
+    console.log(clobby);
+    console.log(clobby.playerList);
+
     io.to(lobbyID).emit('here', clobby);
 
   });
@@ -1261,13 +1264,15 @@ io.on('connection', (socket) => {
   // SENTINEL 
   socket.on("player_auth_validity", (data) => {
 
-    if (data.player_name == "" || validCookies[data.player_name] == "no") { return; }
+    if (data.player_name == "" || validCookies[data.player_name] == "no") { 
+      console.log(validCookies)
+      console.log(validCookies[data.player_name])
+      return; }
 
     if (validCookies[data.player_name] != data.cookie) {
       socket.emit("sentinel_auth_error");
       validCookies[data.player_name] = "no";
     }
-
   });
 
 
@@ -1640,15 +1645,25 @@ io.on('connection', (socket) => {
 
   //BOT
 
-  socket.on("newBot", (serverId, username) => {
-
+  socket.on("newBot", (serverId, botInfo) => {
+    
     let lobby = findLobby(serverId, lobbyList);
-    let bot = new Bot(username, 69);
+    let cookie = makecookie(10);
+    validCookies[botInfo.username] = cookie;
+    let bot = new Bot(botInfo.username, cookie);
+    console.log(validCookies);
+    if(lobby.playerList.length + 1 <= lobby.nbPlayerMax){
+      lobby.playerList.push(bot);
+      io.to(serverId).emit("here", lobby)
+      bot.isReady = true;
+      console.log("lobby from newBot")
+      console.log(lobby);
+      console.log(lobby.playerList);
+    }
 
-    lobby.playerList.add(bot);
-    //le faire rejoindre
-
-    io.to(serverId).emit("here", lobby)
+    else {
+      socket.emit("cantAddABot")
+    }
     
   })
 

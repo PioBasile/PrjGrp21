@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import './CSS/newLobby.css';
 import socket from '../socketG';
 
+
 const NewLobby = () => {
 
-    
 
+    const SERVER_ID = sessionStorage.getItem("serverConnected");
     socket.emit('join', sessionStorage.getItem('serverConnected'));
     sessionStorage.setItem('loaded', false);
 
@@ -27,13 +28,13 @@ const NewLobby = () => {
     const [roundsMax, setRoundsMax] = useState(20);
     const navigate = useNavigate();
     const [clobby, setLobby] = useState({ playerList: [] });
-    const [bots , setBots] = useState(
+    const [bots, setBots] = useState(
         [
-            {imageUrl: require("./CSS/pics/mathis.webp"),id: "Mathis", level : 1,                   geoDash:require("./CSS/pics/Easy.webp")},
-            {imageUrl: require("./CSS/pics/michael-jackson.jpg"),id: "Micheal Jackson", level : 20, geoDash:require("./CSS/pics/Normal.webp")},
-            {imageUrl: require("./CSS/pics/trump (1).jpg"),id: "Donald Trump", level : 530,         geoDash:require("./CSS/pics/Harder.webp")},
-            {imageUrl: require("./CSS/pics/coin.webp") ,id: "Chill Luigi", level : 1069,            geoDash:require("./CSS/pics/Insane.webp")},
-            {imageUrl: require("./CSS/pics/biden (1).jpg"), id: "Joe Biden", level : 9999,          geoDash:require("./CSS/pics/ExtremeDemon.webp")},
+            { imageUrl: require("./CSS/pics/mathis.webp"), username: "Mathis", level: 1, geoDash: require("./CSS/pics/Easy.webp") },
+            { imageUrl: require("./CSS/pics/michael-jackson.jpg"), username: "Micheal Jackson", level: 20, geoDash: require("./CSS/pics/Normal.webp") },
+            { imageUrl: require("./CSS/pics/trump (1).jpg"), username: "Donald Trump", level: 530, geoDash: require("./CSS/pics/Harder.webp") },
+            { imageUrl: require("./CSS/pics/coin.webp"), username: "Chill Luigi", level: 1069, geoDash: require("./CSS/pics/Insane.webp") },
+            { imageUrl: require("./CSS/pics/biden (1).jpg"), username: "Joe Biden", level: 9999, geoDash: require("./CSS/pics/ExtremeDemon.webp") },
         ]
     );
     const [showBots, setShowBots] = useState(false);
@@ -92,7 +93,7 @@ const NewLobby = () => {
 
         const theQuote = generateQuote();
         setQuoteOfTheDay(theQuote);
-        
+
     }, []);
     // --------------------------------- FUNCTIONS -----------------------------------
 
@@ -172,7 +173,7 @@ const NewLobby = () => {
                 }
 
                 console.log(data);
-                
+
                 setGameName(data.serverName);
                 setMaxPlayers(data.nbPlayerMax);
                 setOwner(data.owner);
@@ -192,8 +193,11 @@ const NewLobby = () => {
 
                 }
 
-
             });
+
+            socket.on("cantAddABot",() => {
+                alert("Vous ne pouvez pas ajouter de bot la liste de joueur est déjà pleine !")
+            })
 
             socket.on("lobbyParams", (maxPlayers, timeBetweenTurn, roundsMax) => {
 
@@ -235,7 +239,7 @@ const NewLobby = () => {
 
 
     function ShowBots({ bots, isShowBots }) {
-    
+
         const getLevelColor = (level) => {
             const maxLevel = 5;
             const hue = 120 - (120 * (level / maxLevel)); // De vert à rouge
@@ -243,18 +247,23 @@ const NewLobby = () => {
             const lightness = 50; // Luminosité standard
             return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
         };
-        
+
         return (
             <div className='botList'>
-            {bots.map((bot) => (
-                <div key={bot.id} className='botInfo' onClick={() => isShowBots(false)}>
-                    <img src={bot.imageUrl} style={{ width: '50px', height: '50px', marginRight: '10px' }} />
-                    {bot.id} | <span style={{ color: getLevelColor(bot.level) }}> niveau : {bot.level}</span>
-                    <img src={bot.geoDash} style={{ width: '50px', height: '50px', marginLeft: '10px' }} />
-                </div>
-            ))}
+                {bots.map((bot) => (
+                    <div key={bot.username} className='botInfo' onClick={() => handleBotSelection(bot)}>
+                        <img src={bot.imageUrl} style={{ width: '50px', height: '50px', marginRight: '10px' }} />
+                        {bot.username} | <span style={{ color: getLevelColor(bot.level) }}> niveau : {bot.level}</span>
+                        <img src={bot.geoDash} style={{ width: '50px', height: '50px', marginLeft: '10px' }} />
+                    </div>
+                ))}
             </div>
         );
+    }
+
+    const handleBotSelection = (bot) => {
+        setShowBots(false);
+        socket.emit("newBot", SERVER_ID, bot);
     }
 
     return (
@@ -266,8 +275,8 @@ const NewLobby = () => {
                     <div className='gameNameType'>{gameName} ({gameType})</div>
                     <div className='lobby-bot' onClick={() => showBots === true ? setShowBots(false) : setShowBots(true)}>Ajouter un Bot</div>
                     <div className='lobby-bot-list'>
-                        {showBots && <ShowBots bots={bots} isShowBots={setShowBots} />}      
-                    </div>         
+                        {showBots && <ShowBots bots={bots} isShowBots={setShowBots} />}
+                    </div>
                 </div>
                 <div className='NB-underBandeau'>
                     <div className='waitingPlayerTitle animated-ellipsis'> {` ${!allReady ? "EN ATTENTE DES AUTRES JOUEURS" : "DEBUT DE LA PARTIE "}`}</div>
@@ -294,7 +303,7 @@ const NewLobby = () => {
                                 </tr>
                                 <tr>
                                     <td className="table-title">Argent Parié :</td>
-                                    <td className="table-info">{!moneyBet  ? "0" : moneyBet}$</td>
+                                    <td className="table-info">{!moneyBet ? "0" : moneyBet}$</td>
                                     <td className="table-title">Phrase du jour :</td>
                                     <td className="table-info">{quoteOfTheDay}</td>
                                 </tr>

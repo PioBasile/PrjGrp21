@@ -446,6 +446,7 @@ class Lobby {
     this.maxTurn = 20;
     this.moneyBet = moneyBet;
     this.gameLinked = null;
+    this.hadStart = false;
   }
 
 }

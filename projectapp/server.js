@@ -455,7 +455,9 @@ io.on('connection', (socket) => {
 
     }
 
-    nGame.hadStart = true;
+    lobby.hadStart = true;
+
+    io.emit("newServer", lobbyList);
 
   });
 

@@ -32,9 +32,9 @@ const NewLobby = () => {
     const [bots, setBots] = useState(
         [
             { imageUrl: require("./CSS/pics/mathis.webp"), username: "Mathis", level: 1, geoDash: require("./CSS/pics/Easy.webp") },
-            { imageUrl: require("./CSS/pics/michael-jackson.jpg"), username: "Michael Jackson", level: 20, geoDash: require("./CSS/pics/Normal.webp") },
+            { imageUrl: require("./CSS/pics/obama.webp"), username: "Obamna", level: 20, geoDash: require("./CSS/pics/Normal.webp") },
             { imageUrl: require("./CSS/pics/trump (1).jpg"), username: "Donald Trump", level: 530, geoDash: require("./CSS/pics/Harder.webp") },
-            { imageUrl: require("./CSS/pics/coin.webp"), username: "Chill Luigi", level: 1069, geoDash: require("./CSS/pics/Insane.webp") },
+            { imageUrl: require("./CSS/pics/chillLuigi.jpeg"), username: "Chill Luigi", level: 1069, geoDash: require("./CSS/pics/Insane.webp") },
             { imageUrl: require("./CSS/pics/biden (1).jpg"), username: "Joe Biden", level: 9999, geoDash: require("./CSS/pics/ExtremeDemon.webp") },
         ]
     );
@@ -254,7 +254,7 @@ const NewLobby = () => {
                 {bots.map((bot) => (
                     <div key={bot.username} className='botInfo' onClick={() => handleBotSelection(bot)}>
                         <img src={bot.imageUrl} style={{ width: '50px', height: '50px', marginRight: '10px' }} />
-                        {bot.username} | <span style={{ color: getLevelColor(bot.level) }}> niveau : {bot.level}</span>
+                        <span style={{color: 'white'}}> {bot.username} | </span> <span style={{ color: getLevelColor(bot.level) }}> niveau : {bot.level}</span>
                         <img src={bot.geoDash} style={{ width: '50px', height: '50px', marginLeft: '10px' }} />
                     </div>
                 ))}

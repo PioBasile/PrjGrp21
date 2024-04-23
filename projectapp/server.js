@@ -37,8 +37,13 @@ const {
   SavedLobby,
   BlackJack,
   BlackJackPlayer,
-  Bot,
-  isBot
+  isBot,
+  MathisBot,
+  ObamnaBot,
+  DonaldTrumpBot,
+  ChillLuigiBot,
+  JoeBidenBot,
+  isInstanceOfBot
 } = require("./JS_CustomLib/D_utils.js");
 
 //DORIAN
@@ -47,6 +52,7 @@ const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
 const { getAllScores, changeScoreBoard, changeMoney } = require("./JS_CustomLib/P_db.js");
 const { pseudoRandomBytes } = require('crypto');
+const { resolve } = require('path');
 app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -368,7 +374,25 @@ io.on('connection', (socket) => {
       }
 
       else {
-        let newBot = new Bot(player.username, player.cookie);
+        let newBot = null;
+        if (player.username == "Mathis") {
+          newBot = new MathisBot(player.username, player.cookie);
+        }
+        else if (player.username == "Obamna") {
+          newBot = new ObamnaBot(player.username, player.cookie);
+        }
+        else if (player.username == "Donald Trump") {
+          newBot = new DonaldTrumpBot(player.username, player.cookie);
+        }
+        else if (player.username == "Chill Luigi") {
+          newBot = new ChillLuigiBot(player.username, player.cookie);
+        }
+        else if (player.username == "Joe Biden") {
+          newBot = new JoeBidenBot(player.username, player.cookie);
+        }
+        else {
+          throw new Error("Any bots existe under this name ")
+        }
         plist.push(newBot);
       }
 
@@ -447,7 +471,7 @@ io.on('connection', (socket) => {
     }
 
     for (let player of plist) {
-      if (!isBot(player.name)) {
+      if (!isInstanceOfBot(player)) {
         get_user_info(player.name).then((res) => {
           changeMoney(player.name, -lobby.moneyBet); // on leur enleve leur thune dés qu'ils entrent dans la game
           changeDataBase('nbWin', res.nbGames + 1, player.name);
@@ -668,6 +692,7 @@ io.on('connection', (socket) => {
     });
 
 
+
     socket.emit('startTimer');
     socket.emit('Deck', player.deck);
     socket.emit('Row', [game.row1, game.row2, game.row3, game.row4]);
@@ -685,6 +710,26 @@ io.on('connection', (socket) => {
   });
 
 
+  function botPlayWithDelay(callback) {
+    setTimeout(() => {
+      console.log("debut du timer");
+      for (player of game.playerList) {
+        if (isInstanceOfBot(player)) {
+          let bot = player;
+
+          game.addMessage("<local>" + bot.name + " " + "Im Thinking ...")
+          if (bot.selected == null) {
+            let cardPlayed = bot.playCard();
+            bot.selected = cardPlayed;
+            game.selected_cards.push(cardPlayed);
+          }
+        }
+      }
+      callback();
+    }, "2000")
+  }
+
+
   socket.on('send6cardphase1', (card, playername, gameID) => {
 
     let game = findGame(gameID, TaureauGames);
@@ -693,10 +738,6 @@ io.on('connection', (socket) => {
       socket.emit("deco");
       return;
     }
-    // console.log("LA LISTE DES JOUEURS");
-    ;
-
-
 
     io.to(gameID).emit("getMessage", game.chatContent);
 
@@ -725,86 +766,103 @@ io.on('connection', (socket) => {
     player.deck.splice(count, 1);
     game.selected_cards.push(card);
 
-    let randomThinkingTime = Math.floor(Math.random() * 7) + 3;
-    console.log("randomThinkingTime :")
-    console.log(randomThinkingTime)
-    for (player of game.playerList) {
-      if (player instanceof Bot) {
-        let bot = player;
-        game.addMessage("<local>" + bot.name + "Im Thinking ...")
-        if (bot.selected == null) {
-          let cardPlayed = bot.playCard();
-          console.log("LA CARTE SELECTIONNÉ PAR LE BOT EST : ");
-          bot.selected = cardPlayed;
-          console.log(bot.selected);
-          game.selected_cards.push(cardPlayed);
-        }
-      }
-    }
-    // setTimeout(() => {
-    //   // io.to(gameID).emit("cartesDroite", game.selected_cards);
-    //   console.log("fin timer")
-    //   console.log(game.playerList);
-    // }, randomThinkingTime * 1000);
+    let promises = []
 
-    if (game.tousJouer()) {
+    promises.push(new Promise(resolve => {
+      botPlayWithDelay(resolve);
+    }))
 
-      game.status = STATUS.PHASE_2;
-      io.to(gameID).emit('phase2', (false));
-      game.GiveOrder();
-
-      let nextPlayer = game.nextP();
-      console.log("HERE");
-
-      while (nextPlayer instanceof Bot) {
-        if(nextPlayer.selected != null){
-
-          console.log("this is a bot");
-
-
-          let bot = findPlayer(nextPlayer.name, game.playerList);
-
-          let randomRow = bot.playRow();
-          
-          game.play(randomRow);
-          
-          bot.selected = null;
-          console.log("we passed the value to null PHASE1");
-
-          nextPlayer = game.nextP();
-
-          io.to(gameID).emit("Row", [game.row1, game.row2, game.row3, game.row4]);
-        }
-      }
-
-      io.to(gameID).emit("nextPlayer", nextPlayer);
-    }
-    else {
-      console.log("PAS TOUS JOUER");
-      console.log(game.playerList);
-    }
-
-    let oppon6 = []
-    let pl;
-
-    game.playerList.forEach((player) => {
-
-      pl = { nom: player.name, deck: player.deck.length, score: player.score };
-      oppon6.push(pl);
-
-    });
-
-    socket.emit('Deck', player.deck);
-    io.to(gameID).emit('Row', [game.row1, game.row2, game.row3, game.row4]);
-    io.to(gameID).emit('6oppo', oppon6);
     io.to(gameID).emit("cartesDroite", game.selected_cards);
 
+    Promise.all(promises).then(() => {
+      console.log("fin du timer")
+      if (game.tousJouer()) {
+
+        game.status = STATUS.PHASE_2;
+        io.to(gameID).emit('phase2', (false));
+        game.GiveOrder();
+
+        let nextPlayer = game.nextP();
+        console.log("HERE");
+
+
+        //bot choose the good colone and play
+        setTimeout(() => {
+          while (isInstanceOfBot(nextPlayer)) {
+            if (nextPlayer.selected != null) {
+
+              console.log("this is a bot");
+
+
+              let bot = findPlayer(nextPlayer.name, game.playerList);
+
+              let hadPlay = false
+              //tant que le bot ne trouve pas une row valide il continue de tester (dans le futur bot.playRow() renvera directement la bonne row)
+              while (!hadPlay) {
+                randomRow = bot.playRow();
+                hadPlay = game.play(randomRow)
+              }
+
+              bot.selected = null;
+
+              game.addMessage(`<local> ${bot.name}: ${bot.getVoiceLine()}`);
+              io.to(gameID).emit("getMessage", game.chatContent);
+
+              nextPlayer = game.nextP();
+
+              io.to(gameID).emit("Row", [game.row1, game.row2, game.row3, game.row4]);
+            }
+          }
+
+          io.to(gameID).emit("nextPlayer", nextPlayer);
+        }, "2000");
+      }
+      else {
+        console.log("PAS TOUS JOUER");
+        console.log(game.playerList);
+      }
+
+      let oppon6 = []
+      let pl;
+
+      game.playerList.forEach((player) => {
+
+        pl = { nom: player.name, deck: player.deck.length, score: player.score };
+        oppon6.push(pl);
+
+      });
+
+      socket.emit('Deck', player.deck);
+      io.to(gameID).emit('Row', [game.row1, game.row2, game.row3, game.row4]);
+      io.to(gameID).emit('6oppo', oppon6);
+      io.to(gameID).emit("cartesDroite", game.selected_cards);
+    })
 
   });
 
 
+  function botPlayRow(game,bot, callback) {
+    setTimeout(() => {
+
+      let randomRow = bot.playRow()
+      let hadPlay = false
+      //tant que le bot ne trouve pas une row valide il continue de tester (dans le futur bot.playRow() renvera directement la bonne row)
+      while (!hadPlay) {
+        randomRow = bot.playRow();
+        hadPlay = game.play(randomRow)
+      }
+
+      bot.selected = null;
+
+      callback();
+    }, "2000");
+
+
+  }
+
   socket.on('send6cardphase2', (row, playername, gameID) => {
 
+    console.log("click");
 
     let game = findGame(gameID, TaureauGames);
     let player = findPlayer(playername, game.playerList);
@@ -841,48 +899,37 @@ io.on('connection', (socket) => {
       player.selected = null;
 
       let nextPlayer = game.nextP();
-      while (nextPlayer instanceof Bot) {
-        console.log("this is a bot");
-        let bot = findPlayer(nextPlayer.name, game.playerList);
-        let randomRow = bot.playRow()
-        let hadPlay = false
-        //tant que le bot ne trouve pas une row valide il continue de tester (dans le futur bot.playRow() renvera directement la bonne row)
-        while (!hadPlay) {
-          randomRow = bot.playRow();
-          hadPlay = game.play(randomRow)
-          console.log(randomRow);
+
+      let promises = [];
+      while (isInstanceOfBot(nextPlayer)) {
+        promises.push(new Promise(resolve => {
+          let bot = findPlayer(nextPlayer.name, game.playerList);
+          botPlayRow(game,bot, resolve);
+          game.addMessage(`<local> ${bot.name}: ${bot.getVoiceLine()}`);
+          io.to(gameID).emit("getMessage", game.chatContent);
+          nextPlayer = game.nextP();
+        }));
+      }
+
+      Promise.all(promises).then(() => {
+        if (game.tousPasJouer() || game.status == STATUS.WAITING_FOR_PLAYER_CARD) {
+          console.log("here");
+          game.selected_cards = [];
+          game.status = STATUS.WAITING_FOR_PLAYER_CARD;
+          game.clearP();
+          io.to(gameID).emit('phase1');
+
         }
-
-        console.log("WE PASSED THE VALUE TO NULL HERE");
-
-        bot.selected = null;
-
-        nextPlayer = game.nextP();
-      }
-
-      if (game.tousPasJouer() || game.status == STATUS.WAITING_FOR_PLAYER_CARD) {
-        console.log("here");
-        game.selected_cards = [];
-        game.status = STATUS.WAITING_FOR_PLAYER_CARD;
-        game.clearP();
-        io.to(gameID).emit('phase1');
-
-      }
-      else {
-        console.log("inverse de pas tous jouer");
-        console.log(game.playerList)
-      }
-
-
-
-      io.to(gameID).emit("nextPlayer", nextPlayer);
-
+        else {
+          console.log("inverse de pas tous jouer");
+          console.log(game.playerList)
+        }
+        io.to(gameID).emit("nextPlayer", nextPlayer);
+      })
 
 
     } else {
-
       socket.emit('missPlacement');
-
     }
 
     let oppon6 = []
@@ -913,7 +960,7 @@ io.on('connection', (socket) => {
     let winner = game.playerList[0];
 
     if (game.playerList.length == 1) {
-      if (winner && !winner instanceof Bot) {
+      if (winner && !isInstanceOfBot(winner)) {
         var moneyWin = Math.round(game.moneyBet * game.maxPlayer);
         get_user_info(winner.name).then((res) => {
           changeDataBase('nbWin', res.nbWin + 1, winner.name);

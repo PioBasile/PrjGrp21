@@ -415,6 +415,12 @@ const SixQuiPrend = () => {
       });
 
 
+      socket.on("botCard", (carteDroites) => {
+        setTimeout(() => {
+          setCardInWaiting(carteDroites);
+        },"3000");
+      })
+
       socket.on("emote", (emote, opponentName) => {
 
         let video = 0;

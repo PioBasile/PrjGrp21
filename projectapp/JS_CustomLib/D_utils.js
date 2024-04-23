@@ -142,8 +142,8 @@ const STATUS = {
 
 //FLORIAN
 
-function isBot(name){
-  let botName = ["Mathis", "Michael Jackson", "Chill Luigi" , "Joe Biden", "Donald Trump"]
+function isBot(name) {
+  let botName = ["Mathis", "Michael Jackson", "Chill Luigi", "Joe Biden", "Donald Trump"]
   return botName.includes(name);
 }
 
@@ -665,7 +665,7 @@ class SixQuiPrend {
     return this.currentP;
 
   }
-  
+
 
   play(row) {
 
@@ -750,7 +750,7 @@ class SixQuiPrend {
     }
 
     return false;
-    
+
   }
 
   affectRow(row, value) {
@@ -1568,6 +1568,7 @@ class BlackJack {
     return 0;
   }
 
+
 }
 
 class Bot extends Player {
@@ -1575,17 +1576,152 @@ class Bot extends Player {
     super(username, cookie);
   }
 
-  playCard(){
-    let cardSelected = this.deck[0];
-    this.deck.splice(0,1);
+  playCard() {
+    throw new Error("playCard method must be implemented");
+  }
+
+  playRow() {
+    throw new Error("playRow method must be implemented");
+  }
+
+  getVoiceLine() {
+    let randomLine = Math.floor(Math.random() * this.voiceLine.length);
+    return this.voiceLine[randomLine];
+  }
+}
+
+
+class MathisBot extends Bot {
+  constructor(username, cookie) {
+    super(username, cookie)
+    this.voiceLine = [
+
+      "ouga bouga",
+      "Mmmmh je sais quel est le meilleur coup !",
+      "J'adore les bananes !",
+      "DonkeyKong est mon frere",
+      "C'est un mauvais coup ! OUGA",
+      "Je viens de la jungle"
+
+    ]
+  }
+
+  playCard() {
+    let randomCardIndex = 0;
+    let cardSelected = this.deck[randomCardIndex];
+    this.deck.splice(0, 1);
     return cardSelected;
   }
 
-  playRow(){
+  playRow() {
+    let randomRow = Math.floor(Math.random() * 4);
+    return randomRow + 1; // +1 car ca part pas de 0 
+  }
+
+}
+
+class ObamnaBot extends Bot {
+  constructor(username, cookie) {
+    super(username, cookie)
+    this.voiceLine = [
+
+      "Ma plus grande faiblesse ? je suis Obama !",
+      "Its Obama TIME ",
+      "💭 💤 Oil Oil Oil Oil... 💤 💭",
+      "I have a drEeaaAAam",
+      "Je vais t'applatir comme j'ai applatit le Moyen-Orient"
+    ]
+  }
+  playCard() {
+    let randomCardIndex = Math.floor(Math.random() * this.deck.length - 1);
+    let cardSelected = this.deck[randomCardIndex];
+    this.deck.splice(0, randomCardIndex);
+    return cardSelected;
+  }
+
+  playRow() {
+    let randomRow = Math.floor(Math.random() * 4);
+    return randomRow + 1; // +1 car ca part pas de 0 
+  }
+
+}
+
+class DonaldTrumpBot extends Bot {
+  constructor(username, cookie) {
+    this.voiceLine = [
+      "WTF IS A KILOMETER !!!!!",
+      "I hate sleepy Joe",
+      "J'ai pas d'A.D.N j'ai USA",
+      "🦅 🦅 🦅 🦅 🦅 🦅",
+      "Attention ou je construis un mur entre toi et moi"
+    ]
+    super(username, cookie)
+  }
+  playCard() {
+    let randomCardIndex = Math.floor(Math.random() * this.deck.length - 1);
+    let cardSelected = this.deck[randomCardIndex];
+    this.deck.splice(0, randomCardIndex);
+    return cardSelected;
+  }
+
+  playRow() {
     let randomRow = Math.floor(Math.random() * 4);
     return randomRow + 1; // +1 car ca part pas de 0 
   }
 }
+
+class ChillLuigiBot extends Bot {
+  constructor(username, cookie) {
+    super(username, cookie)
+    this.voiceLine = [
+
+      "mAAarRRrIiOoO, faut tester les champignons Mariooooooo 🍃 🍃",
+      "Princesssssss Peachhhhh I <3 Uuuuuuuuuuu",
+      "BOMBOCLAT",
+      "DonkeyKong a mangé ma BANANE 🤬🤬🤬",
+      "IT'S ME LUIIIiiiiiiiiiiiiii..... 🍃"
+    ]
+  }
+  playCard() {
+    let randomCardIndex = Math.floor(Math.random() * this.deck.length - 1);
+    let cardSelected = this.deck[randomCardIndex];
+    this.deck.splice(0, randomCardIndex);
+    return cardSelected;
+  }
+
+  playRow() {
+    let randomRow = Math.floor(Math.random() * 4);
+    return randomRow + 1; // +1 car ca part pas de 0 
+  }
+
+}
+
+class JoeBidenBot extends Bot {
+  constructor(username, cookie) {
+    super(username, cookie)
+    this.voiceLine = [
+      "L'amerique peut etre résumé en un seul mot : Suakjkejfziahb",
+      "Ma glace préféré est chocolat et pépite de Menth",
+      "T'as quel age 17 ans ?? [...] QUOI 6 ANS !!!",
+      "Tu sais ca parle de tu sais, a propos de tu sais"
+
+    ]
+  }
+  playCard() {
+    let randomCardIndex = Math.floor(Math.random() * this.deck.length - 1);
+    let cardSelected = this.deck[randomCardIndex];
+    this.deck.splice(0, randomCardIndex);
+    return cardSelected;
+  }
+
+  playRow() {
+    let randomRow = Math.floor(Math.random() * 4);
+    return randomRow + 1; // +1 car ca part pas de 0 
+  }
+
+}
+
+
 
 function getOpponent(plist, current_player) {
   let opponentList = [];
@@ -1595,6 +1731,10 @@ function getOpponent(plist, current_player) {
     }
   })
   return opponentList;
+}
+
+function isInstanceOfBot(bot) {
+  return bot instanceof MathisBot || bot instanceof ObamnaBot || bot instanceof DonaldTrumpBot || bot instanceof ChillLuigiBot || bot instanceof JoeBidenBot
 }
 
 
@@ -1625,6 +1765,7 @@ module.exports = {
   SavedLobby,
   BlackJack,
   BlackJackPlayer,
-  Bot,
-  isBot
+  isBot,
+  MathisBot,
+  isInstanceOfBot
 }

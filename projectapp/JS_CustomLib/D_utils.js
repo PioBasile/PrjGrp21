@@ -777,7 +777,7 @@ class SixQuiPrend {
   /**
    * 
    * @param {*} num valeur de la carte
-   * @returns if this is a valid row
+   * @returns if this is a valid
    */
 
   findValidRow(num) {
@@ -1582,7 +1582,7 @@ class Bot extends Player {
   }
 
   playRow(){
-    let randomRow = Math.floor(Math.random() * 3);
+    let randomRow = Math.floor(Math.random() * 4);
     return randomRow + 1; // +1 car ca part pas de 0 
   }
 }

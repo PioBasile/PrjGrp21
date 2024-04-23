@@ -4,6 +4,7 @@ import './CSS/newLobby.css';
 import socket from '../socketG';
 
 
+
 const NewLobby = () => {
 
 
@@ -31,7 +32,7 @@ const NewLobby = () => {
     const [bots, setBots] = useState(
         [
             { imageUrl: require("./CSS/pics/mathis.webp"), username: "Mathis", level: 1, geoDash: require("./CSS/pics/Easy.webp") },
-            { imageUrl: require("./CSS/pics/michael-jackson.jpg"), username: "Micheal Jackson", level: 20, geoDash: require("./CSS/pics/Normal.webp") },
+            { imageUrl: require("./CSS/pics/michael-jackson.jpg"), username: "Michael Jackson", level: 20, geoDash: require("./CSS/pics/Normal.webp") },
             { imageUrl: require("./CSS/pics/trump (1).jpg"), username: "Donald Trump", level: 530, geoDash: require("./CSS/pics/Harder.webp") },
             { imageUrl: require("./CSS/pics/coin.webp"), username: "Chill Luigi", level: 1069, geoDash: require("./CSS/pics/Insane.webp") },
             { imageUrl: require("./CSS/pics/biden (1).jpg"), username: "Joe Biden", level: 9999, geoDash: require("./CSS/pics/ExtremeDemon.webp") },

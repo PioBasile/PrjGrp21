@@ -60,7 +60,6 @@ const NewBrowserManager = () => {
                 //et si c'est -pas une game saved bah je l'ajoute pour tout le monde dans la liste des saved
                 const lobbyListSaved = lobbyList.filter(lobby => lobby.gameLinked !== null);
                 const lobbyCreated = lobbyList.filter(lobby => lobby.gameLinked === null && !lobby.hadStart);
-                lobbyCreated.map(lobby => console.log(lobby.hadStart))
                 let lobbys = lobbyListSaved.filter(lobby => {
                     const playerName = sessionStorage.getItem("name");
                     const playerList = lobby.gameLinked["playerList"].map(player => player.name);

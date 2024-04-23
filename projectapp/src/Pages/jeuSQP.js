@@ -127,8 +127,6 @@ const SixQuiPrend = () => {
     if (!myTurn) { return 0 };
     let card = payload.card
 
-
-
     socket.emit('send6cardphase1', card, sessionStorage.getItem("name"), sessionStorage.getItem("serverConnected"));
     setVisibleCard(card);
     setselected(true);

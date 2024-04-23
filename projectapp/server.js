@@ -37,7 +37,8 @@ const {
   SavedLobby,
   BlackJack,
   BlackJackPlayer,
-  Bot
+  Bot,
+  isBot
 } = require("./JS_CustomLib/D_utils.js");
 
 //DORIAN
@@ -45,15 +46,7 @@ const { login, changeDataBase, get_user_info, register } = require("./JS_CustomL
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
 const { getAllScores, changeScoreBoard, changeMoney } = require("./JS_CustomLib/P_db.js");
-const { emit } = require('process');
-const { on } = require('events');
-const { findDOMNode } = require('react-dom');
-const { isBooleanObject } = require('util/types');
-const { useFetcher } = require('react-router-dom');
-
-
-
-
+const { pseudoRandomBytes } = require('crypto');
 app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -67,7 +60,7 @@ const io = new Server(server, {
 
 // VARIABLES 
 
-let validCookies = {};
+let validCookies = { 'Micheal Jackson': '69' };
 let BatailGames = [];
 let TaureauGames = [];
 let MilleBornesGames = [];
@@ -260,7 +253,6 @@ io.on('connection', (socket) => {
   })
 
   socket.on('joinLobby', (name, lobbyID, cookie) => {
-
     clobby = findLobby(lobbyID, lobbyList);
     cplayer = new Player_IN_Lobby(name, cookie);
     clobby.playerList.push(cplayer);
@@ -294,8 +286,6 @@ io.on('connection', (socket) => {
 
     let clobby = findLobby(lobbyID, lobbyList);
     socket.emit('here', clobby);
-    console.log(clobby);
-    console.log(clobby.playerList);
 
     io.to(lobbyID).emit('here', clobby);
 
@@ -369,13 +359,18 @@ io.on('connection', (socket) => {
 
     lobby.playerList.forEach((player) => {
 
-      plist.push(new Player(player.username, player.cookie))
+      if (!isBot(player.username)) {
+        console.log(player);
+        plist.push(new Player(player.username, player.cookie))
+        get_user_info(player.username).then((res) => {
+          changeDataBase('nbGames', res.nbGames + 1, player.username);
+        });
+      }
 
-      get_user_info(player.username).then((res) => {
-
-        changeDataBase('nbGames', res.nbGames + 1, player.username);
-
-      });
+      else {
+        let newBot = new Bot(player.username, player.cookie);
+        plist.push(newBot);
+      }
 
     });
 
@@ -452,11 +447,13 @@ io.on('connection', (socket) => {
     }
 
     for (let player of plist) {
-      get_user_info(player.name).then((res) => {
-        changeMoney(player.name, -lobby.moneyBet); // on leur enleve leur thune dés qu'ils entrent dans la game
-        changeDataBase('nbWin', res.nbGames + 1, player.name);
-        changeDataBase('argent', res.argent - lobby.moneyBet, player.name);
-      });
+      if (!isBot(player.name)) {
+        get_user_info(player.name).then((res) => {
+          changeMoney(player.name, -lobby.moneyBet); // on leur enleve leur thune dés qu'ils entrent dans la game
+          changeDataBase('nbWin', res.nbGames + 1, player.name);
+          changeDataBase('argent', res.argent - lobby.moneyBet, player.name);
+        });
+      }
 
     }
 
@@ -691,14 +688,18 @@ io.on('connection', (socket) => {
 
   socket.on('send6cardphase1', (card, playername, gameID) => {
 
-
-    game = findGame(gameID, TaureauGames);
-    player = findPlayer(playername, game.playerList);
+    let game = findGame(gameID, TaureauGames);
+    let player = findPlayer(playername, game.playerList);
     if (player == -1) {
       socket.emit("deco");
       return;
     }
+    // console.log("LA LISTE DES JOUEURS");
+    ;
 
+
+    
+    io.to(gameID).emit("getMessage", game.chatContent);
 
 
     let count = 0;
@@ -725,6 +726,27 @@ io.on('connection', (socket) => {
     player.deck.splice(count, 1);
     game.selected_cards.push(card);
 
+    let randomThinkingTime = Math.floor(Math.random() * 7) + 3;
+    console.log("randomThinkingTime :")
+    console.log(randomThinkingTime)
+    for (player of game.playerList) {
+      if (player instanceof Bot) {
+        let bot = player;
+        game.addMessage("<local>" + bot.name + "Im Thinking ...")
+        if (bot.selected == null) {
+          let cardPlayed = bot.playCard();
+          console.log("LA CARTE SELECTIONNÉ PAR LE BOT EST : ");
+          bot.selected = cardPlayed;
+          console.log(bot.selected);
+          game.selected_cards.push(cardPlayed);
+        }
+      }
+    }
+    setTimeout(() => {
+      // io.to(gameID).emit("cartesDroite", game.selected_cards);
+      console.log("fin timer")
+      console.log(game.playerList);
+    }, randomThinkingTime * 1000);
 
     if (game.tousJouer()) {
 
@@ -733,26 +755,33 @@ io.on('connection', (socket) => {
       game.GiveOrder();
 
       let nextPlayer = game.nextP();
+      console.log("HERE");
 
-      while(nextPlayer.isBot()){
+      while (nextPlayer instanceof Bot) {
+        console.log("this is a bot");
 
         let bot = findPlayer(nextPlayer.name, game.playerList);
-        let card = bot.playCard();
-        game.selected_cards.push(card)
 
         let randomRow = bot.playRow();
-        
+
+
         game.play(randomRow);
 
         nextPlayer = game.nextP();
+
+        io.to(gameID).emit("Row", [game.row1, game.row2, game.row3, game.row4]);
       }
 
       io.to(gameID).emit("nextPlayer", nextPlayer);
-
+    }
+    else {
+      console.log("PAS TOUS JOUER");
+      console.log(game.playerList);
     }
 
     let oppon6 = []
     let pl;
+
     game.playerList.forEach((player) => {
 
       pl = { nom: player.name, deck: player.deck.length, score: player.score };
@@ -771,6 +800,7 @@ io.on('connection', (socket) => {
 
   socket.on('send6cardphase2', (row, playername, gameID) => {
 
+
     let game = findGame(gameID, TaureauGames);
     let player = findPlayer(playername, game.playerList);
     if (player == -1) {
@@ -778,6 +808,21 @@ io.on('connection', (socket) => {
       return;
     }
 
+    let nextPlayer = game.nextP();
+    
+    while (nextPlayer instanceof Bot) {
+      console.log("this is a bot");
+      let bot = findPlayer(nextPlayer.name, game.playerList);
+      let randomRow = bot.playRow()
+      //tant que le bot ne trouve pas une row valide il continue de tester (dans le futur bot.playRow() renveraa directement la bonne row)
+      while(game.play(randomRow)){
+        randomRow = bot.playRow();
+      }
+
+      bot.selected == null;
+
+      nextPlayer = game.nextP();
+    }
 
     if (game.play(parseInt(row))) {
 
@@ -786,12 +831,12 @@ io.on('connection', (socket) => {
           let moneyWin = game.moneyBet
           let winner = game.Pgagnat();
           let winnerName = winner.name;
-          console.log("AND THE WINNNNER IIIIIIISSS!!!!!!!! ",winnerName)
+          console.log("AND THE WINNNNER IIIIIIISSS!!!!!!!! ", winnerName)
           get_user_info(player.name).then((res) => {
 
             changeDataBase('nbWin', res.nbWin + 1, winnerName);
             changeScoreBoard('six-qui-prend', winnerName);
-            changeDataBase('argent', res.argent + 100 + moneyWin,winnerName);
+            changeDataBase('argent', res.argent + 100 + moneyWin, winnerName);
             changeMoney(player.name, 100 + moneyWin);
 
           });
@@ -806,7 +851,7 @@ io.on('connection', (socket) => {
       player.selected = null;
 
       if (game.tousPasJouer() || game.status == STATUS.WAITING_FOR_PLAYER_CARD) {
-
+        console.log("here");
         game.selected_cards = [];
         game.status = STATUS.WAITING_FOR_PLAYER_CARD;
         game.clearP();
@@ -964,7 +1009,7 @@ io.on('connection', (socket) => {
 
       console.log("game.moneyBet");
       console.log(game.moneyBet);
-      
+
       get_user_info(player.name).then((res) => {
 
         changeDataBase('nbWin', res.nbWin + 1, player.name);
@@ -1260,14 +1305,15 @@ io.on('connection', (socket) => {
     })
 
   })
-  
+
   // SENTINEL 
   socket.on("player_auth_validity", (data) => {
 
-    if (data.player_name == "" || validCookies[data.player_name] == "no") { 
+    if (data.player_name == "" || validCookies[data.player_name] == "no") {
       console.log(validCookies)
       console.log(validCookies[data.player_name])
-      return; }
+      return;
+    }
 
     if (validCookies[data.player_name] != data.cookie) {
       socket.emit("sentinel_auth_error");
@@ -1460,17 +1506,17 @@ io.on('connection', (socket) => {
 
       let sumPoint = player.sumPoint();
       let sumPointSplitted = player.sumPointSplitted()
-      if(!player.onSplittedDeck){
-        if(sumPoint >= 21){
+      if (!player.onSplittedDeck) {
+        if (sumPoint >= 21) {
           player.onSplittedDeck = true
         }
-        else{
+        else {
           game.hit(deckName);
         }
       }
       else {
-        if(sumPointSplitted >= 21){
-          if(!game.nextPlayer()){
+        if (sumPointSplitted >= 21) {
+          if (!game.nextPlayer()) {
             dealerPlay(game);
           }
         }
@@ -1501,7 +1547,7 @@ io.on('connection', (socket) => {
 
 
   socket.on("stay", (serverId, deckName) => {
-    let game = findGame(serverId, BlackJackGames) 
+    let game = findGame(serverId, BlackJackGames)
     let player = findPlayer(deckName, game.playerList);
     if (!player.hasSplitted) {
       if (!game.nextPlayer()) {
@@ -1535,8 +1581,8 @@ io.on('connection', (socket) => {
     let game = findGame(serverId, BlackJackGames);
     let player = findPlayer(deckName, game.playerList)
 
-    for(let bet of player.bets){
-      if(bet.name == deckName){
+    for (let bet of player.bets) {
+      if (bet.name == deckName) {
         bet.amountBet *= 2
         get_user_info(deckName).then((res) => {
           changeDataBase('argent', res.argent - bet.amountBet, deckName);
@@ -1544,7 +1590,7 @@ io.on('connection', (socket) => {
         });
       }
     }
-    
+
     game.hit(deckName)
 
     if (!game.nextPlayer()) {
@@ -1554,22 +1600,22 @@ io.on('connection', (socket) => {
 
     io.to(serverId).emit("allDeck", game.playerList);
     io.to(serverId).emit("BJ-askMyTurn", player.myTurn);
-    
-    
+
+
   })
-  
+
   socket.on("canSplit", (serverId, playerName) => {
     let game = findGame(serverId, BlackJackGames);
     let player = findPlayer(playerName, game.playerList);
     let deck = player.deck
     let canSplit = false;
-    if(deck.length == 2){
+    if (deck.length == 2) {
       canSplit = (deck[0].power == deck[1].power) && deck.length == 2 && !player.hasSplitted;
     }
 
 
     socket.emit("goSplitIfYouCan", canSplit);
-    
+
   })
 
   //TODO : prendre l'argent deja misé deux fois quand double
@@ -1586,8 +1632,8 @@ io.on('connection', (socket) => {
 
   socket.on("leaveBJ", (serverId, playerName) => {
     let game = findGame(serverId, BlackJackGames);
-    if(game.removePlayer(playerName)){
-      console.log(playerName+" delete himself from the game");
+    if (game.removePlayer(playerName)) {
+      console.log(playerName + " delete himself from the game");
     }
     else {
       console.log("nuh uh");
@@ -1606,14 +1652,14 @@ io.on('connection', (socket) => {
       if (earn.amountBet != null || earn.mult != null) {
 
         let moneyWin = earn.amountBet * earn.mult;
-        io.to(serverId).emit("moneyWin", moneyWin, earn.name);  
-        
+        io.to(serverId).emit("moneyWin", moneyWin, earn.name);
+
         let winMessage = ""
 
-        if(moneyWin != 0){
+        if (moneyWin != 0) {
           winMessage = `🎉 - ${earn.name} a gagné ${moneyWin} $`
         }
-        
+
         else {
           winMessage = `🪦 - ${earn.name} a perdu ${earn.amountBet} $`
         }
@@ -1646,25 +1692,21 @@ io.on('connection', (socket) => {
   //BOT
 
   socket.on("newBot", (serverId, botInfo) => {
-    
+
     let lobby = findLobby(serverId, lobbyList);
     let cookie = makecookie(10);
     validCookies[botInfo.username] = cookie;
-    let bot = new Bot(botInfo.username, cookie);
-    console.log(validCookies);
-    if(lobby.playerList.length + 1 <= lobby.nbPlayerMax){
-      lobby.playerList.push(bot);
+    let botInLobby = new Player_IN_Lobby(botInfo.username, cookie)
+    if (lobby.playerList.length + 1 <= lobby.nbPlayerMax) {
+      lobby.playerList.push(botInLobby);
       io.to(serverId).emit("here", lobby)
-      bot.isReady = true;
-      console.log("lobby from newBot")
-      console.log(lobby);
-      console.log(lobby.playerList);
+      botInLobby.isReady = true;
     }
 
     else {
       socket.emit("cantAddABot")
     }
-    
+
   })
 
 

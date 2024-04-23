@@ -66,7 +66,7 @@ const LoginSignup = () => {
                 </div>
             </div>
             <div className="login-container">
-                <div className='lo-si'> <h1>Connection ou Inscription</h1></div>
+                <div className='lo-si'> <h1>Connexion ou Inscription</h1></div>
                 {isWrong && <div className='wrongStuff'>Nom d'utiliseur ou mot de passe incorrecte !</div>}
                 <input
                     type="text"

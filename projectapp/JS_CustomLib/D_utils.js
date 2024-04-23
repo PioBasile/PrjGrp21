@@ -142,6 +142,11 @@ const STATUS = {
 
 //FLORIAN
 
+function isBot(name){
+  let botName = ["Mathis", "Michael Jackson", "Chill Luigi" , "Joe Biden", "Donald Trump"]
+  return botName.includes(name);
+}
+
 class Bataille {
 
   constructor(idPart, maxJ, maxT, Owner, playerL, moneyBet) {
@@ -661,10 +666,6 @@ class SixQuiPrend {
 
   }
   
-  isBot(){
-    let botName = ["Mathis", "Michael Jackson", "Chill Luigi" , "Joe Biden", "Donal Trump"]
-    return botName.includes(botName);
-  }
 
   play(row) {
 
@@ -749,11 +750,7 @@ class SixQuiPrend {
     }
 
     return false;
-
-
-
-
-
+    
   }
 
   affectRow(row, value) {
@@ -777,6 +774,11 @@ class SixQuiPrend {
 
   }
 
+  /**
+   * 
+   * @param {*} num valeur de la carte
+   * @returns if this is a valid row
+   */
 
   findValidRow(num) {
 
@@ -1623,5 +1625,6 @@ module.exports = {
   SavedLobby,
   BlackJack,
   BlackJackPlayer,
-  Bot
+  Bot,
+  isBot
 }

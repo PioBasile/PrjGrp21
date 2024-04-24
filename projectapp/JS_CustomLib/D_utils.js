@@ -437,6 +437,12 @@ class Player_IN_Lobby {
 
 }
 
+class BotInLobby extends Player_IN_Lobby{
+  constructor(username,cookie){
+    super(username,cookie);
+  }
+}
+
 class Lobby {
 
   constructor(serverName, nbPlayerMax, isPrivate, password, gameType, ID, owner, moneyBet) {
@@ -667,13 +673,22 @@ class SixQuiPrend {
   }
 
 
-  play(row) {
+  play(row, player=null) {
 
-
-    let player = this.currentP;
+    if(player == null){
+       player = this.currentP;
+    }
+    
     let card = player.selected;
+    console.log("LE JOUEUR COURANT CELUI QUI EST EN TRAIN DE JOUER EST :::")
+    console.log(player.name);
+
+    console.log("{from play in D_UTILS - 681}LE JOUEUR A COMME CARTE SELECTIONNER :")
+    console.log(player.selected)
+
 
     let crow;
+
 
     switch (row) {
 
@@ -1711,6 +1726,7 @@ class JoeBidenBot extends Bot {
     let randomCardIndex = Math.floor(Math.random() * this.deck.length - 1);
     let cardSelected = this.deck[randomCardIndex];
     this.deck.splice(0, randomCardIndex);
+    // this.selected = cardSelected;
     return cardSelected;
   }
 
@@ -1742,30 +1758,25 @@ module.exports = {
   makecookie,
   Lobby,
   Player_IN_Lobby,
-  Bataille_Card,
   Player,
   Bataille,
   STATUS,
-  findRemovePlayer,
-  findCard,
-  shuffle,
-  generateCartes,
   findPlayer,
   findGame,
   findLobby,
   findWaitingPlayer,
-  generate6Cartes,
-  Carte6,
   SixQuiPrend,
   MilleBorne,
   MB_Player,
   getOpponent,
-  State,
   GameState,
-  SavedLobby,
   BlackJack,
   BlackJackPlayer,
-  isBot,
   MathisBot,
-  isInstanceOfBot
+  ObamnaBot,
+  DonaldTrumpBot,
+  ChillLuigiBot,
+  JoeBidenBot,
+  isInstanceOfBot,
+  BotInLobby
 }

@@ -14,36 +14,27 @@ const {
   makecookie,
   Lobby,
   Player_IN_Lobby,
-  Bataille_Card,
   Player,
   Bataille,
   STATUS,
-  findRemovePlayer,
-  findCard,
-  shuffle,
-  generateCartes,
   findPlayer,
   findGame,
   findLobby,
   findWaitingPlayer,
-  generate6Cartes,
-  Carte6,
   SixQuiPrend,
   MilleBorne,
   MB_Player,
   getOpponent,
-  State,
   GameState,
-  SavedLobby,
   BlackJack,
   BlackJackPlayer,
-  isBot,
   MathisBot,
   ObamnaBot,
   DonaldTrumpBot,
   ChillLuigiBot,
   JoeBidenBot,
-  isInstanceOfBot
+  isInstanceOfBot,
+  BotInLobby
 } = require("./JS_CustomLib/D_utils.js");
 
 //DORIAN
@@ -53,6 +44,7 @@ const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
 const { getAllScores, changeScoreBoard, changeMoney } = require("./JS_CustomLib/P_db.js");
 const { pseudoRandomBytes } = require('crypto');
 const { resolve } = require('path');
+const { LogError } = require('concurrently');
 app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -365,8 +357,7 @@ io.on('connection', (socket) => {
 
     lobby.playerList.forEach((player) => {
 
-      if (!isBot(player.username)) {
-        console.log(player);
+      if (!(player instanceof BotInLobby)) {
         plist.push(new Player(player.username, player.cookie))
         get_user_info(player.username).then((res) => {
           changeDataBase('nbGames', res.nbGames + 1, player.username);
@@ -375,23 +366,23 @@ io.on('connection', (socket) => {
 
       else {
         let newBot = null;
-        if (player.username == "Mathis") {
+        if (player.username.startsWith("Mathis")) {
           newBot = new MathisBot(player.username, player.cookie);
         }
-        else if (player.username == "Obamna") {
+        else if (player.username.startsWith("Obamna")) {
           newBot = new ObamnaBot(player.username, player.cookie);
         }
-        else if (player.username == "Donald Trump") {
+        else if (player.username.startsWith("Donald Trump")) {
           newBot = new DonaldTrumpBot(player.username, player.cookie);
         }
-        else if (player.username == "Chill Luigi") {
+        else if (player.username.startsWith("Chill Luigi")) {
           newBot = new ChillLuigiBot(player.username, player.cookie);
         }
-        else if (player.username == "Joe Biden") {
+        else if (player.username.startsWith("Joe Biden")) {
           newBot = new JoeBidenBot(player.username, player.cookie);
         }
         else {
-          throw new Error("Any bots existe under this name ")
+          throw new Error("Any bots existe under this name : " + player.username);
         }
         plist.push(newBot);
       }
@@ -724,9 +715,10 @@ io.on('connection', (socket) => {
             game.selected_cards.push(cardPlayed);
           }
         }
+        console.log(game.playerList);
       }
       callback();
-    }, "2000")
+    }, "1000")
   }
 
 
@@ -796,11 +788,10 @@ io.on('connection', (socket) => {
 
               let bot = findPlayer(nextPlayer.name, game.playerList);
 
-              let hadPlay = false
               //tant que le bot ne trouve pas une row valide il continue de tester (dans le futur bot.playRow() renvera directement la bonne row)
-              while (!hadPlay) {
+              let randomRow = bot.playRow();
+              while (!game.play(randomRow)) {
                 randomRow = bot.playRow();
-                hadPlay = game.play(randomRow)
               }
 
               bot.selected = null;
@@ -815,7 +806,7 @@ io.on('connection', (socket) => {
           }
 
           io.to(gameID).emit("nextPlayer", nextPlayer);
-        }, "2000");
+        }, "1000");
       }
       else {
         console.log("PAS TOUS JOUER");
@@ -841,23 +832,55 @@ io.on('connection', (socket) => {
   });
 
 
-  function botPlayRow(game,bot, callback) {
+  function botPlayRow(game, bot, callback) {
     setTimeout(() => {
 
       let randomRow = bot.playRow()
-      let hadPlay = false
+      let compteur = 0
+      let nextPlayer = game.currentP;
       //tant que le bot ne trouve pas une row valide il continue de tester (dans le futur bot.playRow() renvera directement la bonne row)
-      while (!hadPlay) {
-        randomRow = bot.playRow();
-        hadPlay = game.play(randomRow)
-      }
+      while (!game.play(randomRow, bot) && compteur < 10) { /// <10 pour sécurité d'une récurssion infini pas encore trouvé pourquoi...
 
+        randomRow = bot.playRow();
+        compteur++;
+      }
       bot.selected = null;
 
       callback();
-    }, "2000");
+    }, "1500");
 
+  }
+  let promises = [];
+  function waitForBot(game) {
+    let nextPlayer = game.currentP
 
+    if (isInstanceOfBot(nextPlayer)) {
+      return Promise.all(promises).then(() => {
+        console.log("After waiting");
+        console.log(game.currentP.name);
+        if (nextPlayer.selected != null) {
+          console.log("je ne suis pas null");
+          let botPromise = new Promise(resolve => {
+            let bot = findPlayer(nextPlayer.name, game.playerList);
+            console.log("on commence a attendre")
+            botPlayRow(game, bot, resolve);
+            console.log("on continue");
+            game.addMessage(`<local> ${bot.name}: ${bot.getVoiceLine()}`);
+            io.to(game.identifiant_partie).emit("getMessage", game.chatContent);
+          });
+          nextPlayer = game.nextP();
+          promises.push(botPromise); // Ajouter la promesse à la liste des promesses
+          console.log("on se rappelle ?")
+
+          return waitForBot(game); // Appel récursif de waitForBot()
+        }
+      });
+    }
+
+    else {
+      console.log("Bot instance found, exiting loop");
+      return Promise.resolve();
+    }
   }
 
   socket.on('send6cardphase2', (row, playername, gameID) => {
@@ -900,18 +923,28 @@ io.on('connection', (socket) => {
 
       let nextPlayer = game.nextP();
 
-      let promises = [];
-      while (isInstanceOfBot(nextPlayer)) {
-        promises.push(new Promise(resolve => {
-          let bot = findPlayer(nextPlayer.name, game.playerList);
-          botPlayRow(game,bot, resolve);
-          game.addMessage(`<local> ${bot.name}: ${bot.getVoiceLine()}`);
-          io.to(gameID).emit("getMessage", game.chatContent);
-          nextPlayer = game.nextP();
-        }));
-      }
+      console.log("before while");
+      console.log(game.currentP.name)
 
-      Promise.all(promises).then(() => {
+      // let promises = [];
+      // while (isInstanceOfBot(nextPlayer)) {
+      //   console.log("waiting the promise");
+      //   Promise.all(promises).then(() => {
+      //     console.log("after while")
+      //     console.log(game.currentP.name)
+      //     promises.push(new Promise(resolve => {
+      //       let bot = findPlayer(nextPlayer.name, game.playerList);
+      //       game.addMessage(`<local> ${bot.name}: ${bot.getVoiceLine()}`);
+      //       io.to(gameID).emit("getMessage", game.chatContent);
+      //       nextPlayer = game.nextP(); //bug car le joueur suivant est calculé trop tot test !!!
+      //       botPlayRow(game, bot, resolve);
+
+      //     }));
+      //   })
+      // }
+
+      waitForBot(game).then(() => {
+        console.log("fin de toutes les promesses ");
         if (game.tousPasJouer() || game.status == STATUS.WAITING_FOR_PLAYER_CARD) {
           console.log("here");
           game.selected_cards = [];
@@ -1588,21 +1621,6 @@ io.on('connection', (socket) => {
           game.hit(deckName);
         }
       }
-
-      // game.hit(deckName);
-      // let sumPoint = player.sumPoint();
-      // if (sumPoint >= 21) {
-      //   if (player.onSplittedDeck) {
-      //     player.hasSplitted = false;
-      //     if (!game.nextPlayer()) {
-      //       player.myTurn = false;
-      //       dealerPlay(game)
-      //     };
-      //   }
-      //   else {
-      //     player.onSplittedDeck = true;
-      //   }
-      // }
     }
 
     io.to(serverId).emit("BJ-askMyTurn");
@@ -1759,10 +1777,18 @@ io.on('connection', (socket) => {
 
     let lobby = findLobby(serverId, lobbyList);
     let cookie = makecookie(10);
+    for (let player of lobby.playerList) {
+      if (player.username == botInfo.username) {
+        botInfo.username += `(${lobby.playerList.length - 1})`;
+        break;
+      }
+    }
     validCookies[botInfo.username] = cookie;
-    let botInLobby = new Player_IN_Lobby(botInfo.username, cookie)
+    let botInLobby = new BotInLobby(botInfo.username, cookie);
     if (lobby.playerList.length + 1 <= lobby.nbPlayerMax) {
       lobby.playerList.push(botInLobby);
+      console.log("LOBBY LIST");
+      console.log(lobby.playerList);
       io.to(serverId).emit("here", lobby)
       botInLobby.isReady = true;
     }

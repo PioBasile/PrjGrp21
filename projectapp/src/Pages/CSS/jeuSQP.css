@@ -404,7 +404,9 @@ img {
 }
 
 /* Assurez-vous que le reste de votre CSS est inchangé */
-
+.chat-container{
+    width: 20%;
+}
 
 /* Style général du pop-up de sauvegarde */
 .savePopUp {

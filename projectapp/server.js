@@ -707,8 +707,6 @@ io.on('connection', (socket) => {
       for (player of game.playerList) {
         if (isInstanceOfBot(player)) {
           let bot = player;
-
-          game.addMessage("<local>" + bot.name + " " + "Im Thinking ...")
           if (bot.selected == null) {
             let cardPlayed = bot.playCard();
             bot.selected = cardPlayed;
@@ -779,8 +777,10 @@ io.on('connection', (socket) => {
 
 
         //bot choose the good colone and play
+        let i = 0;
         setTimeout(() => {
           while (isInstanceOfBot(nextPlayer)) {
+            i++;
             if (nextPlayer.selected != null) {
 
               console.log("this is a bot");
@@ -794,6 +794,9 @@ io.on('connection', (socket) => {
                 randomRow = bot.playRow();
               }
 
+              let cardIndex = game.selected_cards.indexOf(bot.selected);
+              game.selected_cards.splice(cardIndex,1);
+
               bot.selected = null;
 
               game.addMessage(`<local> ${bot.name}: ${bot.getVoiceLine()}`);
@@ -801,12 +804,15 @@ io.on('connection', (socket) => {
 
               nextPlayer = game.nextP();
 
-              io.to(gameID).emit("Row", [game.row1, game.row2, game.row3, game.row4]);
+              setTimeout(() => {
+                io.to(gameID).emit("Row", [game.row1, game.row2, game.row3, game.row4]);
+                io.to(game.identifiant_partie).emit("cartesDroite", game.selected_cards);
+              },"1000");
             }
           }
 
           io.to(gameID).emit("nextPlayer", nextPlayer);
-        }, "1000");
+        }, "1000" * i);
       }
       else {
         console.log("PAS TOUS JOUER");
@@ -836,42 +842,39 @@ io.on('connection', (socket) => {
     setTimeout(() => {
 
       let randomRow = bot.playRow()
-      let compteur = 0
-      let nextPlayer = game.currentP;
       //tant que le bot ne trouve pas une row valide il continue de tester (dans le futur bot.playRow() renvera directement la bonne row)
-      while (!game.play(randomRow, bot) && compteur < 10) { /// <10 pour sécurité d'une récurssion infini pas encore trouvé pourquoi...
-
+      while (!game.play(randomRow, bot)) {
         randomRow = bot.playRow();
-        compteur++;
       }
+      let cardIndex = game.selected_cards.indexOf(bot.selected);
+      game.selected_cards.splice(cardIndex,1);
       bot.selected = null;
+
 
       callback();
     }, "1500");
 
   }
+
+
   let promises = [];
+
   function waitForBot(game) {
     let nextPlayer = game.currentP
 
     if (isInstanceOfBot(nextPlayer)) {
       return Promise.all(promises).then(() => {
-        console.log("After waiting");
-        console.log(game.currentP.name);
         if (nextPlayer.selected != null) {
-          console.log("je ne suis pas null");
           let botPromise = new Promise(resolve => {
             let bot = findPlayer(nextPlayer.name, game.playerList);
-            console.log("on commence a attendre")
             botPlayRow(game, bot, resolve);
-            console.log("on continue");
             game.addMessage(`<local> ${bot.name}: ${bot.getVoiceLine()}`);
             io.to(game.identifiant_partie).emit("getMessage", game.chatContent);
+            io.to(game.identifiant_partie).emit("Row", [game.row1, game.row2, game.row3, game.row4]);
+            io.to(game.identifiant_partie).emit("cartesDroite", game.selected_cards);
           });
           nextPlayer = game.nextP();
           promises.push(botPromise); // Ajouter la promesse à la liste des promesses
-          console.log("on se rappelle ?")
-
           return waitForBot(game); // Appel récursif de waitForBot()
         }
       });
@@ -919,29 +922,16 @@ io.on('connection', (socket) => {
         return;
       }
 
+      let cardIndex = game.selected_cards.indexOf(player.selected);
+      game.selected_cards.splice(cardIndex,1);
+
+
       player.selected = null;
 
       let nextPlayer = game.nextP();
 
       console.log("before while");
       console.log(game.currentP.name)
-
-      // let promises = [];
-      // while (isInstanceOfBot(nextPlayer)) {
-      //   console.log("waiting the promise");
-      //   Promise.all(promises).then(() => {
-      //     console.log("after while")
-      //     console.log(game.currentP.name)
-      //     promises.push(new Promise(resolve => {
-      //       let bot = findPlayer(nextPlayer.name, game.playerList);
-      //       game.addMessage(`<local> ${bot.name}: ${bot.getVoiceLine()}`);
-      //       io.to(gameID).emit("getMessage", game.chatContent);
-      //       nextPlayer = game.nextP(); //bug car le joueur suivant est calculé trop tot test !!!
-      //       botPlayRow(game, bot, resolve);
-
-      //     }));
-      //   })
-      // }
 
       waitForBot(game).then(() => {
         console.log("fin de toutes les promesses ");

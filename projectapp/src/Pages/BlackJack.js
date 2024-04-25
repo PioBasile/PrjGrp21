@@ -479,8 +479,9 @@ const BlackJack = () => {
                         <p key={index}>{msg}</p>)
                     )}
                     {serverMessage.map((msg, index) => {
-                        <p className="serverText" key={index}> {msg}</p>
+                        return <p className="serverText" key={index}>{msg}</p>;
                     })}
+
                     <input
                         id="inputChat"
                         className='inputMessage'

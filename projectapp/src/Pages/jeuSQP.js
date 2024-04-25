@@ -49,6 +49,19 @@ const SixQuiPrend = () => {
   const [showEmotes, setShowEmotes] = useState(false);
   const emoteBubbleRef = useRef(null);
 
+  const [bots, setBots] = useState(
+    [
+        { imageUrl: require("./CSS/pics/mathis.webp"), username: "Mathis", level: 1, geoDash: require("./CSS/pics/Easy.webp") },
+        { imageUrl: require("./CSS/pics/obama.webp"), username: "Obamna", level: 20, geoDash: require("./CSS/pics/Normal.webp") },
+        { imageUrl: require("./CSS/pics/trump (1).jpg"), username: "Donald Trump", level: 530, geoDash: require("./CSS/pics/Harder.webp") },
+        { imageUrl: require("./CSS/pics/chillLuigi.jpeg"), username: "Chill Luigi", level: 1069, geoDash: require("./CSS/pics/Insane.webp") },
+        { imageUrl: require("./CSS/pics/biden (1).jpg"), username: "Joe Biden", level: 9999, geoDash: require("./CSS/pics/ExtremeDemon.webp") },
+    ]
+  );
+
+  const isBot = (username) => bots.some(bot => bot.username === username);
+
+
   const videoToPlay = [
     { id: 1, videoUrl: require("./CSS/emotes/toyota.mp4") },
     { id: 2, videoUrl: require("./CSS/emotes/BOING.mp4") },
@@ -613,9 +626,10 @@ const SixQuiPrend = () => {
 
         <div className="adverse-players">
           {opponents.map((opponent, index) => (
-            <div key={index} className={`opponent-six ${playerPlaying !== opponent.nom ? "" : "hisTurn"}`}>
-              <strong>{opponent.nom}</strong> <br />
-              Cartes: {opponent.deck} <br />
+            <div key={index} className={`opponent-six ${isBot(opponent.nom) ? 'bot-opponent-six' : ''}`}>
+              {isBot(opponent.nom) && <img src={bots.find(bot => bot.username === opponent.nom).imageUrl} alt={opponent.nom} className="bot-image" />}
+              <strong>{opponent.nom}</strong><br />
+              Cartes: {opponent.deck}<br />
             </div>
           ))}
         </div>

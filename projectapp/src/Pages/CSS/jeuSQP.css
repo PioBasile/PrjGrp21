@@ -12,6 +12,43 @@
     
 }
 
+.opponent-six {
+    height: 70%;
+    width: 500%;
+    border-radius: 8px;
+    margin: auto;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    font-size: 2vh;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    background-color: rgb(119, 138, 193);
+    top: 10px;
+    justify-content: center;
+    display: block;
+    margin-right: 10px;
+    align-items: center;
+    position: relative;
+}
+
+.bot-opponent-six {
+    background-color: rgb(26, 154, 22); 
+    padding-left: 50%; 
+
+}
+
+.bot-image {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    left: 10px; 
+    top: 50%;
+    transform: translateY(-50%); 
+    border-radius: 50%;
+}
+
+
+
 .sqp-upperBandeau {
     position: fixed;
     top: 0;
@@ -84,23 +121,7 @@
 
 
 
-.opponent-six {
-    height: 70%;
-    width: 500%;
-    border-radius: 8px;
-    margin: auto;
-    padding-left: 1vh;
-    padding-right: 1vh;
-    font-size: 2vh;
-    padding-top: 2vh;
-    padding-bottom: 2vh;
-    background-color: rgb(119, 138, 193);
-    top: 10px;
-    justify-content: center;
-    display: block;
-    margin-right: 10px;
-    align-items: center;
-}
+
 
 .opponent-six.hisTurn {
     box-shadow: rgb(60, 255, 0) 0px 0px 20px;

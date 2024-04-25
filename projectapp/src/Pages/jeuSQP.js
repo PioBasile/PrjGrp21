@@ -161,7 +161,7 @@ const SixQuiPrend = () => {
     }
 
     return (
-      <div className="card" >
+      <div className="card-sqp" >
         <img alt='' src={source}></img>
       </div>)
   }
@@ -344,6 +344,7 @@ const SixQuiPrend = () => {
       socket.on('cartesDroite', (cards) => {
 
         setCardInWaiting(cards);
+        console.log(cards);
 
       });
       socket.on('phase2', () => {

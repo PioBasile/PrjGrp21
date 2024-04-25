@@ -437,9 +437,9 @@ class Player_IN_Lobby {
 
 }
 
-class BotInLobby extends Player_IN_Lobby{
-  constructor(username,cookie){
-    super(username,cookie);
+class BotInLobby extends Player_IN_Lobby {
+  constructor(username, cookie) {
+    super(username, cookie);
   }
 }
 
@@ -673,12 +673,12 @@ class SixQuiPrend {
   }
 
 
-  play(row, player=null) {
+  play(row, player = null) {
 
-    if(player == null){
-       player = this.currentP;
+    if (player == null) {
+      player = this.currentP;
     }
-    
+
     let card = player.selected;
     console.log("LE JOUEUR COURANT CELUI QUI EST EN TRAIN DE JOUER EST :::")
     console.log(player.name);
@@ -725,6 +725,10 @@ class SixQuiPrend {
         this.status = STATUS.ENDED;
         return true;
 
+      }
+
+      if (isInstanceOfBot(player)) {
+        row = player.rowToDelete()
       }
 
       this.affectRow(row, [card]);
@@ -1606,6 +1610,7 @@ class Bot extends Player {
 }
 
 
+
 class MathisBot extends Bot {
   constructor(username, cookie) {
     super(username, cookie)
@@ -1621,16 +1626,46 @@ class MathisBot extends Bot {
     ]
   }
 
-  playCard() {
-    let randomCardIndex = 0;
-    let cardSelected = this.deck[randomCardIndex];
-    this.deck.splice(0, 1);
-    return cardSelected;
+  getMax() {
+    let max = this.deck[0]
+    for (let card of this.deck) {
+      if (card.number > max.number) {
+        max = card;
+      }
+    }
+    return max;
   }
 
-  playRow() {
-    let randomRow = Math.floor(Math.random() * 4);
-    return randomRow + 1; // +1 car ca part pas de 0 
+
+  getMin() {
+    let min = this.deck[0]
+    for (let card of this.deck) {
+      if (card.number < min.number) {
+        min = card;
+      }
+    }
+    return min;
+  }
+
+
+  playCard(game) {
+    const max = this.deck[0];
+    const min = this.deck[0];
+    let topOrBot = false;
+    if (Math.floor(Math.random() * 2) == 0) {
+      topOrBot = true;
+    }
+    if (topOrBot) {
+      this.deck.splice(0, 1);
+      return max
+    }
+    this.deck.splice(0, 1);
+    return min
+
+  }
+
+  rowToDelete() {
+    return 1;
   }
 
 }
@@ -1639,51 +1674,184 @@ class ObamnaBot extends Bot {
   constructor(username, cookie) {
     super(username, cookie)
     this.voiceLine = [
-
       "Ma plus grande faiblesse ? je suis Obama !",
       "Its Obama TIME ",
       "💭 💤 Oil Oil Oil Oil... 💤 💭",
       "I have a drEeaaAAam",
       "Je vais t'applatir comme j'ai applatit le Moyen-Orient"
     ]
-  }
-  playCard() {
-    let randomCardIndex = Math.floor(Math.random() * this.deck.length - 1);
-    let cardSelected = this.deck[randomCardIndex];
-    this.deck.splice(0, randomCardIndex);
-    return cardSelected;
+    this.TOLERANCE = 5
   }
 
-  playRow() {
-    let randomRow = Math.floor(Math.random() * 4);
-    return randomRow + 1; // +1 car ca part pas de 0 
+
+  playCard(game) {
+    let tableValue1 = game.row1[game.row1.length - 1].number;
+    let tableValue2 = game.row2[game.row2.length - 1].number;
+    let tableValue3 = game.row3[game.row3.length - 1].number;
+    let tableValue4 = game.row4[game.row4.length - 1].number;
+
+    for (let card of this.deck) {
+      let val = card.number;
+      if (val > tableValue1 && val - tableValue1 <= this.TOLERANCE) {
+        let cardIndex = this.deck.indexOf(card);
+        this.deck.splice(cardIndex, 1)
+        return card;
+      }
+      if (val > tableValue2 && val - tableValue2 <= this.TOLERANCE) {
+        let cardIndex = this.deck.indexOf(card);
+        this.deck.splice(cardIndex, 1)
+        return card;
+      }
+      if (val > tableValue3 && val - tableValue3 <= this.TOLERANCE) {
+        let cardIndex = this.deck.indexOf(card);
+        this.deck.splice(cardIndex, 1)
+        return card;
+      }
+      if (val > tableValue4 && val - tableValue4 <= this.TOLERANCE) {
+        let cardIndex = this.deck.indexOf(card);
+        this.deck.splice(cardIndex, 1)
+        return card;
+      }
+    }
+
+    for (let card of this.deck) {
+      if (card.value > tableValue1 || card.value > tableValue2 || card.value > tableValue3 || card.value > tableValue4) {
+        let cardIndex = this.deck.indexOf(card);
+        this.deck.splice(cardIndex, 1)
+        return card;
+      }
+    }
+  }
+
+
+  rowToDelete() {
+    let tableList = [game.row1, game.row2, game.row3, game.row4]
+    let maxIndex = 1
+    let min_tot = 100;
+    let tot = 0
+    let i = 1;
+    for (table of tableList) {
+      for (card of table) {
+        tot += card.number
+      }
+      if (min_tot > tot) {
+        min_tot = tot
+        maxIndex = i
+      }
+      i++
+    }
+    return maxIndex;
   }
 
 }
 
 class DonaldTrumpBot extends Bot {
   constructor(username, cookie) {
+    super(username, cookie)
     this.voiceLine = [
       "WTF IS A KILOMETER !!!!!",
       "I hate sleepy Joe",
       "J'ai pas d'A.D.N j'ai USA",
       "🦅 🦅 🦅 🦅 🦅 🦅",
       "Attention ou je construis un mur entre toi et moi"
-    ]
-    super(username, cookie)
-  }
-  playCard() {
-    let randomCardIndex = Math.floor(Math.random() * this.deck.length - 1);
-    let cardSelected = this.deck[randomCardIndex];
-    this.deck.splice(0, randomCardIndex);
-    return cardSelected;
+    ];
+    this.TOLERANCE = 5;
   }
 
-  playRow() {
-    let randomRow = Math.floor(Math.random() * 4);
-    return randomRow + 1; // +1 car ca part pas de 0 
+
+  playCard(game) {
+    let tableValue1 = game.row1[game.row1.length - 1].number;
+    let tableValue2 = game.row2[game.row2.length - 1].number;
+    let tableValue3 = game.row3[game.row3.length - 1].number;
+    let tableValue4 = game.row4[game.row4.length - 1].number;
+    let high_to_low_cow = []
+
+    while (high_to_low_cow.length != this.deck.length) {
+      let handCopy = this.deck;
+      let highest = handCopy[0]
+      for (let card of handCopy) {
+        if (highest.nb_boeuf >= card.nb_boeuf && !high_to_low_cow.includes(card)) {
+          highest = card;
+        }
+      }
+      high_to_low_cow.unshift(highest);
+    }
+
+    for (let card in high_to_low_cow) {
+      let val = card.number;
+      if (val > tableValue1 && val - tableValue1 <= this.TOLERANCE - 6 && game.row1.length == 4) {
+        let cardIndex = this.deck.indexOf(card);
+        this.deck.splice(cardIndex, 1)
+        return card;
+      }
+      if (val > tableValue2 && val - tableValue2 <= this.TOLERANCE && game.row2.length == 4) {
+        let cardIndex = this.deck.indexOf(card);
+        this.deck.splice(cardIndex, 1)
+        return card;
+      }
+      if (val > tableValue3 && val - tableValue3 <= this.TOLERANCE && game.row3.length == 4) {
+        let cardIndex = this.deck.indexOf(card);
+        this.deck.splice(cardIndex, 1)
+        return card;
+      }
+      if (val > tableValue4 && val - tableValue4 <= this.TOLERANCE && game.row4.length == 4) {
+        let cardIndex = this.deck.indexOf(card);
+        this.deck.splice(cardIndex, 1)
+        return card;
+      }
+    }
+
+    for (let card of high_to_low_cow) {
+      let val = card.number;
+      if (val > tableValue1 && val - tableValue1 <= this.TOLERANCE) {
+        let cardIndex = this.deck.indexOf(card);
+        this.deck.splice(cardIndex, 1)
+        return card;
+      }
+      if (val > tableValue2 && val - tableValue2 <= this.TOLERANCE) {
+        let cardIndex = this.deck.indexOf(card);
+        this.deck.splice(cardIndex, 1)
+        return card;
+      }
+      if (val > tableValue3 && val - tableValue3 <= this.TOLERANCE) {
+        let cardIndex = this.deck.indexOf(card);
+        this.deck.splice(cardIndex, 1)
+        return card;
+      }
+      if (val > tableValue4 && val - tableValue4 <= this.TOLERANCE) {
+        let cardIndex = this.deck.indexOf(card);
+        this.deck.splice(cardIndex, 1)
+        return card;
+      }
+    }
+
+    let cardIndex = this.deck.indexOf(high_to_low_cow[0]);
+    this.deck.splice(cardIndex, 1);
+    return high_to_low_cow[0];
   }
+
+
+  rowToDelete() {
+    let tableList = [game.row1, game.row2, game.row3, game.row4]
+    let maxIndex = 1
+    let min_tot = 100;
+    let tot = 0
+    let i = 1;
+    for (table of tableList) {
+      for (card of table) {
+        tot += card.number
+      }
+      if (min_tot > tot) {
+        min_tot = tot
+        maxIndex = i
+      }
+      i++
+    }
+    return maxIndex;
+  }
+
 }
+
 
 class ChillLuigiBot extends Bot {
   constructor(username, cookie) {

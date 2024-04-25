@@ -98,12 +98,60 @@ const NewBrowserManager = () => {
         else return true
     }
 
+    const maxPlayerSelectedForGame = () => {
+        console.log("here");
+        switch (gameType) {
+            case "sqp":
+                if (nbPlayerMax > 10) {
+                    return 10;
+                }
+                else {
+                    return nbPlayerMax
+                }
+
+            case "batailleOuverte":
+
+                if (nbPlayerMax > 10) {
+                    console.log("here 2");
+                    return 10;
+                }
+
+                else {
+                    return nbPlayerMax
+                }
+
+            case "mb":
+                if (nbPlayerMax > 4) {
+                    setNbPlayerMax(4)
+                    return 4
+                }
+
+                else {
+                    return nbPlayerMax
+                }
+            case "blackjack":
+                if (nbPlayerMax > 5) {
+                    setNbPlayerMax(5);
+                    return 5;
+                }
+                
+                else {
+                    return nbPlayerMax
+                }
+                
+            default:
+                return nbPlayerMax;
+        }
+    }
+
 
     const handleSave = () => {
         // Logique pour sauvegarder les données du formulaire
         if (gameType === "") { return 0; }
         if (nbPlayerMax === "" || nbPlayerMax < 1) { return 0; }
-        socket.emit("newServer", serverName, nbPlayerMax, isServerPrivate(), password, gameType, sessionStorage.getItem('name'), moneyBet);
+
+
+        socket.emit("newServer", serverName, maxPlayerSelectedForGame(), isServerPrivate(), password, gameType, sessionStorage.getItem('name'), moneyBet);
         setGameType("");
         setNbPlayerMax(2);
         setServerName("");

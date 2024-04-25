@@ -274,10 +274,12 @@ const NewLobby = () => {
                 <div className='NB-upperBandeau'>
                     <div className='leaveLobbyButton' onClick={() => leaveGame()}>QUITTER</div>
                     <div className='gameNameType'>{gameName} ({gameType})</div>
-                    <div className='lobby-bot' onClick={() => showBots === true ? setShowBots(false) : setShowBots(true)}>Ajouter un Bot</div>
-                    <div className='lobby-bot-list'>
+                    {(gameType === "Six Qui Prend" && sessionStorage.getItem("name") === owner &&
+                    <>
+                    <div className='lobby-bot' onClick={() => showBots === true ? setShowBots(false) : setShowBots(true)}>Ajouter un Bot</div><div className='lobby-bot-list'>
                         {showBots && <ShowBots bots={bots} isShowBots={setShowBots} />}
-                    </div>
+                    </div></>
+                    )}
                 </div>
                 <div className='NB-underBandeau'>
                     <div className='waitingPlayerTitle animated-ellipsis'> {` ${!allReady ? "EN ATTENTE DES AUTRES JOUEURS" : "DEBUT DE LA PARTIE "}`}</div>

@@ -701,14 +701,14 @@ io.on('connection', (socket) => {
   });
 
 
-  function botPlayWithDelay(callback) {
+  function botPlayWithDelay(callback,game) {
     setTimeout(() => {
       console.log("debut du timer");
       for (player of game.playerList) {
         if (isInstanceOfBot(player)) {
           let bot = player;
           if (bot.selected == null) {
-            let cardPlayed = bot.playCard();
+            let cardPlayed = bot.playCard(game);
             bot.selected = cardPlayed;
             game.selected_cards.push(cardPlayed);
           }
@@ -759,7 +759,7 @@ io.on('connection', (socket) => {
     let promises = []
 
     promises.push(new Promise(resolve => {
-      botPlayWithDelay(resolve);
+      botPlayWithDelay(resolve,game);
     }))
 
     io.to(gameID).emit("cartesDroite", game.selected_cards);
@@ -789,9 +789,9 @@ io.on('connection', (socket) => {
               let bot = findPlayer(nextPlayer.name, game.playerList);
 
               //tant que le bot ne trouve pas une row valide il continue de tester (dans le futur bot.playRow() renvera directement la bonne row)
-              let randomRow = bot.playRow();
+              let randomRow = 1;
               while (!game.play(randomRow)) {
-                randomRow = bot.playRow();
+                randomRow =  Math.floor(Math.random() * 5);
               }
 
               let cardIndex = game.selected_cards.indexOf(bot.selected);
@@ -841,11 +841,15 @@ io.on('connection', (socket) => {
   function botPlayRow(game, bot, callback) {
     setTimeout(() => {
 
-      let randomRow = bot.playRow()
+      let randomRow = 1;
+
       //tant que le bot ne trouve pas une row valide il continue de tester (dans le futur bot.playRow() renvera directement la bonne row)
+
+
       while (!game.play(randomRow, bot)) {
-        randomRow = bot.playRow();
+        randomRow = Math.floor(Math.random() * 5);
       }
+
       let cardIndex = game.selected_cards.indexOf(bot.selected);
       game.selected_cards.splice(cardIndex,1);
       bot.selected = null;

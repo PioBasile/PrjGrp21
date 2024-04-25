@@ -21,6 +21,14 @@
     background-color: rgb(12, 30, 42);
 }
 
+.card-sqp {
+    height: 11vh;
+    width: 3.5vw;
+    margin-right: 3vw;
+    background-color: transparent;
+    font-size: 80%;
+}
+
 .sqp-gameContainer {
     position: fixed;
     top:15%;

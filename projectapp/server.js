@@ -31,10 +31,11 @@ const {
   MathisBot,
   ObamnaBot,
   DonaldTrumpBot,
-  ChillLuigiBot,
   JoeBidenBot,
   isInstanceOfBot,
-  BotInLobby
+  BotInLobby,
+  GeorgeBushBot,
+  JFKBot
 } = require("./JS_CustomLib/D_utils.js");
 
 //DORIAN
@@ -375,12 +376,17 @@ io.on('connection', (socket) => {
         else if (player.username.startsWith("Donald Trump")) {
           newBot = new DonaldTrumpBot(player.username, player.cookie);
         }
-        else if (player.username.startsWith("Chill Luigi")) {
-          newBot = new ChillLuigiBot(player.username, player.cookie);
+        else if (player.username.startsWith("JFK")) {
+          newBot = new JFKBot(player.username, player.cookie);
         }
         else if (player.username.startsWith("Sleepy Joe")) {
           newBot = new JoeBidenBot(player.username, player.cookie);
         }
+        else if (player.username.startsWith("George In Bush"))
+        {
+          newBot = new GeorgeBushBot(player.username, player.cookie);
+        }
+
         else {
           throw new Error("Any bots existe under this name : " + player.username);
         }

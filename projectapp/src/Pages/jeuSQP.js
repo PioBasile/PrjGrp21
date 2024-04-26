@@ -59,8 +59,20 @@ const SixQuiPrend = () => {
     ]
   );
 
-  const isBot = (username) => bots.some(bot => bot.username === username);
+    const getBotData = (username) => {
+      return bots.find(bot => {
+        const baseName = bot.username.toLowerCase();
+        const simplifiedUsername = username.replace(/\(\d+\)$/, "").trim().toLowerCase();
+        return baseName === simplifiedUsername;
+      });
+    };
 
+    const isBot = (username) => {
+      return Boolean(getBotData(username));
+    };
+
+  
+  
 
   const videoToPlay = [
     { id: 1, videoUrl: require("./CSS/emotes/toyota.mp4") },
@@ -625,14 +637,20 @@ const SixQuiPrend = () => {
         <YourComponent></YourComponent>
 
         <div className="adverse-players">
-          {opponents.map((opponent, index) => (
-            <div key={index} className={`opponent-six ${isBot(opponent.nom) ? 'bot-opponent-six' : ''}`}>
-              {isBot(opponent.nom) && <img src={bots.find(bot => bot.username === opponent.nom).imageUrl} alt={opponent.nom} className="bot-image" />}
-              <strong>{opponent.nom}</strong><br />
-              Cartes: {opponent.deck}<br />
-            </div>
-          ))}
-        </div>
+        {opponents.map((opponent, index) => {
+            const botData = getBotData(opponent.nom);
+            return (
+                <div key={index} className={`opponent-six ${botData ? 'bot-opponent-six' : ''}`}>
+                    {botData && (
+                        <img src={botData.imageUrl} alt={opponent.nom} className="bot-image" />
+                    )}
+                    <strong>{opponent.nom}</strong><br />
+                    Cartes: {opponent.deck}<br />
+                </div>
+            );
+        })}
+      </div>
+
 
       </div>
 

@@ -28,7 +28,7 @@ Afin d'enrichir l'expérience utilisateur, notre groupe a décidé d'ajouter de 
 - **Musique d'Ambiance** : Nous avons introduit une musique de fond pour les jeux de Roulette et de Blackjack afin d'enrichir l'atmosphère et de plonger les joueurs dans une véritable ambiance de casino. Laissez-vous emporter par la musique tout en plaçant vos mises.
 - **Chat Global** : La communication est essentielle, c'est pourquoi nous avons mis en place un chat global. Cette fonctionnalité permet aux joueurs d'envoyer des messages et de communiquer entre eux à travers tous les jeux de notre plateforme, sans limitations.
 - **Ajout d'un Docker**
-- **Hébergement** : Le projet complet est disponible en ligne ici. Jouez de partout et quand vous le souhaitez.
+- **Hébergement** : Le projet complet est disponible en ligne [ici](https://skibidi.church). Jouez de partout et quand vous le souhaitez.
 - **Version Mobile** : Pourquoi se limiter uniquement à une version PC ? Nous avons décidé de l'adapter en version mobile.
 
     

@@ -701,7 +701,7 @@ io.on('connection', (socket) => {
   });
 
 
-  function botPlayWithDelay(callback,game) {
+  function botPlayWithDelay(callback, game) {
     setTimeout(() => {
       console.log("debut du timer");
       for (player of game.playerList) {
@@ -759,7 +759,7 @@ io.on('connection', (socket) => {
     let promises = []
 
     promises.push(new Promise(resolve => {
-      botPlayWithDelay(resolve,game);
+      botPlayWithDelay(resolve, game);
     }))
 
     io.to(gameID).emit("cartesDroite", game.selected_cards);
@@ -777,7 +777,7 @@ io.on('connection', (socket) => {
 
 
         //bot choose the good colone and play
-        let i = 0;
+        let i = 1;
         setTimeout(() => {
           while (isInstanceOfBot(nextPlayer)) {
             i++;
@@ -791,11 +791,11 @@ io.on('connection', (socket) => {
               //tant que le bot ne trouve pas une row valide il continue de tester (dans le futur bot.playRow() renvera directement la bonne row)
               let randomRow = 1;
               while (!game.play(randomRow)) {
-                randomRow =  Math.floor(Math.random() * 5);
+                randomRow = Math.floor(Math.random() * 4) = 1;
               }
 
               let cardIndex = game.selected_cards.indexOf(bot.selected);
-              game.selected_cards.splice(cardIndex,1);
+              game.selected_cards.splice(cardIndex, 1);
 
               bot.selected = null;
 
@@ -804,10 +804,8 @@ io.on('connection', (socket) => {
 
               nextPlayer = game.nextP();
 
-              setTimeout(() => {
-                io.to(gameID).emit("Row", [game.row1, game.row2, game.row3, game.row4]);
-                io.to(game.identifiant_partie).emit("cartesDroite", game.selected_cards);
-              },"1000");
+              io.to(gameID).emit("Row", [game.row1, game.row2, game.row3, game.row4]);
+              io.to(game.identifiant_partie).emit("cartesDroite", game.selected_cards);
             }
           }
 
@@ -847,11 +845,11 @@ io.on('connection', (socket) => {
 
 
       while (!game.play(randomRow, bot)) {
-        randomRow = Math.floor(Math.random() * 5);
+        randomRow = Math.floor(Math.random() * 4) + 1;
       }
 
       let cardIndex = game.selected_cards.indexOf(bot.selected);
-      game.selected_cards.splice(cardIndex,1);
+      game.selected_cards.splice(cardIndex, 1);
       bot.selected = null;
 
 
@@ -907,7 +905,7 @@ io.on('connection', (socket) => {
       if (game.status == STATUS.ENDED) {
         if (game.moneyBet >= 0) {
           let moneyWin = game.moneyBet
-          let winner = game.Pgagnat();
+          let winner = game.Pgagant();
           let winnerName = winner.name;
           console.log("AND THE WINNNNER IIIIIIISSS!!!!!!!! ", winnerName)
           get_user_info(player.name).then((res) => {
@@ -927,7 +925,7 @@ io.on('connection', (socket) => {
       }
 
       let cardIndex = game.selected_cards.indexOf(player.selected);
-      game.selected_cards.splice(cardIndex,1);
+      game.selected_cards.splice(cardIndex, 1);
 
 
       player.selected = null;

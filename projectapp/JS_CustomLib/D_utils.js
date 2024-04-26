@@ -1,6 +1,3 @@
-const { login, changeDataBase, get_user_info, register } = require("./D_db.js");
-
-
 //DORIAN
 const makecookie = (length) => {
   let result = '';
@@ -1712,7 +1709,9 @@ class ObamnaBot extends Bot {
         this.deck.splice(cardIndex, 1)
         return card;
       }
+
     }
+
 
     for (let card of this.deck) {
       if (card.value > tableValue1 || card.value > tableValue2 || card.value > tableValue3 || card.value > tableValue4) {
@@ -1721,6 +1720,11 @@ class ObamnaBot extends Bot {
         return card;
       }
     }
+
+    //renvoyer la premiere carte du deck si aucune bonne carte trouvé.
+
+    this.deck.splice(0, 1);
+    return this.deck[0];
   }
 
 
@@ -1730,8 +1734,8 @@ class ObamnaBot extends Bot {
     let min_tot = 100;
     let tot = 0
     let i = 1;
-    for (table of tableList) {
-      for (card of table) {
+    for (let table of tableList) {
+      for (let card of table) {
         tot += card.number
       }
       if (min_tot > tot) {
@@ -1755,7 +1759,7 @@ class DonaldTrumpBot extends Bot {
       "🦅 🦅 🦅 🦅 🦅 🦅",
       "Attention ou je construis un mur entre toi et moi"
     ];
-    this.TOLERANCE = 5;
+    this.TOLERANCE = 10;
   }
 
 
@@ -1837,8 +1841,8 @@ class DonaldTrumpBot extends Bot {
     let min_tot = 100;
     let tot = 0
     let i = 1;
-    for (table of tableList) {
-      for (card of table) {
+    for (let table of tableList) {
+      for (let card of table) {
         tot += card.number
       }
       if (min_tot > tot) {
@@ -1879,6 +1883,8 @@ class ChillLuigiBot extends Bot {
 
 }
 
+
+
 class JoeBidenBot extends Bot {
   constructor(username, cookie) {
     super(username, cookie)
@@ -1890,12 +1896,144 @@ class JoeBidenBot extends Bot {
 
     ]
   }
-  playCard() {
-    let randomCardIndex = Math.floor(Math.random() * this.deck.length - 1);
-    let cardSelected = this.deck[randomCardIndex];
-    this.deck.splice(0, randomCardIndex);
-    // this.selected = cardSelected;
-    return cardSelected;
+  playCard(game) {
+    function testOutcome(card, game) {
+      let outCome = 0;
+      let OPFOR_outcome = 0;
+
+      let sample = []
+      sample.push(card);
+
+      let cards = Array.from({ length: 104 }, (_, i) => new Card(i + 1));
+      cards = cards.filter(card => !game.alreadyPlayedCards.includes(card));
+
+      game.shuffle(cards);
+      for(let i = 0; i<game.playerList.length - 2; i++){
+        sample.push(cards.pops());
+      }
+
+      let row1 = game.row1;
+      let row2 = game.row2;
+      let row3 = game.row3;
+      let row4 = game.row4;
+      
+      for(let obj of sample){
+        if(row1[row1.length - 1].number > obj.number && row2[row2.length - 1].number > obj.number && row3[row3.length - 1].number > obj.number && row4[row4.length - 1].number > obj.number){
+          let tableList = [game.row1, game.row2, game.row3, game.row4]
+          let maxIndex = 1
+          let min_tot = 100;
+          let tot = 0
+          let i = 1;
+          for (let table of tableList) {
+            for (let card of table) {
+              tot += card.number
+            }
+            if (min_tot > tot) {
+              min_tot = tot
+              maxIndex = i
+            }
+            i++
+          }
+
+          if(obj == card){
+            outCome = outCome - game.table[max_idx].reduce((total, card) => total + card.cowsNb, 0);
+          }
+          else {
+            OPFOR_outcome = outCome - game.table[max_idx].reduce((total, card) => total + card.cowsNb, 0);
+          }
+
+          if(i==1){
+            row1 = [obj]
+          }
+          else if(i == 2){
+            row2 = [obj]
+          }
+          else if (i == 3){
+            row3 = [obj];
+          }
+          else {
+            row4 = [obj]
+          }
+        }
+        else {
+          let sumrow1 = obj.number - row1[row1.length-1].number;
+          let sumrow2 = obj.number - row2[row2.length-1].number;
+          let sumrow3 = obj.number - row3[row3.length-1].number;
+          let sumrow4 = obj.number - row4[row4.length-1].number;
+
+          let minima = Math.min(...[sumrow1, sumrow2, sumrow3, sumrow4].filter(item => item >= 0));
+
+          if(sumrow1 == minima){
+            row1.append(obj)
+          }
+          if(sumrow2 == minima){
+            row2.append(obj)
+          }
+          if(sumrow3 == minima){
+            row3.append(obj)
+          }
+          if(sumrow4 == minima){
+            row4.append(obj)
+          }
+
+          let sumn = 0;
+
+          if(row1.length == 6){
+            sumn = row1.reduce((total, card) => total + card.cowsNb, 0);
+          }
+
+          
+          if(row2.length == 6){
+            sumn = row2.reduce((total, card) => total + card.cowsNb, 0);
+          }
+
+          if(row3.length == 6){
+            sumn = row3.reduce((total, card) => total + card.cowsNb, 0);
+          }
+
+          if(row4.length == 6){
+            sumn = row4.reduce((total, card) => total + card.cowsNb, 0);
+          }
+
+          if(sumn > 0){
+            if(obj == card){
+              outCome = outCome + sumn;
+            }
+            else {
+              OPFOR_outcome = OPFOR_outcome + sum
+            }
+          }
+        }
+      }
+      return [outCome, OPFOR_outcome]
+    }
+
+    let best_outcome = 10000
+    let best_opfor = -1
+    let card = 0;
+
+    for(let cardIt of this.deck){
+      let testoutcomeCall = testOutcome(cardIt,game)
+      let outcome = testoutcomeCall[Ø]
+      let Oppfor_Outcome= testoutcomeCall[1]
+
+      if(outcome < best_outcome){
+        best_outcome = outcome;
+        best_opfor = Oppfor_Outcome
+        card = cardIt;
+      }
+      else if(outcome == best_outcome){
+        if(best_opfor > Oppfor_Outcome){
+          best_outcome = outcome;
+          best_opfor = Oppfor_Outcome;
+          card = cardIt;
+        }
+      }
+    }
+    let cardIndex = this.deck.indexOf(card);
+    this.deck.splice(cardIndex);
+    return card;
+
   }
 
   playRow() {

@@ -708,7 +708,12 @@ io.on('connection', (socket) => {
         if (isInstanceOfBot(player)) {
           let bot = player;
           if (bot.selected == null) {
-            let cardPlayed = bot.playCard(game);
+            const instanceOfGame = Object.assign({}, game)
+            let cardPlayed = bot.playCard(instanceOfGame);
+            game.row1 = instanceOfGame.row1
+            game.row2 = instanceOfGame.row2
+            game.row3 = instanceOfGame.row3
+            game.row4 = instanceOfGame.row4
             bot.selected = cardPlayed;
             game.selected_cards.push(cardPlayed);
           }
@@ -791,7 +796,7 @@ io.on('connection', (socket) => {
               //tant que le bot ne trouve pas une row valide il continue de tester (dans le futur bot.playRow() renvera directement la bonne row)
               let randomRow = 1;
               while (!game.play(randomRow)) {
-                randomRow = Math.floor(Math.random() * 4) = 1;
+                randomRow = Math.floor(Math.random() * 4) + 1;
               }
 
               let cardIndex = game.selected_cards.indexOf(bot.selected);
@@ -1369,7 +1374,7 @@ io.on('connection', (socket) => {
     }
 
     game.serverName = saveName;
-    game.lobbyLinked["serverName"] = saveName;
+    game.lobbyLinked["serverName"] = saplayCardveName;
 
     const gameSave = JSON.stringify(game);
 

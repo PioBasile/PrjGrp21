@@ -542,7 +542,6 @@ class SixQuiPrend {
     this.moneyBet = moneyBet;
 
     this.lobbyLinked = null;
-    this.hadStart = false;
 
     this.chatContent = ["utilisez <global> pour parler a tout le monde"];
   }
@@ -675,6 +674,15 @@ class SixQuiPrend {
     if (player == null) {
       player = this.currentP;
     }
+
+    console.log(this.row1)
+    console.log("\n")
+    console.log(this.row2)
+    console.log("\n")
+    console.log(this.row3)
+    console.log("\n")
+    console.log(this.row4)
+    console.log("\n")
 
     let card = player.selected;
     console.log("LE JOUEUR COURANT CELUI QUI EST EN TRAIN DE JOUER EST :::")
@@ -884,19 +892,6 @@ class SixQuiPrend {
     this.row4 = gameData["row4"]
     this.order = gameData["order"]
     this.currentP = gameData["currentP"]
-
-  }
-
-}
-
-class Player6 {
-
-  constructor(name) {
-
-    this.name = name;
-    this.deck = [];
-    this.played = false;
-    this.score = 0;
 
   }
 
@@ -1897,6 +1892,13 @@ class JoeBidenBot extends Bot {
     ]
   }
   playCard(game) {
+
+    let instanceOfGame = JSON.stringify(game);
+    let instanceOfDeck = []
+    for(let card of this.deck){
+      instanceOfDeck.push(card);
+    }
+
     function testOutcome(card, game) {
       let outCome = 0;
       let OPFOR_outcome = 0;
@@ -1904,10 +1906,16 @@ class JoeBidenBot extends Bot {
       let sample = []
       sample.push(card);
 
-      let cards = Array.from({ length: 104 }, (_, i) => new Card(i + 1));
-      cards = cards.filter(card => !game.alreadyPlayedCards.includes(card));
+      let cardsPlayed = []
+      let gameDeck = generate6Cartes();
 
-      game.shuffle(cards);
+      for(let player of game.playerList){
+        cardsPlayed = [...cardsPlayed, ...player.deck];
+      }
+
+      let cards = gameDeck.filter(card => !cardsPlayed.includes(card));
+
+      shuffle(cards);
       for(let i = 0; i<game.playerList.length - 2; i++){
         sample.push(cards.pops());
       }
@@ -1916,11 +1924,13 @@ class JoeBidenBot extends Bot {
       let row2 = game.row2;
       let row3 = game.row3;
       let row4 = game.row4;
+
+      let rows = [row1,row2,row3,row4];
       
       for(let obj of sample){
         if(row1[row1.length - 1].number > obj.number && row2[row2.length - 1].number > obj.number && row3[row3.length - 1].number > obj.number && row4[row4.length - 1].number > obj.number){
           let tableList = [game.row1, game.row2, game.row3, game.row4]
-          let maxIndex = 1
+          let max_idx = 1
           let min_tot = 100;
           let tot = 0
           let i = 1;
@@ -1930,16 +1940,16 @@ class JoeBidenBot extends Bot {
             }
             if (min_tot > tot) {
               min_tot = tot
-              maxIndex = i
+              max_idx = i
             }
             i++
           }
 
           if(obj == card){
-            outCome = outCome - game.table[max_idx].reduce((total, card) => total + card.cowsNb, 0);
+            outCome = outCome - rows[max_idx].reduce((total, card) => total + card.nb_boeuf, 0);
           }
           else {
-            OPFOR_outcome = outCome - game.table[max_idx].reduce((total, card) => total + card.cowsNb, 0);
+            OPFOR_outcome = outCome - rows[max_idx].reduce((total, card) => total + card.nb_boeuf, 0);
           }
 
           if(i==1){
@@ -1964,35 +1974,35 @@ class JoeBidenBot extends Bot {
           let minima = Math.min(...[sumrow1, sumrow2, sumrow3, sumrow4].filter(item => item >= 0));
 
           if(sumrow1 == minima){
-            row1.append(obj)
+            row1.push(obj)
           }
           if(sumrow2 == minima){
-            row2.append(obj)
+            row2.push(obj)
           }
           if(sumrow3 == minima){
-            row3.append(obj)
+            row3.push(obj)
           }
           if(sumrow4 == minima){
-            row4.append(obj)
+            row4.push(obj)
           }
 
           let sumn = 0;
 
           if(row1.length == 6){
-            sumn = row1.reduce((total, card) => total + card.cowsNb, 0);
+            sumn = row1.reduce((total, card) => total + card.nb_boeuf, 0);
           }
 
           
           if(row2.length == 6){
-            sumn = row2.reduce((total, card) => total + card.cowsNb, 0);
+            sumn = row2.reduce((total, card) => total + card.nb_boeuf, 0);
           }
 
           if(row3.length == 6){
-            sumn = row3.reduce((total, card) => total + card.cowsNb, 0);
+            sumn = row3.reduce((total, card) => total + card.nb_boeuf, 0);
           }
 
           if(row4.length == 6){
-            sumn = row4.reduce((total, card) => total + card.cowsNb, 0);
+            sumn = row4.reduce((total, card) => total + card.nb_boeuf, 0);
           }
 
           if(sumn > 0){
@@ -2000,7 +2010,7 @@ class JoeBidenBot extends Bot {
               outCome = outCome + sumn;
             }
             else {
-              OPFOR_outcome = OPFOR_outcome + sum
+              OPFOR_outcome = OPFOR_outcome + sumn;
             }
           }
         }
@@ -2012,9 +2022,11 @@ class JoeBidenBot extends Bot {
     let best_opfor = -1
     let card = 0;
 
-    for(let cardIt of this.deck){
+    instanceOfGame = JSON.parse(instanceOfGame);
+
+    for(let cardIt of instanceOfDeck){
       let testoutcomeCall = testOutcome(cardIt,game)
-      let outcome = testoutcomeCall[Ø]
+      let outcome = testoutcomeCall[0]
       let Oppfor_Outcome= testoutcomeCall[1]
 
       if(outcome < best_outcome){
@@ -2030,15 +2042,39 @@ class JoeBidenBot extends Bot {
         }
       }
     }
+
+
+
+    game.row1 = instanceOfGame.row1
+    game.row2 = instanceOfGame.row2
+    game.row3 = instanceOfGame.row3
+    game.row4 = instanceOfGame.row4
+
+    
     let cardIndex = this.deck.indexOf(card);
-    this.deck.splice(cardIndex);
+    instanceOfDeck.splice(cardIndex,1);
+    this.deck = instanceOfDeck;
     return card;
 
   }
 
-  playRow() {
-    let randomRow = Math.floor(Math.random() * 4);
-    return randomRow + 1; // +1 car ca part pas de 0 
+  rowToDelete() {
+    let tableList = [game.row1, game.row2, game.row3, game.row4]
+    let maxIndex = 1
+    let min_tot = 100;
+    let tot = 0
+    let i = 1;
+    for (let table of tableList) {
+      for (let card of table) {
+        tot += card.number
+      }
+      if (min_tot > tot) {
+        min_tot = tot
+        maxIndex = i
+      }
+      i++
+    }
+    return maxIndex;
   }
 
 }

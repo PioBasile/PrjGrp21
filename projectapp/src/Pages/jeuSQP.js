@@ -54,10 +54,12 @@ const SixQuiPrend = () => {
         { imageUrl: require("./CSS/pics/mathis.webp"), username: "Mathis", level: 1, geoDash: require("./CSS/pics/Easy.webp") },
         { imageUrl: require("./CSS/pics/obama.webp"), username: "Obamna", level: 20, geoDash: require("./CSS/pics/Normal.webp") },
         { imageUrl: require("./CSS/pics/trump (1).jpg"), username: "Donald Trump", level: 530, geoDash: require("./CSS/pics/Harder.webp") },
-        { imageUrl: require("./CSS/pics/chillLuigi.jpeg"), username: "Chill Luigi", level: 1069, geoDash: require("./CSS/pics/Insane.webp") },
+        { imageUrl: require("./CSS/pics/JFK.PNG"), username: "JFK", level: "Impossible", geoDash: require("./CSS/pics/Insane.webp") },
+        { imageUrl: require("./CSS/pics/bush.JPG"), username: "George In Bush", level: "GOOD TIER", geoDash: require("./CSS/pics/Insane.webp") },
         { imageUrl: require("./CSS/pics/biden (1).jpg"), username: "Sleepy Joe", level: 9999, geoDash: require("./CSS/pics/ExtremeDemon.webp") },
+        
     ]
-  );
+);
 
     const getBotData = (username) => {
       return bots.find(bot => {

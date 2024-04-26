@@ -1854,28 +1854,104 @@ class DonaldTrumpBot extends Bot {
 }
 
 
-class ChillLuigiBot extends Bot {
+class GeorgeBushBot extends Bot {
   constructor(username, cookie) {
     super(username, cookie)
     this.voiceLine = [
 
-      "mAAarRRrIiOoO, faut tester les champignons Mariooooooo 🍃 🍃",
-      "Princesssssss Peachhhhh I <3 Uuuuuuuuuuu",
-      "BOMBOCLAT",
-      "DonkeyKong a mangé ma BANANE 🤬🤬🤬",
-      "IT'S ME LUIIIiiiiiiiiiiiiii..... 🍃"
+      "AMERICA FUCK YEAH",
+      "💀💀💀💀💀💀💀💀💀💀"
+
     ]
   }
+
+
+  getMin() {
+    let min = this.deck[0]
+    for (let card of this.deck) {
+      if (card.number < min.number) {
+        min = card;
+      }
+    }
+    return min;
+  }
+
   playCard() {
-    let randomCardIndex = Math.floor(Math.random() * this.deck.length - 1);
-    let cardSelected = this.deck[randomCardIndex];
-    this.deck.splice(0, randomCardIndex);
+    console.log("crash here bush");
+    let cardSelected = this.getMin();
+    let cardIndex = this.deck.indexOf(cardSelected)
+    this.deck.splice(cardIndex, 1);
     return cardSelected;
   }
 
-  playRow() {
-    let randomRow = Math.floor(Math.random() * 4);
-    return randomRow + 1; // +1 car ca part pas de 0 
+  rowToDelete() {
+    let tableList = [game.row1, game.row2, game.row3, game.row4]
+    let maxIndex = 1
+    let min_tot = 100;
+    let tot = 0
+    let i = 1;
+    for (let table of tableList) {
+      for (let card of table) {
+        tot += card.number
+      }
+      if (min_tot > tot) {
+        min_tot = tot
+        maxIndex = i
+      }
+      i++
+    }
+    return maxIndex;
+  }
+
+}
+
+class JFKBot extends Bot {
+  constructor(username, cookie) {
+    super(username, cookie)
+    this.voiceLine = [
+
+      "IS THIS A SNIPER ??!!???!!??!",
+      "Ask not what your country can do for you – ask what you can do for your country",
+      "I hate the CIA , all my homies hate the CIA"
+
+    ]
+  }
+
+  getMax() {
+    let max = this.deck[0]
+    for (let card of this.deck) {
+      if (card.number > max.number) {
+        max = card;
+      }
+    }
+    return max;
+  }
+
+  playCard() {
+    console.log("crash here jfk");
+    let cardSelected = this.getMax();
+    let cardIndex = this.deck.indexOf(cardSelected)
+    this.deck.splice(cardIndex, 1);
+    return cardSelected;
+  }
+
+  rowToDelete() {
+    let tableList = [game.row1, game.row2, game.row3, game.row4]
+    let maxIndex = 1
+    let min_tot = 100;
+    let tot = 0
+    let i = 1;
+    for (let table of tableList) {
+      for (let card of table) {
+        tot += card.number
+      }
+      if (min_tot > tot) {
+        min_tot = tot
+        maxIndex = i
+      }
+      i++
+    }
+    return maxIndex;
   }
 
 }
@@ -1897,7 +1973,7 @@ class JoeBidenBot extends Bot {
 
     let instanceOfGame = JSON.stringify(game);
     let instanceOfDeck = []
-    for(let card of this.deck){
+    for (let card of this.deck) {
       instanceOfDeck.push(card);
     }
 
@@ -1911,15 +1987,15 @@ class JoeBidenBot extends Bot {
       let cardsPlayed = []
       let gameDeck = generate6Cartes();
 
-      for(let player of game.playerList){
+      for (let player of game.playerList) {
         cardsPlayed = [...cardsPlayed, ...player.deck];
       }
 
       let cards = gameDeck.filter(card => !cardsPlayed.includes(card));
 
       shuffle(cards);
-      for(let i = 0; i<game.playerList.length - 2; i++){
-        sample.push(cards.splice(cards.length- 1), 0);
+      for (let i = 0; i < game.playerList.length - 2; i++) {
+        sample.push(cards.splice(cards.length - 1), 0);
       }
 
       let row1 = game.row1;
@@ -1927,10 +2003,10 @@ class JoeBidenBot extends Bot {
       let row3 = game.row3;
       let row4 = game.row4;
 
-      let rows = [row1,row2,row3,row4];
-      
-      for(let obj of sample){
-        if(row1[row1.length - 1].number > obj.number && row2[row2.length - 1].number > obj.number && row3[row3.length - 1].number > obj.number && row4[row4.length - 1].number > obj.number){
+      let rows = [row1, row2, row3, row4];
+
+      for (let obj of sample) {
+        if (row1[row1.length - 1].number > obj.number && row2[row2.length - 1].number > obj.number && row3[row3.length - 1].number > obj.number && row4[row4.length - 1].number > obj.number) {
           let tableList = [game.row1, game.row2, game.row3, game.row4]
           let max_idx = 1
           let min_tot = 100;
@@ -1947,20 +2023,20 @@ class JoeBidenBot extends Bot {
             i++
           }
 
-          if(obj == card){
+          if (obj == card) {
             outCome = outCome - rows[max_idx].reduce((total, card) => total + card.nb_boeuf, 0);
           }
           else {
             OPFOR_outcome = outCome - rows[max_idx].reduce((total, card) => total + card.nb_boeuf, 0);
           }
 
-          if(i==1){
+          if (i == 1) {
             row1 = [obj]
           }
-          else if(i == 2){
+          else if (i == 2) {
             row2 = [obj]
           }
-          else if (i == 3){
+          else if (i == 3) {
             row3 = [obj];
           }
           else {
@@ -1968,47 +2044,47 @@ class JoeBidenBot extends Bot {
           }
         }
         else {
-          let sumrow1 = obj.number - row1[row1.length-1].number;
-          let sumrow2 = obj.number - row2[row2.length-1].number;
-          let sumrow3 = obj.number - row3[row3.length-1].number;
-          let sumrow4 = obj.number - row4[row4.length-1].number;
+          let sumrow1 = obj.number - row1[row1.length - 1].number;
+          let sumrow2 = obj.number - row2[row2.length - 1].number;
+          let sumrow3 = obj.number - row3[row3.length - 1].number;
+          let sumrow4 = obj.number - row4[row4.length - 1].number;
 
           let minima = Math.min(...[sumrow1, sumrow2, sumrow3, sumrow4].filter(item => item >= 0));
 
-          if(sumrow1 == minima){
+          if (sumrow1 == minima) {
             row1.push(obj)
           }
-          if(sumrow2 == minima){
+          if (sumrow2 == minima) {
             row2.push(obj)
           }
-          if(sumrow3 == minima){
+          if (sumrow3 == minima) {
             row3.push(obj)
           }
-          if(sumrow4 == minima){
+          if (sumrow4 == minima) {
             row4.push(obj)
           }
 
           let sumn = 0;
 
-          if(row1.length == 6){
+          if (row1.length == 6) {
             sumn = row1.reduce((total, card) => total + card.nb_boeuf, 0);
           }
 
-          
-          if(row2.length == 6){
+
+          if (row2.length == 6) {
             sumn = row2.reduce((total, card) => total + card.nb_boeuf, 0);
           }
 
-          if(row3.length == 6){
+          if (row3.length == 6) {
             sumn = row3.reduce((total, card) => total + card.nb_boeuf, 0);
           }
 
-          if(row4.length == 6){
+          if (row4.length == 6) {
             sumn = row4.reduce((total, card) => total + card.nb_boeuf, 0);
           }
 
-          if(sumn > 0){
-            if(obj == card){
+          if (sumn > 0) {
+            if (obj == card) {
               outCome = outCome + sumn;
             }
             else {
@@ -2026,18 +2102,24 @@ class JoeBidenBot extends Bot {
 
     instanceOfGame = JSON.parse(instanceOfGame);
 
-    for(let cardIt of instanceOfDeck){
-      let testoutcomeCall = testOutcome(cardIt,game)
-      let outcome = testoutcomeCall[0]
-      let Oppfor_Outcome= testoutcomeCall[1]
+    for (let cardIt of instanceOfDeck) {
 
-      if(outcome < best_outcome){
+      let outcome = null
+      let Oppfor_Outcome = null;
+      for (let i = 0; i < 10; i++) {
+        let testoutcomeCall = testOutcome(cardIt, game)
+        outcome = testoutcomeCall[0]
+        Oppfor_Outcome = testoutcomeCall[1]
+      }
+
+
+      if (outcome < best_outcome) {
         best_outcome = outcome;
         best_opfor = Oppfor_Outcome
         card = cardIt;
       }
-      else if(outcome == best_outcome){
-        if(best_opfor > Oppfor_Outcome){
+      else if (outcome == best_outcome) {
+        if (best_opfor > Oppfor_Outcome) {
           best_outcome = outcome;
           best_opfor = Oppfor_Outcome;
           card = cardIt;
@@ -2054,7 +2136,7 @@ class JoeBidenBot extends Bot {
 
 
     let cardIndex = this.deck.indexOf(card);
-    instanceOfDeck.splice(cardIndex,1);
+    instanceOfDeck.splice(cardIndex, 1);
     this.deck = instanceOfDeck;
     return card;
 
@@ -2094,7 +2176,7 @@ function getOpponent(plist, current_player) {
 }
 
 function isInstanceOfBot(bot) {
-  return bot instanceof MathisBot || bot instanceof ObamnaBot || bot instanceof DonaldTrumpBot || bot instanceof ChillLuigiBot || bot instanceof JoeBidenBot
+  return bot instanceof MathisBot || bot instanceof ObamnaBot || bot instanceof DonaldTrumpBot  || bot instanceof JoeBidenBot || bot instanceof JFKBot || bot instanceof GeorgeBushBot
 }
 
 
@@ -2119,8 +2201,9 @@ module.exports = {
   MathisBot,
   ObamnaBot,
   DonaldTrumpBot,
-  ChillLuigiBot,
   JoeBidenBot,
   isInstanceOfBot,
-  BotInLobby
+  BotInLobby,
+  GeorgeBushBot,
+  JFKBot
 }

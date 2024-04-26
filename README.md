@@ -27,6 +27,10 @@ Afin d'enrichir l'expérience utilisateur, notre groupe a décidé d'ajouter de 
 - **Blackjack** : Nous avons ajouté un quatrième jeu, le blackjack, pour offrir encore plus de diversité dans les options de jeu disponibles. Et une autre façon de depenser son argent. Profitez de parties pouvant accueillir jusqu'à 5 joueurs.
 - **Musique d'Ambiance** : Nous avons introduit une musique de fond pour les jeux de Roulette et de Blackjack afin d'enrichir l'atmosphère et de plonger les joueurs dans une véritable ambiance de casino. Laissez-vous emporter par la musique tout en plaçant vos mises.
 - **Chat Global** : La communication est essentielle, c'est pourquoi nous avons mis en place un chat global. Cette fonctionnalité permet aux joueurs d'envoyer des messages et de communiquer entre eux à travers tous les jeux de notre plateforme, sans limitations.
+- **Ajout d'un Docker**
+- **HEBERGEMENT** : [ici](https://skibidi.church/)
+
+
     
 
 ## Installation

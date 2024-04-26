@@ -15,6 +15,7 @@ Ce projet a été conçu et développé en réponse à la demande de nos enseign
 - **Système de Chat et Sauvegarde** : Permet aux joueurs de communiquer entre eux et de sauvegarder leur progression dans le jeu.
 - **Multijoueur dans la Même Room** : Les joueurs peuvent se réunir et jouer dans la même salle virtuelle.
 - **Scoreboard** : Un tableau des scores pour suivre les performances des joueurs.
+- **Bots** : Ajouts de bots pour six qui prend.
 
 ## Améliorations et Ajouts
 

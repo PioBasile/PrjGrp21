@@ -378,7 +378,7 @@ io.on('connection', (socket) => {
         else if (player.username.startsWith("Chill Luigi")) {
           newBot = new ChillLuigiBot(player.username, player.cookie);
         }
-        else if (player.username.startsWith("Joe Biden")) {
+        else if (player.username.startsWith("Sleepy Joe")) {
           newBot = new JoeBidenBot(player.username, player.cookie);
         }
         else {

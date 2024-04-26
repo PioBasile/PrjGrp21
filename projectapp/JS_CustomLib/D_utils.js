@@ -1718,8 +1718,9 @@ class ObamnaBot extends Bot {
 
     //renvoyer la premiere carte du deck si aucune bonne carte trouvé.
 
+    let cardToReturn = this.deck[0]
     this.deck.splice(0, 1);
-    return this.deck[0];
+    return cardToReturn;
   }
 
 
@@ -1764,6 +1765,7 @@ class DonaldTrumpBot extends Bot {
     let tableValue3 = game.row3[game.row3.length - 1].number;
     let tableValue4 = game.row4[game.row4.length - 1].number;
     let high_to_low_cow = []
+
 
     while (high_to_low_cow.length != this.deck.length) {
       let handCopy = this.deck;
@@ -1917,7 +1919,7 @@ class JoeBidenBot extends Bot {
 
       shuffle(cards);
       for(let i = 0; i<game.playerList.length - 2; i++){
-        sample.push(cards.pops());
+        sample.push(cards.splice(cards.length- 1), 0);
       }
 
       let row1 = game.row1;
@@ -2050,7 +2052,7 @@ class JoeBidenBot extends Bot {
     game.row3 = instanceOfGame.row3
     game.row4 = instanceOfGame.row4
 
-    
+
     let cardIndex = this.deck.indexOf(card);
     instanceOfDeck.splice(cardIndex,1);
     this.deck = instanceOfDeck;

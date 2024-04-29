@@ -450,7 +450,7 @@ const BlackJack = () => {
                         <div className={`action-button-bj ${!canBet && myTurn}`} onClick={myTurn && !canBet ? handleRester : null} >Rester</div>
                     </div>
                     <div className="two-action-button-container">
-                        <div className={`action-button-bj ${!canBet && myTurn}`} onClick={myTurn && !canBet ? handleDoubler : null}>Doubler</div>
+                        <div className={`action-button-bj ${!canBet && myTurn && betAmount <= money}`} onClick={myTurn && !canBet && betAmount <= money ? handleDoubler : null }>Doubler</div>
                         <div className={`action-button-bj ${myTurn && !canBet && canSplit}`} onClick={myTurn && !canBet && canSplit ? handleSplitter : null}>Splitter</div>
                     </div>
                 </div>

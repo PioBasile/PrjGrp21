@@ -28,6 +28,7 @@ const {
   GameState,
   BlackJack,
   BlackJackPlayer,
+  sumPoint,
   MathisBot,
   ObamnaBot,
   DonaldTrumpBot,
@@ -43,9 +44,7 @@ const { login, changeDataBase, get_user_info, register } = require("./JS_CustomL
 const { Roulette } = require("./JS_CustomLib/D_Casino.js");
 const { Sentinel_Main } = require('./JS_CustomLib/sentinel.js');
 const { getAllScores, changeScoreBoard, changeMoney } = require("./JS_CustomLib/P_db.js");
-const { pseudoRandomBytes } = require('crypto');
-const { resolve } = require('path');
-const { LogError } = require('concurrently');
+
 app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -59,12 +58,11 @@ const io = new Server(server, {
 
 // VARIABLES 
 
-let validCookies = { 'Micheal Jackson': '69' };
+let validCookies = {};
 let BatailGames = [];
 let TaureauGames = [];
 let MilleBornesGames = [];
 let lobbyList = [];
-let PresidentGames = [];
 let BlackJackGames = [];
 let lobbyIndex = 1;
 let RouletteInstance = new Roulette();
@@ -193,7 +191,7 @@ io.on('connection', (socket) => {
   socket.on('login', (username, password) => {
 
     login(username, password).then((value) => {
-      if (value == 1) {
+      if (value == 1 && username != "" && password != "") {
         cookie = makecookie(10);
         socket.emit('succes', cookie, username);
         validCookies[username] = cookie;
@@ -207,7 +205,7 @@ io.on('connection', (socket) => {
   socket.on('register', (username, password) => {
 
     register(username, password).then((value) => {
-      if (value == 1) {
+      if (value == 1 && username != "" && password != "") {
         cookie = makecookie(10);
         socket.emit('succes', cookie, username);
         validCookies[username] = cookie;
@@ -1551,11 +1549,11 @@ io.on('connection', (socket) => {
   })
 
   function dealerPlay(game) {
-    let sum = game.sumPoint();
+    let sum = sumPoint(game.dealerCards);
 
     while (sum < 17) {
       game.dealerHit();
-      sum = game.sumPoint()
+      sum = sumPoint(game.dealerCards)
     }
     io.to(game.identifiant_partie).emit("dealerCards", game.dealerCards);
 
@@ -1568,7 +1566,7 @@ io.on('connection', (socket) => {
 
   function afterHit(game, player) {
 
-    const playerPoints = player.sumPoint();
+    const playerPoints = sumPoint(player.deck);
 
     if (playerPoints >= 21) {
       if (!game.nextPlayer()) {
@@ -1604,10 +1602,10 @@ io.on('connection', (socket) => {
 
     else {
 
-      let sumPoint = player.sumPoint();
-      let sumPointSplitted = player.sumPointSplitted()
+      let sumPoints = sumPoint(player.deck);
+      let sumPointSplitted = sumPoint(player.splittedDeck)
       if (!player.onSplittedDeck) {
-        if (sumPoint >= 21) {
+        if (sumPoints >= 21) {
           player.onSplittedDeck = true
         }
         else {
@@ -1666,6 +1664,10 @@ io.on('connection', (socket) => {
     let game = findGame(serverId, BlackJackGames);
     let player = findPlayer(deckName, game.playerList)
 
+    get_user_info(deckName).then((res) => {
+      playerMoney = res.money;
+    })
+
     for (let bet of player.bets) {
       if (bet.name == deckName) {
         bet.amountBet *= 2
@@ -1694,6 +1696,7 @@ io.on('connection', (socket) => {
     let player = findPlayer(playerName, game.playerList);
     let deck = player.deck
     let canSplit = false;
+
     if (deck.length == 2) {
       canSplit = (deck[0].power == deck[1].power) && deck.length == 2 && !player.hasSplitted;
     }
@@ -1710,6 +1713,16 @@ io.on('connection', (socket) => {
     let player = findPlayer(deckName, game.playerList)
 
     player.split();
+
+    for (let bet of player.bets) {
+      if (bet.name == deckName) {
+        bet.amountBet *= 2
+        get_user_info(deckName).then((res) => {
+          changeDataBase('argent', res.argent - bet.amountBet, deckName);
+          changeMoney(deckName, -bet.amountBet);
+        });
+      }
+    }
 
     socket.emit("splitted");
     io.to(serverId).emit("allDeck", game.playerList);
@@ -1786,7 +1799,7 @@ io.on('connection', (socket) => {
         break;
       }
     }
-    validCookies[botInfo.username] = cookie;
+    validCookies[botInfo.username] = cookie;  
     let botInLobby = new BotInLobby(botInfo.username, cookie);
     if (lobby.playerList.length + 1 <= lobby.nbPlayerMax) {
       lobby.playerList.push(botInLobby);

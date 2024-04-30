@@ -276,7 +276,7 @@ const NewLobby = () => {
                 <div className='NB-upperBandeau'>
                     <div className='leaveLobbyButton' onClick={() => leaveGame()}>QUITTER</div>
                     <div className='gameNameType'>{gameName} ({gameType})</div>
-                    {(gameType === "Six Qui Prend" && sessionStorage.getItem("name") === owner &&
+                    {/*(gameType === "Six Qui Prend" && sessionStorage.getItem("name") === owner*/ (false &&
                     <>
                     <div className='lobby-bot' onClick={() => showBots === true ? setShowBots(false) : setShowBots(true)}>Ajouter un Bot</div><div className='lobby-bot-list'>
                         {showBots && <ShowBots bots={bots} isShowBots={setShowBots} />}

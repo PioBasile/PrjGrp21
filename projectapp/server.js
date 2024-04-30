@@ -870,6 +870,8 @@ io.on('connection', (socket) => {
 
   let promises = [];
 
+  
+  
   function waitForBot(game) {
     let nextPlayer = game.currentP
 

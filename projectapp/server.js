@@ -1380,7 +1380,7 @@ io.on('connection', (socket) => {
     }
 
     game.serverName = saveName;
-    game.lobbyLinked["serverName"] = saplayCardveName;
+    // game.lobbyLinked["serverName"] = saplayCardveName;
 
     const gameSave = JSON.stringify(game);
 

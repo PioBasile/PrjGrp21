@@ -1,6 +1,7 @@
 # **Projet Programmation - Groupe 21**
 
-Ce projet a été sélectionné parmi les meilleurs parmi une trentaine d'autres projets.
+Ce projet a été sélectionné comme l'un des cinq meilleurs projets parmi une trentaine d'autres.
+
 
 ## Description du Projet
 

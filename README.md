@@ -1,5 +1,7 @@
 # **Projet Programmation - Groupe 21**
 
+Ce projet a été sélectionné parmi les meilleurs parmi une trentaine d'autres projets.
+
 ## Description du Projet
 
 Ce projet a été conçu et développé en réponse à la demande de nos enseignants. Il inclut les caractéristiques et fonctionnalités suivantes :

@@ -105,6 +105,9 @@ const NewBrowserManager = () => {
                 if (nbPlayerMax > 10) {
                     return 10;
                 }
+                else if (nbPlayerMax < 2) {
+                    return 2
+                }
                 else {
                     return nbPlayerMax
                 }
@@ -112,18 +115,23 @@ const NewBrowserManager = () => {
             case "batailleOuverte":
 
                 if (nbPlayerMax > 10) {
-                    console.log("here 2");
                     return 10;
+                }
+                else if (nbPlayerMax < 2) {
+                    return 2
                 }
 
                 else {
                     return nbPlayerMax
                 }
 
+
             case "mb":
                 if (nbPlayerMax > 4) {
-                    setNbPlayerMax(4)
                     return 4
+                }
+                else if (nbPlayerMax < 2) {
+                    return 2
                 }
 
                 else {
@@ -131,14 +139,18 @@ const NewBrowserManager = () => {
                 }
             case "blackjack":
                 if (nbPlayerMax > 5) {
-                    setNbPlayerMax(5);
                     return 5;
                 }
-                
+                else if (nbPlayerMax < 2) {
+                    if (!serverName === "admin") {
+                        return 2
+                    }
+                }
+
                 else {
                     return nbPlayerMax
                 }
-                
+
             default:
                 return nbPlayerMax;
         }

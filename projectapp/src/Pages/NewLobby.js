@@ -154,6 +154,8 @@ const NewLobby = () => {
             socket.on("yourInfoBebs", (data) => {
 
                 console.log("test");
+                console.log("data from server");
+                console.log(data);
 
                 switch (data.gameType) {
                     case "mb":
@@ -169,13 +171,13 @@ const NewLobby = () => {
                         setGameType("Bataille Ouverte");
                         break;
                     case "blackjack":
-                        setGameType("Black-Jack")
+                        setGameType("BlackJack");
+                        break;
                     default:
-                        setGameType("unknow");
-                        return;
+                        setGameType("Unknow");
+                        break;
                 }
-
-                console.log(data);
+               
 
                 setGameName(data.serverName);
                 setMaxPlayers(data.nbPlayerMax);
@@ -276,7 +278,7 @@ const NewLobby = () => {
                 <div className='NB-upperBandeau'>
                     <div className='leaveLobbyButton' onClick={() => leaveGame()}>QUITTER</div>
                     <div className='gameNameType'>{gameName} ({gameType})</div>
-                    {(gameType === "Six Qui Prend" && sessionStorage.getItem("name") === owner &&
+                    {/*(gameType === "Six Qui Prend" && sessionStorage.getItem("name") === owner*/ (false &&
                     <>
                     <div className='lobby-bot' onClick={() => showBots === true ? setShowBots(false) : setShowBots(true)}>Ajouter un Bot</div><div className='lobby-bot-list'>
                         {showBots && <ShowBots bots={bots} isShowBots={setShowBots} />}

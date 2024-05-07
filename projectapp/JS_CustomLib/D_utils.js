@@ -1238,96 +1238,11 @@ class MilleBorne {
 }
 
 
-
-
-class BlackJackPlayer extends Player {
-  constructor(username, cookie) {
-    super(username, cookie);
-
-    this.myTurn = false;
-    this.bets = [];
-    this.splittedDeck = [];
-    this.hasSplitted = false;
-    this.onSplittedDeck = false;
-    this.win = false;
-  }
-
-  newBet(amountBet, deckName) {
-    let existingBetIndex = this.bets.findIndex(bet => bet[deckName]);
-    if (existingBetIndex !== -1) {
-      this.bets[existingBetIndex][deckName] += amountBet;
-    } else {
-      let newBet = {};
-      newBet["name"] = deckName;
-      newBet["amountBet"] = amountBet;
-      newBet[deckName] = amountBet;
-      this.bets.push(newBet);
-    }
-  }
-
-  sumPoint() {
-    let points = 0;
-    let nombreAs = 0;
-
-    for (let carte of this.deck) {
-      if (carte.power >= 11 && carte.power <= 13) {
-        points += 10;
-      }
-      else if (carte.power === 14) {
-        points += 11;
-        nombreAs++;
-      }
-      else {
-        points += carte.power;
-      }
-    }
-
-    while (nombreAs > 0 && points > 21) {
-      points -= 10;
-      nombreAs--;
-    }
-
-    return points;
-  }
-
-  sumPointSplitted() {
-    let points = 0;
-    let nombreAs = 0;
-
-    for (let carte of this.splittedDeck) {
-      if (carte.power >= 11 && carte.power <= 13) {
-        points += 10;
-      }
-      else if (carte.power === 14) {
-        points += 11;
-        nombreAs++;
-      }
-      else {
-        points += carte.power;
-      }
-    }
-
-    while (nombreAs > 0 && points > 21) {
-      points -= 10;
-      nombreAs--;
-    }
-
-    return points;
-  }
-
-  split() {
-    let cardSplitted = this.deck[1]
-    this.deck.splice(1, 1);
-    this.splittedDeck.push(cardSplitted);
-    this.hasSplitted = true;
-    this.onSplittedDeck = false;
-  }
-}
-
-
 /////////////////////////////////////////////////////////////////////////
 ///////////////////////////BLACKJACK////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
+
+
 
 
 function sumPoint(deck) {
@@ -1354,6 +1269,42 @@ function sumPoint(deck) {
 
   return points;
 }
+
+class BlackJackPlayer extends Player {
+  constructor(username, cookie) {
+    super(username, cookie);
+
+    this.myTurn = false;
+    this.bets = [];
+    this.splittedDeck = [];
+    this.hasSplitted = false;
+    this.onSplittedDeck = false;
+    this.win = false;
+  }  
+
+  newBet(amountBet, deckName) {
+    let existingBetIndex = this.bets.findIndex(bet => bet[deckName]);
+    if (existingBetIndex !== -1) {
+      this.bets[existingBetIndex][deckName] += amountBet;
+    } else {
+      let newBet = {};
+      newBet["name"] = deckName;
+      newBet["amountBet"] = amountBet;
+      newBet[deckName] = amountBet;
+      this.bets.push(newBet);
+    }  
+  }  
+
+
+  split() {
+    let cardSplitted = this.deck[1]
+    this.deck.splice(1, 1);
+    this.splittedDeck.push(cardSplitted);
+    this.hasSplitted = true;
+    this.onSplittedDeck = false;
+  }  
+}  
+
 
 class BlackJack {
 
@@ -1448,32 +1399,6 @@ class BlackJack {
   }
 
 
-  sumPoint() {
-    let points = 0;
-    let nombreAs = 0;
-    for (let carte of this.dealerCards) {
-
-      if (carte.power >= 11 && carte.power <= 13) {
-        points += 10;
-      }
-      else if (carte.power === 14) {
-        points += 11;
-        nombreAs++;
-      }
-      else {
-        points += carte.power;
-      }
-    }
-
-    while (nombreAs > 0 && points > 21) {
-      points -= 10;
-      nombreAs--;
-    }
-
-    return points;
-  }
-
-
 
   findStatus() {
     for (let player of this.playerList) {
@@ -1507,7 +1432,7 @@ class BlackJack {
 
   calculMultiplicateur(deck) {
     let totalPoint = sumPoint(deck);
-    let totalCroupier = this.sumPoint()
+    let totalCroupier = sumPoint(this.dealerCards)
 
     if (deck.length == 2 && totalPoint == 21) {
       return 2.5;
@@ -2198,6 +2123,7 @@ module.exports = {
   GameState,
   BlackJack,
   BlackJackPlayer,
+  sumPoint,
   MathisBot,
   ObamnaBot,
   DonaldTrumpBot,

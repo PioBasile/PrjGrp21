@@ -75,7 +75,8 @@ const LoginSignup = () => {
                     className="input-button"
                     value={username}
                     onChange={e => setUsername(e.target.value)}
-                />
+                    required
+                    />
                 <input
                     type="password"
                     placeholder="Mot de passe"
@@ -83,7 +84,8 @@ const LoginSignup = () => {
                     className="input-button"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                />
+                    required
+                    />
 
 
 
